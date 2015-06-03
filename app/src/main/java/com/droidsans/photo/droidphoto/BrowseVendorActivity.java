@@ -4,14 +4,49 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridView;
 
+import com.droidsans.photo.droidphoto.com.droidsans.photo.droidphoto.util.VendorGridAdapter;
 
 public class BrowseVendorActivity extends ActionBarActivity {
+    private GridView vendorGridView;
+    private VendorGridAdapter vendorGridAdapter;
+    private Integer[] vendorPicResource = {
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary,
+            R.drawable.curve_primary
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_browse);
+        setContentView(R.layout.activity_browse_vendor);
+        initialize();
+    }
+
+    private void initialize() {
+        findAllById();
+        setupVendorGridView();
+    }
+
+    private void setupVendorGridView() {
+        vendorGridAdapter = new VendorGridAdapter(getApplicationContext(), R.layout.vendor_item, vendorPicResource);
+        vendorGridView.setAdapter(vendorGridAdapter);
+    }
+
+    private void findAllById() {
+        vendorGridView = (GridView) findViewById(R.id.vendor_gridview);
     }
 
     @Override

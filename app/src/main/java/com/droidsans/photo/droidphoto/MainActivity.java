@@ -2,10 +2,7 @@ package com.droidsans.photo.droidphoto;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -26,15 +23,14 @@ public class MainActivity extends Activity {
     private void initialize(){
         findAllById();
         setListener();
-        setAnimation();
+        startAnimation();
     }
 
-    private void setAnimation() {
-        logoLayout.animate().yBy(-250).setDuration(1200).setStartDelay(2000).start();
+    private void startAnimation() {
+        logoLayout.animate().yBy(-250).setDuration(1200).setStartDelay(1500).start();
         buttonsLayout.setVisibility(View.VISIBLE);
-        buttonsLayout.animate().alpha(1).setDuration(700).setStartDelay(2500).start();
+        buttonsLayout.animate().alpha(1).setDuration(700).setStartDelay(2000).start();
     }
-
 
     private void setListener(){
         browseBtn.setOnClickListener(new View.OnClickListener() {
