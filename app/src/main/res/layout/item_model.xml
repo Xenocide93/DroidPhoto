@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="15dp"
+    android:background="@drawable/curve_white_normal"
+    android:elevation="1dp"
+    android:orientation="vertical">
+
+    <com.droidsans.photo.droidphoto.util.FontTextView
+        android:id="@+id/model_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sony Xperia Z4"
+        android:textSize="17sp"
+        android:textColor="@color/gray"/>
+
+</LinearLayout>

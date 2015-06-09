@@ -1,0 +1,134 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_color"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="40dp"
+    android:paddingRight="40dp"
+    tools:context="com.droidsans.photo.droidphoto.RegisterActivity">
+
+
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="username"
+        android:padding="4dp"
+        android:inputType="text"
+        android:textColorHint="@color/white"
+        android:textSize="16dp"
+        android:textColor="@color/white"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/white" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="password"
+        android:textColor="@color/white"
+        android:padding="4dp"
+        android:inputType="textPassword"
+        android:textColorHint="@color/white"
+        android:textSize="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/white" />
+
+    <EditText
+        android:id="@+id/password_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="confirm password"
+        android:textColor="@color/white"
+        android:inputType="textPassword"
+        android:padding="4dp"
+        android:textColorHint="@color/white"
+        android:textSize="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/white" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        android:textColor="@color/white"
+        android:gravity="center_vertical"
+        android:inputType="textEmailAddress"
+        android:hint="email address"
+        android:padding="4dp"
+        android:textColorHint="@color/white"
+        android:textSize="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/white" />
+
+    <EditText
+        android:id="@+id/display_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:inputType="textEmailAddress"
+        android:hint="display name"
+        android:padding="4dp"
+        android:textColorHint="@color/white"
+        android:textSize="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/white" />
+
+    <TextView
+        android:id="@+id/term_chkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="left"
+        android:textSize="11sp"
+        android:text="By clicking Register, you agree to our Terms of service"
+        android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/register_btn"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/curve_white"
+        android:layout_marginTop="10dp"
+        android:textSize="17sp"
+        android:text="Register"
+        android:textColor="@color/primary_color"/>
+
+</LinearLayout>

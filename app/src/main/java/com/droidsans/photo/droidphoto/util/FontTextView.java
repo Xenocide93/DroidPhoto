@@ -1,4 +1,4 @@
-package com.droidsans.photo.droidphoto.com.droidsans.photo.droidphoto.util;
+package com.droidsans.photo.droidphoto.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;

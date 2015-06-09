@@ -6,4 +6,12 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="title_activity_browse">BrowseActivity</string>
     <string name="title_activity_event">EventActivity</string>
+    <string name="title_activity_browse_model">BrowseModelActivity</string>
+    <string name="browser_vendor_title">Choose Smartphone Vendor</string>
+    <string name="browse_model_title">Choose Smartphone Model</string>
+    <string name="title_activity_browse_picture">BrowsePictureActivity</string>
+    <string name="title_activity_splash_login">SplashLoginActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_floating_sample">FloatingSampleActivity</string>
+    <string name="title_activity_fill_post">FillPostActivity</string>
 </resources>

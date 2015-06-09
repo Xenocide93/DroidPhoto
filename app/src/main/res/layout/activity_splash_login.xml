@@ -1,0 +1,125 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_color">
+
+    <LinearLayout
+        android:id="@+id/logo_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="60dp"
+            android:src="@drawable/droidsans_logo"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/login_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:context=".MainActivity"
+        android:visibility="gone"
+        android:alpha="0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginTop="200dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="username or email"
+                android:padding="4dp"
+                android:textSize="16dp"
+                android:textColorHint="@color/white"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white"
+                android:alpha="0.5"/>
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="password"
+                android:padding="4dp"
+                android:layout_marginTop="10dp"
+                android:textColorHint="@color/white"
+                android:textColor="@color/white"
+                android:inputType="textPassword"
+                android:textSize="16dp"
+                android:gravity="center_vertical"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white"
+                android:alpha="0.5"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="30dp">
+
+                <Button
+                    android:id="@+id/login_btn"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/curve_white"
+                    android:text="Login"
+                    android:textSize="18sp"
+                    android:textColor="@color/primary_color"/>
+
+                <View
+                    android:layout_width="130dp"
+                    android:layout_height="1dp"
+                    android:background="@color/white"
+                    android:layout_marginTop="10dp"
+                    android:alpha="0.5"/>
+
+                <Button
+                android:id="@+id/register_btn"
+                android:layout_width="130dp"
+                android:layout_height="35dp"
+                android:background="@drawable/curve_white"
+                android:layout_marginTop="10dp"
+                android:text="Register"
+                android:textColor="@color/gray"/>
+
+                <Button
+                    android:id="@+id/bypass_login"
+                    android:layout_width="130dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/curve_white"
+                    android:layout_marginTop="10dp"
+                    android:text="Bypass"
+                    android:textColor="@color/gray"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</FrameLayout>

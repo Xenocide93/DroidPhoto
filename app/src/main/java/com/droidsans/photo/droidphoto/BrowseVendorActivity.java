@@ -1,14 +1,22 @@
 package com.droidsans.photo.droidphoto;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
-import com.droidsans.photo.droidphoto.com.droidsans.photo.droidphoto.util.VendorGridAdapter;
+import com.droidsans.photo.droidphoto.util.VendorGridAdapter;
 
 public class BrowseVendorActivity extends ActionBarActivity {
+    public static final int CHOOOSE_MODEL_REQUEST = 3;
+
+    public static final String VENDOR_NUM = "vendor_num";
+
     private GridView vendorGridView;
     private VendorGridAdapter vendorGridAdapter;
     private Integer[] vendorPicResource = {
@@ -43,6 +51,28 @@ public class BrowseVendorActivity extends ActionBarActivity {
     private void setupVendorGridView() {
         vendorGridAdapter = new VendorGridAdapter(getApplicationContext(), R.layout.vendor_item, vendorPicResource);
         vendorGridView.setAdapter(vendorGridAdapter);
+        vendorGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent chooseModelIntent = new Intent(getApplicationContext(), BrowseModelActivity.class);
+                chooseModelIntent.putExtra(BrowseVendorActivity.VENDOR_NUM, position);
+                startActivityForResult(chooseModelIntent, CHOOOSE_MODEL_REQUEST);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK){
+            switch (requestCode){
+                case CHOOOSE_MODEL_REQUEST:
+                    setResult(RESULT_OK, data);
+                    finish();
+                    break;
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "cancel", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void findAllById() {

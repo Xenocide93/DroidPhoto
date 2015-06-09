@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.droidsans.photo.droidphoto" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,21 +17,49 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".BrowseVendorActivity"
             android:label="@string/title_activity_browse"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".EventActivity"
             android:label="@string/title_activity_event"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".BrowseModelActivity"
+            android:label="@string/title_activity_browse_model"
+            android:parentActivityName=".BrowseVendorActivity" >
+        </activity>
+        <activity
+            android:name=".BrowsePictureActivity"
+            android:label="@string/title_activity_browse_picture"
+            android:parentActivityName=".BrowseModelActivity" >
+        </activity>
+        <activity
+            android:name=".SplashLoginActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:parentActivityName=".SplashLoginActivity" >
+        </activity>
+        <activity
+            android:name=".FloatingSampleActivity"
+            android:label="@string/title_activity_floating_sample" >
+        </activity>
+        <activity
+            android:name=".FillPostActivity"
+            android:label="@string/title_activity_fill_post" >
         </activity>
     </application>
 
