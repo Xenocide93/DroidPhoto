@@ -82,7 +82,6 @@ public class MainActivity extends Activity {
     }
 
     private void requestFeedPicture(JSONObject filter) {
-        //TODO get feed from server
         try {
             filter.put("filter_count", filterCount);
             filter.put("skip", 0);
@@ -198,7 +197,12 @@ public class MainActivity extends Activity {
                         JSONObject data = (JSONObject) args[0];
                         try {
                             if(data.getBoolean("success")){
+                                ArrayList<PicturePack> pack = new ArrayList<PicturePack>();
                                 //TODO set photoList to adapter and display
+                                PictureGridAdapter adapter = new PictureGridAdapter(getApplicationContext(), R.layout.item_pic, pack);
+                                feedGridView.setAdapter(adapter);
+                                feedGridView.requestLayout();
+
                                 Log.d("droidphoto", data.getString("photoList"));
                             } else {
                                 Log.d("droidphoto", "Feed error: " + data.getString("msg"));
@@ -285,6 +289,7 @@ public class MainActivity extends Activity {
     }
 
     private ArrayList<PicturePack> getTestPicturePackArray(){
+        //TODO example
         ArrayList<PicturePack> testPack = new ArrayList<PicturePack>();
         testPack.add(new PicturePack(1, "Sony", "Xperia Z3+", "1/60s", "f2.0", "400"));
         testPack.add(new PicturePack(1, "Samsug", "Galaxy S6", "1/200s", "f1.9", "100"));

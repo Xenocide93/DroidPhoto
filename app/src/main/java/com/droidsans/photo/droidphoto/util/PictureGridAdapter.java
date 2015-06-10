@@ -40,6 +40,7 @@ public class PictureGridAdapter extends ArrayAdapter<PicturePack> {
         PicturePack pack = getItem(position);
 
         //TODO lazy load and set picture
+        //holder.picture.setImageBitmap(pack.bitmap);
         holder.deviceName.setText(pack.vendor+" "+pack.model);
         //holder.user.setText(pack.userId+"");
         holder.shutterSpeed.setText(pack.shutterSpeed);
