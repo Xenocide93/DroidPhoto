@@ -8,16 +8,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PictureGridAdapter;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.github.nkzawa.emitter.Emitter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +47,9 @@ public class MainActivity extends Activity {
     private FloatingActionsMenu fam;
     private FloatingActionButton fabChoosePic, fabCamera;
 
-    private String mCurrentPhotoPath;
+    public static String staticPhotoPath;
+
+    private int filterCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +68,32 @@ public class MainActivity extends Activity {
     }
 
     private void setupFeedAdapter() {
-        feedPicturePack = getFeedPicture();
-        adapter = new PictureGridAdapter(getApplicationContext(), R.layout.item_pic, feedPicturePack);
-        feedGridView.setAdapter(adapter);
+        filterCount = 0;
+        JSONObject filter = new JSONObject();
+        JSONObject[] data = new JSONObject[0];
+
+        try {
+            filter.put("data", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        requestFeedPicture(filter);
     }
 
-    private ArrayList<PicturePack> getFeedPicture() {
+    private void requestFeedPicture(JSONObject filter) {
         //TODO get feed from server
+        try {
+            filter.put("filter_count", filterCount);
+            filter.put("skip", 0);
+            filter.put("limit", 40);
+            filter.put("sptag", null);
+            filter.put("_event", "get_feed");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        return new ArrayList<PicturePack>();
+        GlobalSocket.globalEmit("photo.getfeed", filter);
     }
 
     private void setupListener() {
@@ -150,8 +175,7 @@ public class MainActivity extends Activity {
         fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO launch camera intent
-                takePhoto();
+                dispatchTakePictureIntent();
 
                 Toast.makeText(getApplicationContext(), "Launch Camera Intent", Toast.LENGTH_SHORT).show();
             }
@@ -165,15 +189,28 @@ public class MainActivity extends Activity {
             }
         });
 
-    }
-
-    private File takePhoto() {
-        dispatchTakePictureIntent();
-
-
-
-
-        return null;
+        Emitter.Listener onGetFeedRespond = new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            if(data.getBoolean("success")){
+                                //TODO set photoList to adapter and display
+                                Log.d("droidphoto", data.getString("photoList"));
+                            } else {
+                                Log.d("droidphoto", "Feed error: " + data.getString("msg"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        };
+        if(!GlobalSocket.mSocket.hasListeners("get_feed")){GlobalSocket.mSocket.on("get_feed", onGetFeedRespond);}
     }
 
     private File createFile() throws IOException {
@@ -186,14 +223,13 @@ public class MainActivity extends Activity {
                 storageDir
         );
 
-        mCurrentPhotoPath = image.getAbsolutePath();
+        MainActivity.staticPhotoPath = image.getAbsolutePath();
         return image;
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-
             File photoFile = null;
             try {
                 photoFile = createFile();
@@ -210,8 +246,7 @@ public class MainActivity extends Activity {
 
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
+        Uri contentUri = Uri.fromFile(new File(MainActivity.staticPhotoPath));
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
@@ -222,10 +257,8 @@ public class MainActivity extends Activity {
             switch (requestCode) {
                 case REQUEST_IMAGE_CAPTURE:
                     galleryAddPic();
-                    Uri imageUri = Uri.fromFile(new File(mCurrentPhotoPath));
                     Intent fillPostIntent = new Intent(getApplicationContext(), FillPostActivity.class);
-                    fillPostIntent.putExtra("imageUri", imageUri.toString());
-                    fillPostIntent.putExtra("photoPath", mCurrentPhotoPath);
+                    fillPostIntent.putExtra("photoPath", MainActivity.staticPhotoPath);
                     startActivityForResult(fillPostIntent, FILL_POST);
                     break;
 
@@ -233,8 +266,10 @@ public class MainActivity extends Activity {
                     int vendorNum = data.getIntExtra(BrowseVendorActivity.VENDOR_NUM, -1);
                     int modelNum = data.getIntExtra(BrowseModelActivity.MODEL_NUM, -1);
                     if(vendorNum!=-1 && modelNum!=-1){
-                        Toast.makeText(this, "vendor: "+vendorNum+" model: "+modelNum,Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.main_view), "Vendor: " + vendorNum + " Model: " + modelNum, Snackbar.LENGTH_LONG).show();
                         //TODO get filtered picture feed from server
+
+
                         //TODO set feed picture to feed view
 
                         feedGridView.setAdapter(new PictureGridAdapter(
@@ -262,7 +297,6 @@ public class MainActivity extends Activity {
 
         return testPack;
     }
-
 
     private void findAllById() {
         browseBtn = (ImageButton) findViewById(R.id.browse_btn);

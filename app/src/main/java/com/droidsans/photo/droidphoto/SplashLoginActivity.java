@@ -47,8 +47,19 @@ public class SplashLoginActivity extends Activity {
         findAllById();
         setupSocket();
         setupListener();
+        autoLogin();
         setupSplashAnimation();
+    }
 
+    private void autoLogin() {
+        if(GlobalSocket.getToken()!=""){
+            Log.d("droidphoto", "Token: "+GlobalSocket.getToken());
+            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(mainIntent);
+            username.setText("");
+            password.setText("");
+            finish();
+        }
     }
 
     private void setupSocket() {
@@ -74,10 +85,15 @@ public class SplashLoginActivity extends Activity {
                             if(isSuccess){
                                 Log.d(APP_LOG, "Token: "+token);
                                 GlobalSocket.initializeToken(token);
+                                GlobalSocket.writeStringToFile(GlobalSocket.USERNAME, ((String) userObject.get("username")));
+                                GlobalSocket.writeStringToFile(GlobalSocket.DISPLAY_NAME, ((String)userObject.get("disp_name")));
                                 Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
                                 Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
                                 //TODO putExtra data return from server
                                 startActivity(mainActIntent);
+                                username.setText("");
+                                password.setText("");
+                                finish();
                             } else {
                                 String toastString = "";
                                 switch (message){
@@ -119,8 +135,7 @@ public class SplashLoginActivity extends Activity {
                     loginStuff.put("login", username.getText().toString());
                     loginStuff.put("password", hexPassword);
                     loginStuff.put("_event", "login_respond");
-                } catch (JSONException e) {
-                }
+                } catch (JSONException e) {}
 
                 Log.d(APP_LOG, hexPassword);
 

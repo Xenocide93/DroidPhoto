@@ -17,31 +17,37 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".BrowseVendorActivity"
             android:label="@string/title_activity_browse"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".EventActivity"
             android:label="@string/title_activity_event"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".BrowseModelActivity"
             android:label="@string/title_activity_browse_model"
-            android:parentActivityName=".BrowseVendorActivity" >
+            android:parentActivityName=".BrowseVendorActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".BrowsePictureActivity"
             android:label="@string/title_activity_browse_picture"
-            android:parentActivityName=".BrowseModelActivity" >
+            android:parentActivityName=".BrowseModelActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".SplashLoginActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,7 +57,8 @@
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register"
-            android:parentActivityName=".SplashLoginActivity" >
+            android:parentActivityName=".SplashLoginActivity"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FloatingSampleActivity"
@@ -59,7 +66,8 @@
         </activity>
         <activity
             android:name=".FillPostActivity"
-            android:label="@string/title_activity_fill_post" >
+            android:label="@string/title_activity_fill_post"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
