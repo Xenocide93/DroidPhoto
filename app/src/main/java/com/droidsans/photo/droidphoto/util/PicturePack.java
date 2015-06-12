@@ -3,8 +3,9 @@ package com.droidsans.photo.droidphoto.util;
 import android.graphics.drawable.Drawable;
 
 public class PicturePack {
-    public String photoURL, caption, vendor, model, eventId, shutterSpeed, aperture, iso;
-    public int userId, rank, width, height, gpsLat, gpsLong;
+    public String photoURL, caption, vendor, model, eventId, shutterSpeed, aperture, iso, username, submitDate;
+    public int userId, rank, width, height;
+    public double gpsLat, gpsLong;
     public boolean isEnhanced, isFlash;
     public Drawable pictureDrawable;
 
@@ -18,12 +19,12 @@ public class PicturePack {
         this.iso = iso;
     }
 
-    public PicturePack(String photoURL, int userId, String caption,
+    public PicturePack(String photoURL, String username, String caption,
                        String vendor, String model,
                        String eventId, int rank,
                        String shutterSpeed, String aperture, String iso,
-                       int width, int height, int gpsLat, int gpsLong,
-                       boolean isEnhanced, boolean isFlash) {
+                       int width, int height, double gpsLat, double gpsLong,
+                       boolean isEnhanced, boolean isFlash, String submitDate) {
         this.photoURL = photoURL;
         this.caption = caption;
         this.vendor = vendor;
@@ -32,7 +33,8 @@ public class PicturePack {
         this.shutterSpeed = shutterSpeed;
         this.aperture = aperture;
         this.iso = iso;
-        this.userId = userId;
+        //this.userId = userId;
+        this.username = username;
         this.rank = rank;
         this.width = width;
         this.height = height;
@@ -40,6 +42,7 @@ public class PicturePack {
         this.gpsLong = gpsLong;
         this.isEnhanced = isEnhanced;
         this.isFlash = isFlash;
+        this.submitDate = submitDate;
     }
 
     public Drawable getPictureDrawable(){

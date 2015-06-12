@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
+import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -43,7 +44,7 @@ public class FillPostActivity extends ActionBarActivity {
     private EditText caption, vendor, model;
     private Button uploadBtn;
     private CheckBox isEnhanced, isAccept;
-
+    private ExifInterface mExif;
     private String mCurrentPhotoPath;
 
     @Override
@@ -69,9 +70,55 @@ public class FillPostActivity extends ActionBarActivity {
     private void setThumbnailImage() {
         Intent previousIntent = getIntent();
         mCurrentPhotoPath = previousIntent.getStringExtra("photoPath");
-        File imageFile = new File(mCurrentPhotoPath);
-        imageBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+        //File imageFile = new File(mCurrentPhotoPath);
+        //imageBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+        try {
+            mExif = new ExifInterface(mCurrentPhotoPath);
+        } catch (IOException e) {
+            Log.e("droidphoto", "cannot read exif", e);
+        }
+        boolean isSampledDown = false;
+        //get width/height without load bitmap into memory
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, opt);
+        //downsamples
+        if(opt.outWidth > 5000 || opt.outHeight > 5000) {
+            opt.inSampleSize = 4;
+            isSampledDown = true;
+        } else if(opt.outWidth > 2500 || opt.outHeight > 2500) {
+            opt.inSampleSize = 2;
+            isSampledDown = true;
+        }
+        opt.inJustDecodeBounds = false;
+        imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, opt);
+        Log.d("droidphoto", "outwidth: " + opt.outWidth + "|outheight: " + opt.outHeight);
         Log.d("droidphoto", "file size: " + imageBitmap.getByteCount() + " bytes");
+
+        if(isSampledDown) {
+            boolean isNormal = false;
+            android.graphics.Matrix matrix = new android.graphics.Matrix();
+            switch (mExif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1)) {
+                case ExifInterface.ORIENTATION_NORMAL:
+                    isNormal = true;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    matrix.postRotate(90);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    matrix.postRotate(180);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    matrix.postRotate(270);
+                    break;
+                default:
+                    Log.d("droidphoto", "what!!?? NO ROTATION!!?");
+                    break;
+            }
+            if(!isNormal) {
+                imageBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true);
+            }
+        }
         photo.setImageBitmap(imageBitmap);
     }
 
@@ -90,13 +137,11 @@ public class FillPostActivity extends ActionBarActivity {
                         JSONObject respond = post("http://209.208.65.102:3000/photo", mCurrentPhotoPath);
                         Log.d("droidphoto", "respond: " + respond.toString());
 
-                        ExifInterface mExif = null;
+
                         try {
                             if(respond.getBoolean("success")){
-                                mExif = new ExifInterface(mCurrentPhotoPath);
                                 JSONObject photoDetailStuff = new JSONObject();
-
-                                photoDetailStuff.put("photo_name", respond.getString("filename"));
+                                photoDetailStuff.put("photo_url", respond.getString("filename"));
                                 photoDetailStuff.put("caption", caption.getText().toString());
                                 photoDetailStuff.put("model", model.getText().toString());
                                 photoDetailStuff.put("vendor", vendor.getText().toString());
@@ -119,8 +164,6 @@ public class FillPostActivity extends ActionBarActivity {
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        } catch (  IOException ex) {
-                            Log.e("droidphoto", "cannot read exif", ex);
                         }
 
                     }
@@ -254,7 +297,7 @@ public class FillPostActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        imageBitmap.recycle(); System.gc();
+        imageBitmap.recycle();
     }
 
     private byte[] fileToByteArray(String filePath){

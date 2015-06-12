@@ -22,6 +22,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.nkzawa.emitter.Emitter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -198,12 +199,52 @@ public class MainActivity extends Activity {
                         try {
                             if(data.getBoolean("success")){
                                 ArrayList<PicturePack> pack = new ArrayList<PicturePack>();
-                                //TODO set photoList to adapter and display
-                                PictureGridAdapter adapter = new PictureGridAdapter(getApplicationContext(), R.layout.item_pic, pack);
-                                feedGridView.setAdapter(adapter);
-                                feedGridView.requestLayout();
+                                JSONArray photoList = data.getJSONArray("photoList");
+                                for(int i = 0; i < photoList.length(); i++) {
+                                    Log.d("droidphoto", "photoList(" + i + "):" + ((JSONObject)photoList.get(i)));
+                                    try {
+                                        String caption = ((JSONObject)photoList.get(i)).has("caption")?
+                                                ((JSONObject)photoList.get(i)).getString("caption"):"";
+                                        String eventId = ((JSONObject)photoList.get(i)).has("event_id")?
+                                                ((JSONObject)photoList.get(i)).getString("event_id"):null;
+                                        Double gpsLat = ((JSONObject)photoList.get(i)).has("gps_lat")?
+                                                ((JSONObject)photoList.get(i)).getDouble("gps_lat"): Double.MIN_VALUE;
+                                        Double gpsLong = ((JSONObject)photoList.get(i)).has("gps_long")?
+                                                ((JSONObject)photoList.get(i)).getDouble("gps_long"):Double.MIN_VALUE;
+                                        pack.add(new PicturePack(
+                                                ((JSONObject)photoList.get(i)).getString("photo_url"),
+                                                ((JSONObject)photoList.get(i)).getString("username"),
+                                                caption,
+                                                ((JSONObject)photoList.get(i)).getString("vendor"),
+                                                ((JSONObject)photoList.get(i)).getString("model"),
+                                                eventId,
+                                                ((JSONObject)photoList.get(i)).getInt("ranking"),
+                                                ((JSONObject)photoList.get(i)).getString("exp_time"),
+                                                ((JSONObject)photoList.get(i)).getString("aperture"),
+                                                ((JSONObject)photoList.get(i)).getString("iso"),
+                                                ((JSONObject)photoList.get(i)).getInt("width"),
+                                                ((JSONObject)photoList.get(i)).getInt("height"),
+                                                gpsLat,
+                                                gpsLong,
+                                                ((JSONObject)photoList.get(i)).getBoolean("is_enhanced"),
+                                                ((JSONObject)photoList.get(i)).getBoolean("is_flash"),
+                                                ((JSONObject)photoList.get(i)).getString("submit_date")));
 
-                                Log.d("droidphoto", data.getString("photoList"));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                PictureGridAdapter adapter = new PictureGridAdapter(getApplicationContext(), R.layout.item_pic, pack);
+                                feedGridView.invalidateViews();
+                                feedGridView.setAdapter(adapter);
+                                //feedGridView.requestLayout();
+
+                                /*
+                                feedGridView.setAdapter(new PictureGridAdapter(
+                                        getApplicationContext(),
+                                        R.layout.item_pic,
+                                        getTestPicturePackArray()));
+                                */
                             } else {
                                 Log.d("droidphoto", "Feed error: " + data.getString("msg"));
                             }
@@ -272,6 +313,7 @@ public class MainActivity extends Activity {
                     if(vendorNum!=-1 && modelNum!=-1){
                         Snackbar.make(findViewById(R.id.main_view), "Vendor: " + vendorNum + " Model: " + modelNum, Snackbar.LENGTH_LONG).show();
                         //TODO get filtered picture feed from server
+
 
 
                         //TODO set feed picture to feed view
