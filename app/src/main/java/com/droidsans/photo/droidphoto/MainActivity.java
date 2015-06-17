@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -185,6 +187,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 //TODO launch choose picture intent
 
+
                 Toast.makeText(getApplicationContext(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
             }
         });
@@ -234,17 +237,17 @@ public class MainActivity extends Activity {
                                         e.printStackTrace();
                                     }
                                 }
-                                PictureGridAdapter adapter = new PictureGridAdapter(getApplicationContext(), R.layout.item_pic, pack);
-                                feedGridView.invalidateViews();
+                                adapter = new PictureGridAdapter(getApplicationContext(), R.layout.item_pic, pack);
+//                                adapter.notifyDataSetChanged();
+//                                feedGridView.invalidateViews();
                                 feedGridView.setAdapter(adapter);
-                                //feedGridView.requestLayout();
-
-                                /*
-                                feedGridView.setAdapter(new PictureGridAdapter(
-                                        getApplicationContext(),
-                                        R.layout.item_pic,
-                                        getTestPicturePackArray()));
-                                */
+                                for(int i = 0; i < 4; i++) {
+                                    ((PicturePack)feedGridView.getItemAtPosition(i)).setLoad();
+                                    new NotifyAdapter().execute(i);
+                                }
+                                adapter.notifyDataSetChanged();
+//                                feedGridView.setAdapter(new PictureGridAdapter(getApplicationContext(), R.layout.item_pic, pack));
+//                                feedGridView.requestLayout();
                             } else {
                                 Log.d("droidphoto", "Feed error: " + data.getString("msg"));
                             }
@@ -255,7 +258,42 @@ public class MainActivity extends Activity {
                 });
             }
         };
-        if(!GlobalSocket.mSocket.hasListeners("get_feed")){GlobalSocket.mSocket.on("get_feed", onGetFeedRespond);}
+        if(!GlobalSocket.mSocket.hasListeners("get_feed")) {
+            GlobalSocket.mSocket.on("get_feed", onGetFeedRespond);
+        }
+
+        feedGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    for (int visiblePosition = feedGridView.getFirstVisiblePosition(); visiblePosition <= feedGridView.getLastVisiblePosition(); visiblePosition++) {
+//                        Log.d("droidphoto", "position: " + visiblePosition);
+                        ((PicturePack) feedGridView.getItemAtPosition(visiblePosition)).setLoad();
+                        new NotifyAdapter().execute(visiblePosition);
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
+    }
+
+    private class NotifyAdapter extends AsyncTask<Integer,Void,String> {
+        @Override
+        protected String doInBackground(Integer... params) {
+            while(!((PicturePack)feedGridView.getItemAtPosition(params[0])).isDoneLoading && ((PicturePack)feedGridView.getItemAtPosition(params[0])).isLoaded) {
+                //wait until done download
+            }
+            return "done";
+        }
+
+        protected void onPostExecute(String result) {
+            Log.d("droidphoto", "notify adapter");
+            adapter.notifyDataSetChanged();
+        }
+
     }
 
     private File createFile() throws IOException {
@@ -295,6 +333,8 @@ public class MainActivity extends Activity {
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

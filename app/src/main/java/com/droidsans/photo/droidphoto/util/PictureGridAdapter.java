@@ -1,6 +1,8 @@
 package com.droidsans.photo.droidphoto.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class PictureGridAdapter extends ArrayAdapter<PicturePack> {
     private int resourceLayout;
     private LayoutInflater inflater;
+    private Bitmap imageBitmap;
 
     public PictureGridAdapter(Context context, int resource, ArrayList<PicturePack> objects) {
         super(context, resource, objects);
@@ -39,10 +42,16 @@ public class PictureGridAdapter extends ArrayAdapter<PicturePack> {
 
         PicturePack pack = getItem(position);
 
-        //TODO lazy load and set picture
-        //holder.picture.setImageBitmap(pack.bitmap);
-        holder.deviceName.setText(pack.vendor+" "+pack.model);
-        holder.user.setText(pack.username+"");
+        //        check has URL        check is start load         check has bitmap          check is done loading
+        if((pack.photoURL != null) && (pack.isLoaded) && (pack.imageBitmap != null) && (pack.isDoneLoading)) {
+            Log.d("droidphoto", "set image bitmap :" + position);
+            holder.picture.setImageBitmap(pack.imageBitmap);
+        } else {
+            Log.d("droidphoto", "set placeholder :" + position);
+            holder.picture.setImageDrawable(getContext().getResources().getDrawable(R.drawable.droidsans_logo));
+        }
+        holder.deviceName.setText(pack.vendor + " " + pack.model);
+        holder.user.setText(pack.username + "");
         //holder.shutterSpeed.setText(pack.shutterSpeed);
         //holder.aperture.setText(pack.aperture);
         //holder.iso.setText("ISO"+pack.iso);

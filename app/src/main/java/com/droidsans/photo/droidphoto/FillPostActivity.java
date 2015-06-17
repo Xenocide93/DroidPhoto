@@ -281,9 +281,11 @@ public class FillPostActivity extends ActionBarActivity {
                 stringBuilder.append(line).append("\n");
             }
             responseStreamReader.close();
-            httpUrlConnection.disconnect();
+//            httpUrlConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            httpUrlConnection.disconnect();
         }
 
         try {

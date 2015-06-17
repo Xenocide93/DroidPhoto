@@ -31,31 +31,32 @@ public class GlobalSocket {
     private static String mUsername;
     private static String mDisplayName;
 
+    private static IO.Options opts = new IO.Options();
 
     public static boolean initializeSocket(){
         if(mSocket==null){
+            opts.forceNew = true;
+            opts.reconnection = true;
             try {
-                mSocket = IO.socket("http://209.208.65.102:3000");
+                mSocket = IO.socket("http://209.208.65.102:3000", opts);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
                 return false; //wrong URL
             }
         }
-
-        if(!mSocket.connected()){
-            mSocket.connect();
-            if(!mSocket.connected()) return false; //cannot connect to server
-        }
-
         return true;
     }
 
     public static boolean globalEmit(String event, JSONObject obj){
-        initializeSocket();
+        if(!mSocket.connected()){
+            mSocket.connect();
+            //if(!mSocket.connected()) return false; //cannot connect to server
+        }
         Log.d("droidphoto", "Emit: "+event);
 
         try {
             if(!event.equals("user.register") && !event.equals("user.login")) obj.put("_token", mToken==null? getToken(): mToken);
+            opts.query = "_token=" + ((mToken==null)? getToken(): mToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -154,7 +155,6 @@ public class GlobalSocket {
             e.printStackTrace();
             return "";
         }
-
         try {
             while(scanner.hasNextLine()) {
                 fileContents.append(scanner.nextLine());
@@ -164,6 +164,7 @@ public class GlobalSocket {
         } finally {
             scanner.close();
         }
+
 
     }
 }
