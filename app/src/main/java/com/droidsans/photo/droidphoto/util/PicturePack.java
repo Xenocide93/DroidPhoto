@@ -86,10 +86,23 @@ public class PicturePack {
             this.imageBitmap.recycle();
             //Log.d("droidphoto", "recycled");
         }
-        if(imageLoader2!= null) imageLoader2.cancel(true);
+        if(imageLoader2 != null) {
+            imageLoader2.cancel(true);
+        }
         this.isLoaded = false;
         this.isDoneLoading = false;
     }
+
+    /**<p>ImageLoader2 is a version2 of ImageLoader which use AyncTask (instead of Thread)</p>
+     *
+     * <p>params: string[] as follows
+     * string[0] = baseURL
+     * string[1] = photoURL</p>
+     *
+     * <p>return:
+     * </p>
+     *
+     */
 
     public class ImageLoader2 extends AsyncTask<String,Integer,String> {
 
@@ -119,7 +132,6 @@ public class PicturePack {
                 int total = 0;
                 int count;
                 while((count = in.read(buffer)) != -1) {
-                    //Log.d("droidphoto", "count:" + count + "|total:" + total);
                     total += count;
                     outputStream.write(buffer,0,count);
                     if(fileLength > 0) {
@@ -131,7 +143,7 @@ public class PicturePack {
                 Log.d("droidphoto", "total:" + total + "|filelength:" + fileLength);
                 if(total == fileLength) {
                     //imageBitmap = BitmapFactory.decodeStream(new BufferedInputStream(in));
-                    if(imageBitmap!= null) imageBitmap.recycle();
+                    if(imageBitmap != null) imageBitmap.recycle();
                     imageBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(),0,total);
                     isDoneLoading = true;
                 } else {
@@ -139,6 +151,8 @@ public class PicturePack {
                     isLoaded = false;
                 }
             } catch (IOException e) {
+                isDoneLoading = false;
+                isLoaded = false;
                 e.printStackTrace();
             } finally {
                 if(urlConnection != null) {

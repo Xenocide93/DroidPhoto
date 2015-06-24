@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -58,6 +59,10 @@ public class MainActivity extends Activity {
 
     private int filterCount;
     private NotifyAdapter packreload[];
+
+    private int firstAtPause;
+    private int lastAtPause;
+    private boolean notActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -295,14 +300,14 @@ public class MainActivity extends Activity {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
                     for (int visiblePosition = feedGridView.getFirstVisiblePosition(); visiblePosition <= feedGridView.getLastVisiblePosition(); visiblePosition++) {
 //                        Log.d("droidphoto", "position: " + visiblePosition);
-                        PicturePack pp = (PicturePack) feedGridView.getItemAtPosition(visiblePosition);
+                        PicturePack pp = (PicturePack) adapter.getItem(visiblePosition);
                         if (!pp.isLoaded) {
                             //((PicturePack) feedGridView.getItemAtPosition(visiblePosition)).setLoad();
-                            if (packreload[visiblePosition] == null) {
+//                            if (packreload[visiblePosition] == null) {
                                 pp.setLoad();
                                 packreload[visiblePosition] = new NotifyAdapter();
                                 packreload[visiblePosition].execute(visiblePosition);
-                            }
+//                            }
                         }
 
                     }
@@ -317,8 +322,21 @@ public class MainActivity extends Activity {
         feedGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent browsePictureIntent = new Intent(getApplicationContext(),BrowsePictureActivity.class);
-                Toast.makeText(getApplicationContext(), "position : " + position, Toast.LENGTH_LONG).show();
+                //reset all packreload -> code moved to onPause
+
+                Intent imageViewerIntent = new Intent(getApplicationContext(), ImageViewer.class);
+                PicturePack currentPack = adapter.getItem(position);
+                imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
+                imageViewerIntent.putExtra("vendor", currentPack.vendor);
+                imageViewerIntent.putExtra("model", currentPack.model);
+                imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
+                imageViewerIntent.putExtra("aperture", currentPack.aperture);
+                imageViewerIntent.putExtra("iso", currentPack.iso);
+                imageViewerIntent.putExtra("gpsLat", currentPack.gpsLat);
+                imageViewerIntent.putExtra("gpsLong", currentPack.gpsLong);
+                imageViewerIntent.putExtra("username", currentPack.username);
+
+                startActivity(imageViewerIntent);
             }
         });
     }
@@ -465,22 +483,39 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        Toast.makeText(this, "onRestart", Toast.LENGTH_LONG).show();
-        feedGridView.invalidateViews();
+    protected void onPause() {
+        //reset all packreload
+        for (int i = 0; i < adapter.getCount(); i++) {
+            if (packreload[i] != null && packreload[i].getStatus() == AsyncTask.Status.RUNNING) {
+                packreload[i].cancel(true);
+                adapter.getItem(i).resetPackBitmap();
+            }
+        }
+        firstAtPause = feedGridView.getFirstVisiblePosition();
+        lastAtPause = feedGridView.getLastVisiblePosition();
+        notActive = true;
+        super.onPause();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Toast.makeText(this, "onStart", Toast.LENGTH_LONG).show();
+    protected void onResume() {
+        super.onResume();
+        if(notActive) {
+            for (int i = firstAtPause; i <= lastAtPause; i++) {
+                if (!adapter.getItem(i).isLoaded) {
+                    adapter.getItem(i).setLoad();
+                    packreload[i] = new NotifyAdapter();
+                    packreload[i].execute(i);
+                }
+            }
+            notActive = false;
+        }
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         finish();
+        super.onDestroy();
     }
 
     private String getImagePath(Uri uri) {
