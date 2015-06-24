@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -39,10 +41,11 @@ public class MainActivity extends Activity {
     public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int FILTER_FEED = 2;
     public static final int FILL_POST = 4;
+    public static final int SELECT_PHOTO = 8;
 
     public static Context mContext;
 
-    private ImageButton browseBtn, eventBtn, floatingSampleBtn;
+    private ImageButton profileBtn, browseBtn, eventBtn, floatingSampleBtn;
     private View buttonsLayout, logoLayout, dimView;
     private GridView feedGridView;
     private PictureGridAdapter adapter;
@@ -50,13 +53,16 @@ public class MainActivity extends Activity {
     private FloatingActionsMenu fam;
     private FloatingActionButton fabChoosePic, fabCamera;
 
-    public static String staticPhotoPath;
+    private static String staticPhotoPath;
+    private boolean hasImageInPhotoPath;
 
     private int filterCount;
+    private NotifyAdapter packreload[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toast.makeText(this, "onCreate", Toast.LENGTH_LONG).show();
         setContentView(R.layout.activity_main);
 
         mContext = getApplicationContext();
@@ -99,27 +105,42 @@ public class MainActivity extends Activity {
     }
 
     private void setupListener() {
-        browseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browseIntent = new Intent(getApplicationContext(), BrowseVendorActivity.class);
-                startActivityForResult(browseIntent, FILTER_FEED);
-            }
-        });
-        eventBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent eventIntent = new Intent(getApplicationContext(), EventActivity.class);
-                startActivity(eventIntent);
-            }
-        });
-        floatingSampleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent eventIntent = new Intent(getApplicationContext(), FloatingSampleActivity.class);
-                startActivity(eventIntent);
-            }
-        });
+        if(!profileBtn.hasOnClickListeners()) {
+            profileBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), "Profile : " + GlobalSocket.DISPLAY_NAME, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        if(!browseBtn.hasOnClickListeners()) {
+            browseBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent browseIntent = new Intent(getApplicationContext(), BrowseVendorActivity.class);
+                    startActivityForResult(browseIntent, FILTER_FEED);
+                }
+            });
+        }
+        if(!eventBtn.hasOnClickListeners()) {
+            eventBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent eventIntent = new Intent(getApplicationContext(), EventActivity.class);
+                    startActivity(eventIntent);
+                }
+            });
+        }
+        if(!floatingSampleBtn.hasOnClickListeners()) {
+            floatingSampleBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent eventIntent = new Intent(getApplicationContext(), FloatingSampleActivity.class);
+                    startActivity(eventIntent);
+                }
+            });
+        }
         fam.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
             public void onMenuExpanded() {
@@ -173,21 +194,17 @@ public class MainActivity extends Activity {
             }
         });
 
-
         fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchTakePictureIntent();
-
                 Toast.makeText(getApplicationContext(), "Launch Camera Intent", Toast.LENGTH_SHORT).show();
             }
         });
         fabChoosePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO launch choose picture intent
-
-
+                dispatchPicturePickerIntent();
                 Toast.makeText(getApplicationContext(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
             }
         });
@@ -237,13 +254,23 @@ public class MainActivity extends Activity {
                                         e.printStackTrace();
                                     }
                                 }
+                                if(adapter != null) {
+                                    //recycle bitmap and reset load state
+                                    Log.d("droidphoto","count before change adapter :" + adapter.getCount());
+                                    for(int i = 0; i < adapter.getCount(); i++) {
+                                        adapter.getItem(i).resetPackBitmap();
+                                        if(packreload[i] != null) packreload[i].cancel(true);
+                                    }
+                                }
                                 adapter = new PictureGridAdapter(getApplicationContext(), R.layout.item_pic, pack);
-//                                adapter.notifyDataSetChanged();
+                                adapter.notifyDataSetChanged();
 //                                feedGridView.invalidateViews();
                                 feedGridView.setAdapter(adapter);
+                                packreload = new NotifyAdapter[adapter.getCount()];
                                 for(int i = 0; i < 4; i++) {
                                     ((PicturePack)feedGridView.getItemAtPosition(i)).setLoad();
-                                    new NotifyAdapter().execute(i);
+                                    packreload[i] = new NotifyAdapter();
+                                    packreload[i].execute(i);
                                 }
                                 adapter.notifyDataSetChanged();
 //                                feedGridView.setAdapter(new PictureGridAdapter(getApplicationContext(), R.layout.item_pic, pack));
@@ -268,14 +295,30 @@ public class MainActivity extends Activity {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
                     for (int visiblePosition = feedGridView.getFirstVisiblePosition(); visiblePosition <= feedGridView.getLastVisiblePosition(); visiblePosition++) {
 //                        Log.d("droidphoto", "position: " + visiblePosition);
-                        ((PicturePack) feedGridView.getItemAtPosition(visiblePosition)).setLoad();
-                        new NotifyAdapter().execute(visiblePosition);
+                        PicturePack pp = (PicturePack) feedGridView.getItemAtPosition(visiblePosition);
+                        if (!pp.isLoaded) {
+                            //((PicturePack) feedGridView.getItemAtPosition(visiblePosition)).setLoad();
+                            if (packreload[visiblePosition] == null) {
+                                pp.setLoad();
+                                packreload[visiblePosition] = new NotifyAdapter();
+                                packreload[visiblePosition].execute(visiblePosition);
+                            }
+                        }
+
                     }
                 }
             }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
+
+        feedGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent browsePictureIntent = new Intent(getApplicationContext(),BrowsePictureActivity.class);
+                Toast.makeText(getApplicationContext(), "position : " + position, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -285,11 +328,14 @@ public class MainActivity extends Activity {
         protected String doInBackground(Integer... params) {
             while(!((PicturePack)feedGridView.getItemAtPosition(params[0])).isDoneLoading && ((PicturePack)feedGridView.getItemAtPosition(params[0])).isLoaded) {
                 //wait until done download
+                //maybe download should be here ??
+                //TODO move connection code and download from picturepack to here
             }
             return "done";
         }
 
         protected void onPostExecute(String result) {
+            //tell the gridview to recall getView via adapter
             Log.d("droidphoto", "notify adapter");
             adapter.notifyDataSetChanged();
         }
@@ -299,15 +345,22 @@ public class MainActivity extends Activity {
     private File createFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMDD_HHmmss").format(new Date());
         String imageFileName = "JPG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/droidphoto/");
+        storageDir.mkdirs();
         File image = File.createTempFile(
                 imageFileName,
                 ".jpg",
                 storageDir
         );
-
+        hasImageInPhotoPath = false;
         MainActivity.staticPhotoPath = image.getAbsolutePath();
         return image;
+//        File image = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/droidphoto/", imageFileName + ".jpg");
+//        if(image.createNewFile()) {
+//            MainActivity.staticPhotoPath = image.getAbsolutePath();
+//            return image;
+//        }
+//        return null;
     }
 
     private void dispatchTakePictureIntent() {
@@ -317,7 +370,7 @@ public class MainActivity extends Activity {
             try {
                 photoFile = createFile();
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), "IOException", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "IOException" + e.toString(), Toast.LENGTH_SHORT).show();
             }
 
             if(photoFile !=null) {
@@ -327,6 +380,12 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void dispatchPicturePickerIntent() {
+        Intent picturePickerIntent = new Intent(Intent.ACTION_PICK);
+        picturePickerIntent.setType("image/*");
+        startActivityForResult(picturePickerIntent, SELECT_PHOTO);
+    }
+
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         Uri contentUri = Uri.fromFile(new File(MainActivity.staticPhotoPath));
@@ -334,58 +393,113 @@ public class MainActivity extends Activity {
         this.sendBroadcast(mediaScanIntent);
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK)
             switch (requestCode) {
+                case FILTER_FEED:
+                    int vendorNum = data.getIntExtra(BrowseVendorActivity.VENDOR_NUM, -1);
+                    int modelNum = data.getIntExtra(BrowseModelActivity.MODEL_NUM, -1);
+                    Snackbar.make(findViewById(R.id.main_view), "Vendor: " + vendorNum + " Model: " + modelNum, Snackbar.LENGTH_LONG).show();
+                    if(vendorNum!=-1 && modelNum!=-1){
+                        //TODO actually record tags and update filterCount
+                        JSONObject filter = new JSONObject();
+                        JSONArray filterData = new JSONArray();
+                        String vendor[] = {"Asus", "WIKO"};
+                        String model[] = {"Zenfone 5", "RIDGE"};
+                        try {
+                            //create filter data
+                            filterCount = 2;
+                            for(int i = 0; i < filterCount; i++) {
+                                JSONObject value = new JSONObject();
+                                value.put("vendor", vendor[i]);
+                                value.put("model", model[i]);
+                                filterData.put(i, value);
+                            }
+                            filter.put("data", filterData);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        requestFeedPicture(filter);
+
+                        //update feed via socket.io onGetFeedResponse listener
+                    }
+                    break;
+
+                case SELECT_PHOTO:
+                    Toast.makeText(this, getImagePath(data.getData()), Toast.LENGTH_LONG).show();
+                    Intent fillPostFromPicturePickerIntent = new Intent(getApplicationContext(), FillPostActivity.class);
+                    fillPostFromPicturePickerIntent.putExtra("photoPath", getImagePath(data.getData()));
+                    startActivityForResult(fillPostFromPicturePickerIntent, FILL_POST);
+                    break;
+
                 case REQUEST_IMAGE_CAPTURE:
+                    Toast.makeText(this, MainActivity.staticPhotoPath, Toast.LENGTH_LONG).show();
                     galleryAddPic();
+                    hasImageInPhotoPath = true;
                     Intent fillPostIntent = new Intent(getApplicationContext(), FillPostActivity.class);
                     fillPostIntent.putExtra("photoPath", MainActivity.staticPhotoPath);
                     startActivityForResult(fillPostIntent, FILL_POST);
                     break;
 
-                case FILTER_FEED:
-                    int vendorNum = data.getIntExtra(BrowseVendorActivity.VENDOR_NUM, -1);
-                    int modelNum = data.getIntExtra(BrowseModelActivity.MODEL_NUM, -1);
-                    if(vendorNum!=-1 && modelNum!=-1){
-                        Snackbar.make(findViewById(R.id.main_view), "Vendor: " + vendorNum + " Model: " + modelNum, Snackbar.LENGTH_LONG).show();
-                        //TODO get filtered picture feed from server
-
-
-
-                        //TODO set feed picture to feed view
-
-                        feedGridView.setAdapter(new PictureGridAdapter(
-                                getApplicationContext(),
-                                R.layout.item_pic,
-                                getTestPicturePackArray()));
-                    }
-                    break;
             }
         else if(resultCode == RESULT_CANCELED) {
             Toast.makeText(this, "cancel",Toast.LENGTH_SHORT).show();
+            if(!hasImageInPhotoPath && staticPhotoPath != null) {
+                File image = new File(staticPhotoPath);
+                if(image.delete()) {
+                    hasImageInPhotoPath = false;
+                    Toast.makeText(this,"temp file removed", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this,"cannot remove temp file", Toast.LENGTH_LONG).show();
+                }
+                staticPhotoPath = null;
+            }
         }
     }
 
-    private ArrayList<PicturePack> getTestPicturePackArray(){
-        //TODO example
-        ArrayList<PicturePack> testPack = new ArrayList<PicturePack>();
-        testPack.add(new PicturePack(1, "Sony", "Xperia Z3+", "1/60s", "f2.0", "400"));
-        testPack.add(new PicturePack(1, "Samsug", "Galaxy S6", "1/200s", "f1.9", "100"));
-        testPack.add(new PicturePack(1, "LG", "G4", "1/10s", "f1.8", "50"));
-        testPack.add(new PicturePack(1, "ASUS", "Zenfone 2", "1/250s", "f2.0", "800"));
-        testPack.add(new PicturePack(1, "OPPO", "Find 7a", "1/30s", "f2.0", "200"));
-        testPack.add(new PicturePack(1, "HTC", "M9+", "1/100s", "f2.0", "200"));
-        testPack.add(new PicturePack(1, "Xiaomi", "Mi Note Pro", "1/30s", "f1.8", "200"));
-        testPack.add(new PicturePack(1, "Meizu", "M2 Note", "1/20s", "f1.8", "800"));
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //outState.put(tag, data);
+        super.onSaveInstanceState(outState);
+    }
 
-        return testPack;
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Toast.makeText(this, "onRestart", Toast.LENGTH_LONG).show();
+        feedGridView.invalidateViews();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Toast.makeText(this, "onStart", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
+
+    private String getImagePath(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
+        cursor.close();
+
+        cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+
+        return path;
     }
 
     private void findAllById() {
+        profileBtn = (ImageButton) findViewById(R.id.profile_btn);
         browseBtn = (ImageButton) findViewById(R.id.browse_btn);
         eventBtn = (ImageButton) findViewById(R.id.event_btn);
         floatingSampleBtn = (ImageButton) findViewById(R.id.floating_sample_btn);
@@ -393,6 +507,7 @@ public class MainActivity extends Activity {
         buttonsLayout = findViewById(R.id.btn_layout);
         logoLayout = findViewById(R.id.logo_layout);
 
+        if(feedGridView != null) feedGridView.invalidateViews();
         feedGridView = (GridView) findViewById(R.id.feed_gridview);
 
         dimView = findViewById(R.id.dim_view);

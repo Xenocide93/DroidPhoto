@@ -48,6 +48,7 @@ public class GlobalSocket {
     }
 
     public static boolean globalEmit(String event, JSONObject obj){
+        initializeSocket(); //try initialize it
         if(!mSocket.connected()){
             mSocket.connect();
             //if(!mSocket.connected()) return false; //cannot connect to server

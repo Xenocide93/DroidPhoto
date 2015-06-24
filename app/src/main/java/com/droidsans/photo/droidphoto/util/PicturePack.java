@@ -3,6 +3,7 @@ package com.droidsans.photo.droidphoto.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -22,6 +23,7 @@ public class PicturePack {
     public Bitmap imageBitmap = null;
     public boolean isDoneLoading = false;
     public int percentage = 0;
+    private ImageLoader2 imageLoader2;
     private final String baseUrl = "http://209.208.65.102/data/photo/500px/";
 
     public PicturePack(int userId, String vendor, String model,
@@ -63,16 +65,30 @@ public class PicturePack {
     public Drawable getPictureDrawable(){
         if(pictureDrawable==null){
         }
-
         return pictureDrawable;
+    }
+
+    public Bitmap getImageBitmap() {
+        return imageBitmap;
     }
 
     public void setLoad() {
         if(!this.isLoaded) {
             //new ImageLoader().start();
-            new ImageLoader2().execute("");
+            imageLoader2 = new ImageLoader2();
+            imageLoader2.execute("");
             this.isLoaded = true;
         }
+    }
+
+    public void resetPackBitmap() {
+        if(this.imageBitmap != null) {
+            this.imageBitmap.recycle();
+            //Log.d("droidphoto", "recycled");
+        }
+        if(imageLoader2!= null) imageLoader2.cancel(true);
+        this.isLoaded = false;
+        this.isDoneLoading = false;
     }
 
     public class ImageLoader2 extends AsyncTask<String,Integer,String> {
@@ -159,39 +175,4 @@ public class PicturePack {
         }
 
     }
-/*
-    public class ImageLoader extends Thread{
-        @Override
-        public void run() {
-            HttpURLConnection urlConnection = null;
-            try {
-                URL url = new URL(baseUrl + photoURL);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.getDoInput();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setRequestProperty("Accept-Encoding", "");
-                urlConnection.connect();
-                if(urlConnection.getResponseCode() == 200) {
-                    Log.d("droidphoto", "reading GET");
-                    String length = urlConnection.getHeaderField("content-Length");
-                    Log.d("droidphoto", "content-length: " + length);
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    Log.d("droidphoto", "decode");
-                    imageBitmap = BitmapFactory.decodeStream(in);
-
-                    in.close();
-                    isDoneLoading = true;
-                }
-            } catch (IOException e) {
-                if(imageBitmap!=null) imageBitmap.recycle();
-                isLoaded = false;
-                isDoneLoading = false;
-                e.printStackTrace();
-            } finally {
-                urlConnection.disconnect();
-            }
-        }
-
-    }
-    */
 }

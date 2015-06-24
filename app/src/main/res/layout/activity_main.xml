@@ -21,9 +21,16 @@
             android:layout_alignParentTop="true">
 
             <ImageButton
+                android:id="@+id/profile_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/curve_primary" />
+
+            <ImageButton
                 android:id="@+id/browse_btn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
                 android:background="@drawable/curve_primary" />
 
             <ImageButton

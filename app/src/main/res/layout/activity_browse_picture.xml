@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tag_layout"
-        android:numColumns="1"
+        android:numColumns="2"
         android:horizontalSpacing="5dp"
         android:verticalSpacing="5dp"/>
 

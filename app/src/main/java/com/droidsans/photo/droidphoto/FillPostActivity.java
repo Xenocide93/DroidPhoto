@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
-import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -70,8 +69,7 @@ public class FillPostActivity extends ActionBarActivity {
     private void setThumbnailImage() {
         Intent previousIntent = getIntent();
         mCurrentPhotoPath = previousIntent.getStringExtra("photoPath");
-        //File imageFile = new File(mCurrentPhotoPath);
-        //imageBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+
         try {
             mExif = new ExifInterface(mCurrentPhotoPath);
         } catch (IOException e) {
@@ -82,6 +80,7 @@ public class FillPostActivity extends ActionBarActivity {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(mCurrentPhotoPath, opt);
+
         //downsamples
         if(opt.outWidth > 5000 || opt.outHeight > 5000) {
             opt.inSampleSize = 4;
@@ -126,11 +125,16 @@ public class FillPostActivity extends ActionBarActivity {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isAccept.isChecked()){
-                    Toast.makeText(getApplicationContext(), "Please accpet our term of service", Toast.LENGTH_LONG);
+                if (!isAccept.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "Please accpet our term of service", Toast.LENGTH_LONG).show();
                     return;
                 }
-
+                if (mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME) == null ||
+                        mExif.getAttribute(ExifInterface.TAG_ISO) == null ||
+                        mExif.getAttribute(ExifInterface.TAG_APERTURE) == null) {
+                    Toast.makeText(getApplicationContext(), "image has no required exif", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 new Thread(new Runnable() {
                     public void run() {
                         Log.d("droidphoto", "uploading...");
@@ -139,7 +143,7 @@ public class FillPostActivity extends ActionBarActivity {
 
 
                         try {
-                            if(respond.getBoolean("success")){
+                            if (respond.getBoolean("success")) {
                                 JSONObject photoDetailStuff = new JSONObject();
                                 photoDetailStuff.put("photo_url", respond.getString("filename"));
                                 photoDetailStuff.put("caption", caption.getText().toString());
@@ -262,11 +266,7 @@ public class FillPostActivity extends ActionBarActivity {
             request.close();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }  catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -284,8 +284,14 @@ public class FillPostActivity extends ActionBarActivity {
 //            httpUrlConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         } finally {
-            httpUrlConnection.disconnect();
+            try {
+                httpUrlConnection.disconnect();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
 
         try {
@@ -310,8 +316,6 @@ public class FillPostActivity extends ActionBarActivity {
             BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
             buf.read(bytes, 0, bytes.length);
             buf.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
