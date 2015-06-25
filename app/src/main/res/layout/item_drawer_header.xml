@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="190dp">
+
+    <ImageView
+        android:id="@+id/profile_image_circle"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginLeft="16dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="24dp" />
+
+    <com.droidsans.photo.droidphoto.util.FontTextView
+        android:id="@+id/username"
+        android:layout_above="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="start"
+        android:paddingBottom="4dp"
+        android:text="username"
+        android:layout_alignLeft="@+id/profile_image_circle"
+        android:layout_alignStart="@+id/profile_image_circle"/>
+    <com.droidsans.photo.droidphoto.util.FontTextView
+        android:id="@+id/email"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:gravity="start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_alignParentBottom="true"
+        android:text="email"
+        android:layout_alignLeft="@+id/username"
+        android:layout_alignStart="@+id/username"/>
+</RelativeLayout>

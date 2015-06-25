@@ -78,7 +78,6 @@ public class ImageViewer extends AppCompatActivity {
             location.setText("TH");
         }
         user.setText(previousIntent.getStringExtra("username"));
-        getSupportActionBar().setTitle("TEST");
         return true;
     }
 

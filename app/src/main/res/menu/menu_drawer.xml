@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_feed"
+            android:checked="true"
+            android:title="@string/drawer_feed"
+            android:icon="@drawable/ic_photo_library_black_24dp" />
+        <item
+            android:id="@+id/drawer_event"
+            android:checked="false"
+            android:title="@string/drawer_event"
+            android:icon="@drawable/ic_event_note_black_24dp" />
+        <item
+            android:id="@+id/drawer_help"
+            android:checked="false"
+            android:title="@string/drawer_help"
+            android:icon="@drawable/ic_help_outline_black_24dp" />
+        <item
+            android:id="@+id/drawer_about"
+            android:checked="false"
+            android:title="@string/drawer_about"
+            android:icon="@drawable/ic_info_black_24dp" />
+        <item
+            android:id="@+id/drawer_logout"
+            android:checked="false"
+            android:title="@string/drawer_logout"
+            />
+    </group>
+
+</menu>

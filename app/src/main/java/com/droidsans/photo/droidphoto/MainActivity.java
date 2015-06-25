@@ -4,15 +4,23 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -38,7 +46,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int FILTER_FEED = 2;
     public static final int FILL_POST = 4;
@@ -64,6 +72,11 @@ public class MainActivity extends Activity {
     private int lastAtPause;
     private boolean notActive = false;
 
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +90,30 @@ public class MainActivity extends Activity {
 
     private void initialize() {
         findAllById();
+        setupUIFrame();
         setupListener();
         setupFeedAdapter();
+    }
+
+    private void setupUIFrame() {
+        setSupportActionBar(toolbar);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                drawerLayout.closeDrawers();
+                return false;
+            }
+        });
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,toolbar, R.string.drawer_open, R.string.drawer_close){
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
     }
 
     private void setupFeedAdapter() {
@@ -304,9 +339,9 @@ public class MainActivity extends Activity {
                         if (!pp.isLoaded) {
                             //((PicturePack) feedGridView.getItemAtPosition(visiblePosition)).setLoad();
 //                            if (packreload[visiblePosition] == null) {
-                                pp.setLoad();
-                                packreload[visiblePosition] = new NotifyAdapter();
-                                packreload[visiblePosition].execute(visiblePosition);
+                            pp.setLoad();
+                            packreload[visiblePosition] = new NotifyAdapter();
+                            packreload[visiblePosition].execute(visiblePosition);
 //                            }
                         }
 
@@ -477,6 +512,12 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        actionBarDrawerToggle.syncState();
+        super.onPostCreate(savedInstanceState, persistentState);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         //outState.put(tag, data);
         super.onSaveInstanceState(outState);
@@ -485,15 +526,17 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         //reset all packreload
-        for (int i = 0; i < adapter.getCount(); i++) {
-            if (packreload[i] != null && packreload[i].getStatus() == AsyncTask.Status.RUNNING) {
-                packreload[i].cancel(true);
-                adapter.getItem(i).resetPackBitmap();
+        if(adapter != null) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                if (packreload[i] != null && packreload[i].getStatus() == AsyncTask.Status.RUNNING) {
+                    packreload[i].cancel(true);
+                    adapter.getItem(i).resetPackBitmap();
+                }
             }
+            firstAtPause = feedGridView.getFirstVisiblePosition();
+            lastAtPause = feedGridView.getLastVisiblePosition();
+            notActive = true;
         }
-        firstAtPause = feedGridView.getFirstVisiblePosition();
-        lastAtPause = feedGridView.getLastVisiblePosition();
-        notActive = true;
         super.onPause();
     }
 
@@ -518,6 +561,22 @@ public class MainActivity extends Activity {
         super.onDestroy();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+//        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private String getImagePath(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
@@ -534,6 +593,10 @@ public class MainActivity extends Activity {
     }
 
     private void findAllById() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         profileBtn = (ImageButton) findViewById(R.id.profile_btn);
         browseBtn = (ImageButton) findViewById(R.id.browse_btn);
         eventBtn = (ImageButton) findViewById(R.id.event_btn);
