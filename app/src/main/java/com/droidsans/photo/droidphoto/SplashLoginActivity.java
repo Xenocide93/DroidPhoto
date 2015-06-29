@@ -89,11 +89,12 @@ public class SplashLoginActivity extends Activity {
                             if(isSuccess){
                                 Log.d(APP_LOG, "Token: " + token);
 //                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                                //TODO base64 encode username/disp_name
                                 getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).edit()
                                         .putString(getString(R.string.token), token)
                                         .putString(getString(R.string.username), (String) userObject.get("username"))
                                         .putString(getString(R.string.display_name), (String) userObject.get("disp_name"))
-                                        .commit();
+                                        .apply();
 //                                GlobalSocket.initializeToken(token);
 //                                GlobalSocket.writeStringToFile(GlobalSocket.USERNAME, ((String) userObject.get("username")));
 //                                GlobalSocket.writeStringToFile(GlobalSocket.DISPLAY_NAME, ((String)userObject.get("disp_name")));
@@ -158,6 +159,7 @@ public class SplashLoginActivity extends Activity {
             public void onClick(View v) {
                 Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(registerIntent);
+                finish();
             }
         });
         bypassLoginBtn.setOnClickListener(new View.OnClickListener() {

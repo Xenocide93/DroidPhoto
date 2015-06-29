@@ -74,7 +74,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ImageViewer"
+            android:name=".ImageViewerActivity"
             android:label="@string/title_activity_image_viewer"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" >

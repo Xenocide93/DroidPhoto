@@ -8,6 +8,7 @@ import android.media.ExifInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +49,8 @@ public class FillPostActivity extends AppCompatActivity {
     private ExifInterface mExif;
     private String mCurrentPhotoPath;
 
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +61,15 @@ public class FillPostActivity extends AppCompatActivity {
 
     private void initialize() {
         findAllById();
+        setupToolbar();
         setupListener();
         setThumbnailImage();
         setVendorAndModel();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setVendorAndModel() {
@@ -333,6 +342,8 @@ public class FillPostActivity extends AppCompatActivity {
         uploadBtn = (Button) findViewById(R.id.upload_btn);
         isAccept = (CheckBox) findViewById(R.id.is_accept);
         isEnhanced = (CheckBox) findViewById(R.id.is_enhanced);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
      }
 
     @Override

@@ -58,11 +58,12 @@ public class RegisterActivity extends Activity {
                             message = data.getString("msg");
                             Log.d("droidphoto", "isSuccess: " + isSuccess + " Message: " + message);
                             if(isSuccess){
-                                //TODO auto-login
                                 Toast.makeText(getApplicationContext(), "Register Successful", Toast.LENGTH_SHORT).show();
+                                //TODO auto-login (submit) or else just redirect user to login page
                                 Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
                                 //TODO putExtra data return from server
                                 startActivity(mainActIntent);
+                                finish();
                             } else {
                                 String toastString = "";
                                 switch (message){
@@ -129,6 +130,20 @@ public class RegisterActivity extends Activity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(GlobalSocket.mSocket.hasListeners("register_respond")) {
+            GlobalSocket.mSocket.off("register_respond");
+        }
+        username.setText("");
+        password.setText("");
+        passwordConfirm.setText("");
+        email.setText("");
+        displayName.setText("");
+
+        super.onDestroy();
     }
 
     private void findAllById() {

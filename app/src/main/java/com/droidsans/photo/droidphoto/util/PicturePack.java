@@ -24,7 +24,7 @@ public class PicturePack {
     public boolean isDoneLoading = false;
     public int percentage = 0;
     private ImageLoader2 imageLoader2;
-    private final String baseUrl = "http://209.208.65.102/data/photo/500px/";
+    private final String baseURL = "http://209.208.65.102/data/photo/500px/";
 
     public PicturePack(int userId, String vendor, String model,
                        String shutterSpeed, String aperture, String iso) {
@@ -112,7 +112,7 @@ public class PicturePack {
             ByteArrayOutputStream outputStream = null;
             HttpURLConnection urlConnection = null;
             try {
-                URL url = new URL(baseUrl + photoURL);
+                URL url = new URL(baseURL + photoURL);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.getDoInput();
                 urlConnection.setRequestMethod("GET");

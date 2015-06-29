@@ -60,6 +60,7 @@ public class GlobalSocket {
         try {
             if(!event.equals("user.register") && !event.equals("user.login")) {
                 Log.d("droidphoto", "set _token");
+
                 obj.put("_token", MainActivity.mContext.getSharedPreferences(MainActivity.mContext.getString(R.string.userdata), Context.MODE_PRIVATE).getString(MainActivity.mContext.getString(R.string.token), ""));
             }
 //            if(!event.equals("user.register") && !event.equals("user.login")) obj.put("_token", mToken==null? getToken(): mToken);

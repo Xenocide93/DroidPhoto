@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +16,7 @@ import android.widget.Toast;
 import com.droidsans.photo.droidphoto.util.ModelListAdapter;
 
 
-public class BrowseModelActivity extends ActionBarActivity {
+public class BrowseModelActivity extends AppCompatActivity {
     public static final String MODEL_NUM = "model_num";
 
     private ListView modelListView;
@@ -40,6 +42,8 @@ public class BrowseModelActivity extends ActionBarActivity {
 
     private int vendorNum;
 
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +53,14 @@ public class BrowseModelActivity extends ActionBarActivity {
 
     private void initialize() {
         findAllById();
+        setupToolbar();
         retrieveIntentData();
         setupModelListView();
+    }
 
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void retrieveIntentData() {
@@ -77,6 +86,7 @@ public class BrowseModelActivity extends ActionBarActivity {
     }
 
     private void findAllById() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         modelListView = (ListView) findViewById(R.id.model_listview);
     }
 

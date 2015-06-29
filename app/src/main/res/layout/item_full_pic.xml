@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_gravity="center_horizontal"
+        android:alpha="0.7"
         android:scaleType="fitCenter"
         android:src="@drawable/droidsans_logo" />
 
@@ -37,7 +38,8 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/curve_primary_normal" />
+                    android:alpha="0.7"
+                    android:src="@drawable/ic_textsms_black_24dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/caption"
@@ -59,14 +61,15 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/curve_primary_normal" />
+                    android:alpha="0.7"
+                    android:src="@drawable/ic_phone_android_black_24dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/device_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="Samsung Galaxy S6" />
+                    android:text="\???" />
 
             </LinearLayout>
 
@@ -81,14 +84,15 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/curve_primary_normal" />
+                    android:alpha="0.7"
+                    android:src="@drawable/ic_iso_black_24dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/shutter_speed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="1/60s" />
+                    android:text="\???" />
 
             </LinearLayout>
 
@@ -103,14 +107,15 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/curve_primary_normal" />
+                    android:alpha="0.7"
+                    android:src="@drawable/ic_iso_black_24dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/aperture"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="f1.8" />
+                    android:text="\???" />
 
             </LinearLayout>
 
@@ -125,14 +130,15 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/curve_primary_normal" />
+                    android:alpha="0.7"
+                    android:src="@drawable/ic_iso_black_24dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/iso"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="ISO 400" />
+                    android:text="\???" />
 
             </LinearLayout>
 
@@ -147,14 +153,15 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/curve_primary_normal" />
+                    android:alpha="0.7"
+                    android:src="@drawable/ic_public_black_24dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="Bangkok, Thailand" />
+                    android:text="Bangkok, TH" />
 
             </LinearLayout>
 
@@ -169,7 +176,8 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/curve_primary_normal" />
+                    android:alpha="0.7"
+                    android:src="@drawable/ic_person_black_24dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/user"

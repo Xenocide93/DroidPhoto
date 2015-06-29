@@ -3,6 +3,8 @@ package com.droidsans.photo.droidphoto;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,10 +14,11 @@ import android.widget.Toast;
 
 import com.droidsans.photo.droidphoto.util.VendorGridAdapter;
 
-public class BrowseVendorActivity extends ActionBarActivity {
+public class BrowseVendorActivity extends AppCompatActivity {
     public static final int CHOOOSE_MODEL_REQUEST = 3;
-
     public static final String VENDOR_NUM = "vendor_num";
+
+    private Toolbar toolbar;
 
     private GridView vendorGridView;
     private VendorGridAdapter vendorGridAdapter;
@@ -45,7 +48,13 @@ public class BrowseVendorActivity extends ActionBarActivity {
 
     private void initialize() {
         findAllById();
+        setupToolbar();
         setupVendorGridView();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setupVendorGridView() {
@@ -77,6 +86,7 @@ public class BrowseVendorActivity extends ActionBarActivity {
 
     private void findAllById() {
         vendorGridView = (GridView) findViewById(R.id.vendor_gridview);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
     }
 
     @Override
