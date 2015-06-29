@@ -1,5 +1,6 @@
 package com.droidsans.photo.droidphoto;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -243,7 +244,8 @@ public class FillPostActivity extends AppCompatActivity {
             request.writeBytes("Content-Transfer-Encoding: base64" + lineEnd);
 
             //request body
-            request.writeBytes(lineEnd + GlobalSocket.getToken() + lineEnd);
+//            request.writeBytes(lineEnd + GlobalSocket.getToken() + lineEnd);
+            request.writeBytes(lineEnd + getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), "") + lineEnd);
 
             //end of body section
             request.writeBytes(twoHyphens + boundary + lineEnd);

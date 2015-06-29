@@ -27,5 +27,11 @@
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
 
+    <!--unreadable for security reasons: adding obfuscation level-->
+    <string name="userdata">ewEgfoEWoi84tu3wsZLghB</string>
+    <string name="token">sdfgGRRAs23a7dfs9ghfvvfdsio</string>
+    <string name="username">wetYRI2JEW235Rsdf23sdg350SD</string>
+    <string name="display_name">23p9oithwaegtlidsglouu4</string>
+
 
 </resources>

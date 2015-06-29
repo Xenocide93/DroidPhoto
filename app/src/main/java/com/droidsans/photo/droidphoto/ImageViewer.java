@@ -5,6 +5,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -18,11 +19,12 @@ import com.droidsans.photo.droidphoto.util.GlobalSocket;
 public class ImageViewer extends AppCompatActivity {
 
     private ImageView picture;
-    private FontTextView deviceName, exposureTime, aperture, iso, location, user;
+    private FontTextView deviceName, exposureTime, aperture, iso, location, user, caption;
     private LinearLayout locationLayout;
     private String photoURL;
     private final String baseURL = "http://209.208.65.102/data/photo/original/";
 
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,10 @@ public class ImageViewer extends AppCompatActivity {
         setContentView(R.layout.activity_image_viewer);
 
         findAllById();
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         if(setup()) {
             //TODO load HUGE image from baseURL via AsyncTask
         } else {
@@ -65,6 +71,7 @@ public class ImageViewer extends AppCompatActivity {
     private boolean setup() {
         Intent previousIntent = getIntent();
         photoURL = previousIntent.getStringExtra("photoURL");
+        caption.setText(previousIntent.getStringExtra("caption"));
         deviceName.setText(previousIntent.getStringExtra("vendor") + " " + previousIntent.getStringExtra("model"));
         exposureTime.setText("1/" + (int)(1.0/Double.parseDouble(previousIntent.getStringExtra("exposureTime"))));
         aperture.setText("f" + previousIntent.getStringExtra("aperture"));
@@ -89,6 +96,7 @@ public class ImageViewer extends AppCompatActivity {
     }
 
     private void findAllById() {
+        caption = (FontTextView) findViewById(R.id.caption);
         picture = (ImageView) findViewById(R.id.picture);
         deviceName = (FontTextView) findViewById(R.id.device_name);
         exposureTime = (FontTextView) findViewById(R.id.shutter_speed);
@@ -97,6 +105,10 @@ public class ImageViewer extends AppCompatActivity {
         location = (FontTextView) findViewById(R.id.location);
         locationLayout = (LinearLayout) findViewById(R.id.location_layout);
         user = (FontTextView) findViewById(R.id.user);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
     }
+
+
 }
 

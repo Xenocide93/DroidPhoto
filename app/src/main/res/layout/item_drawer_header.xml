@@ -14,20 +14,20 @@
         android:layout_marginStart="24dp" />
 
     <com.droidsans.photo.droidphoto.util.FontTextView
-        android:id="@+id/username"
-        android:layout_above="@+id/email"
+        android:id="@+id/display_name"
+        android:layout_above="@id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="start"
         android:paddingBottom="4dp"
-        android:text="username"
-        android:layout_alignLeft="@+id/profile_image_circle"
-        android:layout_alignStart="@+id/profile_image_circle"/>
+        android:text="display_name"
+        android:layout_alignLeft="@id/profile_image_circle"
+        android:layout_alignStart="@id/profile_image_circle"/>
     <com.droidsans.photo.droidphoto.util.FontTextView
-        android:id="@+id/email"
+        android:id="@+id/username"
         android:textSize="14sp"
         android:textColor="@color/black"
         android:gravity="start"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_alignParentBottom="true"
-        android:text="email"
-        android:layout_alignLeft="@+id/username"
-        android:layout_alignStart="@+id/username"/>
+        android:text="\@username"
+        android:layout_alignLeft="@id/display_name"
+        android:layout_alignStart="@id/display_name"/>
 </RelativeLayout>

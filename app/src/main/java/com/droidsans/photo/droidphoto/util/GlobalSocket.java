@@ -1,9 +1,11 @@
 package com.droidsans.photo.droidphoto.util;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
 import com.droidsans.photo.droidphoto.MainActivity;
+import com.droidsans.photo.droidphoto.R;
 import com.droidsans.photo.droidphoto.SplashLoginActivity;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -56,8 +58,12 @@ public class GlobalSocket {
         Log.d("droidphoto", "Emit: "+event);
 
         try {
-            if(!event.equals("user.register") && !event.equals("user.login")) obj.put("_token", mToken==null? getToken(): mToken);
-            opts.query = "_token=" + ((mToken==null)? getToken(): mToken);
+            if(!event.equals("user.register") && !event.equals("user.login")) {
+                Log.d("droidphoto", "set _token");
+                obj.put("_token", MainActivity.mContext.getSharedPreferences(MainActivity.mContext.getString(R.string.userdata), Context.MODE_PRIVATE).getString(MainActivity.mContext.getString(R.string.token), ""));
+            }
+//            if(!event.equals("user.register") && !event.equals("user.login")) obj.put("_token", mToken==null? getToken(): mToken);
+//            opts.query = "_token=" + ((mToken==null)? getToken(): mToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -80,7 +86,7 @@ public class GlobalSocket {
             is.close();
             os.close();
 
-            Log.d("droidphoto", "from tokenFile: " + getToken());
+//            Log.d("droidphoto", "from tokenFile: " + getToken());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

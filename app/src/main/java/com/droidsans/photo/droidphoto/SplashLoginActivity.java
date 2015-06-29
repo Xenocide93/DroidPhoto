@@ -3,6 +3,7 @@ package com.droidsans.photo.droidphoto;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -52,8 +53,11 @@ public class SplashLoginActivity extends Activity {
     }
 
     private void autoLogin() {
-        if(GlobalSocket.getToken()!=""){
-            Log.d("droidphoto", "Token: "+GlobalSocket.getToken());
+        String token = getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), "");
+        if(!token.equals("")) {
+            Log.d("droidphoto", "Token: " + token);
+//        if(GlobalSocket.getToken()!=""){
+//            Log.d("droidphoto", "Token: "+GlobalSocket.getToken());
             Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(mainIntent);
             username.setText("");
@@ -83,10 +87,16 @@ public class SplashLoginActivity extends Activity {
                             Log.d(APP_LOG, "isSuccess: "+isSuccess);
 
                             if(isSuccess){
-                                Log.d(APP_LOG, "Token: "+token);
-                                GlobalSocket.initializeToken(token);
-                                GlobalSocket.writeStringToFile(GlobalSocket.USERNAME, ((String) userObject.get("username")));
-                                GlobalSocket.writeStringToFile(GlobalSocket.DISPLAY_NAME, ((String)userObject.get("disp_name")));
+                                Log.d(APP_LOG, "Token: " + token);
+//                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                                getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).edit()
+                                        .putString(getString(R.string.token), token)
+                                        .putString(getString(R.string.username), (String) userObject.get("username"))
+                                        .putString(getString(R.string.display_name), (String) userObject.get("disp_name"))
+                                        .commit();
+//                                GlobalSocket.initializeToken(token);
+//                                GlobalSocket.writeStringToFile(GlobalSocket.USERNAME, ((String) userObject.get("username")));
+//                                GlobalSocket.writeStringToFile(GlobalSocket.DISPLAY_NAME, ((String)userObject.get("disp_name")));
                                 Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
                                 Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
                                 //TODO putExtra data return from server

@@ -58,6 +58,7 @@ public class RegisterActivity extends Activity {
                             message = data.getString("msg");
                             Log.d("droidphoto", "isSuccess: " + isSuccess + " Message: " + message);
                             if(isSuccess){
+                                //TODO auto-login
                                 Toast.makeText(getApplicationContext(), "Register Successful", Toast.LENGTH_SHORT).show();
                                 Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
                                 //TODO putExtra data return from server

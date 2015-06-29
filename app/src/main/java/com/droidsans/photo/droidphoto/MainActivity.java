@@ -1,7 +1,6 @@
 package com.droidsans.photo.droidphoto;
 
 import android.animation.Animator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +13,7 @@ import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +28,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PictureGridAdapter;
 import com.droidsans.photo.droidphoto.util.PicturePack;
@@ -77,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
+    private FontTextView username;
+    private FontTextView displayName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupUIFrame() {
         setSupportActionBar(toolbar);
+
+
+        displayName.setText(getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.display_name), "no display name ??"));
+        username.setText("@" + getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.username), "... no username ?? must be a bug"));
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -149,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             profileBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "Profile : " + GlobalSocket.DISPLAY_NAME, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Profile : " + getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.display_name), "no display name ??"), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -362,6 +371,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent imageViewerIntent = new Intent(getApplicationContext(), ImageViewer.class);
                 PicturePack currentPack = adapter.getItem(position);
                 imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
+                imageViewerIntent.putExtra("caption", currentPack.caption);
                 imageViewerIntent.putExtra("vendor", currentPack.vendor);
                 imageViewerIntent.putExtra("model", currentPack.model);
                 imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
@@ -597,6 +607,9 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        username = (FontTextView) findViewById(R.id.username);
+        displayName = (FontTextView) findViewById(R.id.display_name);
+
         profileBtn = (ImageButton) findViewById(R.id.profile_btn);
         browseBtn = (ImageButton) findViewById(R.id.browse_btn);
         eventBtn = (ImageButton) findViewById(R.id.event_btn);
@@ -613,5 +626,9 @@ public class MainActivity extends AppCompatActivity {
         fam = (FloatingActionsMenu) findViewById(R.id.fam);
         fabCamera = (FloatingActionButton) findViewById(R.id.fab_camera);
         fabChoosePic = (FloatingActionButton) findViewById(R.id.fab_choosepic);
+    }
+
+    public SharedPreferences getUserdata() {
+        return getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE);
     }
 }
