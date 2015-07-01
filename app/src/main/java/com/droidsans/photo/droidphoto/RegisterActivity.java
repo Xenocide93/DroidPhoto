@@ -67,13 +67,16 @@ public class RegisterActivity extends Activity {
                             } else {
                                 String toastString = "";
                                 switch (message){
+                                    case "null required field":
+                                        toastString = "Please fill every field provided above";
+                                        break;
                                     case "email exist":
                                         toastString = "This email address has already been used";
                                         break;
                                     case "username exist":
                                         toastString = "This username has already been used";
                                         break;
-                                    case "both exist":
+                                    case "both exist": //deprecated
                                         toastString = "Both username and email have already been used";
                                         break;
                                     case "db error":
@@ -87,8 +90,12 @@ public class RegisterActivity extends Activity {
                                         break;
                                 }
                                 Toast.makeText(getApplicationContext(),toastString, Toast.LENGTH_SHORT).show();
+                                registerBtn.setClickable(true);
                             }
-                        } catch (JSONException e) {return;}
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            return;
+                        }
                     }
                 });
             }
@@ -98,38 +105,42 @@ public class RegisterActivity extends Activity {
     }
 
     private void setupListener() {
-        registerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!password.getText().toString().equals(passwordConfirm.getText().toString())) {
-                    Toast.makeText(getApplicationContext(),
-                            "Missmatched comfirm password, please retype the password",
-                            Toast.LENGTH_SHORT).show();
-                    password.setText("");
-                    passwordConfirm.setText("");
-                } else {
-                    JSONObject registerStuff = new JSONObject();
-                    String hexPassword = "";
+        if(!registerBtn.hasOnClickListeners()) {
+            registerBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    registerBtn.setClickable(false);
+                    if (!password.getText().toString().equals(passwordConfirm.getText().toString())) {
+                        Toast.makeText(getApplicationContext(),
+                                "Missmatched comfirm password, please retype the password",
+                                Toast.LENGTH_SHORT).show();
+                        password.setText("");
+                        passwordConfirm.setText("");
+                    } else {
+                        JSONObject registerStuff = new JSONObject();
+                        String hexPassword = "";
 
-                    try {
-                        MessageDigest md = MessageDigest.getInstance("SHA-256");
-                        md.update(password.getText().toString().getBytes());
-                        hexPassword = bytesToHex(md.digest());
-                    } catch (NoSuchAlgorithmException e) {
+                        try {
+                            MessageDigest md = MessageDigest.getInstance("SHA-256");
+                            md.update(password.getText().toString().getBytes());
+                            hexPassword = bytesToHex(md.digest());
+                        } catch (NoSuchAlgorithmException e) {
+                        }
+
+                        try {
+                            registerStuff.put("username", username.getText().toString());
+                            registerStuff.put("password", hexPassword);
+                            registerStuff.put("email", email.getText().toString());
+                            registerStuff.put("disp_name", displayName.getText().toString());
+                            registerStuff.put("_event", "register_respond");
+                        } catch (JSONException e) {
+                        }
+
+                        GlobalSocket.globalEmit("user.register", registerStuff);
                     }
-
-                    try {
-                        registerStuff.put("username", username.getText().toString());
-                        registerStuff.put("password", hexPassword);
-                        registerStuff.put("email", email.getText().toString());
-                        registerStuff.put("disp_name", displayName.getText().toString());
-                        registerStuff.put("_event", "register_respond");
-                    } catch (JSONException e) {}
-
-                    GlobalSocket.globalEmit("user.register", registerStuff);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override

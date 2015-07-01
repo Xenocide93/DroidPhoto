@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.R;
 
 import java.util.ArrayList;
@@ -43,13 +46,20 @@ public class PictureGridAdapter extends ArrayAdapter<PicturePack> {
         PicturePack pack = getItem(position);
 
         //        check has URL        check is start load         check has bitmap          check is done loading
-        if((pack.photoURL != null) && (pack.isLoaded) && (pack.imageBitmap != null) && (pack.isDoneLoading)) {
-            Log.d("droidphoto", "set image bitmap :" + position);
-            holder.picture.setImageBitmap(pack.imageBitmap);
-        } else {
-            Log.d("droidphoto", "set placeholder :" + position);
-            holder.picture.setImageDrawable(getContext().getResources().getDrawable(R.drawable.droidsans_logo));
-        }
+//        if((pack.photoURL != null) && (pack.isLoaded) && (pack.imageBitmap != null) && (pack.isDoneLoading)) {
+//            Log.d("droidphoto", "set image bitmap :" + position);
+//            holder.picture.setImageBitmap(pack.imageBitmap);
+//        } else {
+//            Log.d("droidphoto", "set placeholder :" + position);
+//            holder.picture.setImageDrawable(getContext().getResources().getDrawable(R.drawable.droidsans_logo));
+//        }
+        Glide.with(getContext())
+                .load(pack.baseURL + pack.photoURL)
+//                .centerCrop()
+                .placeholder(R.drawable.droidsans_logo)
+//                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .crossFade()
+                .into(holder.picture);
         holder.deviceName.setText(pack.vendor + " " + pack.model);
         holder.user.setText(pack.username + "");
         //holder.shutterSpeed.setText(pack.shutterSpeed);

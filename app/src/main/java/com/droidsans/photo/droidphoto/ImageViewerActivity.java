@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
@@ -38,7 +39,6 @@ public class ImageViewerActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    private ImageLoader2 imageLoader2;
     private int percentage = 0;
 
 
@@ -53,8 +53,11 @@ public class ImageViewerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if(setup()) {
-            imageLoader2 = new ImageLoader2();
-            imageLoader2.execute("");
+            Glide.with(getApplicationContext())
+                    .load(baseURL + photoURL)
+//                    .placeholder(android.)
+                    .crossFade()
+                    .into(picture);
         } else {
             Toast.makeText(getApplicationContext(),"cannot initialize imageviewer",Toast.LENGTH_LONG).show();
         }
@@ -91,9 +94,19 @@ public class ImageViewerActivity extends AppCompatActivity {
         caption.setText(previousIntent.getStringExtra("caption"));
         if(caption.getText().equals("")) captionLayout.setVisibility(LinearLayout.GONE);
         deviceName.setText(previousIntent.getStringExtra("vendor") + " " + previousIntent.getStringExtra("model"));
-        exposureTime.setText("1/" + (int)(1.0/Double.parseDouble(previousIntent.getStringExtra("exposureTime"))));
-        aperture.setText("f" + previousIntent.getStringExtra("aperture"));
-        iso.setText("ISO " + previousIntent.getStringExtra("iso"));
+        if(!previousIntent.getStringExtra("exposureTime").equals("")) {
+            if(previousIntent.getStringExtra("exposureTime").contains("1/")) {
+                exposureTime.setText(previousIntent.getStringExtra("exposureTime"));
+            } else {
+                exposureTime.setText("1/" + (int) (1.0 / Double.parseDouble(previousIntent.getStringExtra("exposureTime"))));
+            }
+            if(previousIntent.getStringExtra("aperture").contains("f/")) {
+                aperture.setText(previousIntent.getStringExtra("aperture"));
+            } else {
+                aperture.setText("f/" + previousIntent.getStringExtra("aperture"));
+            }
+            iso.setText(previousIntent.getStringExtra("iso"));
+        }
 //        String gpsLat = previousIntent.getStringExtra("gpsLat");
 //        String gpsLong = previousIntent.getStringExtra("gpsLong");
 //        if(gpsLat == null || gpsLong == null) {
@@ -108,12 +121,6 @@ public class ImageViewerActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        //TODO bitmap recycle
-        if(imageLoader2.getStatus() == AsyncTask.Status.RUNNING) {
-            imageLoader2.cancel(true);
-        }
-        if(imageBitmap != null) imageBitmap.recycle();
-        finish();
         super.onDestroy();
     }
 
@@ -132,83 +139,5 @@ public class ImageViewerActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
     }
 
-    private class ImageLoader2 extends AsyncTask<String,Integer,String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            InputStream in = null;
-            ByteArrayOutputStream outputStream = null;
-            HttpURLConnection urlConnection = null;
-            try {
-                URL url = new URL(baseURL + photoURL);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.getDoInput();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setRequestProperty("Accept-Encoding", "");
-                urlConnection.connect();
-                if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    return urlConnection.getResponseCode() + "";
-                }
-                int fileLength = urlConnection.getContentLength();
-
-                //in = new BufferedInputStream(urlConnection.getInputStream());
-                in = urlConnection.getInputStream();
-
-                outputStream = new ByteArrayOutputStream();
-
-                byte buffer[] = new byte[8192];
-                int total = 0;
-                int count;
-                while((count = in.read(buffer)) != -1) {
-                    total += count;
-                    outputStream.write(buffer,0,count);
-                    if(fileLength > 0) {
-                        publishProgress((int) (total * 100 / fileLength));
-                    }
-                }
-                in.close();
-                outputStream.close();
-                Log.d("droidphoto", "total:" + total + "|filelength:" + fileLength);
-                if(total == fileLength) {
-                    //imageBitmap = BitmapFactory.decodeStream(new BufferedInputStream(in));
-                    if(imageBitmap != null) imageBitmap.recycle();
-                    imageBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, total);
-                } else {
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if(urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if(in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                    }
-                }
-                if(outputStream != null) {
-                    try {
-                        outputStream.close();
-                    } catch (IOException e) {
-                    }
-                }
-            }
-            return "OK";
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-            super.onProgressUpdate(progress);
-            percentage = progress[0];
-            Log.d("droidphoto","downloaded: " + progress[0] + "%");
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if(imageBitmap != null) {
-                picture.setImageBitmap(imageBitmap);
-            }
-        }
-    }
 }
 

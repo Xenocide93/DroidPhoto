@@ -18,13 +18,12 @@ public class PicturePack {
     public int userId, rank, width, height;
     public double gpsLat, gpsLong;
     public boolean isEnhanced, isFlash;
-    public Drawable pictureDrawable;
-    public boolean isLoaded = false;
-    public Bitmap imageBitmap = null;
-    public boolean isDoneLoading = false;
     public int percentage = 0;
-    private ImageLoader2 imageLoader2;
-    private final String baseURL = "http://209.208.65.102/data/photo/500px/";
+    public final String baseURL = "http://209.208.65.102/data/photo/500px/";
+
+    public PicturePack() {
+        //default constructor
+    }
 
     public PicturePack(int userId, String vendor, String model,
                        String shutterSpeed, String aperture, String iso) {
@@ -62,131 +61,79 @@ public class PicturePack {
         this.submitDate = submitDate;
     }
 
-    public Drawable getPictureDrawable(){
-        if(pictureDrawable==null){
-        }
-        return pictureDrawable;
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
     }
 
-    public Bitmap getImageBitmap() {
-        return imageBitmap;
+    public void setCaption(String caption) {
+        this.caption = caption;
     }
 
-    public void setLoad() {
-        if(!this.isLoaded) {
-            //new ImageLoader().start();
-            imageLoader2 = new ImageLoader2();
-            imageLoader2.execute("");
-            this.isLoaded = true;
-        }
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
     }
 
-    public void resetPackBitmap() {
-        if(this.imageBitmap != null) {
-            this.imageBitmap.recycle();
-            //Log.d("droidphoto", "recycled");
-        }
-        if(imageLoader2 != null) {
-            imageLoader2.cancel(true);
-        }
-        this.isLoaded = false;
-        this.isDoneLoading = false;
+    public void setModel(String model) {
+        this.model = model;
     }
 
-    /**<p>ImageLoader2 is a version2 of ImageLoader which use AyncTask (instead of Thread)</p>
-     *
-     * <p>params: string[] as follows
-     * string[0] = baseURL
-     * string[1] = photoURL</p>
-     *
-     * <p>return:
-     * </p>
-     *
-     */
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
 
-    public class ImageLoader2 extends AsyncTask<String,Integer,String> {
+    public void setShutterSpeed(String shutterSpeed) {
+        this.shutterSpeed = shutterSpeed;
+    }
 
-        @Override
-        protected String doInBackground(String... params) {
-            InputStream in = null;
-            ByteArrayOutputStream outputStream = null;
-            HttpURLConnection urlConnection = null;
-            try {
-                URL url = new URL(baseURL + photoURL);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.getDoInput();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setRequestProperty("Accept-Encoding", "");
-                urlConnection.connect();
-                if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    return urlConnection.getResponseCode() + "";
-                }
-                int fileLength = urlConnection.getContentLength();
+    public void setAperture(String aperture) {
+        this.aperture = aperture;
+    }
 
-                //in = new BufferedInputStream(urlConnection.getInputStream());
-                in = urlConnection.getInputStream();
+    public void setIso(String iso) {
+        this.iso = iso;
+    }
 
-                outputStream = new ByteArrayOutputStream();
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-                byte buffer[] = new byte[8192];
-                int total = 0;
-                int count;
-                while((count = in.read(buffer)) != -1) {
-                    total += count;
-                    outputStream.write(buffer,0,count);
-                    if(fileLength > 0) {
-                        publishProgress((int) (total * 100 / fileLength));
-                    }
-                }
-                in.close();
-                outputStream.close();
-                Log.d("droidphoto", "total:" + total + "|filelength:" + fileLength);
-                if(total == fileLength) {
-                    //imageBitmap = BitmapFactory.decodeStream(new BufferedInputStream(in));
-                    if(imageBitmap != null) imageBitmap.recycle();
-                    imageBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(),0,total);
-                    isDoneLoading = true;
-                } else {
-                    isDoneLoading = false;
-                    isLoaded = false;
-                }
-            } catch (IOException e) {
-                isDoneLoading = false;
-                isLoaded = false;
-                e.printStackTrace();
-            } finally {
-                if(urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if(in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                    }
-                }
-                if(outputStream != null) {
-                    try {
-                        outputStream.close();
-                    } catch (IOException e) {
-                    }
-                }
-            }
-            return "OK";
-        }
+    public void setSubmitDate(String submitDate) {
+        this.submitDate = submitDate;
+    }
 
-        protected void onProgressUpdate(Integer... progress) {
-            super.onProgressUpdate(progress);
-            percentage = progress[0];
-            Log.d("droidphoto","downloaded: " + progress[0] + "%");
-        }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-        @Override
-        protected void onPostExecute(String result) {
-            if(imageBitmap == null) {
-                isLoaded = false;
-                isDoneLoading = false;
-            }
-        }
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
 
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setGpsLat(double gpsLat) {
+        this.gpsLat = gpsLat;
+    }
+
+    public void setGpsLong(double gpsLong) {
+        this.gpsLong = gpsLong;
+    }
+
+    public void setIsEnhanced(boolean isEnhanced) {
+        this.isEnhanced = isEnhanced;
+    }
+
+    public void setIsFlash(boolean isFlash) {
+        this.isFlash = isFlash;
+    }
+
+    public void setPercentage(int percentage) {
+        this.percentage = percentage;
     }
 }

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -19,9 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,21 +63,27 @@ public class FeedFragment extends Fragment {
     private ArrayList<PicturePack> feedPicturePack;
     private FloatingActionsMenu fam;
     private FloatingActionButton fabChoosePic, fabCamera;
+
+    private Button reloadButton;
+
+    private FrameLayout frameLayout;
+    private LinearLayout reloadLayout;
     private ProgressBar loadingCircle;
 
     private static String staticPhotoPath;
     private boolean hasImageInPhotoPath;
 
     private int filterCount;
-    private NotifyAdapter packreload[];
+//    private NotifyAdapter packreload[];
 
-    private int firstAtPause;
-    private int lastAtPause;
-    private boolean notActive = false;
-
-    private FrameLayout frameLayout;
+//    private int firstAtPause;
+//    private int lastAtPause;
+//    private boolean notActive = false;
 
     private Emitter.Listener onGetFeedRespond;
+    private Emitter.Listener onDisconnect;
+
+    private Handler delayAction = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,6 +95,7 @@ public class FeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
         frameLayout = (FrameLayout) rootView.findViewById(R.id.main_view);
+        reloadLayout = (LinearLayout) rootView.findViewById(R.id.reload_view);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.loading_circle);
         initialize();
         return rootView;
@@ -97,6 +108,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void initialize() {
+        GlobalSocket.initializeSocket();
         findAllById();
         setupListener();
     }
@@ -125,11 +137,27 @@ public class FeedFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        if(!GlobalSocket.globalEmit("photo.getfeed", filter)) {
+            Toast.makeText(getActivity().getApplicationContext(),"cannot fire getfeed: retry in 3s", Toast.LENGTH_SHORT).show();
+            GlobalSocket.reconnect(); //reconnect beforehand
+            //wait 5 sec and try globalemit again
+            final JSONObject delayedfilter = filter;
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!GlobalSocket.globalEmit("photo.getfeed", delayedfilter)) {
+                        initReload(); //if fail twice
+                    } else {
+                        GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+                    }
+                }
+            }, 4000);
+        } else {
+            //can emit: detect loss on the way
+            GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+        }
 
-        GlobalSocket.globalEmit("photo.getfeed", filter);
     }
-
-
 
     private void setupListener() {
         //TODO remove button and use navdrawer instead
@@ -238,81 +266,74 @@ public class FeedFragment extends Fragment {
             }
         });
 
+
+
+        onDisconnect = new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+                        initReload();
+                    }
+                });
+
+            }
+        };
+
         onGetFeedRespond = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
                         JSONObject data = (JSONObject) args[0];
-                        try {
-                            if (data.getBoolean("success")) {
-                                ArrayList<PicturePack> pack = new ArrayList<PicturePack>();
-                                JSONArray photoList = data.getJSONArray("photoList");
-                                for (int i = 0; i < photoList.length(); i++) {
-                                    Log.d("droidphoto", "photoList(" + i + "):" + ((JSONObject) photoList.get(i)));
-                                    try {
-                                        String caption = ((JSONObject) photoList.get(i)).has("caption") ?
-                                                ((JSONObject) photoList.get(i)).getString("caption") : "";
-                                        String eventId = ((JSONObject) photoList.get(i)).has("event_id") ?
-                                                ((JSONObject) photoList.get(i)).getString("event_id") : null;
-                                        Double gpsLat = ((JSONObject) photoList.get(i)).has("gps_lat") ?
-                                                ((JSONObject) photoList.get(i)).getDouble("gps_lat") : Double.MIN_VALUE;
-                                        Double gpsLong = ((JSONObject) photoList.get(i)).has("gps_long") ?
-                                                ((JSONObject) photoList.get(i)).getDouble("gps_long") : Double.MIN_VALUE;
-                                        pack.add(new PicturePack(
-                                                ((JSONObject) photoList.get(i)).getString("photo_url"),
-                                                ((JSONObject) photoList.get(i)).getString("username"),
-                                                caption,
-                                                ((JSONObject) photoList.get(i)).getString("vendor"),
-                                                ((JSONObject) photoList.get(i)).getString("model"),
-                                                eventId,
-                                                ((JSONObject) photoList.get(i)).getInt("ranking"),
-                                                ((JSONObject) photoList.get(i)).getString("exp_time"),
-                                                ((JSONObject) photoList.get(i)).getString("aperture"),
-                                                ((JSONObject) photoList.get(i)).getString("iso"),
-                                                ((JSONObject) photoList.get(i)).getInt("width"),
-                                                ((JSONObject) photoList.get(i)).getInt("height"),
-                                                gpsLat,
-                                                gpsLong,
-                                                ((JSONObject) photoList.get(i)).getBoolean("is_enhanced"),
-                                                ((JSONObject) photoList.get(i)).getBoolean("is_flash"),
-                                                ((JSONObject) photoList.get(i)).getString("submit_date")));
+                        if (data.optBoolean("success")) {
+                            ArrayList<PicturePack> pack = new ArrayList<>();
+                            JSONArray photoList = data.optJSONArray("photoList");
+                            for (int i = 0; i < photoList.length(); i++) {
+//                                    Log.d("droidphoto", "photoList(" + i + "):" + ((JSONObject) photoList.get(i)));
+                                JSONObject jsonPack = photoList.optJSONObject(i);
+                                PicturePack picturePack = new PicturePack();
 
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                if (adapter != null) {
-                                    //recycle bitmap and reset load state
-                                    Log.d("droidphoto", "count before change adapter :" + adapter.getCount());
-                                    for (int i = 0; i < adapter.getCount(); i++) {
-                                        adapter.getItem(i).resetPackBitmap();
-                                        if (packreload[i] != null) packreload[i].cancel(true);
-                                    }
-                                }
-                                adapter = new PictureGridAdapter(getActivity(), R.layout.item_pic, pack);
-                                adapter.notifyDataSetChanged();
-//                                feedGridView.invalidateViews();
+                                picturePack.setPhotoURL(jsonPack.optString("photo_url"));
+                                picturePack.setUsername(jsonPack.optString("username"));
+                                picturePack.setCaption(jsonPack.optString("caption", ""));
+                                picturePack.setVendor(jsonPack.optString("vendor"));
+                                picturePack.setModel(jsonPack.optString("model"));
+                                picturePack.setEventId(jsonPack.optString("event_id"));
+                                picturePack.setRank(jsonPack.optInt("ranking"));
+                                picturePack.setShutterSpeed(jsonPack.optString("exp_time"));
+                                picturePack.setAperture(jsonPack.optString("aperture"));
+                                picturePack.setIso(jsonPack.optString("iso"));
+                                picturePack.setWidth(jsonPack.optInt("width"));
+                                picturePack.setHeight(jsonPack.optInt("height"));
+                                picturePack.setGpsLat(jsonPack.optDouble("gps_lat", Double.MIN_VALUE));
+                                picturePack.setGpsLong(jsonPack.optDouble("gps_long", Double.MIN_VALUE));
+                                picturePack.setIsEnhanced(jsonPack.optBoolean("is_enhanced"));
+                                picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
+                                picturePack.setSubmitDate(jsonPack.optString("submit_date"));
 
+                                pack.add(picturePack);
+                            }
+
+                            adapter = new PictureGridAdapter(getActivity(), R.layout.item_pic, pack);
+
+
+                            if (loadingCircle.getVisibility() == ProgressBar.VISIBLE) {
                                 loadingCircle.setVisibility(ProgressBar.GONE);
                                 frameLayout.setVisibility(FrameLayout.VISIBLE);
+                            }
 
-                                feedGridView.setAdapter(adapter);
-                                packreload = new NotifyAdapter[adapter.getCount()];
-                                for (int i = 0; i < 4; i++) {
-                                    ((PicturePack) feedGridView.getItemAtPosition(i)).setLoad();
-                                    packreload[i] = new NotifyAdapter();
-                                    packreload[i].execute(i);
-                                }
-                                adapter.notifyDataSetChanged();
+                            feedGridView.setAdapter(adapter);
+//                            adapter.notifyDataSetChanged();
 //                                feedGridView.setAdapter(new PictureGridAdapter(getActivity(), R.layout.item_pic, pack));
 //                                feedGridView.requestLayout();
-                            } else {
-                                Log.d("droidphoto", "Feed error: " + data.getString("msg"));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        } else {
+                            Log.d("droidphoto", "Feed error: " + data.optString("msg"));
+                            initReload();
                         }
                     }
                 });
@@ -321,31 +342,31 @@ public class FeedFragment extends Fragment {
         if(!GlobalSocket.mSocket.hasListeners("get_feed")) {
             GlobalSocket.mSocket.on("get_feed", onGetFeedRespond);
         }
-
-        feedGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    for (int visiblePosition = feedGridView.getFirstVisiblePosition(); visiblePosition <= feedGridView.getLastVisiblePosition(); visiblePosition++) {
-//                        Log.d("droidphoto", "position: " + visiblePosition);
-                        PicturePack pp = (PicturePack) adapter.getItem(visiblePosition);
-                        if (!pp.isLoaded) {
-                            //((PicturePack) feedGridView.getItemAtPosition(visiblePosition)).setLoad();
-//                            if (packreload[visiblePosition] == null) {
-                            pp.setLoad();
-                            packreload[visiblePosition] = new NotifyAdapter();
-                            packreload[visiblePosition].execute(visiblePosition);
-//                            }
-                        }
-
-                    }
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            }
-        });
+//
+//        feedGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+//                    for (int visiblePosition = feedGridView.getFirstVisiblePosition(); visiblePosition <= feedGridView.getLastVisiblePosition(); visiblePosition++) {
+////                        Log.d("droidphoto", "position: " + visiblePosition);
+//                        PicturePack pp = (PicturePack) adapter.getItem(visiblePosition);
+//                        if (!pp.isLoaded) {
+//                            //((PicturePack) feedGridView.getItemAtPosition(visiblePosition)).setLoad();
+////                            if (packreload[visiblePosition] == null) {
+//                            pp.setLoad();
+//                            packreload[visiblePosition] = new NotifyAdapter();
+//                            packreload[visiblePosition].execute(visiblePosition);
+////                            }
+//                        }
+//
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//            }
+//        });
 
         feedGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -370,23 +391,19 @@ public class FeedFragment extends Fragment {
         });
     }
 
-    private class NotifyAdapter extends AsyncTask<Integer,Void,String> {
-        @Override
-        protected String doInBackground(Integer... params) {
-            while(!((PicturePack)feedGridView.getItemAtPosition(params[0])).isDoneLoading && ((PicturePack)feedGridView.getItemAtPosition(params[0])).isLoaded) {
-                //wait until done download
-                //maybe download should be here ??
-                //TODO move connection code and download from picturepack to here
+    private void initReload() {
+        loadingCircle.setVisibility(ProgressBar.GONE);
+        reloadLayout.setVisibility(LinearLayout.VISIBLE);
+        if(!reloadButton.hasOnClickListeners()) reloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reloadButton.setClickable(false);
+                reloadLayout.setVisibility(LinearLayout.GONE);
+                loadingCircle.setVisibility(ProgressBar.VISIBLE);
+                setupFeedAdapter();
             }
-            return "done";
-        }
-
-        protected void onPostExecute(String result) {
-            //tell the gridview to recall getView via adapter
-            Log.d("droidphoto", "notify adapter");
-            adapter.notifyDataSetChanged();
-        }
-
+        });
+        reloadButton.setClickable(true);
     }
 
     private File createFile() throws IOException {
@@ -474,9 +491,10 @@ public class FeedFragment extends Fragment {
                     break;
 
                 case SELECT_PHOTO:
-                    Toast.makeText(getActivity(), getImagePath(data.getData()), Toast.LENGTH_LONG).show();
+                    String path = getImagePath(data.getData());
+                    Toast.makeText(getActivity(), path, Toast.LENGTH_LONG).show();
                     Intent fillPostFromPicturePickerIntent = new Intent(getActivity(), FillPostActivity.class);
-                    fillPostFromPicturePickerIntent.putExtra("photoPath", getImagePath(data.getData()));
+                    fillPostFromPicturePickerIntent.putExtra("photoPath", path);
                     startActivityForResult(fillPostFromPicturePickerIntent, FILL_POST);
                     break;
 
@@ -505,44 +523,45 @@ public class FeedFragment extends Fragment {
         }
     }
 
-
-    @Override
-    public void onPause() {
-        //reset all packreload
-        if(adapter != null) {
-            for (int i = 0; i < adapter.getCount(); i++) {
-                if (packreload[i] != null && packreload[i].getStatus() == AsyncTask.Status.RUNNING) {
-                    packreload[i].cancel(true);
-                    adapter.getItem(i).resetPackBitmap();
-                }
-            }
-            firstAtPause = feedGridView.getFirstVisiblePosition();
-            lastAtPause = feedGridView.getLastVisiblePosition();
-            notActive = true;
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(notActive) {
-            for (int i = firstAtPause; i <= lastAtPause; i++) {
-                if (!adapter.getItem(i).isLoaded) {
-                    adapter.getItem(i).setLoad();
-                    packreload[i] = new NotifyAdapter();
-                    packreload[i].execute(i);
-                }
-            }
-            notActive = false;
-        }
-    }
+//
+//    @Override
+//    public void onPause() {
+//        //reset all packreload
+//        if(adapter != null) {
+//            for (int i = 0; i < adapter.getCount(); i++) {
+//                if (packreload[i] != null && packreload[i].getStatus() == AsyncTask.Status.RUNNING) {
+//                    packreload[i].cancel(true);
+//                    adapter.getItem(i).resetPackBitmap();
+//                }
+//            }
+//            firstAtPause = feedGridView.getFirstVisiblePosition();
+//            lastAtPause = feedGridView.getLastVisiblePosition();
+//            notActive = true;
+//        }
+//        super.onPause();
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if(notActive) {
+//            for (int i = firstAtPause; i <= lastAtPause; i++) {
+//                if (!adapter.getItem(i).isLoaded) {
+//                    adapter.getItem(i).setLoad();
+//                    packreload[i] = new NotifyAdapter();
+//                    packreload[i].execute(i);
+//                }
+//            }
+//            notActive = false;
+//        }
+//    }
 
     @Override
     public void onDestroy() {
         if(GlobalSocket.mSocket.hasListeners("get_feed")) {
             GlobalSocket.mSocket.off("get_feed");
         }
+        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
 
 //        if (adapter != null) {
 //            //recycle bitmap and reset load state
@@ -588,6 +607,8 @@ public class FeedFragment extends Fragment {
         fam = (FloatingActionsMenu) frameLayout.findViewById(R.id.fam);
         fabCamera = (FloatingActionButton) frameLayout.findViewById(R.id.fab_camera);
         fabChoosePic = (FloatingActionButton) frameLayout.findViewById(R.id.fab_choosepic);
+
+        reloadButton = (Button) reloadLayout.findViewById(R.id.reload_buttton);
     }
 
 }

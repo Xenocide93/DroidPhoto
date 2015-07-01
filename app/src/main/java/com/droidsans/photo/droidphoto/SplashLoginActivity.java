@@ -1,10 +1,14 @@
 package com.droidsans.photo.droidphoto;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -47,9 +51,9 @@ public class SplashLoginActivity extends Activity {
     private void initialize() {
         findAllById();
         setupSocket();
-        setupListener();
         autoLogin();
         setupSplashAnimation();
+        setupListener();
     }
 
     private void autoLogin() {
@@ -79,46 +83,50 @@ public class SplashLoginActivity extends Activity {
                         String message;
                         JSONObject userObject;
                         String token;
-                        try {
-                            isSuccess = data.getBoolean("success");
-                            message = data.getString("msg");
-                            userObject = data.getJSONObject("userObj");
-                            token = data.getString("_token");
-                            Log.d(APP_LOG, "isSuccess: "+isSuccess);
 
-                            if(isSuccess){
-                                Log.d(APP_LOG, "Token: " + token);
+                        isSuccess = data.optBoolean("success");
+                        message = data.optString("msg");
+                        Log.d(APP_LOG, "isSuccess: "+isSuccess);
+                        if(isSuccess){
+                            userObject = data.optJSONObject("userObj");
+                            token = data.optString("_token");
+
+
+                            GlobalSocket.mSocket.off("login_respond");
+                            Log.d(APP_LOG, "Token: " + token);
 //                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-                                //TODO base64 encode username/disp_name
-                                getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).edit()
-                                        .putString(getString(R.string.token), token)
-                                        .putString(getString(R.string.username), (String) userObject.get("username"))
-                                        .putString(getString(R.string.display_name), (String) userObject.get("disp_name"))
-                                        .apply();
+                            //TODO base64 encode username/disp_name
+                            getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).edit()
+                                    .putString(getString(R.string.token), token)
+                                    .putString(getString(R.string.username), userObject.optString("username"))
+                                    .putString(getString(R.string.display_name), userObject.optString("disp_name"))
+                                    .apply();
 //                                GlobalSocket.initializeToken(token);
 //                                GlobalSocket.writeStringToFile(GlobalSocket.USERNAME, ((String) userObject.get("username")));
 //                                GlobalSocket.writeStringToFile(GlobalSocket.DISPLAY_NAME, ((String)userObject.get("disp_name")));
-                                Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
-                                Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                //TODO putExtra data return from server
-                                startActivity(mainActIntent);
-                                username.setText("");
-                                password.setText("");
-                                finish();
-                            } else {
-                                String toastString = "";
-                                switch (message){
-                                    case "authen failed":
-                                        toastString = "Login failed, please check you username and password and try again";
-                                        break;
-                                    case "db error":
-                                        toastString = "Database error, please try again later";
-                                        break;
-                                }
-                                Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
+                            Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            //TODO putExtra data return from server
+                            startActivity(mainActIntent);
+                            username.setText("");
+                            password.setText("");
+                            finish();
+                        } else {
+                            String toastString = " ";
+                            switch (message){
+                                case "authen failed":
+                                    toastString = "Login failed, please check you username and password and try again";
+                                    break;
+                                case "db error":
+                                    toastString = "Database error, please try again later";
+                                    break;
                             }
+                            Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_SHORT).show();
+                            password.setText("");
+                            loginBtn.setClickable(true);
+                            loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
+                        }
 
-                        } catch (JSONException e) {return;}
                     }
                 });
             }
@@ -128,40 +136,49 @@ public class SplashLoginActivity extends Activity {
     }
 
     private void setupListener() {
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JSONObject loginStuff = new JSONObject();
-                String hexPassword = "";
+        if(!loginBtn.hasOnClickListeners()) {
+            loginBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loginBtn.setClickable(false);
+                    loginBtn.setTextColor(getResources().getColor(R.color.light_gray));
+                    JSONObject loginStuff = new JSONObject();
+                    String hexPassword = "";
 
-                try {
-                    MessageDigest md = MessageDigest.getInstance("SHA-256");
-                    md.update(password.getText().toString().getBytes());
-                    hexPassword = bytesToHex(md.digest());
+                    try {
+                        MessageDigest md = MessageDigest.getInstance("SHA-256");
+                        md.update(password.getText().toString().getBytes());
+                        hexPassword = bytesToHex(md.digest());
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
 
-                } catch (NoSuchAlgorithmException e) {
+                    try {
+                        loginStuff.put("login", username.getText().toString());
+                        loginStuff.put("password", hexPassword);
+                        loginStuff.put("_event", "login_respond");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+//                    Log.d(APP_LOG, hexPassword);
+                    GlobalSocket.globalEmit("user.login", loginStuff);
                 }
 
-                try {
-                    loginStuff.put("login", username.getText().toString());
-                    loginStuff.put("password", hexPassword);
-                    loginStuff.put("_event", "login_respond");
-                } catch (JSONException e) {}
-
-                Log.d(APP_LOG, hexPassword);
-
-                GlobalSocket.globalEmit("user.login", loginStuff);
-            }
-
-        });
-        registerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
-                startActivity(registerIntent);
-                finish();
-            }
-        });
+            });
+        }
+        if(!registerBtn.hasOnClickListeners()) {
+            registerBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    registerBtn.setClickable(false);
+                    Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
+                    startActivity(registerIntent);
+                    registerBtn.setClickable(true);
+                    loginBtn.setClickable(true);
+//                    finish();
+                }
+            });
+        }
         bypassLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,7 +192,36 @@ public class SplashLoginActivity extends Activity {
     private void setupSplashAnimation() {
         logoLayout.animate().yBy(-280).setDuration(1200).setStartDelay(1500).start();
         loginLayout.setVisibility(View.VISIBLE);
-        loginLayout.animate().alpha(1).setDuration(700).setStartDelay(2000).start();
+        loginLayout.animate().alpha(1).setDuration(700).setStartDelay(2000).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                username.setEnabled(true);
+                password.setEnabled(true);
+                loginBtn.setClickable(true);
+                registerBtn.setClickable(true);
+                setupListener();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        }).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        username.setText("");
+        password.setText("");
+
+        super.onDestroy();
     }
 
     private void findAllById() {

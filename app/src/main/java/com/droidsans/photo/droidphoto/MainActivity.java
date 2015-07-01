@@ -16,7 +16,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.droidsans.photo.droidphoto.util.FontTextView;
@@ -31,8 +34,11 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
+    private RelativeLayout navigationHeader;
+
     private FontTextView username;
     private FontTextView displayName;
+    private ImageView profile;
 
     private MenuItem prevoiusMenuItem;
 
@@ -59,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
         displayName.setText(getUserdata().getString(getString(R.string.display_name), "no display name ??"));
         username.setText("@" + getUserdata().getString(getString(R.string.username), "... no username ?? must be a bug"));
 
+        navigationHeader.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //TODO move to profile without losing touch anim
+                return false;
+            }
+        });
+
         prevoiusMenuItem = navigationView.getMenu().getItem(0);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -67,21 +81,28 @@ public class MainActivity extends AppCompatActivity {
 
                 menuItem.setChecked(true);
                 String selectedMenu = menuItem.getTitle().toString();
-                //TODO move between fragment here | add custom animation
 
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 //                fragmentTransaction.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
                 if(selectedMenu.equals(getString(R.string.drawer_feed))) {
                     fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
                     fragmentTransaction.commit();
+                    toolbar.setTitle("Feed");
                     prevoiusMenuItem = menuItem;
                 } else if(selectedMenu.equals(getString(R.string.drawer_event))) {
                     fragmentTransaction.replace(R.id.main_fragment, new EventFragment());
                     fragmentTransaction.commit();
+                    toolbar.setTitle("Events");
                     prevoiusMenuItem = menuItem;
                 } else if(selectedMenu.equals(getString(R.string.drawer_help))) {
+                    fragmentTransaction.replace(R.id.main_fragment, new ProfileFragment());
+                    fragmentTransaction.commit();
+                    toolbar.setTitle(getUserdata().getString(getString(R.string.username),"???"));
                     prevoiusMenuItem = menuItem;
                 } else if(selectedMenu.equals(getString(R.string.drawer_about))) {
+                    fragmentTransaction.replace(R.id.main_fragment, new AboutFragment());
+                    fragmentTransaction.commit();
+                    toolbar.setTitle("About");
                     prevoiusMenuItem = menuItem;
                 } else if(selectedMenu.equals(getString(R.string.drawer_logout))) {
                     new AlertDialog.Builder(MainActivity.this)
@@ -127,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
         fragmentTransaction.commit();
+        toolbar.setTitle("Feed");
     }
 
     @Override
@@ -175,8 +197,11 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        navigationHeader = (RelativeLayout) findViewById(R.id.navigation_head);
+
         username = (FontTextView) findViewById(R.id.username);
         displayName = (FontTextView) findViewById(R.id.display_name);
+        profile = (ImageView) findViewById(R.id.profile_image_circle);
     }
 
     private SharedPreferences getUserdata() {

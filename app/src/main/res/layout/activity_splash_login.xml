@@ -50,7 +50,8 @@
                 android:textColorHint="@color/white"
                 android:textColor="@color/white"
                 android:gravity="center_vertical"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:enabled="false"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -70,7 +71,8 @@
                 android:inputType="textPassword"
                 android:textSize="16dp"
                 android:singleLine="true"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical"
+                android:enabled="false"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -91,7 +93,8 @@
                     android:background="@drawable/curve_white"
                     android:text="Login"
                     android:textSize="18sp"
-                    android:textColor="@color/primary_color"/>
+                    android:textColor="@color/primary_color"
+                    android:clickable="false"/>
 
                 <View
                     android:layout_width="130dp"
@@ -101,13 +104,14 @@
                     android:alpha="0.5"/>
 
                 <Button
-                android:id="@+id/register_btn"
-                android:layout_width="130dp"
-                android:layout_height="35dp"
-                android:background="@drawable/curve_white"
-                android:layout_marginTop="10dp"
-                android:text="Register"
-                android:textColor="@color/gray"/>
+                    android:id="@+id/register_btn"
+                    android:layout_width="130dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/curve_white"
+                    android:layout_marginTop="10dp"
+                    android:text="Register"
+                    android:textColor="@color/gray"
+                    android:clickable="false"/>
 
                 <Button
                     android:id="@+id/bypass_login"
