@@ -97,6 +97,9 @@ public class ImageViewerActivity extends AppCompatActivity {
         if(!previousIntent.getStringExtra("exposureTime").equals("")) {
             if(previousIntent.getStringExtra("exposureTime").contains("1/")) {
                 exposureTime.setText(previousIntent.getStringExtra("exposureTime"));
+            } else if(previousIntent.getStringExtra("exposureTime").contains("/")) {
+                String expTime = previousIntent.getStringExtra("exposureTime");
+                exposureTime.setText("1/" + (int) (Double.parseDouble(expTime.substring(expTime.indexOf("/") + 1, expTime.length())) / Double.parseDouble(expTime.substring(0, expTime.indexOf("/")))));
             } else {
                 exposureTime.setText("1/" + (int) (1.0 / Double.parseDouble(previousIntent.getStringExtra("exposureTime"))));
             }
@@ -107,14 +110,8 @@ public class ImageViewerActivity extends AppCompatActivity {
             }
             iso.setText(previousIntent.getStringExtra("iso"));
         }
-//        String gpsLat = previousIntent.getStringExtra("gpsLat");
-//        String gpsLong = previousIntent.getStringExtra("gpsLong");
-//        if(gpsLat == null || gpsLong == null) {
-//            locationLayout.setVisibility(LinearLayout.GONE);
-//        } else {
-//            location.setText("TH");
-//        }
-        location.setText("TH"); //debug
+        location.setText(previousIntent.getStringExtra("location"));
+        if(location.getText().equals("")) locationLayout.setVisibility(LinearLayout.GONE);
         user.setText(previousIntent.getStringExtra("username"));
         return true;
     }

@@ -29,52 +29,86 @@
             <ImageView
                 android:id="@+id/photo"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="204dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/droidsans_logo"/>
-
-            <EditText
-                android:id="@+id/caption"
+            
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Caption"
-                android:singleLine="true"
-                android:maxLength="140"/>
+                android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/vendor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Vendor"
-                android:singleLine="true"
-                android:maxLength="20"/>
+                <EditText
+                    android:id="@+id/caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Caption"
+                    android:singleLine="true"
+                    android:maxLength="140"/>
 
-            <EditText
-                android:id="@+id/model"
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Model"
-                android:singleLine="true"
-                android:maxLength="30"/>
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/vendor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Vendor"
+                    android:singleLine="true"
+                    android:maxLength="20"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/model"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Model"
+                    android:singleLine="true"
+                    android:maxLength="30"/>
+
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/use_current_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="attach current location"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="7">
 
                 <CheckBox
                     android:id="@+id/is_accept"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_weight="4"
                     android:layout_height="wrap_content"
                     android:text="Accept terms of service"/>
+
                 <CheckBox
-                android:id="@+id/is_enhanced"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Photo is enhanced"/>
+                    android:id="@+id/is_enhanced"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:text="Enhanced photo"/>
+
             </LinearLayout>
 
 

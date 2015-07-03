@@ -101,6 +101,7 @@ public class FillPostActivity extends AppCompatActivity {
     }
 
     private void initStateHashMap() {
+        //REF: http://stackoverflow.com/questions/11005751/is-there-a-util-to-convert-us-state-name-to-state-code-eg-arizona-to-az
         states = new HashMap<>();
         states.put("Alabama","AL");
         states.put("Alaska","AK");

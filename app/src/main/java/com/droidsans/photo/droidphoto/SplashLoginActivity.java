@@ -72,65 +72,68 @@ public class SplashLoginActivity extends Activity {
 
     private void setupSocket() {
         GlobalSocket.initializeSocket();
-        onLoginRespond = new Emitter.Listener() {
-            @Override
-            public void call(final Object[] args) {
-                SplashLoginActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        JSONObject data = (JSONObject) args[0];
-                        Boolean isSuccess;
-                        String message;
-                        JSONObject userObject;
-                        String token;
+        if(onLoginRespond == null) {
+            onLoginRespond = new Emitter.Listener() {
+                @Override
+                public void call(final Object[] args) {
+                    SplashLoginActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            JSONObject data = (JSONObject) args[0];
+                            Boolean isSuccess;
+                            String message;
+                            JSONObject userObject;
+                            String token;
 
-                        isSuccess = data.optBoolean("success");
-                        message = data.optString("msg");
-                        Log.d(APP_LOG, "isSuccess: "+isSuccess);
-                        if(isSuccess){
-                            userObject = data.optJSONObject("userObj");
-                            token = data.optString("_token");
+                            isSuccess = data.optBoolean("success");
+                            message = data.optString("msg");
+                            Log.d(APP_LOG, "isSuccess: " + isSuccess);
+                            if (isSuccess) {
+                                userObject = data.optJSONObject("userObj");
+                                token = data.optString("_token");
 
 
-                            GlobalSocket.mSocket.off("login_respond");
-                            Log.d(APP_LOG, "Token: " + token);
+                                GlobalSocket.mSocket.off("login_respond");
+                                Log.d(APP_LOG, "Token: " + token);
 //                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-                            //TODO base64 encode username/disp_name
-                            getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).edit()
-                                    .putString(getString(R.string.token), token)
-                                    .putString(getString(R.string.username), userObject.optString("username"))
-                                    .putString(getString(R.string.display_name), userObject.optString("disp_name"))
-                                    .apply();
+                                //TODO base64 encode username/disp_name
+                                getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).edit()
+                                        .putString(getString(R.string.token), token)
+                                        .putString(getString(R.string.user_id), userObject.optString("_id"))
+                                        .putString(getString(R.string.username), userObject.optString("username"))
+                                        .putString(getString(R.string.display_name), userObject.optString("disp_name"))
+                                        .apply();
 //                                GlobalSocket.initializeToken(token);
 //                                GlobalSocket.writeStringToFile(GlobalSocket.USERNAME, ((String) userObject.get("username")));
 //                                GlobalSocket.writeStringToFile(GlobalSocket.DISPLAY_NAME, ((String)userObject.get("disp_name")));
-                            Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
-                            Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
-                            //TODO putExtra data return from server
-                            startActivity(mainActIntent);
-                            username.setText("");
-                            password.setText("");
-                            finish();
-                        } else {
-                            String toastString = " ";
-                            switch (message){
-                                case "authen failed":
-                                    toastString = "Login failed, please check you username and password and try again";
-                                    break;
-                                case "db error":
-                                    toastString = "Database error, please try again later";
-                                    break;
+                                Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
+                                Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                //TODO putExtra data return from server
+                                startActivity(mainActIntent);
+                                username.setText("");
+                                password.setText("");
+                                finish();
+                            } else {
+                                String toastString = " ";
+                                switch (message) {
+                                    case "authen failed":
+                                        toastString = "Login failed, please check you username and password and try again";
+                                        break;
+                                    case "db error":
+                                        toastString = "Database error, please try again later";
+                                        break;
+                                }
+                                Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_SHORT).show();
+                                password.setText("");
+                                loginBtn.setClickable(true);
+                                loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
                             }
-                            Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_SHORT).show();
-                            password.setText("");
-                            loginBtn.setClickable(true);
-                            loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
-                        }
 
-                    }
-                });
-            }
-        };
+                        }
+                    });
+                }
+            };
+        }
 
         if(!GlobalSocket.mSocket.hasListeners("login_respond")) GlobalSocket.mSocket.on("login_respond", onLoginRespond);
     }
@@ -161,7 +164,13 @@ public class SplashLoginActivity extends Activity {
                         e.printStackTrace();
                     }
 //                    Log.d(APP_LOG, hexPassword);
-                    GlobalSocket.globalEmit("user.login", loginStuff);
+                    if(!GlobalSocket.mSocket.connected()) {
+                        Toast.makeText(getApplicationContext(), "cannot connect to server", Toast.LENGTH_SHORT).show();
+                        loginBtn.setClickable(true);
+                        loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
+                    } else {
+                        GlobalSocket.globalEmit("user.login", loginStuff);
+                    }
                 }
 
             });
@@ -190,7 +199,10 @@ public class SplashLoginActivity extends Activity {
     }
 
     private void setupSplashAnimation() {
-        logoLayout.animate().yBy(-280).setDuration(1200).setStartDelay(1500).start();
+        logoLayout.animate()
+                .yBy(-280 * getResources().getDisplayMetrics().densityDpi / getResources().getDisplayMetrics().DENSITY_400)
+                .setDuration(1200).setStartDelay(1500).start();
+//        loginLayout.animate().translationY(0).setDuration(1200).setStartDelay(1500).start();
         loginLayout.setVisibility(View.VISIBLE);
         loginLayout.animate().alpha(1).setDuration(700).setStartDelay(2000).setListener(new Animator.AnimatorListener() {
             @Override
@@ -220,6 +232,10 @@ public class SplashLoginActivity extends Activity {
     protected void onDestroy() {
         username.setText("");
         password.setText("");
+
+        if(GlobalSocket.mSocket.hasListeners(getString(R.string.onLoginRespond))) {
+            GlobalSocket.mSocket.off(getString(R.string.onLoginRespond));
+        }
 
         super.onDestroy();
     }

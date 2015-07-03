@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.droidsans.photo.droidphoto.util.CircleTransform;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 
 
@@ -64,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
         displayName.setText(getUserdata().getString(getString(R.string.display_name), "no display name ??"));
         username.setText("@" + getUserdata().getString(getString(R.string.username), "... no username ?? must be a bug"));
+        Glide.with(getApplicationContext())
+                .load("https://pbs.twimg.com/profile_images/596106374725021696/r2zqUbK7_400x400.jpg")
+                .centerCrop()
+                .transform(new CircleTransform(getApplicationContext()))
+                .into(profile);
 
         navigationHeader.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -103,6 +110,11 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.replace(R.id.main_fragment, new AboutFragment());
                     fragmentTransaction.commit();
                     toolbar.setTitle("About");
+                    prevoiusMenuItem = menuItem;
+                } else if(selectedMenu.equals(getString(R.string.drawer_settings))){
+//                    fragmentTransaction.replace(R.id.main_fragment, new AboutFragment());
+//                    fragmentTransaction.commit();
+                    toolbar.setTitle("Settings");
                     prevoiusMenuItem = menuItem;
                 } else if(selectedMenu.equals(getString(R.string.drawer_logout))) {
                     new AlertDialog.Builder(MainActivity.this)
@@ -207,4 +219,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences getUserdata() {
         return getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE);
     }
+
+
 }

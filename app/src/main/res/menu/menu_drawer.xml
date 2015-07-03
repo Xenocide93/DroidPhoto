@@ -22,10 +22,21 @@
             android:title="@string/drawer_about"
             android:icon="@drawable/ic_info_black_24dp" />
         <item
-            android:id="@+id/drawer_logout"
-            android:checked="false"
-            android:title="@string/drawer_logout"
-            />
+            android:title="User">
+            <menu>
+                <item
+                    android:id="@+id/drawer_settings"
+                    android:checked="false"
+                    android:title="@string/drawer_settings"
+                    android:icon="@drawable/ic_settings_black_24dp" />
+                <item
+                    android:id="@+id/drawer_logout"
+                    android:checked="false"
+                    android:title="@string/drawer_logout" />
+            </menu>
+        </item>
+
+
     </group>
 
 </menu>

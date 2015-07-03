@@ -29,59 +29,92 @@ public class GlobalSocket {
 //    public static final String USERNAME = "username";
 //    public static final String DISPLAY_NAME = "displayName";
 
+    public static String serverURL = "http://209.208.65.102:3000/";
     public static Socket mSocket;
-    public static boolean isConnected;
 //    private static String mToken;
 //    private static String mUsername;
 //    private static String mDisplayName;
 
     public static Emitter.Listener onConnect;
     public static Emitter.Listener onConnectionTimeout;
-    public static Emitter.Listener onDiscconnect;
+    public static Emitter.Listener onDisconnect;
 
     private static IO.Options opts = new IO.Options();
 
     public static boolean reconnect() {
-        if(!mSocket.connected()) {
-            isConnected = true;
-            mSocket.connect();
-        }
+        Log.e("droidphoto", "globalsocket: reconnecting");
+        mSocket.disconnect();
+        mSocket.connect();
         return true;
     }
 
     public static boolean initializeSocket(){
-        setupGlobalListeners();
+        if(setupGlobalListeners() && setupGlobalSocket()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    private static boolean setupGlobalSocket() {
         if(mSocket==null){
             opts.secure = true;
             opts.forceNew = true;
             opts.reconnection = false;
             try {
-                mSocket = IO.socket("http://209.208.65.102:3000", opts);
+                mSocket = IO.socket(serverURL, opts);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
-                isConnected = false;
                 return false; //wrong URL
             }
-        }
-        mSocket.on(Socket.EVENT_CONNECT, onConnect);
-        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectionTimeout);
-        mSocket.on(Socket.EVENT_DISCONNECT, onDiscconnect);
-        if(!mSocket.connected()) mSocket.connect();
+            Log.e("droidphoto", "globalsocket: initialized");
+            mSocket.on(Socket.EVENT_CONNECT, onConnect);
+            mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectionTimeout);
+            mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
 
-        isConnected = true;
+            mSocket.connect();
+        }
+        return true;
+    }
+
+    private static boolean setupGlobalListeners() {
+        if(onConnect == null) {
+            onConnect = new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.e("droidphoto", "globalsocket: connected");
+                }
+            };
+        }
+
+        if(onConnectionTimeout == null) {
+            onConnectionTimeout = new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.e("droidphoto", "globalsocket: connection timeout");
+                }
+            };
+        }
+
+        if(onDisconnect == null) {
+            onDisconnect = new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.e("droidphoto", "globalsocket: disconnected");
+                }
+            };
+        }
         return true;
     }
 
     public static boolean globalEmit(String event, JSONObject obj){
         initializeSocket(); //try initialize it
         if(!mSocket.connected()){
-            isConnected = true;
             mSocket.connect();
             if(!mSocket.connected()) {
-                isConnected = false;
                 return false; //cannot connect to server
             }
+            return false;
         }
         Log.d("droidphoto", "Emit: " + event);
 
@@ -99,39 +132,6 @@ public class GlobalSocket {
         mSocket.emit(event, obj);
         return true;
     }
-
-    private static void setupGlobalListeners() {
-        if(onConnect == null) {
-            onConnect = new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    Log.e("droidphoto", "globalsocket: connected");
-                    isConnected = true;
-                }
-            };
-        }
-
-        if(onConnectionTimeout == null) {
-            onConnectionTimeout = new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    Log.e("droidphoto", "globalsocket: connection timeout");
-                    isConnected = false;
-                }
-            };
-        }
-
-        if(onDiscconnect == null) {
-            onDiscconnect = new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    Log.e("droidphoto", "globalsocket: disconnected");
-                    isConnected = false;
-                }
-            };
-        }
-    }
-
 
 /*
     public static void initializeToken(String token){

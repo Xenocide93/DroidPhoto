@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class PicturePack {
-    public String photoURL, caption, vendor, model, eventId, shutterSpeed, aperture, iso, username, submitDate;
+    public String photoURL, caption, vendor, model, eventId, shutterSpeed, aperture, iso, username, submitDate, gpsLocation, photoId;
     public int userId, rank, width, height;
     public double gpsLat, gpsLong;
     public boolean isEnhanced, isFlash;
@@ -59,6 +59,10 @@ public class PicturePack {
         this.isEnhanced = isEnhanced;
         this.isFlash = isFlash;
         this.submitDate = submitDate;
+    }
+
+    public void setPhotoId(String photoId) {
+        this.photoId = photoId;
     }
 
     public void setPhotoURL(String photoURL) {
@@ -123,6 +127,10 @@ public class PicturePack {
 
     public void setGpsLong(double gpsLong) {
         this.gpsLong = gpsLong;
+    }
+
+    public void setGpsLocation(String gpsLocation) {
+        this.gpsLocation = gpsLocation;
     }
 
     public void setIsEnhanced(boolean isEnhanced) {

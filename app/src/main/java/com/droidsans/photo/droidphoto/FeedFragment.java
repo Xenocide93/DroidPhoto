@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PictureGridAdapter;
 import com.droidsans.photo.droidphoto.util.PicturePack;
@@ -64,6 +65,7 @@ public class FeedFragment extends Fragment {
     private FloatingActionsMenu fam;
     private FloatingActionButton fabChoosePic, fabCamera;
 
+    private FontTextView reloadText;
     private Button reloadButton;
 
     private FrameLayout frameLayout;
@@ -139,8 +141,7 @@ public class FeedFragment extends Fragment {
         }
         if(!GlobalSocket.globalEmit("photo.getfeed", filter)) {
             Toast.makeText(getActivity().getApplicationContext(),"cannot fire getfeed: retry in 3s", Toast.LENGTH_SHORT).show();
-            GlobalSocket.reconnect(); //reconnect beforehand
-            //wait 5 sec and try globalemit again
+//            wait 4 sec and try globalemit again
             final JSONObject delayedfilter = filter;
             delayAction.postDelayed(new Runnable() {
                 @Override
@@ -298,6 +299,7 @@ public class FeedFragment extends Fragment {
                                 JSONObject jsonPack = photoList.optJSONObject(i);
                                 PicturePack picturePack = new PicturePack();
 
+                                picturePack.setPhotoId(jsonPack.optString("_id"));
                                 picturePack.setPhotoURL(jsonPack.optString("photo_url"));
                                 picturePack.setUsername(jsonPack.optString("username"));
                                 picturePack.setCaption(jsonPack.optString("caption", ""));
@@ -310,8 +312,9 @@ public class FeedFragment extends Fragment {
                                 picturePack.setIso(jsonPack.optString("iso"));
                                 picturePack.setWidth(jsonPack.optInt("width"));
                                 picturePack.setHeight(jsonPack.optInt("height"));
-                                picturePack.setGpsLat(jsonPack.optDouble("gps_lat", Double.MIN_VALUE));
-                                picturePack.setGpsLong(jsonPack.optDouble("gps_long", Double.MIN_VALUE));
+//                                picturePack.setGpsLat(jsonPack.optDouble("gps_lat"));
+//                                picturePack.setGpsLong(jsonPack.optDouble("gps_long"));
+                                picturePack.setGpsLocation(jsonPack.optString("gps_location"));
                                 picturePack.setIsEnhanced(jsonPack.optBoolean("is_enhanced"));
                                 picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
                                 picturePack.setSubmitDate(jsonPack.optString("submit_date"));
@@ -375,6 +378,7 @@ public class FeedFragment extends Fragment {
 
                 Intent imageViewerIntent = new Intent(getActivity(), ImageViewerActivity.class);
                 PicturePack currentPack = adapter.getItem(position);
+                imageViewerIntent.putExtra("photoId", currentPack.photoId);
                 imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
                 imageViewerIntent.putExtra("caption", currentPack.caption);
                 imageViewerIntent.putExtra("vendor", currentPack.vendor);
@@ -382,9 +386,10 @@ public class FeedFragment extends Fragment {
                 imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
                 imageViewerIntent.putExtra("aperture", currentPack.aperture);
                 imageViewerIntent.putExtra("iso", currentPack.iso);
-                imageViewerIntent.putExtra("gpsLat", currentPack.gpsLat);
-                imageViewerIntent.putExtra("gpsLong", currentPack.gpsLong);
+//                imageViewerIntent.putExtra("gpsLat", currentPack.gpsLat);
+//                imageViewerIntent.putExtra("gpsLong", currentPack.gpsLong);
                 imageViewerIntent.putExtra("username", currentPack.username);
+                imageViewerIntent.putExtra("location", currentPack.gpsLocation);
 
                 startActivity(imageViewerIntent);
             }
@@ -394,12 +399,14 @@ public class FeedFragment extends Fragment {
     private void initReload() {
         loadingCircle.setVisibility(ProgressBar.GONE);
         reloadLayout.setVisibility(LinearLayout.VISIBLE);
+        reloadText.setText("Error loading feed :(");
         if(!reloadButton.hasOnClickListeners()) reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reloadButton.setClickable(false);
                 reloadLayout.setVisibility(LinearLayout.GONE);
                 loadingCircle.setVisibility(ProgressBar.VISIBLE);
+                GlobalSocket.reconnect(); //reconnect
                 setupFeedAdapter();
             }
         });
@@ -495,6 +502,7 @@ public class FeedFragment extends Fragment {
                     Toast.makeText(getActivity(), path, Toast.LENGTH_LONG).show();
                     Intent fillPostFromPicturePickerIntent = new Intent(getActivity(), FillPostActivity.class);
                     fillPostFromPicturePickerIntent.putExtra("photoPath", path);
+                    fillPostFromPicturePickerIntent.putExtra("imageFrom", "Picture Picker");
                     startActivityForResult(fillPostFromPicturePickerIntent, FILL_POST);
                     break;
 
@@ -502,10 +510,20 @@ public class FeedFragment extends Fragment {
                     Toast.makeText(getActivity(), staticPhotoPath, Toast.LENGTH_LONG).show();
                     galleryAddPic();
                     hasImageInPhotoPath = true;
-                    Intent fillPostIntent = new Intent(getActivity(), FillPostActivity.class);
-                    fillPostIntent.putExtra("photoPath", staticPhotoPath);
-                    startActivityForResult(fillPostIntent, FILL_POST);
-                    break;
+                    File f = new File(staticPhotoPath);
+                    if(f.length() > 0) {
+                        Intent fillPostIntent = new Intent(getActivity(), FillPostActivity.class);
+                        fillPostIntent.putExtra("photoPath", staticPhotoPath);
+                        fillPostIntent.putExtra("imageFrom", "Camera");
+                        startActivityForResult(fillPostIntent, FILL_POST);
+                        break;
+                    } else {
+                        Toast.makeText(getActivity().getApplicationContext(), "invalid image", Toast.LENGTH_SHORT).show();
+                        //TODO remove photo entry from mediastore or rescan
+                        hasImageInPhotoPath = false;
+                        staticPhotoPath = null;
+                        break;
+                    }
 
             }
         else if(resultCode == getActivity().RESULT_CANCELED) {
@@ -608,7 +626,8 @@ public class FeedFragment extends Fragment {
         fabCamera = (FloatingActionButton) frameLayout.findViewById(R.id.fab_camera);
         fabChoosePic = (FloatingActionButton) frameLayout.findViewById(R.id.fab_choosepic);
 
-        reloadButton = (Button) reloadLayout.findViewById(R.id.reload_buttton);
+        reloadText = (FontTextView) reloadLayout.findViewById(R.id.reload_text);
+        reloadButton = (Button) reloadLayout.findViewById(R.id.reload_button);
     }
 
 }
