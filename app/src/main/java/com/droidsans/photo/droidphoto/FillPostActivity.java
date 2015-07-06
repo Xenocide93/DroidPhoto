@@ -351,9 +351,13 @@ public class FillPostActivity extends AppCompatActivity {
     }
 
     private void reGeocode(Double lat, Double lng) {
-//        if(resolvedLocation != null)  {
-        if(false) { //debug
-            useLocation.setText("Location : " + resolvedLocation + " (cache) " + gpsLat + " " + gpsLong);
+//        if(false) { //debug
+//            useLocation.setText("Location : " + resolvedLocation + " (cache) " + gpsLat + " " + gpsLong);
+        if(resolvedLocation != null)  {
+            useLocation.setText("Location : " + resolvedLocation);
+            if(resolvedLocalizedLocation != null) {
+                useLocation.append(" (" + resolvedLocalizedLocation + ")");
+            }
         } else {
             useLocation.setClickable(false);
             useLocation.setText("resolving ...");
