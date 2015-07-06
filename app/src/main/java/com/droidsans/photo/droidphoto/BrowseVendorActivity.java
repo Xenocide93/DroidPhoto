@@ -17,26 +17,28 @@ import com.droidsans.photo.droidphoto.util.VendorGridAdapter;
 public class BrowseVendorActivity extends AppCompatActivity {
     public static final int CHOOOSE_MODEL_REQUEST = 3;
     public static final String VENDOR_NUM = "vendor_num";
+    public static final String VENDOR_NAME = "vendor_name";
 
     private Toolbar toolbar;
 
     private GridView vendorGridView;
     private VendorGridAdapter vendorGridAdapter;
-    private Integer[] vendorPicResource = {
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary,
-            R.drawable.curve_primary
+    public static Integer[] vendorPicResource = {
+            R.drawable.oppo_300,
+            R.drawable.asus_300,
+            R.drawable.wiko_300,
+            R.drawable.lg_300,
+            R.drawable.sony_300,
+            R.drawable.samsung_300
+    };
+
+    public static String[] vendorName = {
+            "OPPO",
+            "Asus",
+            "WIKO",
+            "LG",
+            "Sony",
+            "Samsung"
     };
 
     @Override
@@ -65,6 +67,7 @@ public class BrowseVendorActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent chooseModelIntent = new Intent(getApplicationContext(), BrowseModelActivity.class);
                 chooseModelIntent.putExtra(BrowseVendorActivity.VENDOR_NUM, position);
+                chooseModelIntent.putExtra(BrowseVendorActivity.VENDOR_NAME, vendorName[position]);
                 startActivityForResult(chooseModelIntent, CHOOOSE_MODEL_REQUEST);
             }
         });

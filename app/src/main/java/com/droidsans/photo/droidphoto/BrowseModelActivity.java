@@ -18,29 +18,21 @@ import com.droidsans.photo.droidphoto.util.ModelListAdapter;
 
 public class BrowseModelActivity extends AppCompatActivity {
     public static final String MODEL_NUM = "model_num";
+    public static final String MODEL_NAME = "model_name";
 
     private ListView modelListView;
     private ModelListAdapter modelListAdapter;
-    private String[] modelNames = {
-            "Sony Xperia Z4",
-            "Sony Xperia Z3+",
-            "Sony Xperia Z3",
-            "Sony Xperia Z3 Compact",
-            "Sony Xperia Z2",
-            "Sony Xperia Z4",
-            "Sony Xperia Z3+",
-            "Sony Xperia Z3",
-            "Sony Xperia Z3 Compact",
-            "Sony Xperia Z2",
-            "Sony Xperia Z4",
-            "Sony Xperia Z3+",
-            "Sony Xperia Z3",
-            "Sony Xperia Z3 Compact",
-            "Sony Xperia Z2",
-            "Sony Xperia Z1"
+    public static String[][] modelNames = {
+            {"a11w"},
+            {"Zenfone 2", "Zenfone 5"},
+            {"RIDGE"},
+            {"Nexus 5"},
+            {"Xperia P"},
+            {"Galaxy S4", "Galaxy S5"}
     };
 
     private int vendorNum;
+    private String vendorName;
 
     private Toolbar toolbar;
 
@@ -66,19 +58,22 @@ public class BrowseModelActivity extends AppCompatActivity {
     private void retrieveIntentData() {
         Intent previousIntent = getIntent();
         vendorNum = previousIntent.getIntExtra(BrowseVendorActivity.VENDOR_NUM, -1);
+        vendorName = previousIntent.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
         //TODO remove toast
         Toast.makeText(getApplicationContext(), "Vendor Num: "+vendorNum, Toast.LENGTH_SHORT).show();
     }
 
     private void setupModelListView() {
-        modelListAdapter = new ModelListAdapter(getApplicationContext(), R.layout.item_model, modelNames);
+        modelListAdapter = new ModelListAdapter(getApplicationContext(), R.layout.item_model, modelNames[vendorNum]);
         modelListView.setAdapter(modelListAdapter);
         modelListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(BrowseVendorActivity.VENDOR_NUM, vendorNum);
+                resultIntent.putExtra(BrowseVendorActivity.VENDOR_NAME, vendorName);
                 resultIntent.putExtra(BrowseModelActivity.MODEL_NUM, position);
+                resultIntent.putExtra(BrowseModelActivity.MODEL_NAME, modelNames[vendorNum][position]);
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }

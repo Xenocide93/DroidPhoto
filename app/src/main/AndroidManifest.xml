@@ -30,12 +30,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".EventActivity"
-            android:label="@string/title_activity_event"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".BrowseModelActivity"
             android:label="@string/title_activity_browse_model"
             android:parentActivityName=".BrowseVendorActivity"
