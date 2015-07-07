@@ -2,11 +2,9 @@ package com.droidsans.photo.droidphoto;
 
 
 import android.animation.Animator;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -16,12 +14,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -29,8 +25,10 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.droidsans.photo.droidphoto.util.FlowLayout;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PictureGridAdapter;
@@ -60,8 +58,7 @@ public class FeedFragment extends Fragment {
     public static final int FILL_POST = 4;
     public static final int SELECT_PHOTO = 8;
 
-    private ImageButton browseBtn, floatingSampleBtn;
-    private View buttonsLayout, logoLayout, dimView;
+    private View logoLayout, dimView;
     private GridView feedGridView;
     private PictureGridAdapter adapter;
     private ArrayList<PicturePack> feedPicturePack;
@@ -75,6 +72,10 @@ public class FeedFragment extends Fragment {
     private LinearLayout reloadLayout;
     private ProgressBar loadingCircle;
     private FrameLayout imageViewLayout;
+
+    private FlowLayout tagLayout;
+    private ImageButton removeTagBtn;
+    private boolean isRemoveTagActive = false;
 
     private static String staticPhotoPath;
     private boolean hasImageInPhotoPath;
@@ -92,7 +93,7 @@ public class FeedFragment extends Fragment {
 
     private Handler delayAction = new Handler();
 
-    public static ArrayList<String> vendorList, modelList;
+    private ArrayList<TagView> tagViewArray;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,8 +128,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void initializeVendorModelLsit() {
-        FeedFragment.vendorList = new ArrayList<String>();
-        FeedFragment.modelList = new ArrayList<String>();
+        tagViewArray = new ArrayList<TagView>();
     }
 
     private void setupFeedAdapter() {
@@ -176,32 +176,24 @@ public class FeedFragment extends Fragment {
 
     }
 
-    public void addFilter(){
-        Intent browseIntent = new Intent(getActivity(), BrowseVendorActivity.class);
-        startActivityForResult(browseIntent, FILTER_FEED);
-    }
-
     private void setupListener() {
-        //TODO remove button and use navdrawer instead
+        removeTagBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRemoveTagActive = !isRemoveTagActive;
+                if(isRemoveTagActive){
+                    removeTagBtn.setImageResource(R.drawable.remove_tag_pressed);
+                    removeTagBtn.animate().scaleX(1.3f).scaleY(1.3f).setDuration(200).start();
+                } else {
+                    removeTagBtn.setImageResource(R.drawable.remove_tag_normal);
+                    removeTagBtn.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start();
+                    removeTag();
+                    updateTagView();
+                    updateFeed();
+                }
+            }
+        });
 
-        if(!browseBtn.hasOnClickListeners()) {
-            browseBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent browseIntent = new Intent(getActivity(), BrowseVendorActivity.class);
-                    startActivityForResult(browseIntent, FILTER_FEED);
-                }
-            });
-        }
-        if(!floatingSampleBtn.hasOnClickListeners()) {
-            floatingSampleBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent eventIntent = new Intent(getActivity(), FloatingSampleActivity.class);
-                    startActivity(eventIntent);
-                }
-            });
-        }
         fam.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
             public void onMenuExpanded() {
@@ -506,28 +498,17 @@ public class FeedFragment extends Fragment {
                     String vendorName = data.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
                     String modelName = data.getStringExtra(BrowseModelActivity.MODEL_NAME);
                     Snackbar.make(frameLayout, "Vendor: " + vendorName + " Model: " + modelName, Snackbar.LENGTH_LONG).show();
-                    if(vendorName!="" && modelName!=""){
-                        //TODO actually record tags and update filterCount
-                        JSONObject filter = new JSONObject();
-                        JSONArray filterData = new JSONArray();
-                        FeedFragment.vendorList.add(vendorName);
-                        FeedFragment.modelList.add(modelName);
-                        try {
-                            //create filter data
-                            filterCount = FeedFragment.vendorList.size();
-                            for(int i = 0; i < filterCount; i++) {
-                                JSONObject value = new JSONObject();
-                                value.put("vendor", FeedFragment.vendorList.get(i));
-                                value.put("model", FeedFragment.modelList.get(i));
-                                filterData.put(i, value);
-                            }
-                            filter.put("data", filterData);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    if(!vendorName.equals("") && !modelName.equals("")){
+                        //display existed filter tag
+                        for(int i = 0; i < tagViewArray.size(); i++){
+                            TagView view = tagViewArray.get(i);
+                            if(vendorName.equals(view.vendorName) && modelName.equals(view.modelName)) return;
                         }
-                        requestFeedPicture(filter);
+                        addTag(vendorName, modelName);
+                        updateTagView();
 
-                        //update feed via socket.io onGetFeedResponse listener
+                        //prepare data for refresh feed
+                        updateFeed();
                     }
                     break;
 
@@ -608,8 +589,6 @@ public class FeedFragment extends Fragment {
 //        }
 //    }
 
-
-
     @Override
     public void onDestroy() {
         if(GlobalSocket.mSocket.hasListeners("get_feed")) {
@@ -645,11 +624,9 @@ public class FeedFragment extends Fragment {
     }
 
     private void findAllById() {
-        browseBtn = (ImageButton) frameLayout.findViewById(R.id.browse_btn);
-        floatingSampleBtn = (ImageButton) frameLayout.findViewById(R.id.floating_sample_btn);
-
-        buttonsLayout = frameLayout.findViewById(R.id.btn_layout);
+        tagLayout = (FlowLayout) frameLayout.findViewById(R.id.tag_layout);
         logoLayout = frameLayout.findViewById(R.id.logo_layout);
+        removeTagBtn = (ImageButton) frameLayout.findViewById(R.id.remove_tag_button);
 
         if(feedGridView != null) feedGridView.invalidateViews();
         feedGridView = (GridView) frameLayout.findViewById(R.id.feed_gridview);
@@ -662,6 +639,104 @@ public class FeedFragment extends Fragment {
 
         reloadText = (FontTextView) reloadLayout.findViewById(R.id.reload_text);
         reloadButton = (Button) reloadLayout.findViewById(R.id.reload_button);
+    }
+
+    private void updateFeed(){
+
+        JSONObject filter = new JSONObject();
+        JSONArray filterData = new JSONArray();
+
+        try {
+            //create filter data
+            filterCount = tagViewArray.size();
+            for(int i = 0; i < filterCount; i++) {
+                JSONObject value = new JSONObject();
+                value.put("vendor", tagViewArray.get(i).vendorName);
+                value.put("model", tagViewArray.get(i).modelName);
+                filterData.put(i, value);
+            }
+            filter.put("data", filterData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requestFeedPicture(filter);
+    }
+
+    public void launchAddFilterPopup(){
+        Intent browseIntent = new Intent(getActivity(), BrowseVendorActivity.class);
+        startActivityForResult(browseIntent, FILTER_FEED);
+    }
+
+    private void updateTagView(){
+        tagLayout.removeAllViews();
+        for(int i = 0; i < tagViewArray.size(); i++){
+            tagLayout.addView(tagViewArray.get(i).getTagView());
+        }
+    }
+
+    private void addTag(String vendorName, String modelName){
+        TagView tagView = new TagView(tagLayout, vendorName, modelName);
+        tagView.tagIndex = tagViewArray.size();
+        tagViewArray.add(tagView);
+    }
+
+    private void removeTag(){
+        ArrayList<TagView> tempArray = new ArrayList<TagView>();
+        for(int i = 0; i < tagViewArray.size(); i++){
+            if(!tagViewArray.get(i).selected){tempArray.add(tagViewArray.get(i));}
+        }
+        tagViewArray = tempArray;
+        updateTagView();
+    }
+
+    public class TagView {
+        public String vendorName, modelName;
+        private TextView vendorTV, modelTV;
+        private LinearLayout tagWrapper;
+        private View tagView;
+        private LayoutInflater inflater;
+        private int tagIndex;
+        private boolean selected = false;
+
+        public TagView(FlowLayout tagLayout, String vendorName, String modelName){
+            this.vendorName = vendorName;
+            this.modelName = modelName;
+
+            if(inflater==null){inflater = LayoutInflater.from(getActivity());}
+            tagView = inflater.inflate(R.layout.filter_tag, null, false);
+
+            tagWrapper = (LinearLayout) tagView.findViewById(R.id.tag_wrapper);
+            vendorTV = (TextView) tagView.findViewById(R.id.vendor_tag);
+            vendorTV.setText(vendorName);
+            modelTV = (TextView) tagView.findViewById(R.id.model_tag);
+            modelTV.setText(modelName);
+
+            setOnClickListener();
+        }
+
+        public View getTagView(){
+            return tagView;
+        }
+
+        public void setOnClickListener(){
+            tagView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isRemoveTagActive){
+                        selected = !selected;
+                        if(selected){
+                            tagWrapper.setBackgroundResource(R.drawable.curve_primary_normal);
+                            vendorTV.setTextColor(getResources().getColor(R.color.white));
+                            modelTV.setTextColor(getResources().getColor(R.color.white));
+                        } else {
+                            tagWrapper.setBackgroundResource(R.drawable.curve_primary_border);
+                            vendorTV.setTextColor(getResources().getColor(R.color.primary_color));
+                            modelTV.setTextColor(getResources().getColor(R.color.primary_color));
+                        }
+                    }
+                }
+            });
+        }
     }
 
 }

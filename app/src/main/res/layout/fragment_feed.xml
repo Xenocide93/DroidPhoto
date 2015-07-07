@@ -32,33 +32,37 @@
             tools:context=".MainActivity">
 
             <LinearLayout
-                android:id="@+id/btn_layout"
-                android:layout_width="match_parent"
+                android:id="@+id/first_element"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
+                android:weightSum="100"
                 android:orientation="horizontal"
-                android:layout_alignParentTop="true">
+                android:paddingLeft="15dp">
+
+                <com.droidsans.photo.droidphoto.util.FlowLayout
+                    android:id="@+id/tag_layout"
+                    android:layout_width="0dp"
+                    android:layout_weight="93"
+                    android:layout_height="wrap_content">
+                </com.droidsans.photo.droidphoto.util.FlowLayout>
 
                 <ImageButton
-                    android:id="@+id/browse_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="15dp"
-                    android:background="@drawable/curve_primary" />
+                    android:id="@+id/remove_tag_button"
+                    android:layout_width="0dp"
+                    android:layout_weight="7"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:background="@null"
+                    android:src="@drawable/remove_tag_normal"
+                    android:layout_marginRight="15dp"/>
 
-                <ImageButton
-                    android:id="@+id/floating_sample_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="15dp"
-                    android:background="@drawable/curve_primary" />
             </LinearLayout>
 
             <GridView
                 android:id="@+id/feed_gridview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/btn_layout"
+                android:layout_below="@+id/first_element"
                 android:layout_alignParentBottom="true"
                 android:horizontalSpacing="4dp"
                 android:verticalSpacing="7dp"

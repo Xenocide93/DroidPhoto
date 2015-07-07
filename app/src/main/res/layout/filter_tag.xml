@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/tag_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/curve_primary_border"
+        android:layout_margin="4dp"
+        android:padding="5dp">
+
+        <com.droidsans.photo.droidphoto.util.FontTextView
+            android:id="@+id/vendor_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sony"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/primary_color"/>
+
+        <com.droidsans.photo.droidphoto.util.FontTextView
+            android:id="@+id/model_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Xeperia Z3"
+            android:textColor="@color/primary_color"
+            android:layout_marginRight="5dp"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>
