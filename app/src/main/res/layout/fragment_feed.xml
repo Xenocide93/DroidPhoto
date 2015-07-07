@@ -11,7 +11,7 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         android:indeterminate="true" />
 
     <include android:id="@+id/reload_view"
@@ -21,14 +21,13 @@
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:background="@color/global_bg_white">
         <!--android:layout_marginTop="?android:attr/actionBarSize"-->
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             tools:context=".MainActivity">
 
             <LinearLayout
@@ -43,8 +42,7 @@
                     android:id="@+id/tag_layout"
                     android:layout_width="0dp"
                     android:layout_weight="93"
-                    android:layout_height="wrap_content">
-                </com.droidsans.photo.droidphoto.util.FlowLayout>
+                    android:layout_height="wrap_content" />
 
                 <ImageButton
                     android:id="@+id/remove_tag_button"
