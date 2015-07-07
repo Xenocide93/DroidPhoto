@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_search:
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
                 if(fragment instanceof FeedFragment){
-                    ((FeedFragment)fragment).addFilter();
+                    ((FeedFragment)fragment).launchAddFilterPopup();
                 }
                 return true;
         }
