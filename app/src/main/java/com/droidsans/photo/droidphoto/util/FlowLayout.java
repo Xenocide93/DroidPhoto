@@ -39,6 +39,10 @@ public class FlowLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if(isInEditMode()) {
+            setMeasuredDimension(widthMeasureSpec, 180);
+            return;
+        }
         assert (MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.UNSPECIFIED);
 
         final int width = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
@@ -121,4 +125,6 @@ public class FlowLayout extends ViewGroup {
             }
         }
     }
+
+
 }
