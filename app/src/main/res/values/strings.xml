@@ -17,6 +17,8 @@
     <string name="title_activity_fill_post">FillPostActivity</string>
     <string name="title_activity_image_viewer">ImageViewer</string>
 
+    <string name="transition_image_view">Toggle Image Viewer</string>
+
     <!--drawer strings-->
     <string name="drawer_feed">Feed</string>
     <string name="drawer_event">Event</string>
@@ -41,5 +43,6 @@
     <string name="onGetFeedRespond">get_feed</string>
     <string name="onLoginRespond">login_respond</string>
     <string name="onRegisterRespond">register_respond</string>
+
 
 </resources>

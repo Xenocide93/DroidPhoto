@@ -12,16 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/item_toolbar" />
-
         <fragment android:name="com.droidsans.photo.droidphoto.PlaceholderFragment"
             android:layout_below="@+id/toolbar"
             android:id="@+id/main_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/fragment_image_viewer" />
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/item_toolbar" />
 
         <View
             android:id="@+id/toolbar_shadow"
