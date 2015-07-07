@@ -58,7 +58,7 @@ public class FeedFragment extends Fragment {
     public static final int FILL_POST = 4;
     public static final int SELECT_PHOTO = 8;
 
-    private ImageButton profileBtn, browseBtn, eventBtn, floatingSampleBtn;
+    private ImageButton browseBtn, floatingSampleBtn;
     private View buttonsLayout, logoLayout, dimView;
     private GridView feedGridView;
     private PictureGridAdapter adapter;
@@ -90,6 +90,8 @@ public class FeedFragment extends Fragment {
 
     private Handler delayAction = new Handler();
 
+    public static ArrayList<String> vendorList, modelList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +121,12 @@ public class FeedFragment extends Fragment {
         GlobalSocket.initializeSocket();
         findAllById();
         setupListener();
+        initializeVendorModelLsit();
+    }
+
+    private void initializeVendorModelLsit() {
+        FeedFragment.vendorList = new ArrayList<String>();
+        FeedFragment.modelList = new ArrayList<String>();
     }
 
     private void setupFeedAdapter() {
@@ -166,16 +174,13 @@ public class FeedFragment extends Fragment {
 
     }
 
+    public void addFilter(){
+        Intent browseIntent = new Intent(getActivity(), BrowseVendorActivity.class);
+        startActivityForResult(browseIntent, FILTER_FEED);
+    }
+
     private void setupListener() {
         //TODO remove button and use navdrawer instead
-        if(!profileBtn.hasOnClickListeners()) {
-            profileBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getActivity(), "Profile : " + getActivity().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.display_name), "no display name ??"), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
 
         if(!browseBtn.hasOnClickListeners()) {
             browseBtn.setOnClickListener(new View.OnClickListener() {
@@ -183,16 +188,6 @@ public class FeedFragment extends Fragment {
                 public void onClick(View v) {
                     Intent browseIntent = new Intent(getActivity(), BrowseVendorActivity.class);
                     startActivityForResult(browseIntent, FILTER_FEED);
-                }
-            });
-        }
-        if(!eventBtn.hasOnClickListeners()) {
-            eventBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getActivity(), "deprecated", Toast.LENGTH_SHORT).show();
-                    Intent eventIntent = new Intent(getActivity(), EventActivity.class);
-                    startActivity(eventIntent);
                 }
             });
         }
@@ -503,22 +498,22 @@ public class FeedFragment extends Fragment {
         if (resultCode == getActivity().RESULT_OK)
             switch (requestCode) {
                 case FILTER_FEED:
-                    int vendorNum = data.getIntExtra(BrowseVendorActivity.VENDOR_NUM, -1);
-                    int modelNum = data.getIntExtra(BrowseModelActivity.MODEL_NUM, -1);
-                    Snackbar.make(frameLayout, "Vendor: " + vendorNum + " Model: " + modelNum, Snackbar.LENGTH_LONG).show();
-                    if(vendorNum!=-1 && modelNum!=-1){
+                    String vendorName = data.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
+                    String modelName = data.getStringExtra(BrowseModelActivity.MODEL_NAME);
+                    Snackbar.make(frameLayout, "Vendor: " + vendorName + " Model: " + modelName, Snackbar.LENGTH_LONG).show();
+                    if(vendorName!="" && modelName!=""){
                         //TODO actually record tags and update filterCount
                         JSONObject filter = new JSONObject();
                         JSONArray filterData = new JSONArray();
-                        String vendor[] = {"Asus", "WIKO"};
-                        String model[] = {"Zenfone 5", "RIDGE"};
+                        FeedFragment.vendorList.add(vendorName);
+                        FeedFragment.modelList.add(modelName);
                         try {
                             //create filter data
-                            filterCount = 2;
+                            filterCount = FeedFragment.vendorList.size();
                             for(int i = 0; i < filterCount; i++) {
                                 JSONObject value = new JSONObject();
-                                value.put("vendor", vendor[i]);
-                                value.put("model", model[i]);
+                                value.put("vendor", FeedFragment.vendorList.get(i));
+                                value.put("model", FeedFragment.modelList.get(i));
                                 filterData.put(i, value);
                             }
                             filter.put("data", filterData);
@@ -645,9 +640,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void findAllById() {
-        profileBtn = (ImageButton) frameLayout.findViewById(R.id.profile_btn);
         browseBtn = (ImageButton) frameLayout.findViewById(R.id.browse_btn);
-        eventBtn = (ImageButton) frameLayout.findViewById(R.id.event_btn);
         floatingSampleBtn = (ImageButton) frameLayout.findViewById(R.id.floating_sample_btn);
 
         buttonsLayout = frameLayout.findViewById(R.id.btn_layout);
