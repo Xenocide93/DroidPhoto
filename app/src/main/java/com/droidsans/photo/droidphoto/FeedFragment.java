@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,10 +72,12 @@ public class FeedFragment extends Fragment {
     private FrameLayout frameLayout;
     private LinearLayout reloadLayout;
     private ProgressBar loadingCircle;
+    private FrameLayout imageViewLayout;
 
     private static String staticPhotoPath;
     private boolean hasImageInPhotoPath;
 
+    private boolean isLoaded;
     private int filterCount;
 //    private NotifyAdapter packreload[];
 
@@ -99,13 +102,16 @@ public class FeedFragment extends Fragment {
         frameLayout = (FrameLayout) rootView.findViewById(R.id.main_view);
         reloadLayout = (LinearLayout) rootView.findViewById(R.id.reload_view);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.loading_circle);
+        imageViewLayout = (FrameLayout) rootView.findViewById(R.id.image_viewer);
         initialize();
+        Toast.makeText(getActivity().getApplicationContext(), "onCreateView", Toast.LENGTH_SHORT).show();
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         setupFeedAdapter();
+        Toast.makeText(getActivity().getApplicationContext(), "onActivityCreated", Toast.LENGTH_SHORT).show();
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -301,6 +307,7 @@ public class FeedFragment extends Fragment {
 
                                 picturePack.setPhotoId(jsonPack.optString("_id"));
                                 picturePack.setPhotoURL(jsonPack.optString("photo_url"));
+                                picturePack.setUserId(jsonPack.optString("user_id"));
                                 picturePack.setUsername(jsonPack.optString("username"));
                                 picturePack.setCaption(jsonPack.optString("caption", ""));
                                 picturePack.setVendor(jsonPack.optString("vendor"));
@@ -315,6 +322,7 @@ public class FeedFragment extends Fragment {
 //                                picturePack.setGpsLat(jsonPack.optDouble("gps_lat"));
 //                                picturePack.setGpsLong(jsonPack.optDouble("gps_long"));
                                 picturePack.setGpsLocation(jsonPack.optString("gps_location"));
+                                picturePack.setGpsLocalizedLocation(jsonPack.optString("gps_localized"));
                                 picturePack.setIsEnhanced(jsonPack.optBoolean("is_enhanced"));
                                 picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
                                 picturePack.setSubmitDate(jsonPack.optString("submit_date"));
@@ -375,23 +383,48 @@ public class FeedFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //reset all packreload -> code moved to onPause
-
-                Intent imageViewerIntent = new Intent(getActivity(), ImageViewerActivity.class);
                 PicturePack currentPack = adapter.getItem(position);
-                imageViewerIntent.putExtra("photoId", currentPack.photoId);
-                imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
-                imageViewerIntent.putExtra("caption", currentPack.caption);
-                imageViewerIntent.putExtra("vendor", currentPack.vendor);
-                imageViewerIntent.putExtra("model", currentPack.model);
-                imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
-                imageViewerIntent.putExtra("aperture", currentPack.aperture);
-                imageViewerIntent.putExtra("iso", currentPack.iso);
-//                imageViewerIntent.putExtra("gpsLat", currentPack.gpsLat);
-//                imageViewerIntent.putExtra("gpsLong", currentPack.gpsLong);
-                imageViewerIntent.putExtra("username", currentPack.username);
-                imageViewerIntent.putExtra("location", currentPack.gpsLocation);
+                Fragment imageViewerFragment = new ImageViewerFragment();
 
-                startActivity(imageViewerIntent);
+                Bundle args = new Bundle();
+                args.putString("photoId", currentPack.photoId);
+                args.putString("photoURL", currentPack.photoURL);
+                args.putString("caption", currentPack.caption);
+                args.putString("vendor", currentPack.vendor);
+                args.putString("model", currentPack.model);
+                args.putString("exposureTime", currentPack.shutterSpeed);
+                args.putString("aperture", currentPack.aperture);
+                args.putString("iso", currentPack.iso);
+                args.putString("userId", currentPack.userId);
+                args.putString("username", currentPack.username);
+                args.putString("gpsLocation", currentPack.gpsLocation);
+                args.putString("gpsLocalized", currentPack.gpsLocalizedLocation);
+
+                imageViewerFragment.setArguments(args);
+
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                transaction.hide(getFragmentManager().findFragmentById(R.id.main_fragment));
+//                transaction.add(imageViewLayout.getId(), imageViewerFragment, "IMAGE_VIEWER");
+                transaction.replace(R.id.main_fragment, imageViewerFragment, "IMAGE_VIEWER");
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+                imageViewLayout.setVisibility(FrameLayout.VISIBLE);
+
+//                Intent imageViewerIntent = new Intent(getActivity(), ImageViewerActivity.class);
+//                PicturePack currentPack = adapter.getItem(position);
+//                imageViewerIntent.putExtra("photoId", currentPack.photoId);
+//                imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
+//                imageViewerIntent.putExtra("caption", currentPack.caption);
+//                imageViewerIntent.putExtra("vendor", currentPack.vendor);
+//                imageViewerIntent.putExtra("model", currentPack.model);
+//                imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
+//                imageViewerIntent.putExtra("aperture", currentPack.aperture);
+//                imageViewerIntent.putExtra("iso", currentPack.iso);
+//                imageViewerIntent.putExtra("username", currentPack.username);
+//                imageViewerIntent.putExtra("gpsLocation", currentPack.gpsLocation);
+//
+//                startActivity(imageViewerIntent);
             }
         });
     }
@@ -412,6 +445,7 @@ public class FeedFragment extends Fragment {
         });
         reloadButton.setClickable(true);
     }
+
 
     private File createFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMDD_HHmmss").format(new Date());
@@ -573,6 +607,8 @@ public class FeedFragment extends Fragment {
 //            notActive = false;
 //        }
 //    }
+
+
 
     @Override
     public void onDestroy() {

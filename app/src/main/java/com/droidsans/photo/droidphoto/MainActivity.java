@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -42,12 +44,12 @@ public class MainActivity extends AppCompatActivity {
     private FontTextView displayName;
     private ImageView profile;
 
-    private MenuItem prevoiusMenuItem;
+    private MenuItem previousMenuItem;
+    private MenuItem feedMenuItem, eventMenuItem, helpMenuItem, aboutMenuItem, settingsMenuItem, evaluateMenuItem, logoutMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this, "onCreate", Toast.LENGTH_LONG).show();
         setContentView(R.layout.activity_main);
 
         mContext = getApplicationContext();
@@ -80,43 +82,65 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        prevoiusMenuItem = navigationView.getMenu().getItem(0);
+//        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+//            @Override
+//            public void onBackStackChanged() {
+//                if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+//                    actionBarDrawerToggle.syncState();
+//                } else {
+//                    actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+//                    actionBarDrawerToggle.syncState();
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                }
+//            }
+//        });
+
+//        previousMenuItem = navigationView.getMenu().getItem(0);
+//        evaluateMenuItem.setVisible(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(final MenuItem menuItem) {
-
-                menuItem.setChecked(true);
+                if (previousMenuItem != null) previousMenuItem.setChecked(false);
+//                menuItem.setChecked(true);
                 String selectedMenu = menuItem.getTitle().toString();
-
+                getSupportFragmentManager().popBackStack();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 //                fragmentTransaction.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
-                if(selectedMenu.equals(getString(R.string.drawer_feed))) {
+                if (selectedMenu.equals(getString(R.string.drawer_feed))) {
+                    feedMenuItem.setChecked(true);
                     fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
                     fragmentTransaction.commit();
                     toolbar.setTitle("Feed");
-                    prevoiusMenuItem = menuItem;
-                } else if(selectedMenu.equals(getString(R.string.drawer_event))) {
+                    previousMenuItem = feedMenuItem;
+                } else if (selectedMenu.equals(getString(R.string.drawer_event))) {
+                    eventMenuItem.setChecked(true);
                     fragmentTransaction.replace(R.id.main_fragment, new EventFragment());
                     fragmentTransaction.commit();
                     toolbar.setTitle("Events");
-                    prevoiusMenuItem = menuItem;
-                } else if(selectedMenu.equals(getString(R.string.drawer_help))) {
+                    previousMenuItem = eventMenuItem;
+                } else if (selectedMenu.equals(getString(R.string.drawer_help))) {
+                    helpMenuItem.setChecked(true);
                     fragmentTransaction.replace(R.id.main_fragment, new ProfileFragment());
                     fragmentTransaction.commit();
-                    toolbar.setTitle(getUserdata().getString(getString(R.string.username),"???"));
-                    prevoiusMenuItem = menuItem;
-                } else if(selectedMenu.equals(getString(R.string.drawer_about))) {
+                    toolbar.setTitle(getUserdata().getString(getString(R.string.username), "???"));
+                    previousMenuItem = helpMenuItem;
+                } else if (selectedMenu.equals(getString(R.string.drawer_about))) {
+                    aboutMenuItem.setChecked(true);
                     fragmentTransaction.replace(R.id.main_fragment, new AboutFragment());
                     fragmentTransaction.commit();
                     toolbar.setTitle("About");
-                    prevoiusMenuItem = menuItem;
-                } else if(selectedMenu.equals(getString(R.string.drawer_settings))){
-//                    fragmentTransaction.replace(R.id.main_fragment, new AboutFragment());
-//                    fragmentTransaction.commit();
+                    previousMenuItem = aboutMenuItem;
+                } else if (selectedMenu.equals(getString(R.string.drawer_settings))) {
+                    settingsMenuItem.setChecked(true);
+                    evaluateMenuItem.setVisible(true);
+                    fragmentTransaction.replace(R.id.main_fragment, new SettingsFragment());
+                    fragmentTransaction.commit();
                     toolbar.setTitle("Settings");
-                    prevoiusMenuItem = menuItem;
-                } else if(selectedMenu.equals(getString(R.string.drawer_logout))) {
+                    previousMenuItem = menuItem;
+                } else if (selectedMenu.equals(getString(R.string.drawer_logout))) {
                     new AlertDialog.Builder(MainActivity.this)
                             .setTitle("Logout ?")
                             .setMessage("are you sure ?")
@@ -132,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
                             .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    menuItem.setChecked(false);
-                                    prevoiusMenuItem.setChecked(true);
+                                    logoutMenuItem.setChecked(false);
+                                    previousMenuItem.setChecked(true);
                                 }
                             })
 //                            .setIcon(android.R.drawable.ic_dialog_alert)
@@ -146,21 +170,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        navigationView.getMenu().getItem(4).getSubMenu().removeItem(R.id.drawer_evaluate);
+        drawerLayout.requestLayout();
+        previousMenuItem = feedMenuItem;
+        feedMenuItem.setChecked(true);
+
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,toolbar, R.string.drawer_open, R.string.drawer_close){
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+//                actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+//                actionBarDrawerToggle.setDrawerIndicatorEnabled(getSupportFragmentManager().getBackStackEntryCount() == 0);
             }
         };
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         actionBarDrawerToggle.syncState();
     }
+
+
 
     private void attachFragment() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
         fragmentTransaction.commit();
         toolbar.setTitle("Feed");
+        getSupportFragmentManager().findFragmentById(R.id.main_fragment);
     }
 
     @Override
@@ -169,9 +212,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        actionBarDrawerToggle.syncState();
         super.onPostCreate(savedInstanceState, persistentState);
+        actionBarDrawerToggle.syncState();
     }
 
     @Override
@@ -202,8 +250,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     private void findAllById() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -214,11 +260,18 @@ public class MainActivity extends AppCompatActivity {
         username = (FontTextView) findViewById(R.id.username);
         displayName = (FontTextView) findViewById(R.id.display_name);
         profile = (ImageView) findViewById(R.id.profile_image_circle);
+
+        feedMenuItem = navigationView.getMenu().getItem(0);
+        eventMenuItem = navigationView.getMenu().getItem(1);
+        helpMenuItem = navigationView.getMenu().getItem(2);
+        aboutMenuItem = navigationView.getMenu().getItem(3);
+        settingsMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(0);
+        evaluateMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(1);
+        logoutMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(2);
     }
 
     private SharedPreferences getUserdata() {
         return getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE);
     }
-
 
 }

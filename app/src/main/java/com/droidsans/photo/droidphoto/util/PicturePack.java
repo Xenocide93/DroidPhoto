@@ -14,8 +14,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class PicturePack {
-    public String photoURL, caption, vendor, model, eventId, shutterSpeed, aperture, iso, username, submitDate, gpsLocation, photoId;
-    public int userId, rank, width, height;
+    public String photoURL, caption, vendor, model, eventId, shutterSpeed, aperture, iso, username, submitDate, gpsLocation, photoId, userId, gpsLocalizedLocation;
+    public int rank, width, height;
     public double gpsLat, gpsLong;
     public boolean isEnhanced, isFlash;
     public int percentage = 0;
@@ -25,7 +25,7 @@ public class PicturePack {
         //default constructor
     }
 
-    public PicturePack(int userId, String vendor, String model,
+    public PicturePack(String userId, String vendor, String model,
                        String shutterSpeed, String aperture, String iso) {
         this.vendor = vendor;
         this.model = model;
@@ -33,32 +33,6 @@ public class PicturePack {
         this.shutterSpeed = shutterSpeed;
         this.aperture = aperture;
         this.iso = iso;
-    }
-
-    public PicturePack(String photoURL, String username, String caption,
-                       String vendor, String model,
-                       String eventId, int rank,
-                       String shutterSpeed, String aperture, String iso,
-                       int width, int height, double gpsLat, double gpsLong,
-                       boolean isEnhanced, boolean isFlash, String submitDate) {
-        this.photoURL = photoURL;
-        this.caption = caption;
-        this.vendor = vendor;
-        this.model = model;
-        this.eventId = eventId;
-        this.shutterSpeed = shutterSpeed;
-        this.aperture = aperture;
-        this.iso = iso;
-        //this.userId = userId;
-        this.username = username;
-        this.rank = rank;
-        this.width = width;
-        this.height = height;
-        this.gpsLat = gpsLat;
-        this.gpsLong = gpsLong;
-        this.isEnhanced = isEnhanced;
-        this.isFlash = isFlash;
-        this.submitDate = submitDate;
     }
 
     public void setPhotoId(String photoId) {
@@ -105,7 +79,7 @@ public class PicturePack {
         this.submitDate = submitDate;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -131,6 +105,10 @@ public class PicturePack {
 
     public void setGpsLocation(String gpsLocation) {
         this.gpsLocation = gpsLocation;
+    }
+
+    public void setGpsLocalizedLocation(String gpsLocalizedLocation) {
+        this.gpsLocalizedLocation = gpsLocalizedLocation;
     }
 
     public void setIsEnhanced(boolean isEnhanced) {

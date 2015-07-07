@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_all">
+
+    <group android:checkableBehavior="all">
+
         <item
             android:id="@+id/drawer_feed"
             android:checked="true"
             android:title="@string/drawer_feed"
             android:icon="@drawable/ic_photo_library_black_24dp" />
+
         <item
             android:id="@+id/drawer_event"
             android:checked="false"
             android:title="@string/drawer_event"
             android:icon="@drawable/ic_event_note_black_24dp" />
+
         <item
             android:id="@+id/drawer_help"
             android:checked="false"
@@ -21,21 +26,36 @@
             android:checked="false"
             android:title="@string/drawer_about"
             android:icon="@drawable/ic_info_black_24dp" />
+
         <item
             android:title="User">
-            <menu>
-                <item
-                    android:id="@+id/drawer_settings"
-                    android:checked="false"
-                    android:title="@string/drawer_settings"
-                    android:icon="@drawable/ic_settings_black_24dp" />
-                <item
-                    android:id="@+id/drawer_logout"
-                    android:checked="false"
-                    android:title="@string/drawer_logout" />
-            </menu>
-        </item>
 
+            <menu>
+
+                <group android:checkableBehavior="all">
+
+                    <item
+                        android:id="@+id/drawer_settings"
+                        android:checked="false"
+                        android:title="@string/drawer_settings"
+                        android:icon="@drawable/ic_settings_black_24dp" />
+
+                    <item
+                        android:id="@+id/drawer_evaluate"
+                        android:checked="false"
+                        android:title="@string/drawer_evaluate"
+                        />
+
+                    <item
+                        android:id="@+id/drawer_logout"
+                        android:checked="false"
+                        android:title="@string/drawer_logout" />
+
+                </group>
+
+            </menu>
+
+        </item>
 
     </group>
 

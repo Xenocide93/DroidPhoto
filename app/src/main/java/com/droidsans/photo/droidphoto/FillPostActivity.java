@@ -398,9 +398,8 @@ public class FillPostActivity extends AppCompatActivity {
                         startLoopForGps();
                     }
                 } else {
+                    useLocation.setChecked(false);
                     useLocation.setText(Html.fromHtml("error: gps is taking too long to respond " + "<font color='" + getResources().getColor(R.color.link) + "'>retry?</font>"));
-                    locationManager.removeUpdates(locationListener);
-                    loopCount = 0;
                 }
             }
         };
@@ -593,6 +592,7 @@ public class FillPostActivity extends AppCompatActivity {
                         delayAction.removeCallbacks(loopCheckForValidGps);
                         locationManager.removeUpdates(locationListener);
                         locationManager = null;
+                        loopCount = 0;
                     }
 
                     setDefaultUseLocationText();

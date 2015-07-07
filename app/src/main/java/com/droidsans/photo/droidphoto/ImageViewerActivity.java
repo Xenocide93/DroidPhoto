@@ -110,7 +110,7 @@ public class ImageViewerActivity extends AppCompatActivity {
             }
             iso.setText(previousIntent.getStringExtra("iso"));
         }
-        location.setText(previousIntent.getStringExtra("location"));
+        location.setText(previousIntent.getStringExtra("gpsLocation"));
         if(location.getText().equals("")) locationLayout.setVisibility(LinearLayout.GONE);
         user.setText(previousIntent.getStringExtra("username"));
         return true;
