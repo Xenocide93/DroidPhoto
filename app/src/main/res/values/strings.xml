@@ -38,6 +38,10 @@
     <string name="username">wetYRI2JEW235Rsdf23sdg350SD</string>
     <string name="display_name">23p9oithwaegtlidsglouu4</string>
 
+    <!--settings key-->
+    <string name="settings_us_location">english location naming</string>
+    <string name="settings_local_location">localized location naming</string>
+
     <!--for use with socket.io-->
     <string name="onGetUserInfoRespond">userinfo_respond</string>
     <string name="onGetFeedRespond">get_feed</string>

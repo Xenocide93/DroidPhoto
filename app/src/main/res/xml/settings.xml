@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Location">
+
+        <CheckBoxPreference
+            android:key="@string/settings_us_location"
+            android:title="Use English Location"
+            android:summary="Application will use English location in ImageView\\nTest"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="@string/settings_local_location"
+            android:title="Use Localized Location"
+            android:summary="Application will try to use location language according to the actual location"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
