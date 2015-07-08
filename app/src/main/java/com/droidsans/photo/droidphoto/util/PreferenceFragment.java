@@ -1,3 +1,5 @@
+//SOURCE: https://gist.github.com/cbeyls/7475726
+
 package com.droidsans.photo.droidphoto.util;
 //package android.support.v4.preference;
 

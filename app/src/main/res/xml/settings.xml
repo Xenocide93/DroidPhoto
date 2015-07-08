@@ -2,17 +2,67 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="Location">
+        android:title="Account">
+
+        <PreferenceScreen
+            android:title="Edit Profile"
+            android:summary="update avatar, change profile name/description">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.droidsans.photo.droidphoto"
+                android:targetClass="com.droidsans.photo.droidphoto.PlaceholderActivity"/>
+
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:title="Change Profile Color Theme"
+            android:summary="so your f*cking profile will be a little bit awesome">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.droidsans.photo.droidphoto"
+                android:targetClass="com.droidsans.photo.droidphoto.PlaceholderActivity" />
+
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:title="Change Password"
+            android:summary="please choose something not too stupid such as passw0rd (or something HackerTeam used)">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.droidsans.photo.droidphoto"
+                android:targetClass="com.droidsans.photo.droidphoto.PlaceholderActivity" />
+
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Display">
 
         <CheckBoxPreference
-            android:key="@string/settings_us_location"
-            android:title="Use English Location"
-            android:summary="Application will use English location in ImageView\\nTest"
+            android:key="@string/settings_eng_location"
+            android:title="Display English Location"
+            android:summary="Application will display English location"
             android:defaultValue="true" />
+
         <CheckBoxPreference
             android:key="@string/settings_local_location"
-            android:title="Use Localized Location"
-            android:summary="Application will try to use location language according to the actual location"
+            android:title="Display Localized Location"
+            android:summary="Application will try to display location language according to the actual location"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Image Upload">
+
+        <CheckBoxPreference
+            android:key="@string/settings_use_location"
+            android:title="Use Location by Default"
+            android:summary="Attach resolved location to uploaded image by default"
             android:defaultValue="true" />
 
     </PreferenceCategory>

@@ -39,14 +39,16 @@
     <string name="display_name">23p9oithwaegtlidsglouu4</string>
 
     <!--settings key-->
-    <string name="settings_us_location">english location naming</string>
+    <string name="settings_eng_location">english location naming</string>
     <string name="settings_local_location">localized location naming</string>
+    <string name="settings_use_location">localized location naming</string>
 
     <!--for use with socket.io-->
     <string name="onGetUserInfoRespond">userinfo_respond</string>
     <string name="onGetFeedRespond">get_feed</string>
     <string name="onLoginRespond">login_respond</string>
     <string name="onRegisterRespond">register_respond</string>
+    <string name="title_activity_placeholder">PlaceholderActivity</string>
 
 
 </resources>
