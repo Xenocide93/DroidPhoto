@@ -15,11 +15,11 @@
     <include android:id="@+id/reload_view"
         layout="@layout/layout_reload" />
     
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/header_user"
@@ -61,6 +61,16 @@
 
         </LinearLayout>
 
-    </FrameLayout>
+        <GridView
+            android:id="@+id/gridview_user_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="3"
+            android:horizontalSpacing="2dp"
+            android:verticalSpacing="2dp"
+            android:background="@color/white"
+            android:layout_below="@+id/header_user"/>
+
+    </RelativeLayout>
 
 </FrameLayout>

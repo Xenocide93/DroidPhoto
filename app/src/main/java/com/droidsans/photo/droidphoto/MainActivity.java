@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -61,18 +63,29 @@ public class MainActivity extends AppCompatActivity {
         findAllById();
         setupUIFrame();
         attachFragment();
+        printDeviceInfo();
+    }
+
+    private void printDeviceInfo(){
+        String s =  "brand:" + Build.BRAND
+                + "\n model:" + Build.MODEL
+                + "\n manufacture:" + Build.MANUFACTURER
+                + "\n device:" + Build.DEVICE
+                + "\n fingerprint:" + Build.FINGERPRINT
+                + "\n id:" + Build.ID;
+        Log.d("droidphoto", s);
     }
 
     private void setupUIFrame() {
-//        setSupportActionBar(toolbar);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                return false;
-            }
-        });
-
-        toolbar.inflateMenu(R.menu.menu_main);
+        setSupportActionBar(toolbar);
+//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                return false;
+//            }
+//        });
+//
+//        toolbar.inflateMenu(R.menu.menu_main);
 
         displayName.setText(getUserdata().getString(getString(R.string.display_name), "no display name ??"));
         username.setText("@" + getUserdata().getString(getString(R.string.username), "... no username ?? must be a bug"));

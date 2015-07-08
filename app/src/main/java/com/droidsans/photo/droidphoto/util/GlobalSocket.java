@@ -114,7 +114,6 @@ public class GlobalSocket {
             if(!mSocket.connected()) {
                 return false; //cannot connect to server
             }
-            return false;
         }
         Log.d("droidphoto", "Emit: " + event);
 
