@@ -26,6 +26,8 @@ public class RegisterActivity extends Activity {
     EditText username, password, passwordConfirm, email, displayName;
     Button registerBtn;
 
+    public static Activity mRegisterActivity;
+
     private Emitter.Listener onRegisterRespond;
 
     @Override
@@ -37,6 +39,7 @@ public class RegisterActivity extends Activity {
     }
 
     private void initialize() {
+        RegisterActivity.mRegisterActivity = this;
         findAllById();
         setupListener();
         setupSocket();
@@ -60,10 +63,36 @@ public class RegisterActivity extends Activity {
                             if(isSuccess){
                                 Toast.makeText(getApplicationContext(), "Register Successful", Toast.LENGTH_SHORT).show();
                                 //TODO auto-login (submit) or else just redirect user to login page
-                                Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                //TODO putExtra data return from server
-                                startActivity(mainActIntent);
-                                finish();
+//                                Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                                startActivity(mainActIntent);
+//                                finish();
+                                JSONObject loginStuff = new JSONObject();
+                                String hexPassword = "";
+
+                                try {
+                                    MessageDigest md = MessageDigest.getInstance("SHA-256");
+                                    md.update(password.getText().toString().getBytes());
+                                    hexPassword = bytesToHex(md.digest());
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                }
+
+                                try {
+                                    loginStuff.put("login", username.getText().toString());
+                                    loginStuff.put("password", hexPassword);
+                                    loginStuff.put("_event", "login_respond");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if(!GlobalSocket.mSocket.connected()) {
+                                    Toast.makeText(getApplicationContext(), "cannot connect to server", Toast.LENGTH_SHORT).show();
+                                } else if(GlobalSocket.mSocket.hasListeners("login_respond")) {
+                                    GlobalSocket.globalEmit("user.login", loginStuff); //this automatic finish() this activity
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "no login respond listener", Toast.LENGTH_SHORT).show();
+                                }
+
                             } else {
                                 String toastString = "";
                                 switch (message){

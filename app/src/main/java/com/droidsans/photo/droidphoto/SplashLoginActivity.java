@@ -92,7 +92,6 @@ public class SplashLoginActivity extends Activity {
                                 userObject = data.optJSONObject("userObj");
                                 token = data.optString("_token");
 
-
                                 GlobalSocket.mSocket.off("login_respond");
                                 Log.d(APP_LOG, "Token: " + token);
 //                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
@@ -112,6 +111,9 @@ public class SplashLoginActivity extends Activity {
                                 startActivity(mainActIntent);
                                 username.setText("");
                                 password.setText("");
+                                if(RegisterActivity.mRegisterActivity!=null){
+                                    RegisterActivity.mRegisterActivity.finish();
+                                }
                                 finish();
                             } else {
                                 String toastString = " ";

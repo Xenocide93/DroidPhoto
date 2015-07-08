@@ -107,6 +107,7 @@ public class FeedFragment extends Fragment {
         frameLayout = (FrameLayout) rootView.findViewById(R.id.main_view);
         reloadLayout = (LinearLayout) rootView.findViewById(R.id.reload_view);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.loading_circle);
+        dimView = rootView.findViewById(R.id.dim_view);
 //        imageViewLayout = (FrameLayout) rootView.findViewById(R.id.image_viewer);
         initialize();
         Toast.makeText(getActivity().getApplicationContext(), "onCreateView", Toast.LENGTH_SHORT).show();
@@ -262,8 +263,6 @@ public class FeedFragment extends Fragment {
             }
         });
 
-
-
         onDisconnect = new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -320,7 +319,6 @@ public class FeedFragment extends Fragment {
                             }
 
                             adapter = new PictureGridAdapter(getActivity(), R.layout.item_pic, pack);
-
 
                             if (loadingCircle.getVisibility() == ProgressBar.VISIBLE) {
                                 loadingCircle.setVisibility(ProgressBar.GONE);
@@ -631,8 +629,6 @@ public class FeedFragment extends Fragment {
         if(feedGridView != null) feedGridView.invalidateViews();
         feedGridView = (GridView) frameLayout.findViewById(R.id.feed_gridview);
 
-        dimView = frameLayout.findViewById(R.id.dim_view);
-
         fam = (FloatingActionsMenu) frameLayout.findViewById(R.id.fam);
         fabCamera = (FloatingActionButton) frameLayout.findViewById(R.id.fab_camera);
         fabChoosePic = (FloatingActionButton) frameLayout.findViewById(R.id.fab_choosepic);
@@ -642,7 +638,6 @@ public class FeedFragment extends Fragment {
     }
 
     private void updateFeed(){
-
         JSONObject filter = new JSONObject();
         JSONArray filterData = new JSONArray();
 
