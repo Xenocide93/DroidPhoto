@@ -11,11 +11,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -278,7 +274,6 @@ public class FeedFragment extends Fragment {
                         initReload();
                     }
                 });
-
             }
         };
 
@@ -370,8 +365,6 @@ public class FeedFragment extends Fragment {
 //            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 //            }
 //        });
-
-
 
         feedGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -514,6 +507,7 @@ public class FeedFragment extends Fragment {
                     Snackbar.make(frameLayout, "Vendor: " + vendorName + " Model: " + modelName, Snackbar.LENGTH_LONG).show();
                     if(!vendorName.equals("") && !modelName.equals("")){
                         //display existed filter tag
+                        //if already existed, return
                         for(int i = 0; i < tagViewArray.size(); i++){
                             TagView view = tagViewArray.get(i);
                             if(vendorName.equals(view.vendorName) && modelName.equals(view.modelName)) return;
@@ -761,5 +755,4 @@ public class FeedFragment extends Fragment {
             });
         }
     }
-
 }

@@ -69,5 +69,10 @@
     <string name="onRegisterRespond">register_respond</string>
     <string name="title_activity_placeholder">PlaceholderActivity</string>
 
+    <!-- vendor model map version -->
+    <string name="cvsMapPref">vendor_model_map_version</string>
+    <string name="csvVersion">version</string>
+    <string name="csvFileName">csv_version</string>
+
 </resources>
 
