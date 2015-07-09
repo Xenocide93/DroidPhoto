@@ -302,6 +302,9 @@ public class ProfileFragment extends Fragment {
         if(GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserInfoRespond))) {
             GlobalSocket.mSocket.off(getString(R.string.onGetUserInfoRespond));
         }
+        if(GlobalSocket.mSocket.hasListeners("get_user_feed")) {
+            GlobalSocket.mSocket.off("get_user_feed");
+        }
         super.onDestroy();
     }
 

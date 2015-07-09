@@ -73,6 +73,7 @@ public class FeedFragment extends Fragment {
     private ProgressBar loadingCircle;
     private FrameLayout imageViewLayout;
 
+    private LinearLayout tagField;
     private FlowLayout tagLayout;
     private ImageButton removeTagBtn;
     private boolean isRemoveTagActive = false;
@@ -107,7 +108,6 @@ public class FeedFragment extends Fragment {
         frameLayout = (FrameLayout) rootView.findViewById(R.id.main_view);
         reloadLayout = (LinearLayout) rootView.findViewById(R.id.reload_view);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.loading_circle);
-        dimView = rootView.findViewById(R.id.dim_view);
 //        imageViewLayout = (FrameLayout) rootView.findViewById(R.id.image_viewer);
         initialize();
         Toast.makeText(getActivity().getApplicationContext(), "onCreateView", Toast.LENGTH_SHORT).show();
@@ -147,6 +147,9 @@ public class FeedFragment extends Fragment {
     }
 
     private void requestFeedPicture(JSONObject filter) {
+
+        tagField.setVisibility(filterCount == 0? LinearLayout.GONE:LinearLayout.VISIBLE);
+
         try {
             filter.put("filter_count", filterCount);
             filter.put("skip", 0);
@@ -622,12 +625,16 @@ public class FeedFragment extends Fragment {
     }
 
     private void findAllById() {
+        tagField = (LinearLayout) frameLayout.findViewById(R.id.tag_field);
+
         tagLayout = (FlowLayout) frameLayout.findViewById(R.id.tag_layout);
         logoLayout = frameLayout.findViewById(R.id.logo_layout);
         removeTagBtn = (ImageButton) frameLayout.findViewById(R.id.remove_tag_button);
 
         if(feedGridView != null) feedGridView.invalidateViews();
         feedGridView = (GridView) frameLayout.findViewById(R.id.feed_gridview);
+
+        dimView = frameLayout.findViewById(R.id.dim_view);
 
         fam = (FloatingActionsMenu) frameLayout.findViewById(R.id.fam);
         fabCamera = (FloatingActionButton) frameLayout.findViewById(R.id.fab_camera);
