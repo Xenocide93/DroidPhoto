@@ -3,10 +3,12 @@ package com.droidsans.photo.droidphoto;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
@@ -24,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class RegisterActivity extends Activity {
     EditText username, password, passwordConfirm, email, displayName;
+    TextView tosLink;
     Button registerBtn;
 
     public static Activity mRegisterActivity;
@@ -41,8 +44,13 @@ public class RegisterActivity extends Activity {
     private void initialize() {
         RegisterActivity.mRegisterActivity = this;
         findAllById();
+        initHint();
         setupListener();
         setupSocket();
+    }
+
+    private void initHint() {
+        tosLink.setText(Html.fromHtml(getString(R.string.register_accept_tos) + "<font color='" + getResources().getColor(R.color.link) + "'>" + getString(R.string.register_accept_tos_link) + "</font>"));
     }
 
     private void setupSocket() {
@@ -192,6 +200,7 @@ public class RegisterActivity extends Activity {
         passwordConfirm = (EditText) findViewById(R.id.password_confirm);
         email = (EditText) findViewById(R.id.email);
         displayName = (EditText) findViewById(R.id.display_name);
+        tosLink = (TextView) findViewById(R.id.tos_link);
 
         registerBtn = (Button) findViewById(R.id.register_btn);
     }

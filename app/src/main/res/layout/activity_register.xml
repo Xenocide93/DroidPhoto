@@ -10,27 +10,19 @@
     android:paddingRight="40dp"
     tools:context="com.droidsans.photo.droidphoto.RegisterActivity">
 
-
-    <android.support.design.widget.TextInputLayout
-        android:theme="@style/AppRegisterTextAppearance"
+    <EditText
+        android:id="@+id/username"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@color/transparent"
-            android:gravity="center_vertical"
-            android:hint="username"
-            android:singleLine="true"
-            android:padding="4dp"
-            android:inputType="text"
-            android:textSize="16dp"
-            android:textColor="@color/white" />
-
-    </android.support.design.widget.TextInputLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="@string/register_username"
+        android:textColorHint="@color/white"
+        android:padding="4dp"
+        android:inputType="text"
+        android:textSize="16dp"
+        android:textColor="@color/white" />
 
     <View
         android:layout_width="match_parent"
@@ -38,26 +30,19 @@
         android:alpha="0.5"
         android:background="@color/white" />
 
-    <android.support.design.widget.TextInputLayout
-        android:theme="@style/AppRegisterTextAppearance"
+    <EditText
+        android:id="@+id/password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:hint="password"
-            android:textColor="@color/white"
-            android:padding="4dp"
-            android:inputType="textPassword"
-            android:textColorHint="@color/white"
-            android:textSize="16dp" />
-
-    </android.support.design.widget.TextInputLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="@string/register_password"
+        android:textColor="@color/white"
+        android:padding="4dp"
+        android:inputType="textPassword"
+        android:textColorHint="@color/white"
+        android:textSize="16dp" />
 
     <View
         android:layout_width="match_parent"
@@ -72,7 +57,7 @@
         android:layout_marginTop="5dp"
         android:background="@null"
         android:gravity="center_vertical"
-        android:hint="confirm password"
+        android:hint="@string/register_comfirmpassword"
         android:textColor="@color/white"
         android:inputType="textPassword"
         android:padding="4dp"
@@ -85,26 +70,19 @@
         android:alpha="0.5"
         android:background="@color/white" />
 
-    <android.support.design.widget.TextInputLayout
-        android:theme="@style/AppRegisterTextAppearance"
+    <EditText
+        android:id="@+id/email"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@null"
-            android:textColor="@color/white"
-            android:gravity="center_vertical"
-            android:inputType="textEmailAddress"
-            android:hint="email address"
-            android:padding="4dp"
-            android:textColorHint="@color/white"
-            android:textSize="16dp" />
-
-    </android.support.design.widget.TextInputLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        android:textColor="@color/white"
+        android:gravity="center_vertical"
+        android:inputType="textEmailAddress"
+        android:hint="@string/register_email"
+        android:padding="4dp"
+        android:textColorHint="@color/white"
+        android:textSize="16dp" />
 
     <View
         android:layout_width="match_parent"
@@ -112,26 +90,19 @@
         android:alpha="0.5"
         android:background="@color/white" />
 
-    <android.support.design.widget.TextInputLayout
-        android:theme="@style/AppRegisterTextAppearance"
+    <EditText
+        android:id="@+id/display_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/display_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/white"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:inputType="textEmailAddress"
-            android:hint="display name"
-            android:padding="4dp"
-            android:textColorHint="@color/white"
-            android:textSize="16dp" />
-
-    </android.support.design.widget.TextInputLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:inputType="textEmailAddress"
+        android:hint="@string/register_disp_name"
+        android:padding="4dp"
+        android:textColorHint="@color/white"
+        android:textSize="16dp" />
 
     <View
         android:layout_width="match_parent"
@@ -140,19 +111,20 @@
         android:background="@color/white" />
 
     <TextView
-        android:id="@+id/term_chkbox"
+        android:id="@+id/tos_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:layout_gravity="left"
+        android:layout_gravity="center"
         android:textSize="11sp"
-        android:text="By clicking Register, you agree to our Terms of service"
+        android:text="@string/register_accept_tos"
         android:textColor="@color/white"/>
 
     <Button
         android:id="@+id/register_btn"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:background="@drawable/curve_white"
         android:layout_marginTop="10dp"
         android:textSize="17sp"

@@ -8,6 +8,8 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -47,13 +49,11 @@
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_activity_register"
             android:parentActivityName=".SplashLoginActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FloatingSampleActivity"
-            android:label="@string/title_activity_floating_sample"
             android:screenOrientation="portrait" >
         </activity>
         <activity

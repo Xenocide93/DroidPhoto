@@ -1,23 +1,14 @@
 <resources>
     <string name="app_name">Droid Photo</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_splash">SplashActivity</string>
-    <string name="title_activity_browse">BrowseActivity</string>
-    <string name="title_activity_event">EventActivity</string>
-    <string name="title_activity_browse_model">BrowseModelActivity</string>
+    <string name="title_activity_browse">Vendor List</string>
+    <string name="title_activity_browse_model">Model List</string>
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>
-    <string name="title_activity_browse_picture">BrowsePictureActivity</string>
-    <string name="title_activity_splash_login">SplashLoginActivity</string>
-    <string name="title_activity_register">RegisterActivity</string>
-    <string name="title_activity_floating_sample">FloatingSampleActivity</string>
-    <string name="title_activity_fill_post">FillPostActivity</string>
+    <string name="title_activity_fill_post">Image Upload</string>
     <string name="title_activity_image_viewer">ImageViewer</string>
-
-    <string name="transition_image_view">Toggle Image Viewer</string>
 
     <!--drawer strings-->
     <string name="drawer_feed">Feed</string>
@@ -28,8 +19,26 @@
     <string name="drawer_evaluate">Evaluate</string>
     <string name="drawer_logout">Logout</string>
 
+    <!--drawer accessibility strings-->
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
+
+    <!--settings text-->
+    <string name="settings_app_language_title">Select Application Language</string>
+    <string name="settings_app_language_summary">Language : %s</string>
+
+    <!--register hint-->
+    <string name="register_username">username</string>
+    <string name="register_password">password</string>
+    <string name="register_comfirmpassword">confirm password</string>
+    <string name="register_email">email address</string>
+    <string name="register_disp_name">profile name (can be changed later)</string>
+    <string name="register_accept_tos">By clicking Register, you agree to our </string>
+    <string name="register_accept_tos_link">Terms of service</string>
+
+
+    <!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+    <!--DO NOT TRANSLATE STRINGS BELOW-->
 
     <!--unreadable for security reasons: adding obfuscation level-->
     <string name="userdata">ewEgfoEWoi84tu3wsZLghB</string>
@@ -39,9 +48,19 @@
     <string name="display_name">23p9oithwaegtlidsglouu4</string>
 
     <!--settings key-->
-    <string name="settings_eng_location">english location naming</string>
-    <string name="settings_local_location">localized location naming</string>
-    <string name="settings_use_location">localized location naming</string>
+    <string name="settings_eng_location">english_location_naming</string>
+    <string name="settings_local_location">localized_location_naming</string>
+    <string name="settings_use_location">use_location_by_default</string>
+    <string name="settings_app_language">use_app_language</string>
+
+    <string-array name="settings_app_language_entrylist">
+        <item>ไทย (TH)</item>
+        <item>English (EN)</item>
+    </string-array>
+    <string-array name="settings_app_language_entryvalue">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
 
     <!--for use with socket.io-->
     <string name="onGetUserInfoRespond">userinfo_respond</string>
@@ -50,5 +69,5 @@
     <string name="onRegisterRespond">register_respond</string>
     <string name="title_activity_placeholder">PlaceholderActivity</string>
 
-
 </resources>
+

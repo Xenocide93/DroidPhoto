@@ -42,6 +42,13 @@
     <PreferenceCategory
         android:title="Display">
 
+        <ListPreference
+            android:key="@string/settings_app_language"
+            android:title="@string/settings_app_language_title"
+            android:summary="@string/settings_app_language_summary"
+            android:entries="@array/settings_app_language_entrylist"
+            android:entryValues="@array/settings_app_language_entryvalue"/>
+
         <CheckBoxPreference
             android:key="@string/settings_eng_location"
             android:title="Display English Location"

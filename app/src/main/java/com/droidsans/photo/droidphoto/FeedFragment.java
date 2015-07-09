@@ -2,6 +2,7 @@ package com.droidsans.photo.droidphoto;
 
 
 import android.animation.Animator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -369,6 +371,8 @@ public class FeedFragment extends Fragment {
 //            }
 //        });
 
+
+
         feedGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -468,7 +472,16 @@ public class FeedFragment extends Fragment {
             try {
                 photoFile = createFile();
             } catch (IOException e) {
-                Toast.makeText(getActivity(), "IOException" + e.toString(), Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Cannot Launch Camera")
+                        .setMessage("Please insert SD Card and then try again.")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+//                            .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
 
             if(photoFile !=null) {
@@ -534,7 +547,15 @@ public class FeedFragment extends Fragment {
                         startActivityForResult(fillPostIntent, FILL_POST);
                         break;
                     } else {
-                        Toast.makeText(getActivity().getApplicationContext(), "invalid image", Toast.LENGTH_SHORT).show();
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("Invalid Image")
+                                .setMessage("Selected image has no data.\nPlease select other image.")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .show();
                         //TODO remove photo entry from mediastore or rescan
                         hasImageInPhotoPath = false;
                         staticPhotoPath = null;
