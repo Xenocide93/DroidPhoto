@@ -44,7 +44,7 @@ public class GlobalSocket {
     public static boolean reconnect() {
         Log.e("droidphoto", "globalsocket: reconnecting");
         mSocket.disconnect();
-        mSocket.connect();
+//        mSocket.connect();
         return true;
     }
 
@@ -57,10 +57,11 @@ public class GlobalSocket {
     }
 
     private static boolean setupGlobalSocket() {
-        if(mSocket==null){
+        if(mSocket==null) {
             opts.secure = true;
             opts.forceNew = true;
             opts.reconnection = false;
+            opts.timeout = 5000;
             try {
                 mSocket = IO.socket(serverURL, opts);
             } catch (URISyntaxException e) {

@@ -44,12 +44,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -89,12 +85,12 @@ public class MainActivity extends AppCompatActivity {
         attachFragment();
         setupListener();
         printDeviceInfo();
-        updateVersionMppingFile();
+        updateVersionMappingFile();
     }
 
     private void setupListener() {
-        if(!GlobalSocket.mSocket.hasListeners("onGetCsvRespond")){
-            GlobalSocket.mSocket.on("onGetCsvResponse", new Emitter.Listener() {
+        if(!GlobalSocket.mSocket.hasListeners(getString(R.string.onGetCsvResponse))){
+            GlobalSocket.mSocket.on(getString(R.string.onGetCsvResponse), new Emitter.Listener() {
                 @Override
                 public void call(final Object... args) {
                     runOnUiThread(new Runnable() {
@@ -137,30 +133,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateVersionMppingFile() {
-
+    private void updateVersionMappingFile() {
 
         final JSONObject data = new JSONObject();
         try {
             data.put("version", getVendorModelMapVersion());
-            data.put("_event", "onGetCsvResponse");
+            data.put("_event", getString(R.string.onGetCsvResponse));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         if(!GlobalSocket.globalEmit("csv.get", data)){
-            Log.d("droidphoto", "emit 1 csv.get fail");
+//            Log.d("droidphoto", "emit 1 csv.get fail");
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if(!GlobalSocket.globalEmit("csv.get", data)){
-                        Log.d("droidphoto", "emit 2 csv.get fail");
+//                        Log.d("droidphoto", "emit 2 csv.get fail");
                     } else {
-                        Log.d("droidphoto", "emit 2 csv.get done");
+//                        Log.d("droidphoto", "emit 2 csv.get done");
                     }
                 }
             }, 3000);
         } else {
-            Log.d("droidphoto", "emit 1 csv.get done");
+//            Log.d("droidphoto", "emit 1 csv.get done");
         }
 
 
@@ -257,18 +252,21 @@ public class MainActivity extends AppCompatActivity {
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 //                fragmentTransaction.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
                 if (selectedMenu.equals(getString(R.string.drawer_feed))) {
+//                    GlobalSocket.reconnect();
                     feedMenuItem.setChecked(true);
                     fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
                     fragmentTransaction.commit();
                     toolbar.setTitle("Feed");
                     previousMenuItem = feedMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_event))) {
+//                    GlobalSocket.reconnect();
                     eventMenuItem.setChecked(true);
                     fragmentTransaction.replace(R.id.main_fragment, new EventFragment());
                     fragmentTransaction.commit();
                     toolbar.setTitle("Events");
                     previousMenuItem = eventMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_help))) {
+//                    GlobalSocket.reconnect();
                     helpMenuItem.setChecked(true);
                     fragmentTransaction.replace(R.id.main_fragment, new ProfileFragment());
                     fragmentTransaction.commit();

@@ -109,14 +109,13 @@ public class FeedFragment extends Fragment {
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.loading_circle);
 //        imageViewLayout = (FrameLayout) rootView.findViewById(R.id.image_viewer);
         initialize();
-        Toast.makeText(getActivity().getApplicationContext(), "onCreateView", Toast.LENGTH_SHORT).show();
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        setupFeedAdapter();
-        Toast.makeText(getActivity().getApplicationContext(), "onActivityCreated", Toast.LENGTH_SHORT).show();
+        initRequestFeed();
+        initLoading();
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -130,7 +129,7 @@ public class FeedFragment extends Fragment {
         tagViewArray = new ArrayList<TagView>();
     }
 
-    private void setupFeedAdapter() {
+    private void initRequestFeed() {
         filterCount = 0;
         JSONObject filter = new JSONObject();
         JSONObject[] data = new JSONObject[0];
@@ -158,7 +157,7 @@ public class FeedFragment extends Fragment {
             e.printStackTrace();
         }
         if(!GlobalSocket.globalEmit("photo.getfeed", filter)) {
-            Toast.makeText(getActivity().getApplicationContext(),"cannot fire getfeed: retry in 3s", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity().getApplicationContext(),"cannot fire getfeed: retry in 3s", Toast.LENGTH_SHORT).show();
 //            wait 4 sec and try globalemit again
             final JSONObject delayedfilter = filter;
             delayAction.postDelayed(new Runnable() {
@@ -170,7 +169,7 @@ public class FeedFragment extends Fragment {
                         GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
                     }
                 }
-            }, 4000);
+            }, 3000);
         } else {
             //can emit: detect loss on the way
             GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -192,6 +191,7 @@ public class FeedFragment extends Fragment {
                     removeTag();
                     updateTagView();
                     updateFeed();
+                    initLoading();
                 }
             }
         });
@@ -290,7 +290,8 @@ public class FeedFragment extends Fragment {
                         if (data.optBoolean("success")) {
                             ArrayList<PicturePack> pack = new ArrayList<>();
                             JSONArray photoList = data.optJSONArray("photoList");
-                            for (int i = 0; i < photoList.length(); i++) {
+                            int len = photoList.length();
+                            for (int i = 0; i < len; i++) {
 //                                    Log.d("droidphoto", "photoList(" + i + "):" + ((JSONObject) photoList.get(i)));
                                 JSONObject jsonPack = photoList.optJSONObject(i);
                                 PicturePack picturePack = new PicturePack();
@@ -421,6 +422,12 @@ public class FeedFragment extends Fragment {
         });
     }
 
+    private void initLoading() {
+        loadingCircle.setVisibility(ProgressBar.VISIBLE);
+        reloadLayout.setVisibility(LinearLayout.GONE);
+        frameLayout.setVisibility(FrameLayout.GONE);
+    }
+
     private void initReload() {
         loadingCircle.setVisibility(ProgressBar.GONE);
         reloadLayout.setVisibility(LinearLayout.VISIBLE);
@@ -432,7 +439,7 @@ public class FeedFragment extends Fragment {
                 reloadLayout.setVisibility(LinearLayout.GONE);
                 loadingCircle.setVisibility(ProgressBar.VISIBLE);
                 GlobalSocket.reconnect(); //reconnect
-                setupFeedAdapter();
+                initRequestFeed();
             }
         });
         reloadButton.setClickable(true);
@@ -506,12 +513,13 @@ public class FeedFragment extends Fragment {
                 case FILTER_FEED:
                     String vendorName = data.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
                     String modelName = data.getStringExtra(BrowseModelActivity.MODEL_NAME);
-                    Snackbar.make(frameLayout, "Vendor: " + vendorName + " Model: " + modelName, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(frameLayout, "Vendor: " + vendorName + " Model: " + modelName, Snackbar.LENGTH_SHORT).show();
                     if(!vendorName.equals("") && !modelName.equals("")){
                         //display existed filter tag
                         //if already existed, return
-                        for(int i = 0; i < tagViewArray.size(); i++){
-                            TagView view = tagViewArray.get(i);
+                        for(TagView view : tagViewArray) {
+//                        for(int i = 0; i < tagViewArray.size(); i++){
+//                            TagView view = tagViewArray.get(i);
                             if(vendorName.equals(view.vendorName) && modelName.equals(view.modelName)) return;
                         }
                         addTag(vendorName, modelName);
@@ -519,6 +527,7 @@ public class FeedFragment extends Fragment {
 
                         //prepare data for refresh feed
                         updateFeed();
+                        initLoading();
                     }
                     break;
 
@@ -695,11 +704,15 @@ public class FeedFragment extends Fragment {
         try {
             //create filter data
             filterCount = tagViewArray.size();
-            for(int i = 0; i < filterCount; i++) {
+//            for(int i = 0; i < filterCount; i++) {
+            for(TagView view : tagViewArray) {
                 JSONObject value = new JSONObject();
-                value.put("vendor", tagViewArray.get(i).vendorName);
-                value.put("model", tagViewArray.get(i).modelName);
-                filterData.put(i, value);
+//                value.put("vendor", tagViewArray.get(i).vendorName);
+//                value.put("model", tagViewArray.get(i).modelName);
+//                filterData.put(i, value);
+                value.put("vendor", view.vendorName);
+                value.put("model", view.modelName);
+                filterData.put(value);
             }
             filter.put("data", filterData);
         } catch (JSONException e) {
@@ -715,8 +728,10 @@ public class FeedFragment extends Fragment {
 
     private void updateTagView(){
         tagLayout.removeAllViews();
-        for(int i = 0; i < tagViewArray.size(); i++){
-            tagLayout.addView(tagViewArray.get(i).getTagView());
+//        for(int i = 0; i < tagViewArray.size(); i++){
+        for(TagView view : tagViewArray) {
+//            tagLayout.addView(tagViewArray.get(i).getTagView());
+            tagLayout.addView(view.getTagView());
         }
     }
 
@@ -728,8 +743,10 @@ public class FeedFragment extends Fragment {
 
     private void removeTag(){
         ArrayList<TagView> tempArray = new ArrayList<TagView>();
-        for(int i = 0; i < tagViewArray.size(); i++){
-            if(!tagViewArray.get(i).selected){tempArray.add(tagViewArray.get(i));}
+//        for(int i = 0; i < tagViewArray.size(); i++){
+//            if(!tagViewArray.get(i).selected){tempArray.add(tagViewArray.get(i));}
+        for(TagView view : tagViewArray) {
+            if(!view.selected){tempArray.add(view);}
         }
         tagViewArray = tempArray;
         updateTagView();

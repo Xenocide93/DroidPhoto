@@ -79,7 +79,7 @@ public class ProfileFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         requestUserinfo();
-        setupFeedAdapter();
+        requestUserPhoto();
     }
 
     private void initialize() {
@@ -164,6 +164,7 @@ public class ProfileFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
                         JSONObject data = (JSONObject) args[0];
                         if(data.optBoolean("success")){
                             ArrayList<PicturePack> packs = new ArrayList<>();
@@ -207,8 +208,8 @@ public class ProfileFragment extends Fragment {
                 });
             }
         };
-        if(!GlobalSocket.mSocket.hasListeners("get_user_feed")){
-            GlobalSocket.mSocket.on("get_user_feed", onGetUserFeedRespond);
+        if(!GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserFeedRespond))){
+            GlobalSocket.mSocket.on(getString(R.string.onGetUserFeedRespond), onGetUserFeedRespond);
         }
 
         onDisconnect = new Emitter.Listener() {
@@ -248,13 +249,13 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void setupFeedAdapter() {
+    private void requestUserPhoto() {
         JSONObject data = new JSONObject();
 
         try {
             data.put("skip", 0);
             data.put("limit", 21);
-            data.put("_event", "get_user_feed");
+            data.put("_event", getString(R.string.onGetUserFeedRespond));
         } catch (JSONException e){e.printStackTrace();}
 
         if(!GlobalSocket.globalEmit("photo.getuserphoto", data)) {
@@ -296,14 +297,14 @@ public class ProfileFragment extends Fragment {
         reloadButton.setClickable(true);
     }
 
-
     @Override
     public void onDestroy() {
+        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         if(GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserInfoRespond))) {
             GlobalSocket.mSocket.off(getString(R.string.onGetUserInfoRespond));
         }
-        if(GlobalSocket.mSocket.hasListeners("get_user_feed")) {
-            GlobalSocket.mSocket.off("get_user_feed");
+        if(GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserFeedRespond))) {
+            GlobalSocket.mSocket.off(getString(R.string.onGetUserFeedRespond));
         }
         super.onDestroy();
     }
