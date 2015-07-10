@@ -51,7 +51,8 @@
                 android:textColor="@color/white"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:text="1111"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -72,7 +73,8 @@
                 android:textSize="16dp"
                 android:singleLine="true"
                 android:gravity="center_vertical"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:text="2222"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

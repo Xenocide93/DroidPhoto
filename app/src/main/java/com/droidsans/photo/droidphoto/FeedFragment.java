@@ -121,7 +121,6 @@ public class FeedFragment extends Fragment {
     }
 
     private void initialize() {
-        GlobalSocket.initializeSocket();
         findAllById();
         setupListener();
         initializeVendorModelLsit();

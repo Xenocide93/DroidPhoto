@@ -35,15 +35,21 @@ import com.github.nkzawa.emitter.Emitter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Scanner;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initialize() {
+        GlobalSocket.initializeSocket();
         findAllById();
         setupUIFrame();
         attachFragment();
@@ -87,39 +94,38 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupListener() {
         if(!GlobalSocket.mSocket.hasListeners("onGetCsvRespond")){
-            GlobalSocket.mSocket.on("onGetCsvRespond", new Emitter.Listener() {
+            GlobalSocket.mSocket.on("onGetCsvResponse", new Emitter.Listener() {
                 @Override
                 public void call(final Object... args) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("droidphoto", "response csv.get");
+                            Log.d("droidphoto", "csv.get: response");
+
                             JSONObject data = (JSONObject) args[0];
                             if (data.optBoolean("success")) {
+                                Log.d("droidphoto", "csv.get: success");
                                 Object csvObj = data.opt("csv");
                                 String version = data.optString("version");
 
-                                //write version to SharedPref
-                                getSharedPreferences(getString(R.string.csvFileName), Context.MODE_PRIVATE).edit()
-                                        .putString(getString(R.string.csvVersion), version)
-                                        .apply();
+                                writeObjToInternalStorage(csvObj, getString(R.string.csvFileName));
+                                writeObjToInternalStorage(version, getString(R.string.csvVersion));
 
-                                //write csvObject to file
+                                //try read csv from file and print
+                                File file = new File(SplashLoginActivity.mContext.getExternalFilesDir(null), getString(R.string.csvFileName));
+                                BufferedReader reader = null;
+
                                 try {
-                                    FileOutputStream fos = openFileOutput(getString(R.string.csvFileName), Context.MODE_PRIVATE);
-                                    ObjectOutputStream os = new ObjectOutputStream(fos);
-                                    os.writeObject(csvObj);
-                                    os.close();
-                                    fos.close();
+                                    reader = new BufferedReader(new FileReader(file));
+                                    String line;
+
+                                    while ((line = reader.readLine()) != null) {
+                                        //TODO create hashMap to store key value
+                                    }
+                                    reader.close();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-
-                                Log.d("droidphoto", "csvObj: \n" + csvObj);
-
-                                //call method to parse csv file to hashMap
-                                //parseCsvToHashMap(csvObj);
-
                             } else {
                                 String msg = data.optString("msg");
                                 Log.d("droidphoto", "Error update csv: " + msg);
@@ -137,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         final JSONObject data = new JSONObject();
         try {
             data.put("version", getVendorModelMapVersion());
-            data.put("_event", "onGetCsvRespond");
+            data.put("_event", "onGetCsvResponse");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -421,4 +427,28 @@ public class MainActivity extends AppCompatActivity {
         return getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE);
     }
 
+    public static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        ObjectOutputStream o = new ObjectOutputStream(b);
+        o.writeObject(obj);
+        return b.toByteArray();
+    }
+
+    private void writeObjToInternalStorage(Object obj, String filename){
+        File file = new File(SplashLoginActivity.mContext.getExternalFilesDir(null), filename);
+
+        try {
+            InputStream is = new ByteArrayInputStream(serialize(obj));
+            OutputStream os = new FileOutputStream(file);
+            byte[] writeData = new byte[is.available()];
+            is.read(writeData);
+            os.write(writeData);
+            is.close();
+            os.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
