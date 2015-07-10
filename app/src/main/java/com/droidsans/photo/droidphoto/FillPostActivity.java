@@ -1,6 +1,7 @@
 package com.droidsans.photo.droidphoto;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +13,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -226,7 +229,8 @@ public class FillPostActivity extends AppCompatActivity {
         setupToolbar();
         setupListener();
         setDefaultUseLocationText();
-        useLocation.setChecked(true); //hax
+        //TODO apply location settings here
+        useLocation.setChecked(true); //hax XD
         setThumbnailImage();
         setVendorAndModel();
     }
@@ -262,6 +266,7 @@ public class FillPostActivity extends AppCompatActivity {
 
         try {
             metadata = ImageMetadataReader.readMetadata(new File(mCurrentPhotoPath));
+
             gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
             exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
             orientationDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
@@ -277,6 +282,19 @@ public class FillPostActivity extends AppCompatActivity {
 //            Snackbar.make(null, "Error: selected image must have exif", Snackbar.LENGTH_LONG).show();
             finish();
         }
+        if(mImageFrom.equals("Picture Picker")) {
+            Log.d("droidphoto", "IFD0 make: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE));
+            Log.d("droidphoto", "IFD0 model: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL));
+            if(!orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).equalsIgnoreCase(Build.MANUFACTURER) ||
+                    !Build.MODEL.toLowerCase().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase())) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("return code", "not your photo");
+                setResult(RESULT_CANCELED, returnIntent);
+                finish();
+            }
+        }
+//        Log.d("droidphoto","subIFD make: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAKE));
+//        Log.d("droidphoto","subIFD model: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MODEL));
 //        Log.d("droidphoto", "aperture (drewnoakes) :" + exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE) + " | max : " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAX_APERTURE));
 //        Log.d("droidphoto", "aperture (exifint.) :" + mExif.getAttribute(ExifInterface.TAG_APERTURE));
 
@@ -322,7 +340,7 @@ public class FillPostActivity extends AppCompatActivity {
 //                    break;
 //            }
             //new
-            if(orientationDirectory != null) {
+            if(orientationDirectory != null && orientationDirectory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
                 try {
                     Log.d("droidphoto", "orientation:" + orientationDirectory.getInt(ExifIFD0Directory.TAG_ORIENTATION));
                     switch (orientationDirectory.getInt(ExifIFD0Directory.TAG_ORIENTATION)) {

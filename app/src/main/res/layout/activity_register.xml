@@ -116,6 +116,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_gravity="center"
+        android:textColorHighlight="@color/link_pressed"
+        android:textColorLink="@color/link"
         android:textSize="11sp"
         android:text="@string/register_accept_tos"
         android:textColor="@color/white"/>

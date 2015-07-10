@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +25,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 
 
 public class RegisterActivity extends Activity {
@@ -50,7 +54,18 @@ public class RegisterActivity extends Activity {
     }
 
     private void initHint() {
-        tosLink.setText(Html.fromHtml(getString(R.string.register_accept_tos) + "<font color='" + getResources().getColor(R.color.link) + "'>" + getString(R.string.register_accept_tos_link) + "</font>"));
+        tosLink.append(" ");
+        SpannableString linktext = new SpannableString(getString(R.string.register_accept_tos_link));
+        linktext.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Log.d("droidphoto", "onClick");
+                widget.getContext().startActivity(new Intent(getApplicationContext(), PlaceholderActivity.class));
+            }
+        }, 0, getString(R.string.register_accept_tos_link).length(), 0);
+        tosLink.append(linktext);
+        tosLink.setMovementMethod(new LinkMovementMethod());
+        //tosLink.setText(Html.fromHtml(getString(R.string.register_accept_tos) + "<font color='" + getResources().getColor(R.color.link) + "'>" + getString(R.string.register_accept_tos_link) + "</font>"));
     }
 
     private void setupSocket() {

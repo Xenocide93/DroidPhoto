@@ -258,6 +258,7 @@ public class FeedFragment extends Fragment {
             public void onClick(View v) {
                 dispatchTakePictureIntent();
                 Toast.makeText(getActivity(), "Launch Camera Intent", Toast.LENGTH_SHORT).show();
+                fam.collapse();
             }
         });
         fabChoosePic.setOnClickListener(new View.OnClickListener() {
@@ -265,6 +266,7 @@ public class FeedFragment extends Fragment {
             public void onClick(View v) {
                 dispatchPicturePickerIntent();
                 Toast.makeText(getActivity(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
+                fam.collapse();
             }
         });
 
@@ -550,7 +552,7 @@ public class FeedFragment extends Fragment {
                         new AlertDialog.Builder(getActivity())
                                 .setTitle("Invalid Image")
                                 .setMessage("Selected image has no data.\nPlease select other image.")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                     }
@@ -562,19 +564,46 @@ public class FeedFragment extends Fragment {
                         break;
                     }
 
+                case FILL_POST:
+                    //TODO show upload status
+
+                    break;
             }
         else if(resultCode == getActivity().RESULT_CANCELED) {
-            Toast.makeText(getActivity(), "cancel",Toast.LENGTH_SHORT).show();
-            if(!hasImageInPhotoPath && staticPhotoPath != null) {
-                File image = new File(staticPhotoPath);
-                if(image.delete()) {
-                    hasImageInPhotoPath = false;
-                    Toast.makeText(getActivity(),"temp file removed", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getActivity(),"cannot remove temp file", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
+            if(data != null) {
+                switch (data.getStringExtra("return code")) {
+                    case "not your photo":
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("Error")
+                                .setMessage("Please select image taken by this phone.")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .show();
+                        break;
+                    default:
+                        removeTemp();
+                        break;
                 }
-                staticPhotoPath = null;
+            } else {
+                removeTemp();
             }
+        }
+    }
+
+    private void removeTemp() {
+        if (!hasImageInPhotoPath && staticPhotoPath != null) {
+            File image = new File(staticPhotoPath);
+            if (image.delete()) {
+                hasImageInPhotoPath = false;
+                Toast.makeText(getActivity(), "temp file removed", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getActivity(), "cannot remove temp file", Toast.LENGTH_LONG).show();
+            }
+            staticPhotoPath = null;
         }
     }
 
