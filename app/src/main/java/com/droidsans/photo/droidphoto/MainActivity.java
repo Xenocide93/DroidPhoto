@@ -7,10 +7,10 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,6 +29,21 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.droidsans.photo.droidphoto.util.CircleTransform;
 import com.droidsans.photo.droidphoto.util.FontTextView;
+import com.droidsans.photo.droidphoto.util.GlobalSocket;
+import com.github.nkzawa.emitter.Emitter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -45,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private FontTextView username;
     private FontTextView displayName;
     private ImageView profile;
+
+    private Handler delayAction = new Handler();
 
     private MenuItem previousMenuItem;
     private MenuItem feedMenuItem, eventMenuItem, helpMenuItem, aboutMenuItem, settingsMenuItem, evaluateMenuItem, logoutMenuItem;
@@ -63,8 +80,111 @@ public class MainActivity extends AppCompatActivity {
         findAllById();
         setupUIFrame();
         attachFragment();
+        setupListener();
         printDeviceInfo();
+        updateVersionMppingFile();
     }
+
+    private void setupListener() {
+        if(!GlobalSocket.mSocket.hasListeners("onGetCsvRespond")){
+            GlobalSocket.mSocket.on("onGetCsvRespond", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("droidphoto", "response csv.get");
+                            JSONObject data = (JSONObject) args[0];
+                            if (data.optBoolean("success")) {
+                                Object csvObj = data.opt("csv");
+                                String version = data.optString("version");
+
+                                //write version to SharedPref
+                                getSharedPreferences(getString(R.string.csvFileName), Context.MODE_PRIVATE).edit()
+                                        .putString(getString(R.string.csvVersion), version)
+                                        .apply();
+
+                                //write csvObject to file
+                                try {
+                                    FileOutputStream fos = openFileOutput(getString(R.string.csvFileName), Context.MODE_PRIVATE);
+                                    ObjectOutputStream os = new ObjectOutputStream(fos);
+                                    os.writeObject(csvObj);
+                                    os.close();
+                                    fos.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                Log.d("droidphoto", "csvObj: \n" + csvObj);
+
+                                //call method to parse csv file to hashMap
+                                //parseCsvToHashMap(csvObj);
+
+                            } else {
+                                String msg = data.optString("msg");
+                                Log.d("droidphoto", "Error update csv: " + msg);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void updateVersionMppingFile() {
+
+
+        final JSONObject data = new JSONObject();
+        try {
+            data.put("version", getVendorModelMapVersion());
+            data.put("_event", "onGetCsvRespond");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(!GlobalSocket.globalEmit("csv.get", data)){
+            Log.d("droidphoto", "emit 1 csv.get fail");
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(!GlobalSocket.globalEmit("csv.get", data)){
+                        Log.d("droidphoto", "emit 2 csv.get fail");
+                    } else {
+                        Log.d("droidphoto", "emit 2 csv.get done");
+                    }
+                }
+            }, 3000);
+        } else {
+            Log.d("droidphoto", "emit 1 csv.get done");
+        }
+
+
+    }
+
+    private String getVendorModelMapVersion() {
+//        return getSharedPreferences(getString(R.string.cvsMapPref), Context.MODE_PRIVATE)
+//                .getString(getString(R.string.csvVersion), "1.0");
+        return "0.9";
+    }
+
+    private boolean parseCsvToHashMap(Object csvObject){
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+            oos.writeObject(csvObject);
+            oos.flush(); oos.close();
+
+            InputStream is = new ByteArrayInputStream(baos.toByteArray());
+
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+        return false;
+    }
+
 
     private void printDeviceInfo(){
         String s =  "brand:" + Build.BRAND
