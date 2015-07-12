@@ -372,6 +372,7 @@ public class FeedFragment extends Fragment {
         feedGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                feedGridView.setClickable(false);
                 //reset all packreload -> code moved to onPause
 //                PicturePack currentPack = adapter.getItem(position);
 //                Fragment imageViewerFragment = new ImageViewerFragment();
@@ -574,12 +575,35 @@ public class FeedFragment extends Fragment {
             }
         else if(resultCode == getActivity().RESULT_CANCELED) {
             Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
-            if(data != null) {
+            if(data != null && data.hasExtra("return code")) {
                 switch (data.getStringExtra("return code")) {
                     case "not your photo":
                         new AlertDialog.Builder(getActivity())
+                                .setTitle("Not Your Image")
+                                .setMessage("Please select a photo taken by this phone.")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .setIcon(R.drawable.ic_error_outline_black_24dp)
+                                .show();
+                        break;
+                    case "no exif":
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("Not From Camera")
+                                .setMessage("Selected image must have exif.")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .show();
+                        break;
+                    case "cannot detect photo owner":
+                        new AlertDialog.Builder(getActivity())
                                 .setTitle("Error")
-                                .setMessage("Please select image taken by this phone.")
+                                .setMessage("Cannot detect photo owner (bug ??).")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -588,7 +612,6 @@ public class FeedFragment extends Fragment {
                                 .show();
                         break;
                     default:
-                        removeTemp();
                         break;
                 }
             } else {
@@ -642,6 +665,19 @@ public class FeedFragment extends Fragment {
 //            notActive = false;
 //        }
 //    }
+
+
+    @Override
+    public void onStop() {
+//        feedGridView.setClickable(false);
+        super.onStop();
+    }
+
+    @Override
+    public void onStart() {
+        feedGridView.setClickable(true);
+        super.onStart();
+    }
 
     @Override
     public void onDestroy() {
@@ -742,7 +778,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void removeTag(){
-        ArrayList<TagView> tempArray = new ArrayList<TagView>();
+        ArrayList<TagView> tempArray = new ArrayList<>();
 //        for(int i = 0; i < tagViewArray.size(); i++){
 //            if(!tagViewArray.get(i).selected){tempArray.add(tagViewArray.get(i));}
         for(TagView view : tagViewArray) {
@@ -761,7 +797,7 @@ public class FeedFragment extends Fragment {
         private int tagIndex;
         private boolean selected = false;
 
-        public TagView(FlowLayout tagLayout, String vendorName, String modelName){
+        public TagView(FlowLayout tagLayout, String vendorName, String modelName) {
             this.vendorName = vendorName;
             this.modelName = modelName;
 

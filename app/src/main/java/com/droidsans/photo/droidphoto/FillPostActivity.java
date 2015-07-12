@@ -277,12 +277,23 @@ public class FillPostActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if(exifDirectory == null) {
+        if(exifDirectory == null || orientationDirectory == null) {
             Toast.makeText(getApplicationContext(), "Error: selected image must have exif", Toast.LENGTH_LONG).show();
 //            Snackbar.make(null, "Error: selected image must have exif", Snackbar.LENGTH_LONG).show();
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("return code", "no exif");
+            setResult(RESULT_CANCELED, returnIntent);
             finish();
+            return;
         }
+
         if(mImageFrom.equals("Picture Picker")) {
+//            if(!orientationDirectory.hasTagName(ExifIFD0Directory.TAG_MAKE) || !orientationDirectory.hasTagName(ExifIFD0Directory.TAG_MODEL)) {
+//                Intent returnIntent = new Intent();
+//                returnIntent.putExtra("return code", "cannot detect photo owner");
+//                setResult(RESULT_CANCELED, returnIntent);
+//                finish();
+//            }
             Log.d("droidphoto", "IFD0 make: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE));
             Log.d("droidphoto", "IFD0 model: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL));
             if(!orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).equalsIgnoreCase(Build.MANUFACTURER) ||
@@ -291,6 +302,7 @@ public class FillPostActivity extends AppCompatActivity {
                 returnIntent.putExtra("return code", "not your photo");
                 setResult(RESULT_CANCELED, returnIntent);
                 finish();
+                return;
             }
         }
 //        Log.d("droidphoto","subIFD make: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAKE));
@@ -603,9 +615,9 @@ public class FillPostActivity extends AppCompatActivity {
                         useLocation.setEnabled(false);
                     }
 
-                    Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "location unchecked", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "location unchecked", Toast.LENGTH_SHORT).show();
                     if(locationManager != null) {
                         delayAction.removeCallbacks(loopCheckForValidGps);
                         locationManager.removeUpdates(locationListener);
@@ -815,7 +827,7 @@ public class FillPostActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        imageBitmap.recycle();
+        if(imageBitmap != null) imageBitmap.recycle();
         super.onDestroy();
     }
 
