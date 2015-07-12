@@ -57,12 +57,12 @@
     <string name="settings_app_language">use_app_language</string>
 
     <string-array name="settings_app_language_entrylist">
-        <item>ไทย (TH)</item>
         <item>English (EN)</item>
+        <item>ไทย (TH)</item>
     </string-array>
     <string-array name="settings_app_language_entryvalue">
-        <item>0</item>
-        <item>1</item>
+        <item>en</item>
+        <item>th</item>
     </string-array>
 
     <!--for use with socket.io-->

@@ -52,7 +52,7 @@ public class ProfileFragment extends Fragment {
     private FontTextView reloadText;
     private Button reloadButton;
 
-    private String baseURL = "avatar/";
+    private String baseURL = "/data/avatar/";
     private String username;
 
     private Handler delayAction = new Handler();
@@ -259,8 +259,6 @@ public class ProfileFragment extends Fragment {
         } catch (JSONException e){e.printStackTrace();}
 
         if(!GlobalSocket.globalEmit("photo.getuserphoto", data)) {
-            Toast.makeText(getActivity().getApplicationContext(),"cannot fire getfeed: retry in 3s", Toast.LENGTH_SHORT).show();
-//            wait 4 sec and try globalemit again
             final JSONObject delayedData = data;
             delayAction.postDelayed(new Runnable() {
                 @Override

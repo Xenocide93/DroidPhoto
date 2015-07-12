@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.preference.PreferenceActivity;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -285,6 +286,10 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.commit();
                     toolbar.setTitle("Settings");
                     previousMenuItem = menuItem;
+//                    settingsMenuItem.setChecked(false);
+//                    previousMenuItem.setChecked(true);
+//                    Intent settings = new Intent(getApplicationContext(), SettingsActivity.class);
+//                    startActivity(settings);
                 } else if (selectedMenu.equals(getString(R.string.drawer_logout))) {
                     new AlertDialog.Builder(MainActivity.this)
                             .setTitle("Logout ?")

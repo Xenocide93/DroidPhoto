@@ -19,7 +19,7 @@ public class PicturePack {
     public double gpsLat, gpsLong;
     public boolean isEnhanced, isFlash;
     public int percentage = 0;
-    public final String baseURL = "http://209.208.65.102/data/photo/500px/";
+    public final String baseURL = "/data/photo/500px/";
 
     public PicturePack() {
         //default constructor

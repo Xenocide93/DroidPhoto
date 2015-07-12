@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -74,6 +75,7 @@ public class FillPostActivity extends AppCompatActivity {
     private ExifInterface mExif;
     private String mCurrentPhotoPath;
     private String mImageFrom;
+    private String postURL = "/photo";
 
     Metadata metadata;
     ExifSubIFDDirectory exifDirectory;
@@ -229,10 +231,13 @@ public class FillPostActivity extends AppCompatActivity {
         setupToolbar();
         setupListener();
         setDefaultUseLocationText();
-        //TODO apply location settings here
-        useLocation.setChecked(true); //hax XD
+        applyUserSettings();
         setThumbnailImage();
         setVendorAndModel();
+    }
+
+    private void applyUserSettings() {
+        useLocation.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_use_location), true));
     }
 
     private void getStringExtra() {
@@ -651,7 +656,7 @@ public class FillPostActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     public void run() {
                         Log.d("droidphoto", "uploading...");
-                        JSONObject respond = post("http://209.208.65.102:3000/photo", mCurrentPhotoPath);
+                        JSONObject respond = post(GlobalSocket.serverURL + postURL, mCurrentPhotoPath);
                         Log.d("droidphoto", "respond: " + respond.toString());
 
                         try {

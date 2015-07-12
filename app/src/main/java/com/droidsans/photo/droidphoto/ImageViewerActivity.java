@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -35,7 +36,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     private FontTextView deviceName, exposureTime, aperture, iso, location, user, caption;
     private LinearLayout locationLayout, captionLayout;
     private String photoURL;
-    private final String baseURL = "http://209.208.65.102/data/photo/original/";
+    private final String baseURL = "/data/photo/original/";
 
     private Toolbar toolbar;
 
@@ -54,12 +55,12 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         if(setup()) {
             Glide.with(getApplicationContext())
-                    .load(baseURL + photoURL)
+                    .load(GlobalSocket.serverURL + baseURL + photoURL)
 //                    .placeholder(android.)
                     .crossFade()
                     .into(picture);
         } else {
-            Toast.makeText(getApplicationContext(),"cannot initialize imageviewer",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"cannot initialize imageviewer (bug ?)",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -110,9 +111,28 @@ public class ImageViewerActivity extends AppCompatActivity {
             }
             iso.setText(previousIntent.getStringExtra("iso"));
         }
-        location.setText(previousIntent.getStringExtra("gpsLocation"));
-        if(!previousIntent.getStringExtra("gpsLocalized").equals("")) location.append(" (" + previousIntent.getStringExtra("gpsLocalized") + ")");
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_eng_location), true)) {
+            if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_local_location), true)) {
+                //eng + local
+                location.setText(previousIntent.getStringExtra("gpsLocation"));
+                if(!previousIntent.getStringExtra("gpsLocalized").equals("")) location.append(" (" + previousIntent.getStringExtra("gpsLocalized") + ")");
+            } else {
+                //only eng
+                location.setText(previousIntent.getStringExtra("gpsLocation"));
+            }
+        } else {
+            //only local
+            if(!previousIntent.getStringExtra("gpsLocalized").equals("")) {
+                //if any
+                location.setText(previousIntent.getStringExtra("gpsLocalized"));
+            } else {
+                //if none
+                location.setText(previousIntent.getStringExtra("gpsLocation"));
+            }
+        }
+        //if no location at all
         if(location.getText().equals("")) locationLayout.setVisibility(LinearLayout.GONE);
+
         user.setText(previousIntent.getStringExtra("username"));
         return true;
     }

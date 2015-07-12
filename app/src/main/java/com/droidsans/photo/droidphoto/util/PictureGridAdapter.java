@@ -54,7 +54,7 @@ public class PictureGridAdapter extends ArrayAdapter<PicturePack> {
 //            holder.picture.setImageDrawable(getContext().getResources().getDrawable(R.drawable.droidsans_logo));
 //        }
         Glide.with(getContext())
-                .load(pack.baseURL + pack.photoURL)
+                .load(GlobalSocket.serverURL + pack.baseURL + pack.photoURL)
                 .centerCrop()
                 .placeholder(R.drawable.droidsans_logo)
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)
