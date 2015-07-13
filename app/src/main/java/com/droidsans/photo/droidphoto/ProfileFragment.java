@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -24,6 +26,7 @@ import com.droidsans.photo.droidphoto.util.CircleTransform;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
+import com.droidsans.photo.droidphoto.util.SquareImageView;
 import com.droidsans.photo.droidphoto.util.UserPictureGridAdapter;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
@@ -62,6 +65,7 @@ public class ProfileFragment extends Fragment {
     private Emitter.Listener onDisconnect;
 
     private UserPictureGridAdapter adapter;
+    ArrayList<PicturePack> packs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,6 +79,11 @@ public class ProfileFragment extends Fragment {
         return rootView;
     }
 
+    private void initialize() {
+        findAllById();
+        setupListener();
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -82,31 +91,31 @@ public class ProfileFragment extends Fragment {
         requestUserPhoto();
     }
 
-    private void initialize() {
-        findAllById();
-        setupListener();
-    }
-
     private void setupListener() {
         userPicGridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent imageViewerIntent = new Intent(getActivity(), ImageViewerActivity.class);
-                PicturePack currentPack = adapter.getItem(position);
-                imageViewerIntent.putExtra("photoId", currentPack.photoId);
-                imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
-                imageViewerIntent.putExtra("caption", currentPack.caption);
-                imageViewerIntent.putExtra("vendor", currentPack.vendor);
-                imageViewerIntent.putExtra("model", currentPack.model);
-                imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
-                imageViewerIntent.putExtra("aperture", currentPack.aperture);
-                imageViewerIntent.putExtra("iso", currentPack.iso);
-                imageViewerIntent.putExtra("userId", currentPack.userId);
-                imageViewerIntent.putExtra("username", currentPack.username);
-                imageViewerIntent.putExtra("gpsLocation", currentPack.gpsLocation);
-                imageViewerIntent.putExtra("gpsLocalized", currentPack.gpsLocalizedLocation);
+                if(!adapter.isEditMode){
+                    Intent imageViewerIntent = new Intent(getActivity(), ImageViewerActivity.class);
+                    PicturePack currentPack = adapter.getItem(position);
+                    imageViewerIntent.putExtra("photoId", currentPack.photoId);
+                    imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
+                    imageViewerIntent.putExtra("caption", currentPack.caption);
+                    imageViewerIntent.putExtra("vendor", currentPack.vendor);
+                    imageViewerIntent.putExtra("model", currentPack.model);
+                    imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
+                    imageViewerIntent.putExtra("aperture", currentPack.aperture);
+                    imageViewerIntent.putExtra("iso", currentPack.iso);
+                    imageViewerIntent.putExtra("userId", currentPack.userId);
+                    imageViewerIntent.putExtra("username", currentPack.username);
+                    imageViewerIntent.putExtra("gpsLocation", currentPack.gpsLocation);
+                    imageViewerIntent.putExtra("gpsLocalized", currentPack.gpsLocalizedLocation);
 
-                startActivity(imageViewerIntent);
+                    startActivity(imageViewerIntent);
+                } else {
+                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+                    checkBox.setChecked(!checkBox.isChecked());
+                }
             }
         });
 
@@ -167,7 +176,7 @@ public class ProfileFragment extends Fragment {
                         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
                         JSONObject data = (JSONObject) args[0];
                         if(data.optBoolean("success")){
-                            ArrayList<PicturePack> packs = new ArrayList<>();
+                            packs = new ArrayList<>();
                             JSONArray photoList = data.optJSONArray("photoList");
                             for(int i=0; i<photoList.length(); i++){
                                 JSONObject jsonPhoto = photoList.optJSONObject(i);
@@ -195,11 +204,9 @@ public class ProfileFragment extends Fragment {
                                 packs.add(pack);
                             }
 
-                            adapter = new UserPictureGridAdapter(getActivity(), R.layout.item_user_pic, packs);
+                            adapter = new UserPictureGridAdapter(getActivity(), R.layout.item_user_pic, packs, false);
 
                             userPicGridview.setAdapter(adapter);
-                            //TODO add packs to adapter
-                            //TODO add adapter th gridview
                         } else {
                             Log.d("droidphoto", "User Feed error: " + data.optString("msg"));
                             initReload();
@@ -224,6 +231,28 @@ public class ProfileFragment extends Fragment {
                 });
             }
         };
+
+        if(!GlobalSocket.mSocket.hasListeners(getString(R.string.onRemovePicRespond))){
+            GlobalSocket.mSocket.on(getString(R.string.onRemovePicRespond), new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalSocket.mSocket.off(getString(R.string.onRemovePicRespond));
+                            JSONObject returnData = (JSONObject) args[0];
+                            if(returnData.optBoolean("success")){
+                                Snackbar.make(mainLayout, "Selected pictures are removed", Snackbar.LENGTH_SHORT).show();
+                                Log.d("droidphoto", "Selected pictures are removed");
+                            } else {
+                                Snackbar.make(mainLayout, "Error: "+ returnData.optString("msg"), Snackbar.LENGTH_SHORT).show();
+                                Log.d("droidphoto", "Error: "+ returnData.optString("msg"));
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
 
     private void requestUserinfo() {
@@ -295,6 +324,34 @@ public class ProfileFragment extends Fragment {
         reloadButton.setClickable(true);
     }
 
+    public void toggleEditMode(){
+        adapter.isEditMode = !adapter.isEditMode;
+        if(!adapter.isEditMode){
+            int count = 0;
+            JSONArray removePicId = new JSONArray();
+            for (int i=adapter.getCount()-1; i>=0; i--){
+                if(adapter.isMarkedAsRemove[i]){
+                    removePicId.put(packs.get(i).photoId);
+                    packs.remove(i);
+                    adapter.isMarkedAsRemove[i] = true;
+                    count++;
+                }
+            }
+            JSONObject removePicData = new JSONObject();
+            try {
+                removePicData.put("photo_count", count);
+                removePicData.put("remove_photo", removePicId);
+                removePicData.put("_event", getString(R.string.onRemovePicRespond));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            GlobalSocket.globalEmit("photo.remove", removePicData);
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onDestroy() {
         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -303,6 +360,9 @@ public class ProfileFragment extends Fragment {
         }
         if(GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserFeedRespond))) {
             GlobalSocket.mSocket.off(getString(R.string.onGetUserFeedRespond));
+        }
+        if(GlobalSocket.mSocket.hasListeners(getString(R.string.onRemovePicRespond))){
+            GlobalSocket.mSocket.off(getString(R.string.onRemovePicRespond));
         }
         super.onDestroy();
     }
