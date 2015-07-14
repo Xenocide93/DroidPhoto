@@ -13,25 +13,26 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.droidsans.photo.droidphoto.util.FeedRecycleViewAdapter;
 import com.droidsans.photo.droidphoto.util.FlowLayout;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
-import com.droidsans.photo.droidphoto.util.PictureGridAdapter;
 import com.droidsans.photo.droidphoto.util.PicturePack;
+import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.nkzawa.emitter.Emitter;
@@ -58,8 +59,10 @@ public class FeedFragment extends Fragment {
     public static final int SELECT_PHOTO = 8;
 
     private View logoLayout, dimView;
-    private GridView feedGridView;
-    private PictureGridAdapter adapter;
+//    private GridView feedGridView;
+    private RecyclerView feedRecycleView;
+//    private PictureGridAdapter adapter;
+    private FeedRecycleViewAdapter recycleAdapter;
     private ArrayList<PicturePack> feedPicturePack;
     private FloatingActionsMenu fam;
     private FloatingActionButton fabChoosePic, fabCamera;
@@ -82,6 +85,7 @@ public class FeedFragment extends Fragment {
 
     private boolean isLoaded;
     private int filterCount;
+    private boolean isFirstTimeLoadFragment;
 //    private NotifyAdapter packreload[];
 
 //    private int firstAtPause;
@@ -96,14 +100,9 @@ public class FeedFragment extends Fragment {
     private ArrayList<TagView> tagViewArray;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_feed_recycle, container, false);
         frameLayout = (FrameLayout) rootView.findViewById(R.id.main_view);
         reloadLayout = (LinearLayout) rootView.findViewById(R.id.reload_view);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.loading_circle);
@@ -121,12 +120,18 @@ public class FeedFragment extends Fragment {
 
     private void initialize() {
         findAllById();
+        setupRecycleView();
         setupListener();
         initializeVendorModelLsit();
     }
 
+    private void setupRecycleView() {
+        feedRecycleView.addItemDecoration(new SpacesItemDecoration(getActivity(), (int) getResources().getDimension(R.dimen.feed_recycleview_item_space)));
+        feedRecycleView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_feed_col_num)));
+    }
+
     private void initializeVendorModelLsit() {
-        tagViewArray = new ArrayList<TagView>();
+        tagViewArray = new ArrayList<>();
     }
 
     private void initRequestFeed() {
@@ -144,27 +149,24 @@ public class FeedFragment extends Fragment {
     }
 
     private void requestFeedPicture(JSONObject filter) {
-
         tagField.setVisibility(filterCount == 0? LinearLayout.GONE:LinearLayout.VISIBLE);
 
         try {
             filter.put("filter_count", filterCount);
             filter.put("skip", 0);
-            filter.put("limit", 40);
+            filter.put("limit", 100);
             filter.put("sptag", null);
             filter.put("_event", "get_feed");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(!GlobalSocket.globalEmit("photo.getfeed", filter)) {
-//            Toast.makeText(getActivity().getApplicationContext(),"cannot fire getfeed: retry in 3s", Toast.LENGTH_SHORT).show();
-//            wait 4 sec and try globalemit again
+        if(!GlobalSocket.globalEmit("photo.getfeed", filter)) { //wait 4 sec and try globalemit again
             final JSONObject delayedfilter = filter;
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!GlobalSocket.globalEmit("photo.getfeed", delayedfilter)) {
-                        initReload(); //if fail twice
+                    if (!GlobalSocket.globalEmit("photo.getfeed", delayedfilter)) { //if fail twice
+                        initReload();
                     } else {
                         GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
                     }
@@ -174,7 +176,6 @@ public class FeedFragment extends Fragment {
             //can emit: detect loss on the way
             GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         }
-
     }
 
     private void setupListener() {
@@ -188,10 +189,11 @@ public class FeedFragment extends Fragment {
                 } else {
                     removeTagBtn.setImageResource(R.drawable.remove_tag_normal);
                     removeTagBtn.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start();
-                    removeTag();
-                    updateTagView();
-                    updateFeed();
-                    initLoading();
+                    if(removeTag()){
+                        updateTagView();
+                        updateFeed();
+                        initLoading();
+                    }
                 }
             }
         });
@@ -288,7 +290,7 @@ public class FeedFragment extends Fragment {
                         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
                         JSONObject data = (JSONObject) args[0];
                         if (data.optBoolean("success")) {
-                            ArrayList<PicturePack> pack = new ArrayList<>();
+                            feedPicturePack = new ArrayList<>();
                             JSONArray photoList = data.optJSONArray("photoList");
                             int len = photoList.length();
                             for (int i = 0; i < len; i++) {
@@ -318,20 +320,22 @@ public class FeedFragment extends Fragment {
                                 picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
                                 picturePack.setSubmitDate(jsonPack.optString("submit_date"));
 
-                                pack.add(picturePack);
+                                feedPicturePack.add(picturePack);
                             }
-
-                            adapter = new PictureGridAdapter(getActivity(), R.layout.item_pic, pack);
 
                             if (loadingCircle.getVisibility() == ProgressBar.VISIBLE) {
                                 loadingCircle.setVisibility(ProgressBar.GONE);
                                 frameLayout.setVisibility(FrameLayout.VISIBLE);
                             }
 
-                            feedGridView.setAdapter(adapter);
-//                            adapter.notifyDataSetChanged();
-//                                feedGridView.setAdapter(new PictureGridAdapter(getActivity(), R.layout.item_pic, pack));
-//                                feedGridView.requestLayout();
+                            //setup tranditional recycle view adapter
+//                            adapter = new PictureGridAdapter(getActivity(), R.layout.item_feed_pic, feedPicturePack);
+//                            feedGridView.setAdapter(adapter);
+
+                            //setup new recycle view adapter
+                            recycleAdapter = new FeedRecycleViewAdapter(getActivity(), feedPicturePack);
+                            feedRecycleView.setAdapter(recycleAdapter);
+
                         } else {
                             Log.d("droidphoto", "Feed error: " + data.optString("msg"));
                             initReload();
@@ -369,10 +373,10 @@ public class FeedFragment extends Fragment {
 //            }
 //        });
 
-        feedGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                feedGridView.setClickable(false);
+//        feedGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                feedGridView.setClickable(false);
                 //reset all packreload -> code moved to onPause
 //                PicturePack currentPack = adapter.getItem(position);
 //                Fragment imageViewerFragment = new ImageViewerFragment();
@@ -399,28 +403,28 @@ public class FeedFragment extends Fragment {
 //                transaction.commit();
 //
 
-                Intent imageViewerIntent = new Intent(getActivity(), ImageViewerActivity.class);
-                PicturePack currentPack = adapter.getItem(position);
-                imageViewerIntent.putExtra("photoId", currentPack.photoId);
-                imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
-                imageViewerIntent.putExtra("caption", currentPack.caption);
-                imageViewerIntent.putExtra("vendor", currentPack.vendor);
-                imageViewerIntent.putExtra("model", currentPack.model);
-                imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
-                imageViewerIntent.putExtra("aperture", currentPack.aperture);
-                imageViewerIntent.putExtra("iso", currentPack.iso);
-                imageViewerIntent.putExtra("userId", currentPack.userId);
-                imageViewerIntent.putExtra("username", currentPack.username);
-                imageViewerIntent.putExtra("gpsLocation", currentPack.gpsLocation);
-                imageViewerIntent.putExtra("gpsLocalized", currentPack.gpsLocalizedLocation);
-
-                startActivity(imageViewerIntent);
+//                Intent imageViewerIntent = new Intent(getActivity(), ImageViewerActivity.class);
+//                PicturePack currentPack = adapter.getItem(position);
+//                imageViewerIntent.putExtra("photoId", currentPack.photoId);
+//                imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
+//                imageViewerIntent.putExtra("caption", currentPack.caption);
+//                imageViewerIntent.putExtra("vendor", currentPack.vendor);
+//                imageViewerIntent.putExtra("model", currentPack.model);
+//                imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
+//                imageViewerIntent.putExtra("aperture", currentPack.aperture);
+//                imageViewerIntent.putExtra("iso", currentPack.iso);
+//                imageViewerIntent.putExtra("userId", currentPack.userId);
+//                imageViewerIntent.putExtra("username", currentPack.username);
+//                imageViewerIntent.putExtra("gpsLocation", currentPack.gpsLocation);
+//                imageViewerIntent.putExtra("gpsLocalized", currentPack.gpsLocalizedLocation);
+//
+//                startActivity(imageViewerIntent);
 
 //                String transitionName = getString(R.string.transition_image_view);
 //                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), feedGridView, transitionName);
 //                ActivityCompat.startActivity(getActivity(),imageViewerIntent, options.toBundle());
-            }
-        });
+//            }
+//        });
     }
 
     private void initLoading() {
@@ -675,7 +679,8 @@ public class FeedFragment extends Fragment {
 
     @Override
     public void onStart() {
-        feedGridView.setClickable(true);
+//        feedGridView.setClickable(true);
+        FeedRecycleViewAdapter.isClickOnce = false;
         super.onStart();
     }
 
@@ -720,8 +725,11 @@ public class FeedFragment extends Fragment {
         logoLayout = frameLayout.findViewById(R.id.logo_layout);
         removeTagBtn = (ImageButton) frameLayout.findViewById(R.id.remove_tag_button);
 
-        if(feedGridView != null) feedGridView.invalidateViews();
-        feedGridView = (GridView) frameLayout.findViewById(R.id.feed_gridview);
+//        if(feedGridView != null) feedGridView.invalidateViews();
+//        feedGridView = (GridView) frameLayout.findViewById(R.id.feed_gridview);
+
+        if(feedRecycleView != null) feedRecycleView.invalidate();
+        feedRecycleView = (RecyclerView) frameLayout.findViewById(R.id.feed_recycleview);
 
         dimView = frameLayout.findViewById(R.id.dim_view);
 
@@ -740,12 +748,8 @@ public class FeedFragment extends Fragment {
         try {
             //create filter data
             filterCount = tagViewArray.size();
-//            for(int i = 0; i < filterCount; i++) {
             for(TagView view : tagViewArray) {
                 JSONObject value = new JSONObject();
-//                value.put("vendor", tagViewArray.get(i).vendorName);
-//                value.put("model", tagViewArray.get(i).modelName);
-//                filterData.put(i, value);
                 value.put("vendor", view.vendorName);
                 value.put("model", view.modelName);
                 filterData.put(value);
@@ -764,9 +768,7 @@ public class FeedFragment extends Fragment {
 
     private void updateTagView(){
         tagLayout.removeAllViews();
-//        for(int i = 0; i < tagViewArray.size(); i++){
         for(TagView view : tagViewArray) {
-//            tagLayout.addView(tagViewArray.get(i).getTagView());
             tagLayout.addView(view.getTagView());
         }
     }
@@ -777,15 +779,17 @@ public class FeedFragment extends Fragment {
         tagViewArray.add(tagView);
     }
 
-    private void removeTag(){
+    private boolean removeTag(){
         ArrayList<TagView> tempArray = new ArrayList<>();
-//        for(int i = 0; i < tagViewArray.size(); i++){
-//            if(!tagViewArray.get(i).selected){tempArray.add(tagViewArray.get(i));}
+        boolean someTagWasRemoved = false;
         for(TagView view : tagViewArray) {
-            if(!view.selected){tempArray.add(view);}
+            if(!view.selected) tempArray.add(view);
+            else someTagWasRemoved = true;
         }
         tagViewArray = tempArray;
-        updateTagView();
+        if(someTagWasRemoved) updateTagView();
+
+        return someTagWasRemoved;
     }
 
     public class TagView {

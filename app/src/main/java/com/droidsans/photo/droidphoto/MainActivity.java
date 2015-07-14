@@ -436,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeObjToInternalStorage(Object obj, String filename){
-        File file = new File(SplashLoginActivity.mContext.getExternalFilesDir(null), filename);
+        File file = new File(getApplicationContext().getExternalFilesDir(null), filename);
 
         try {
             InputStream is = new ByteArrayInputStream(serialize(obj));

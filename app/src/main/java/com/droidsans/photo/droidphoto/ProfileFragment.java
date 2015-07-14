@@ -337,6 +337,7 @@ public class ProfileFragment extends Fragment {
                     count++;
                 }
             }
+
             JSONObject removePicData = new JSONObject();
             try {
                 removePicData.put("photo_count", count);
@@ -346,7 +347,7 @@ public class ProfileFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            GlobalSocket.globalEmit("photo.remove", removePicData);
+            if(count!=0) GlobalSocket.globalEmit("photo.remove", removePicData);
         }
 
         adapter.notifyDataSetChanged();
