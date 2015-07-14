@@ -1,9 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.droidsans.photo.droidphoto.util.SquareImageView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/picture"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:src="@drawable/droidsans_logo"
-    android:adjustViewBounds="true">
-</com.droidsans.photo.droidphoto.util.SquareImageView>
+    android:layout_height="match_parent">
+
+    <com.droidsans.photo.droidphoto.util.SquareImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/picture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/droidsans_logo"
+        android:adjustViewBounds="true">
+    </com.droidsans.photo.droidphoto.util.SquareImageView>
+
+    <View
+        android:id="@+id/select_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selected_view_overlay"
+        android:visibility="gone"
+        android:alpha="0"/>
+
+    <View
+        android:id="@+id/checkbox_bg"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="right|top"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/ic_circle_white_24dp_50alpha"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/checkbox"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="right|top"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/ic_check_circle_accent_24dp"
+        android:alpha="0.0"
+        android:visibility="gone"/>
+</FrameLayout>

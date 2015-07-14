@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 //try read csv from file and print
                                 File file = new File(SplashLoginActivity.mContext.getExternalFilesDir(null), getString(R.string.csvFileName));
-                                BufferedReader reader = null;
+                                BufferedReader reader;
 
                                 try {
                                     reader = new BufferedReader(new FileReader(file));
@@ -144,19 +144,12 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         if(!GlobalSocket.globalEmit("csv.get", data)){
-//            Log.d("droidphoto", "emit 1 csv.get fail");
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(!GlobalSocket.globalEmit("csv.get", data)){
-//                        Log.d("droidphoto", "emit 2 csv.get fail");
-                    } else {
-//                        Log.d("droidphoto", "emit 2 csv.get done");
-                    }
+                    GlobalSocket.globalEmit("csv.get", data);
                 }
             }, 3000);
-        } else {
-//            Log.d("droidphoto", "emit 1 csv.get done");
         }
 
 
@@ -393,13 +386,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
         switch(item.getItemId()) {
             case R.id.action_settings:
                 return true;
             case R.id.action_search:
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
                 if(fragment instanceof FeedFragment){
                     ((FeedFragment)fragment).launchAddFilterPopup();
+                }
+                return true;
+            case R.id.action_remove_picture:
+                if(fragment instanceof ProfileFragment){
+                    ((ProfileFragment)fragment).toggleEditMode();
                 }
                 return true;
         }
@@ -448,8 +446,6 @@ public class MainActivity extends AppCompatActivity {
             os.write(writeData);
             is.close();
             os.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
