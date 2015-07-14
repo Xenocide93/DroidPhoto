@@ -62,6 +62,8 @@ public class GlobalSocket {
             opts.forceNew = true;
             opts.reconnection = false;
             opts.timeout = 5000;
+//            opts.upgrade = true;
+            opts.transports = new String[]{"websocket"};
             try {
                 mSocket = IO.socket(serverURL, opts);
             } catch (URISyntaxException e) {

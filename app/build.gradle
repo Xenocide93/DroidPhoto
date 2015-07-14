@@ -28,4 +28,5 @@ dependencies {
     compile 'com.github.nkzawa:socket.io-client:0.5.2'
     compile 'com.getbase:floatingactionbutton:1.9.0'
     compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'com.diegocarloslima:byakugallery:0.1.0'
 }

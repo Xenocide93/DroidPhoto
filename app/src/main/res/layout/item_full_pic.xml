@@ -32,13 +32,50 @@
     </LinearLayout>
 
 
-    <ImageView
-        android:id="@+id/picture"
+    <!--<ImageView-->
+        <!--android:id="@+id/picture"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="264dp"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:src="@drawable/droidsans_logo" />-->
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="264dp"
-        android:layout_gravity="center_horizontal"
-        android:scaleType="fitCenter"
-        android:src="@drawable/droidsans_logo" />
+        android:layout_gravity="center">
+        <com.diegocarloslima.byakugallery.lib.TouchImageView
+            android:id="@+id/picture"
+            android:layout_width="match_parent"
+            android:layout_height="264dp"
+            android:layout_centerInParent="true"
+            android:visibility="visible"/>
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="264dp"
+            android:layout_height="264dp"
+            android:layout_centerInParent="true"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:rotation="-90"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/progress_circular"/>
+
+        <com.droidsans.photo.droidphoto.util.FontTextView
+            android:id="@+id/progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="30sp"
+            android:text="0 %"
+            android:visibility="visible"/>
+
+        <include android:id="@+id/reload_view"
+            layout="@layout/layout_reload" />
+
+    </RelativeLayout>
 
     <ScrollView
         android:scrollbars="none"
