@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="main_feed_col_num">2</integer>
+    <integer name="profile_feed_col_num">3</integer>
 </resources>

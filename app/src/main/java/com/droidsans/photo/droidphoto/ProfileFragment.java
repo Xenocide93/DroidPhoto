@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,8 @@ import com.droidsans.photo.droidphoto.util.CircleTransform;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
+import com.droidsans.photo.droidphoto.util.ProfileFeedRecycleViewAdapter;
+import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
 import com.droidsans.photo.droidphoto.util.SquareImageView;
 import com.droidsans.photo.droidphoto.util.UserPictureGridAdapter;
 import com.github.nkzawa.emitter.Emitter;
@@ -50,7 +54,7 @@ public class ProfileFragment extends Fragment {
     private ImageView profilePic;
     private FontTextView profileName;
     private FontTextView usernameTV;
-    private GridView userPicGridview;
+    private RecyclerView profileFeedPicRecyclerview;
 
     private FontTextView reloadText;
     private Button reloadButton;
@@ -64,7 +68,8 @@ public class ProfileFragment extends Fragment {
     private Emitter.Listener onGetUserFeedRespond;
     private Emitter.Listener onDisconnect;
 
-    private UserPictureGridAdapter adapter;
+//    private UserPictureGridAdapter adapter;
+    private ProfileFeedRecycleViewAdapter adapter;
     ArrayList<PicturePack> packs;
 
     @Override
@@ -81,6 +86,7 @@ public class ProfileFragment extends Fragment {
 
     private void initialize() {
         findAllById();
+        setupProfileFeedRecyclerView();
         setupListener();
     }
 
@@ -91,34 +97,19 @@ public class ProfileFragment extends Fragment {
         requestUserPhoto();
     }
 
+    private void setupProfileFeedRecyclerView() {
+        profileFeedPicRecyclerview.addItemDecoration(new SpacesItemDecoration(
+                getActivity(),
+                getResources().getInteger(R.integer.profile_feed_col_num),
+                (int) getResources().getDimension(R.dimen.profile_recycleview_item_space),
+                false, false, false, false
+        ));
+        profileFeedPicRecyclerview.setLayoutManager(
+                new GridLayoutManager(getActivity(),
+                        getResources().getInteger(R.integer.profile_feed_col_num)));
+    }
+
     private void setupListener() {
-        userPicGridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(!adapter.isEditMode){
-                    Intent imageViewerIntent = new Intent(getActivity(), ImageViewerActivity.class);
-                    PicturePack currentPack = adapter.getItem(position);
-                    imageViewerIntent.putExtra("photoId", currentPack.photoId);
-                    imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
-                    imageViewerIntent.putExtra("caption", currentPack.caption);
-                    imageViewerIntent.putExtra("vendor", currentPack.vendor);
-                    imageViewerIntent.putExtra("model", currentPack.model);
-                    imageViewerIntent.putExtra("exposureTime", currentPack.shutterSpeed);
-                    imageViewerIntent.putExtra("aperture", currentPack.aperture);
-                    imageViewerIntent.putExtra("iso", currentPack.iso);
-                    imageViewerIntent.putExtra("userId", currentPack.userId);
-                    imageViewerIntent.putExtra("username", currentPack.username);
-                    imageViewerIntent.putExtra("gpsLocation", currentPack.gpsLocation);
-                    imageViewerIntent.putExtra("gpsLocalized", currentPack.gpsLocalizedLocation);
-
-                    startActivity(imageViewerIntent);
-                } else {
-                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-                    checkBox.setChecked(!checkBox.isChecked());
-                }
-            }
-        });
-
         onGetUserInfoRespond = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
@@ -162,7 +153,6 @@ public class ProfileFragment extends Fragment {
                 });
             }
         };
-
         if(!GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserInfoRespond))) {
             GlobalSocket.mSocket.on(getString(R.string.onGetUserInfoRespond), onGetUserInfoRespond);
         }
@@ -204,9 +194,11 @@ public class ProfileFragment extends Fragment {
                                 packs.add(pack);
                             }
 
-                            adapter = new UserPictureGridAdapter(getActivity(), R.layout.item_user_pic, packs, false);
 
-                            userPicGridview.setAdapter(adapter);
+                            Log.d("droidphoto", "set adapter");
+                            adapter = new ProfileFeedRecycleViewAdapter(getActivity(), packs);
+                            profileFeedPicRecyclerview.setAdapter(adapter);
+
                         } else {
                             Log.d("droidphoto", "User Feed error: " + data.optString("msg"));
                             initReload();
@@ -325,32 +317,40 @@ public class ProfileFragment extends Fragment {
     }
 
     public void toggleEditMode(){
-        adapter.isEditMode = !adapter.isEditMode;
-        if(!adapter.isEditMode){
+        adapter.isInEditMode = !adapter.isInEditMode;
+        if(!adapter.isInEditMode){ //exit edit mode
             int count = 0;
             JSONArray removePicId = new JSONArray();
-            for (int i=adapter.getCount()-1; i>=0; i--){
+            for (int i=adapter.getItemCount()-1; i>=0; i--){
                 if(adapter.isMarkedAsRemove[i]){
                     removePicId.put(packs.get(i).photoId);
                     packs.remove(i);
-                    adapter.isMarkedAsRemove[i] = true;
                     count++;
+                    adapter.isMarkedAsRemove[i] = false;
                 }
             }
 
-            JSONObject removePicData = new JSONObject();
-            try {
-                removePicData.put("photo_count", count);
-                removePicData.put("remove_photo", removePicId);
-                removePicData.put("_event", getString(R.string.onRemovePicRespond));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            if(count>0){
+                JSONObject removePicData = new JSONObject();
+                try {
+                    removePicData.put("photo_count", count);
+                    removePicData.put("remove_photo", removePicId);
+                    removePicData.put("_event", getString(R.string.onRemovePicRespond));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-            if(count!=0) GlobalSocket.globalEmit("photo.remove", removePicData);
+                GlobalSocket.globalEmit("photo.remove", removePicData);
+            }
         }
 
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onStart() {
+        ProfileFeedRecycleViewAdapter.isClickOnce = false;
+        super.onStart();
     }
 
     @Override
@@ -372,7 +372,7 @@ public class ProfileFragment extends Fragment {
         profilePic = (ImageView) mainLayout.findViewById(R.id.profile_image_circle);
         profileName = (FontTextView) mainLayout.findViewById(R.id.display_name);
         usernameTV = (FontTextView) mainLayout.findViewById(R.id.username);
-        userPicGridview = (GridView) mainLayout.findViewById(R.id.gridview_user_picture);
+        profileFeedPicRecyclerview = (RecyclerView) mainLayout.findViewById(R.id.recyclerview_profile_feed_picture);
 
         reloadText = (FontTextView) reloadLayout.findViewById(R.id.reload_text);
         reloadButton = (Button) reloadLayout.findViewById(R.id.reload_button);

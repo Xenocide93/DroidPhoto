@@ -210,11 +210,17 @@ public class MainActivity extends AppCompatActivity {
                 .transform(new CircleTransform(getApplicationContext()))
                 .into(profile);
 
-        navigationHeader.setOnTouchListener(new View.OnTouchListener() {
+        navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //TODO move to profile without losing touch anim
-                return false;
+            public void onClick(View v) {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.main_fragment, new ProfileFragment());
+                fragmentTransaction.commit();
+                toolbar.setTitle(getUserdata().getString(getString(R.string.username), "???"));
+                drawerLayout.closeDrawers();
+                if(previousMenuItem != null) previousMenuItem.setChecked(false);
+                previousMenuItem = null;
+
             }
         });
 
@@ -260,11 +266,10 @@ public class MainActivity extends AppCompatActivity {
                     toolbar.setTitle("Events");
                     previousMenuItem = eventMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_help))) {
-//                    GlobalSocket.reconnect();
+//                GlobalSocket.reconnect();
                     helpMenuItem.setChecked(true);
-                    fragmentTransaction.replace(R.id.main_fragment, new ProfileFragment());
+                    fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
                     fragmentTransaction.commit();
-                    toolbar.setTitle(getUserdata().getString(getString(R.string.username), "???"));
                     previousMenuItem = helpMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_about))) {
                     aboutMenuItem.setChecked(true);
@@ -300,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     logoutMenuItem.setChecked(false);
-                                    previousMenuItem.setChecked(true);
+                                    if(previousMenuItem != null) previousMenuItem.setChecked(true);
                                 }
                             })
 //                            .setIcon(android.R.drawable.ic_dialog_alert)
@@ -346,7 +351,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
         fragmentTransaction.commit();
         toolbar.setTitle("Feed");
-        getSupportFragmentManager().findFragmentById(R.id.main_fragment);
     }
 
     @Override

@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -301,8 +302,11 @@ public class FillPostActivity extends AppCompatActivity {
 //            }
             Log.d("droidphoto", "IFD0 make: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE));
             Log.d("droidphoto", "IFD0 model: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL));
-            if(!orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).equalsIgnoreCase(Build.MANUFACTURER) ||
-                    !Build.MODEL.toLowerCase().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase())) {
+            Log.d("droidphoto", "phone make: " + Build.MANUFACTURER);
+            Log.d("droidphoto", "phone model: " + Build.MODEL);
+
+            if(!orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).trim().equalsIgnoreCase(Build.MANUFACTURER.trim()) ||
+                    !Build.MODEL.toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim())) {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("return code", "not your photo");
                 setResult(RESULT_CANCELED, returnIntent);
@@ -730,8 +734,9 @@ public class FillPostActivity extends AppCompatActivity {
                             if(data.getBoolean("success")){
                                 //TODO notify main activity of successfully upload
                                 Log.d("droidphoto", "upload success");
+                                if(FeedFragment.mFeedFragment != null) FeedFragment.mFeedFragment.updateFeed();
                             } else {
-                                Log.d("droidphoto", "upload error: "+data.getString("msg"));
+                                Log.d("droidphoto", "upload error: " + data.getString("msg"));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
