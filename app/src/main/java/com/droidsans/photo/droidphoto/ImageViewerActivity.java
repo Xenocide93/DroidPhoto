@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.disklrucache.DiskLruCache;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.cache.DiskCache;
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.diegocarloslima.byakugallery.lib.TileBitmapDrawable;
@@ -34,9 +35,11 @@ import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -45,10 +48,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Scanner;
 
 
 public class ImageViewerActivity extends AppCompatActivity {
-
+    private static final int MAX_CACHE_SIZE = 1024*1024*50; //50MB
     private TouchImageView picture;
     private Bitmap imageBitmap;
     private byte imageByte[];
@@ -82,23 +86,20 @@ public class ImageViewerActivity extends AppCompatActivity {
 //                    .load(GlobalSocket.serverURL + baseURL + photoURL)
 //                    .crossFade()
 //                    .into(picture);
-            //TODO cache control
-            Toast.makeText(getApplicationContext(), "cachedir: " + getCacheDir().getAbsolutePath(), Toast.LENGTH_SHORT).show();
-            File cachedFile = new File(getCacheDir().getAbsolutePath() + "/" + photoURL);
+            File cachedFile = new File(getCacheDir(), photoURL.split("\\.")[0]);
             if(cachedFile.exists()) {
                 //load image from cache
-                Glide.with(getApplicationContext())
-                        .load(cachedFile)
-                        .crossFade()
-                        .into(picture);
+//                Glide.with(getApplicationContext())
+//                        .load(cachedFile)
+//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+////                        .crossFade()
+//                        .into(picture);
+                TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
             } else {
                 //download image
                 setupTouchListener();
                 initImageLoader();
             }
-
-//            setupTouchListener();
-//            initImageLoader();
         } else {
             Toast.makeText(getApplicationContext(),"cannot initialize imageviewer (bug ?)",Toast.LENGTH_LONG).show();
         }
@@ -261,6 +262,8 @@ public class ImageViewerActivity extends AppCompatActivity {
      */
 
     private class ImageLoader extends AsyncTask<String, Integer, String> {
+        int fileLength;
+
         @Override
         protected String doInBackground(String... params) {
             InputStream in = null;
@@ -276,7 +279,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                     return urlConnection.getResponseCode() + "";
                 }
 
-                int fileLength = urlConnection.getContentLength();
+                fileLength = urlConnection.getContentLength();
 
                 in = urlConnection.getInputStream();
                 outputStream = new ByteArrayOutputStream();
@@ -301,7 +304,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                 if(total == fileLength) {
                     //imageBitmap = BitmapFactory.decodeStream(new BufferedInputStream(in));
 //                    if(imageBitmap != null) imageBitmap.recycle();
-                    imageBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, total);
+//                    imageBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, total);
                     imageByte = outputStream.toByteArray();
                 } else {
                 }
@@ -338,7 +341,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                 percentage = progress[0];
                 progressBar.setProgress(percentage);
                 progressText.setText(percentage + " %");
-                Log.d("droidphoto", "downloaded: " + progress[0] + "%");
+//                Log.d("droidphoto", "downloaded: " + progress[0] + "%");
             }
         }
 
@@ -346,11 +349,96 @@ public class ImageViewerActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             switch (s) {
                 case "ok":
+                    Log.d("droidphoto", "init cache task for " + photoURL);
+//                    String filename = photoURL.substring(0, photoURL.indexOf("."));
+                    String filename = photoURL.split("\\.")[0];
+                    String cachetablename = "test.e";
+                    String loadedImagePath = getCacheDir() + "/" + filename;
+
+                    /*  format
+                        1 cacheSize -- total cache size exclude this table file
+                        2 filename|size
+                        3 filename|size
+                        ...
+                     */
+
+                    //check cache size
+                    int cacheSize = -1;
+                    try {
+                        File ccf = new File(getCacheDir(), cachetablename);
+                        if(ccf.exists()) {
+                            BufferedReader br = new BufferedReader(new FileReader(ccf));
+                            String read = br.readLine();
+                            if(read.isEmpty()) {
+                                cacheSize = 0;
+                                br.close();
+                            } else {
+                                cacheSize = Integer.parseInt(read);
+
+                                while(cacheSize + fileLength > ImageViewerActivity.MAX_CACHE_SIZE) {
+                                    Log.d("droidphoto", "clearing cache...");
+                                    String line = br.readLine();
+                                    if(line == null) {
+                                        //no more to remove
+                                        return;
+                                    }
+                                    String line2[] = line.split("\\|");
+                                    Log.d("droidphoto", "removed size: " + line2[1]);
+                                    cacheSize -= Integer.parseInt(line2[1]);
+                                    File deleted = new File(getCacheDir(), line2[0]);
+                                    if(!deleted.delete()) {
+                                        Log.e("droidphoto", "error removing cached image");
+                                    }
+                                }
+                                cacheSize += fileLength;
+                                BufferedWriter bw = new BufferedWriter(new FileWriter(new File(getCacheDir(), cachetablename + ".tmp")));
+                                bw.write("" + cacheSize);
+                                String value;
+                                while((value = br.readLine()) != null) {
+                                    bw.write("\n" + value);
+                                }
+                                bw.close();
+                                br.close();
+
+                                File oldf = new File (getCacheDir(), cachetablename);
+                                File newf = new File (getCacheDir(), cachetablename + ".tmp");
+                                if(!oldf.delete()) {
+                                    Log.e("droidphoto", "error removing old table");
+                                }
+                                if(!newf.renameTo(oldf)) {
+                                    Log.e("droidphoto", "error replacing new table");
+                                }
+                            }
+                        } else {
+                            cacheSize = fileLength;
+                            FileOutputStream fos = new FileOutputStream(ccf);
+                            fos.write((cacheSize + "").getBytes());
+                            fos.close();
+                        }
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(cacheSize == -1) {
+                        Toast.makeText(getApplicationContext(), "bug!? please report", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
                     //save file to cache
                     try {
-                        FileOutputStream fos = new FileOutputStream(getCacheDir().getAbsolutePath() + "/" + photoURL);
+                        FileOutputStream fos = new FileOutputStream(loadedImagePath);
                         fos.write(imageByte);
                         fos.close();
+                        //update table
+                        BufferedWriter fw = new BufferedWriter(new FileWriter(new File(getCacheDir(), cachetablename), true));
+                        //if new file
+                        if(cacheSize == 0) {
+                            cacheSize += fileLength;
+                            fw.write("" + cacheSize);
+                        }
+                        fw.write("\n" + filename + "|" + fileLength);
+                        fw.close();
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -358,18 +446,13 @@ public class ImageViewerActivity extends AppCompatActivity {
                     }
                     progressBar.setVisibility(ProgressBar.GONE);
                     progressText.setVisibility(FontTextView.GONE);
-                    Glide.with(getApplicationContext())
-                            .load(imageByte)
-                            .crossFade()
-                            .into(picture);
+//                    Glide.with(getApplicationContext())
+//                            .load(imageByte)
+//                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                            .crossFade()
+//                            .into(picture);
 
-//                    InputStream imgIn = new ByteArrayInputStream(imageByte);
-//                    TileBitmapDrawable.attachTileBitmapDrawable(picture, imgIn, null, null);
-
-//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                    imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                    TileBitmapDrawable.attachTileBitmapDrawable(picture, new ByteArrayInputStream(stream.toByteArray()), null, null);
-
+                    TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
                     picture.setVisibility(TouchImageView.VISIBLE);
                     break;
                 case "timeout":

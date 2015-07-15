@@ -661,7 +661,7 @@ public class FillPostActivity extends AppCompatActivity {
 
                         try {
                             if (respond.getBoolean("success")) {
-                                JSONObject photoDetailStuff = new JSONObject();
+                                final JSONObject photoDetailStuff = new JSONObject();
                                 photoDetailStuff.put("photo_url", respond.getString("filename"));
                                 photoDetailStuff.put("caption", caption.getText().toString());
                                 photoDetailStuff.put("model", model.getText().toString());
@@ -692,7 +692,16 @@ public class FillPostActivity extends AppCompatActivity {
                                 photoDetailStuff.put("is_accept", isAccept.isChecked());
                                 photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
 
-                                GlobalSocket.globalEmit("photo.upload", photoDetailStuff);
+                                if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
+                                    delayAction.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
+                                                //???
+                                            }
+                                        }
+                                    }, 2000);
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

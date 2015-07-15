@@ -70,7 +70,7 @@
             android:layout_centerInParent="true"
             android:textSize="30sp"
             android:text="0 %"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <include android:id="@+id/reload_view"
             layout="@layout/layout_reload" />
