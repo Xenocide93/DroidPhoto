@@ -126,7 +126,12 @@ public class FeedFragment extends Fragment {
     }
 
     private void setupRecycleView() {
-        feedRecycleView.addItemDecoration(new SpacesItemDecoration(getActivity(), (int) getResources().getDimension(R.dimen.feed_recycleview_item_space)));
+        feedRecycleView.addItemDecoration(new SpacesItemDecoration(
+                getActivity(),
+                getResources().getInteger(R.integer.main_feed_col_num),
+                (int) getResources().getDimension(R.dimen.feed_recycleview_item_space),
+                false, false, false, false
+        ));
         feedRecycleView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_feed_col_num)));
     }
 

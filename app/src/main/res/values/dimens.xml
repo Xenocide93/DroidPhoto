@@ -7,5 +7,6 @@
     <dimen name="selector_overlay_stroke_width">4dp</dimen>
 
     <dimen name="feed_recycleview_item_space">4dp</dimen>
+    <dimen name="profile_recycleview_item_space">2dp</dimen>
 
 </resources>
