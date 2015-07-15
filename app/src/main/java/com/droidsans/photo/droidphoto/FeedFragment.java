@@ -2,6 +2,7 @@ package com.droidsans.photo.droidphoto;
 
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -85,7 +86,6 @@ public class FeedFragment extends Fragment {
 
     private boolean isLoaded;
     private int filterCount;
-    private boolean isFirstTimeLoadFragment;
 //    private NotifyAdapter packreload[];
 
 //    private int firstAtPause;
@@ -98,6 +98,8 @@ public class FeedFragment extends Fragment {
     private Handler delayAction = new Handler();
 
     private ArrayList<TagView> tagViewArray;
+
+    public static FeedFragment mFeedFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -122,7 +124,7 @@ public class FeedFragment extends Fragment {
         findAllById();
         setupRecycleView();
         setupListener();
-        initializeVendorModelLsit();
+        initializeVendorModelList();
     }
 
     private void setupRecycleView() {
@@ -135,7 +137,7 @@ public class FeedFragment extends Fragment {
         feedRecycleView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_feed_col_num)));
     }
 
-    private void initializeVendorModelLsit() {
+    private void initializeVendorModelList() {
         tagViewArray = new ArrayList<>();
     }
 
@@ -690,6 +692,18 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        mFeedFragment = this;
+        super.onAttach(activity);
+    }
+
+    @Override
+    public void onDetach() {
+        mFeedFragment = null;
+        super.onDetach();
+    }
+
+    @Override
     public void onDestroy() {
         if(GlobalSocket.mSocket.hasListeners("get_feed")) {
             GlobalSocket.mSocket.off("get_feed");
@@ -746,7 +760,7 @@ public class FeedFragment extends Fragment {
         reloadButton = (Button) reloadLayout.findViewById(R.id.reload_button);
     }
 
-    private void updateFeed(){
+    public void updateFeed(){
         JSONObject filter = new JSONObject();
         JSONArray filterData = new JSONArray();
 

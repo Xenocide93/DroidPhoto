@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                                 writeObjToInternalStorage(version, getString(R.string.csvVersion));
 
                                 //try read csv from file and print
-                                File file = new File(SplashLoginActivity.mContext.getExternalFilesDir(null), getString(R.string.csvFileName));
+                                File file = new File(getApplicationContext().getExternalFilesDir(null), getString(R.string.csvFileName));
                                 BufferedReader reader;
 
                                 try {
@@ -351,7 +351,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
         fragmentTransaction.commit();
         toolbar.setTitle("Feed");
-        getSupportFragmentManager().findFragmentById(R.id.main_fragment);
     }
 
     @Override

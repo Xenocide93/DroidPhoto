@@ -8,5 +8,7 @@
 
     <dimen name="feed_recycleview_item_space">4dp</dimen>
     <dimen name="profile_recycleview_item_space">2dp</dimen>
+    <dimen name="image_viewer_height">246dp</dimen>
+    <dimen name="image_viewer_size">150dp</dimen>
 
 </resources>

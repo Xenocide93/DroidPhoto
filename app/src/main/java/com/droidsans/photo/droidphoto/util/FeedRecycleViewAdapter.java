@@ -74,6 +74,26 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter {
                 }
             }
         });
+
+        //TODO for test UI
+//        if(position == 0){
+//            FeedRecycleViewAdapter.isClickOnce = true;
+//            Intent imageViewerIntent = new Intent(context, ImageViewerActivity.class);
+//            imageViewerIntent.putExtra("photoId", pack.photoId);
+//            imageViewerIntent.putExtra("photoURL", pack.photoURL);
+//            imageViewerIntent.putExtra("caption", pack.caption);
+//            imageViewerIntent.putExtra("vendor", pack.vendor);
+//            imageViewerIntent.putExtra("model", pack.model);
+//            imageViewerIntent.putExtra("exposureTime", pack.shutterSpeed);
+//            imageViewerIntent.putExtra("aperture", pack.aperture);
+//            imageViewerIntent.putExtra("iso", pack.iso);
+//            imageViewerIntent.putExtra("userId", pack.userId);
+//            imageViewerIntent.putExtra("username", pack.username);
+//            imageViewerIntent.putExtra("gpsLocation", pack.gpsLocation);
+//            imageViewerIntent.putExtra("gpsLocalized", pack.gpsLocalizedLocation);
+//
+//            context.startActivity(imageViewerIntent);
+//        }
     }
 
     @Override
