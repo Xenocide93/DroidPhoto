@@ -11,4 +11,6 @@
     <dimen name="image_viewer_height">246dp</dimen>
     <dimen name="image_viewer_size">150dp</dimen>
 
+    <dimen name="about_paragraph_spacing">24dp</dimen>
+    <dimen name="about_text_spacing">16dp</dimen>
 </resources>

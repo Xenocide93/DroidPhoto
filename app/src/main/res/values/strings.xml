@@ -39,6 +39,12 @@
     <string name="register_accept_tos">By clicking Register, you agree to our  </string>
     <string name="register_accept_tos_link">Terms of Services</string>
 
+    <!--settings text-->
+
+    <!--password change hint-->
+    <string name="change_password_old">old password</string>
+    <string name="change_password_new">new password</string>
+    <string name="change_password_confirm">confirm new password</string>
 
     <!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
     <!--DO NOT TRANSLATE STRINGS BELOW-->
@@ -78,6 +84,7 @@
     <string name="csvVersion">version</string>
     <string name="csvFileName">csv_version</string>
     <string name="onRemovePicRespond">onRemovePicRespond</string>
+    <string name="title_activity_change_password">ChangePasswordActivity</string>
 
 </resources>
 

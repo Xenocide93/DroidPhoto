@@ -74,6 +74,10 @@
             android:name=".PlaceholderActivity"
             android:label="@string/title_activity_placeholder" >
         </activity>
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:label="@string/title_activity_change_password" >
+        </activity>
     </application>
 
 </manifest>

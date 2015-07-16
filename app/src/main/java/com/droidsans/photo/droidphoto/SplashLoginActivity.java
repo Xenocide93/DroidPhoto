@@ -102,7 +102,7 @@ public class SplashLoginActivity extends Activity {
                                         .putString(getString(R.string.token), token)
                                         .putString(getString(R.string.user_id), userObject.optString("_id"))
                                         .putString(getString(R.string.username), userObject.optString("username"))
-                                        .putString(getString(R.string.display_name), userObject.optString("disp_name"))
+//                                        .putString(getString(R.string.display_name), userObject.optString("disp_name"))
                                         .apply();
 //                                GlobalSocket.initializeToken(token);
 //                                GlobalSocket.writeStringToFile(GlobalSocket.USERNAME, ((String) userObject.get("username")));
@@ -254,7 +254,7 @@ public class SplashLoginActivity extends Activity {
         bypassLoginBtn = (Button) findViewById(R.id.bypass_login);
     }
 
-    public static String bytesToHex(byte[] in) {
+    private String bytesToHex(byte[] in) {
         final StringBuilder builder = new StringBuilder();
         for(byte b : in) {
             builder.append(String.format("%02x", b));

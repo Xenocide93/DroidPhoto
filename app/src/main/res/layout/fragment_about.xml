@@ -1,16 +1,38 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context="com.droidsans.photo.droidphoto.AboutFragment">
 
+    <ImageView
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:layout_gravity="center"
+        android:src="@drawable/droidsans_logo" />
 
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="About" />
+    <com.droidsans.photo.droidphoto.util.FontTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/about_paragraph_spacing"
+        android:textSize="18sp"
+        android:text="Created by"/>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ListView>
+    <com.droidsans.photo.droidphoto.util.FontTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/about_text_spacing"
+        android:textSize="14sp"
+        android:text="Thanakorn Yodthong (froztic)"/>
 
+    <com.droidsans.photo.droidphoto.util.FontTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:text="Patinya Petcharit (ong29673)"/>
 
-</RelativeLayout>
+    <com.droidsans.photo.droidphoto.util.FontTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

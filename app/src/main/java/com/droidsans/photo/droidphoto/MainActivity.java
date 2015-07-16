@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.commit();
                 toolbar.setTitle(getUserdata().getString(getString(R.string.username), "???"));
                 drawerLayout.closeDrawers();
-                if(previousMenuItem != null) previousMenuItem.setChecked(false);
+                if (previousMenuItem != null) previousMenuItem.setChecked(false);
                 previousMenuItem = null;
 
             }
@@ -270,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
                     helpMenuItem.setChecked(true);
                     fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
                     fragmentTransaction.commit();
+                    toolbar.setTitle("Help");
                     previousMenuItem = helpMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_about))) {
                     aboutMenuItem.setChecked(true);
