@@ -1,12 +1,9 @@
 package com.droidsans.photo.droidphoto;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,7 +19,7 @@ public class BrowseModelActivity extends AppCompatActivity {
 
     private ListView modelListView;
     private ModelListAdapter modelListAdapter;
-    public static String[][] modelNames = {
+    public static String[][] modelName = {
             {"a11w"},
             {"Zenfone 2", "Zenfone 5"},
             {"RIDGE"},
@@ -64,7 +61,7 @@ public class BrowseModelActivity extends AppCompatActivity {
     }
 
     private void setupModelListView() {
-        modelListAdapter = new ModelListAdapter(getApplicationContext(), R.layout.item_model, modelNames[vendorNum]);
+        modelListAdapter = new ModelListAdapter(getApplicationContext(), R.layout.item_model, modelName[vendorNum]);
         modelListView.setAdapter(modelListAdapter);
         modelListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -73,7 +70,7 @@ public class BrowseModelActivity extends AppCompatActivity {
                 resultIntent.putExtra(BrowseVendorActivity.VENDOR_NUM, vendorNum);
                 resultIntent.putExtra(BrowseVendorActivity.VENDOR_NAME, vendorName);
                 resultIntent.putExtra(BrowseModelActivity.MODEL_NUM, position);
-                resultIntent.putExtra(BrowseModelActivity.MODEL_NAME, modelNames[vendorNum][position]);
+                resultIntent.putExtra(BrowseModelActivity.MODEL_NAME, modelName[vendorNum][position]);
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }
@@ -85,12 +82,12 @@ public class BrowseModelActivity extends AppCompatActivity {
         modelListView = (ListView) findViewById(R.id.model_listview);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_browse_model, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_browse_model, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

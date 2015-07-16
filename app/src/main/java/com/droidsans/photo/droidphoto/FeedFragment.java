@@ -95,6 +95,7 @@ public class FeedFragment extends Fragment {
 
     private Emitter.Listener onGetFeedRespond;
     private Emitter.Listener onDisconnect;
+    private Emitter.Listener onGetDeviceListRespond;
 
     private Handler delayAction = new Handler();
 
@@ -116,6 +117,7 @@ public class FeedFragment extends Fragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        initializeVendorModelList();
         initRequestFeed();
         initLoading();
         super.onActivityCreated(savedInstanceState);
@@ -125,12 +127,6 @@ public class FeedFragment extends Fragment {
         findAllById();
         setupRecycleView();
         setupListener();
-        setupFloatingActionButton();
-        initializeVendorModelList();
-    }
-
-    private void setupFloatingActionButton() {
-
     }
 
     private void setupRecycleView() {
@@ -145,6 +141,23 @@ public class FeedFragment extends Fragment {
 
     private void initializeVendorModelList() {
         tagViewArray = new ArrayList<>();
+        final JSONObject requestStuff = new JSONObject();
+        try {
+            requestStuff.put("_event", "get_device_list");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if(!GlobalSocket.globalEmit("db.getdevicelist", requestStuff)) {
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(!GlobalSocket.globalEmit("db.getdevicelist", requestStuff)) {
+                        // :(
+                    }
+                }
+            }, 1500);
+        }
     }
 
     private void initRequestFeed() {
@@ -196,7 +209,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 isRemoveTagActive = !isRemoveTagActive;
-                if(isRemoveTagActive){
+                if (isRemoveTagActive) {
                     removeTagBtn.setImageResource(R.drawable.remove_tag_pressed);
                     removeTagBtn.animate().scaleX(1.15f).scaleY(1.15f).setDuration(150).start();
                 } else {
@@ -360,6 +373,80 @@ public class FeedFragment extends Fragment {
         if(!GlobalSocket.mSocket.hasListeners("get_feed")) {
             GlobalSocket.mSocket.on("get_feed", onGetFeedRespond);
         }
+
+        onGetDeviceListRespond = new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject data = (JSONObject) args[0];
+                        if(data.optBoolean("success")) {
+                            try {
+                                //set vendor list
+                                BrowseVendorActivity.vendorName = data.optJSONArray("vendorList").join(",").replaceAll("\"", "").split(",");
+                                JSONArray models = data.optJSONArray("modelList");
+
+                                //set model list
+                                BrowseModelActivity.modelName = new String[models.length()][];
+                                for(int i = 0; i < models.length(); i++) {
+                                    BrowseModelActivity.modelName[i] = ((JSONArray) models.get(i)).join(",").replaceAll("\"", "").split(",");
+                                }
+
+                                //set drawable for vendor
+                                int vendorSize = BrowseVendorActivity.vendorName.length;
+                                BrowseVendorActivity.vendorPicResource = new Integer[vendorSize];
+                                for(int i = 0; i < vendorSize; i++) {
+                                    switch (BrowseVendorActivity.vendorName[i]) {
+                                        case "Asus":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.asus_300;
+                                            break;
+                                        case "OPPO":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.oppo_300;
+                                            break;
+                                        case "WIKO":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.wiko_300;
+                                            break;
+                                        case "LG":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.lg_300;
+                                            break;
+                                        case "Sony":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.sony_300;
+                                            break;
+                                        case "Samsung":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.samsung_300;
+                                            break;
+                                        default:
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.curve_primary;
+                                            break;
+                                    }
+                                }
+                                Log.d("droidphoto", "done init vendor model list");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            switch (data.optString("msg")) {
+                                case "db error":
+                                    //sad
+                                    break;
+                                case "no list":
+                                    //that's okay :o
+                                    break;
+                                default:
+                                    //fuck you
+                                    break;
+                            }
+                        }
+                    }
+                });
+            }
+        };
+
+        if(!GlobalSocket.mSocket.hasListeners("get_device_list")) {
+            GlobalSocket.mSocket.on("get_device_list", onGetDeviceListRespond);
+        }
+
 //
 //        feedGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
 //            @Override
@@ -713,6 +800,9 @@ public class FeedFragment extends Fragment {
     public void onDestroy() {
         if(GlobalSocket.mSocket.hasListeners("get_feed")) {
             GlobalSocket.mSocket.off("get_feed");
+        }
+        if(GlobalSocket.mSocket.hasListeners("get_device_list")) {
+            GlobalSocket.mSocket.off("get_device_list");
         }
         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
 

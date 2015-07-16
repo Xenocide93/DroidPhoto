@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //        toolbar.inflateMenu(R.menu.menu_main);
 
-        displayName.setText(getUserdata().getString(getString(R.string.display_name), "no display name ??"));
+        displayName.setText(getUserdata().getString(getString(R.string.display_name), ""));
         username.setText("@" + getUserdata().getString(getString(R.string.username), "... no username ?? must be a bug"));
         Glide.with(getApplicationContext())
                 .load("https://pbs.twimg.com/profile_images/596106374725021696/r2zqUbK7_400x400.jpg")
