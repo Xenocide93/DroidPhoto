@@ -3,8 +3,8 @@
     <stroke
         android:color="@color/accent_color"
         android:width="@dimen/selector_overlay_stroke_width"/>
-    <!--<solid-->
-        <!--android:color="#4B00A597"-->
-        <!--/>-->
+    <solid
+        android:color="@color/transparent"
+    />
 
 </shape>
