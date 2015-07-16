@@ -1,244 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
-    android:fillViewport="true">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:background="@drawable/curve_white"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/user_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:gravity="center_vertical|left"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:alpha="0.7"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_account_circle_black_48dp" />
-
-            <com.droidsans.photo.droidphoto.util.FontTextView
-                android:id="@+id/user"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:gravity="center"
-                android:text="usertest" />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/image_viewer_height"
-            android:layout_gravity="center">
-
-            <com.diegocarloslima.byakugallery.lib.TouchImageView
-                android:id="@+id/picture"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/image_viewer_height"
-                android:layout_centerInParent="true"
-                android:visibility="visible" />
-
-            <ProgressBar
-                android:id="@+id/progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="@dimen/image_viewer_size"
-                android:layout_height="150dp"
-                android:layout_centerInParent="true"
-                android:indeterminate="false"
-                android:max="100"
-                android:progress="0"
-                android:progressDrawable="@drawable/progress_circular"
-                android:rotation="-90" />
-
-            <com.droidsans.photo.droidphoto.util.FontTextView
-                android:id="@+id/progress_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="0 %"
-                android:textSize="30sp"
-                android:visibility="gone" />
-
-            <include
-                android:id="@+id/reload_view"
-                layout="@layout/layout_reload" />
-
-        </RelativeLayout>
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/caption_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical|left"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:alpha="0.7"
-                    android:src="@drawable/ic_comment_black_48dp" />
-
-                <com.droidsans.photo.droidphoto.util.FontTextView
-                    android:id="@+id/caption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="caption_test" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/device_name_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical|left"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:alpha="0.7"
-                    android:src="@drawable/ic_smartphone_black_48dp" />
-
-                <com.droidsans.photo.droidphoto.util.FontTextView
-                    android:id="@+id/device_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="\???" />
-
-            </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/pic_viewer_image_top_margin">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:orientation="horizontal">
+                android:layout_height="@dimen/image_viewer_height"
+                android:layout_gravity="center">
 
-                <LinearLayout
-                    android:id="@+id/shutter_speed_layout"
+                <com.diegocarloslima.byakugallery.lib.TouchImageView
+                    android:id="@+id/picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/image_viewer_height"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible" />
+
+                <ProgressBar
+                    android:id="@+id/progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="@dimen/image_viewer_size"
+                    android:layout_height="150dp"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/progress_circular"
+                    android:rotation="-90" />
+
+                <com.droidsans.photo.droidphoto.util.FontTextView
+                    android:id="@+id/progress_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical|left"
-                    android:orientation="horizontal">
+                    android:layout_centerInParent="true"
+                    android:text="0 %"
+                    android:textSize="30sp"
+                    android:visibility="gone" />
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:alpha="0.7"
-                        android:src="@drawable/ic_timer_black_48dp" />
-
-                    <com.droidsans.photo.droidphoto.util.FontTextView
-                        android:id="@+id/shutter_speed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="\???" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/aperture_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="95dp"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical|left"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:alpha="0.7"
-                        android:src="@drawable/ic_camera_black_48dp" />
-
-                    <com.droidsans.photo.droidphoto.util.FontTextView
-                        android:id="@+id/aperture"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="\???" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/iso_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="180dp"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical|left"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:alpha="0.7"
-                        android:src="@drawable/ic_iso_black_48dp" />
-
-                    <com.droidsans.photo.droidphoto.util.FontTextView
-                        android:id="@+id/iso"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="\???" />
-
-                </LinearLayout>
+                <include
+                    android:id="@+id/reload_view"
+                    layout="@layout/layout_reload" />
 
             </RelativeLayout>
 
-
             <LinearLayout
-                android:id="@+id/location_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical|left"
-                android:orientation="horizontal">
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:alpha="0.7"
-                    android:src="@drawable/ic_public_black_48dp" />
-
-                <com.droidsans.photo.droidphoto.util.FontTextView
-                    android:id="@+id/location"
+                <LinearLayout
+                    android:id="@+id/caption_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="Bangkok, TH" />
+                    android:gravity="center_vertical|left"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/pic_viewer_icon_size"
+                        android:layout_height="@dimen/pic_viewer_icon_size"
+                        android:alpha="0.7"
+                        android:src="@drawable/ic_comment_black_48dp" />
+
+                    <com.droidsans.photo.droidphoto.util.FontTextView
+                        android:id="@+id/caption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="caption_test" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/device_name_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical|left"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/pic_viewer_icon_size"
+                        android:layout_height="@dimen/pic_viewer_icon_size"
+                        android:alpha="0.7"
+                        android:src="@drawable/ic_smartphone_black_48dp" />
+
+                    <com.droidsans.photo.droidphoto.util.FontTextView
+                        android:id="@+id/device_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="\???" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent">
+
+                    <LinearLayout
+                        android:id="@+id/shutter_speed_layout"
+                        android:layout_width="@dimen/pic_viewer_cam_info_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/pic_viewer_icon_size"
+                            android:layout_height="@dimen/pic_viewer_icon_size"
+                            android:alpha="0.7"
+                            android:src="@drawable/ic_timer_black_48dp" />
+
+                        <com.droidsans.photo.droidphoto.util.FontTextView
+                            android:id="@+id/shutter_speed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="\???" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/aperture_layout"
+                        android:layout_width="@dimen/pic_viewer_cam_info_width"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/shutter_speed_layout"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/pic_viewer_icon_size"
+                            android:layout_height="@dimen/pic_viewer_icon_size"
+                            android:alpha="0.7"
+                            android:src="@drawable/ic_camera_black_48dp" />
+
+                        <com.droidsans.photo.droidphoto.util.FontTextView
+                            android:id="@+id/aperture"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="\???" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iso_layout"
+                        android:layout_width="@dimen/pic_viewer_cam_info_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="180dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/pic_viewer_icon_size"
+                            android:layout_height="@dimen/pic_viewer_icon_size"
+                            android:alpha="0.7"
+                            android:src="@drawable/ic_iso_black_48dp" />
+
+                        <com.droidsans.photo.droidphoto.util.FontTextView
+                            android:id="@+id/iso"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="\???" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/location_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical|left"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/pic_viewer_icon_size"
+                        android:layout_height="@dimen/pic_viewer_icon_size"
+                        android:alpha="0.7"
+                        android:src="@drawable/ic_public_black_48dp" />
+
+                    <com.droidsans.photo.droidphoto.util.FontTextView
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="Bangkok, TH" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pic_viewer_image_top_margin"
+        android:background="@color/white"
+        android:alpha="0.8"
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:id="@+id/user_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:layout_width="@dimen/pic_viewer_profile_pic_size"
+            android:layout_height="@dimen/pic_viewer_profile_pic_size"
+            android:alpha="0.7"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_account_circle_black_48dp" />
+
+        <com.droidsans.photo.droidphoto.util.FontTextView
+            android:id="@+id/user"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="usertest" />
+
     </LinearLayout>
 
-</ScrollView>
+</RelativeLayout>
+

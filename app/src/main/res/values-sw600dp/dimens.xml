@@ -5,4 +5,6 @@
     <dimen name="pic_viewer_cam_info_width">178dp</dimen>
     <dimen name="pic_viewer_font_size">18sp</dimen>
 
+    <dimen name="pic_viewer_image_top_margin">80dp</dimen>
+
 </resources>
