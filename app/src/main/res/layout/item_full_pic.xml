@@ -1,88 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/curve_white"
-    android:gravity="center_horizontal|top"
-    android:orientation="vertical"
-    android:layout_margin="@dimen/activity_horizontal_margin">
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:fillViewport="true">
 
     <LinearLayout
-        android:id="@+id/user_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_gravity="center"
-        android:gravity="center_vertical|left"
-        android:orientation="horizontal">
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:background="@drawable/curve_white"
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:alpha="0.7"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_person_black_24dp" />
+        <LinearLayout
+            android:id="@+id/user_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:gravity="center_vertical|left"
+            android:orientation="horizontal">
 
-        <com.droidsans.photo.droidphoto.util.FontTextView
-            android:id="@+id/user"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_marginLeft="10dp"
-            android:text="usertest" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:alpha="0.7"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_account_circle_black_48dp" />
 
-    </LinearLayout>
+            <com.droidsans.photo.droidphoto.util.FontTextView
+                android:id="@+id/user"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:text="usertest" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/image_viewer_height"
-        android:layout_gravity="center">
+        </LinearLayout>
 
-        <com.diegocarloslima.byakugallery.lib.TouchImageView
-            android:id="@+id/picture"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/image_viewer_height"
-            android:layout_centerInParent="true"
-            android:visibility="visible"/>
+            android:layout_gravity="center">
 
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="@dimen/image_viewer_size"
-            android:layout_height="150dp"
-            android:layout_centerInParent="true"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:indeterminate="false"
-            android:rotation="-90"
-            android:max="100"
-            android:progress="0"
-            android:progressDrawable="@drawable/progress_circular"/>
+            <com.diegocarloslima.byakugallery.lib.TouchImageView
+                android:id="@+id/picture"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/image_viewer_height"
+                android:layout_centerInParent="true"
+                android:visibility="visible" />
 
-        <com.droidsans.photo.droidphoto.util.FontTextView
-            android:id="@+id/progress_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textSize="30sp"
-            android:text="0 %"
-            android:visibility="gone"/>
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="@dimen/image_viewer_size"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/progress_circular"
+                android:rotation="-90" />
 
-        <include android:id="@+id/reload_view"
-            layout="@layout/layout_reload" />
+            <com.droidsans.photo.droidphoto.util.FontTextView
+                android:id="@+id/progress_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="0 %"
+                android:textSize="30sp"
+                android:visibility="gone" />
 
-    </RelativeLayout>
+            <include
+                android:id="@+id/reload_view"
+                layout="@layout/layout_reload" />
 
-    <ScrollView
-        android:scrollbars="none"
-        android:layout_width="270dp"
-        android:layout_height="fill_parent" >
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
+            android:layout_margin="@dimen/activity_horizontal_margin"
             android:orientation="vertical">
 
             <LinearLayout
@@ -97,7 +101,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:alpha="0.7"
-                    android:src="@drawable/ic_textsms_black_24dp" />
+                    android:src="@drawable/ic_comment_black_48dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/caption"
@@ -120,7 +124,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:alpha="0.7"
-                    android:src="@drawable/ic_phone_android_black_24dp" />
+                    android:src="@drawable/ic_smartphone_black_48dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/device_name"
@@ -148,7 +152,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:alpha="0.7"
-                        android:src="@drawable/ic_iso_black_24dp" />
+                        android:src="@drawable/ic_timer_black_48dp" />
 
                     <com.droidsans.photo.droidphoto.util.FontTextView
                         android:id="@+id/shutter_speed"
@@ -163,8 +167,8 @@
                     android:id="@+id/aperture_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="95dp"
+                    android:layout_marginTop="10dp"
                     android:gravity="center_vertical|left"
                     android:orientation="horizontal">
 
@@ -172,7 +176,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:alpha="0.7"
-                        android:src="@drawable/ic_iso_black_24dp" />
+                        android:src="@drawable/ic_camera_black_48dp" />
 
                     <com.droidsans.photo.droidphoto.util.FontTextView
                         android:id="@+id/aperture"
@@ -187,8 +191,8 @@
                     android:id="@+id/iso_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="180dp"
+                    android:layout_marginTop="10dp"
                     android:gravity="center_vertical|left"
                     android:orientation="horizontal">
 
@@ -196,7 +200,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:alpha="0.7"
-                        android:src="@drawable/ic_iso_black_24dp" />
+                        android:src="@drawable/ic_iso_black_48dp" />
 
                     <com.droidsans.photo.droidphoto.util.FontTextView
                         android:id="@+id/iso"
@@ -208,7 +212,6 @@
                 </LinearLayout>
 
             </RelativeLayout>
-
 
 
             <LinearLayout
@@ -223,7 +226,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:alpha="0.7"
-                    android:src="@drawable/ic_public_black_24dp" />
+                    android:src="@drawable/ic_public_black_48dp" />
 
                 <com.droidsans.photo.droidphoto.util.FontTextView
                     android:id="@+id/location"
@@ -236,6 +239,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </LinearLayout>
 
-</LinearLayout>
+</ScrollView>
