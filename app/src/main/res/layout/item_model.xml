@@ -5,15 +5,13 @@
     android:padding="15dp"
     android:layout_marginTop="15dp"
     android:layout_marginBottom="15dp"
-    android:background="@drawable/curve_white_normal"
-    android:elevation="1dp"
+    android:background="@drawable/curve_white"
     android:orientation="vertical">
 
     <com.droidsans.photo.droidphoto.util.FontTextView
         android:id="@+id/model_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sony Xperia Z4"
         android:textSize="17sp"
         android:textColor="@color/gray"/>
 

@@ -80,14 +80,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 //                    Log.d(APP_LOG, hexPassword);
-                    if (!GlobalSocket.mSocket.connected()) {
-                        GlobalSocket.mSocket.connect();
-                        Toast.makeText(getApplicationContext(), "cannot connect to server", Toast.LENGTH_SHORT).show();
+                    if (!GlobalSocket.globalEmit("user.changepass", changePassObj)) {
+                        Toast.makeText(getApplicationContext(), "cannot connect to server, please try again", Toast.LENGTH_SHORT).show();
                         changeButton.setClickable(true);
                         changeButton.setTextColor(getResources().getColor(R.color.black));
-//                        GlobalSocket.reconnect();
-                    } else {
-                        GlobalSocket.globalEmit("user.changepass", changePassObj);
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "newpass != confirm", Toast.LENGTH_SHORT).show();

@@ -168,13 +168,11 @@ public class SplashLoginActivity extends Activity {
                         e.printStackTrace();
                     }
 //                    Log.d(APP_LOG, hexPassword);
-                    if(!GlobalSocket.mSocket.connected()) {
-                        GlobalSocket.mSocket.connect();
+
+                    if(GlobalSocket.globalEmit("user.login", loginStuff)) {
                         Toast.makeText(getApplicationContext(), "cannot connect to server", Toast.LENGTH_SHORT).show();
                         loginBtn.setClickable(true);
                         loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
-                    } else {
-                        GlobalSocket.globalEmit("user.login", loginStuff);
                     }
                 }
 

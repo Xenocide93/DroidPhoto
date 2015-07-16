@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 
+import com.droidsans.photo.droidphoto.BrowseVendorActivity;
 import com.droidsans.photo.droidphoto.R;
 
 public class VendorGridAdapter extends ArrayAdapter<Integer> {
@@ -35,14 +36,19 @@ public class VendorGridAdapter extends ArrayAdapter<Integer> {
         }
 
         holder.vendorPic.setImageResource(getItem(position));
+        if(getItem(position) == R.drawable.curve_white) {
+            holder.vendorText.setText(BrowseVendorActivity.vendorName[position]);
+        }
 
         return row;
     }
 
     private class ItemHolder {
         ImageView vendorPic;
+        FontTextView vendorText;
         public ItemHolder(View view){
             vendorPic = (ImageView) view.findViewById(R.id.vendor_pic);
+            vendorText = (FontTextView) view.findViewById(R.id.vendor_text);
         }
     }
 }

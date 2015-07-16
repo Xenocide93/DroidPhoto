@@ -98,6 +98,7 @@ public class FeedFragment extends Fragment {
     private Emitter.Listener onGetDeviceListRespond;
 
     private Handler delayAction = new Handler();
+    private Runnable timeout;
 
     private ArrayList<TagView> tagViewArray;
 
@@ -201,6 +202,8 @@ public class FeedFragment extends Fragment {
         } else {
             //can emit: detect loss on the way
             GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+            //set timeout delay
+            delayAction.postDelayed(timeout, 6000);
         }
     }
 
@@ -314,6 +317,7 @@ public class FeedFragment extends Fragment {
                     @Override
                     public void run() {
                         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+                        delayAction.removeCallbacks(timeout);
                         JSONObject data = (JSONObject) args[0];
                         if (data.optBoolean("success")) {
                             feedPicturePack = new ArrayList<>();
@@ -417,7 +421,7 @@ public class FeedFragment extends Fragment {
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.samsung_300;
                                             break;
                                         default:
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.curve_primary;
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.curve_white;
                                             break;
                                     }
                                 }
@@ -446,6 +450,13 @@ public class FeedFragment extends Fragment {
         if(!GlobalSocket.mSocket.hasListeners("get_device_list")) {
             GlobalSocket.mSocket.on("get_device_list", onGetDeviceListRespond);
         }
+
+        timeout = new Runnable() {
+            @Override
+            public void run() {
+                GlobalSocket.mSocket.disconnect();
+            }
+        };
 
 //
 //        feedGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
