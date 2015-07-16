@@ -30,33 +30,36 @@
             android:layout_height="match_parent"
             tools:context=".MainActivity">
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/tag_field"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="100"
+                android:minHeight="@dimen/minimum_icon_size"
                 android:orientation="horizontal"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:paddingLeft="15dp">
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="@dimen/small_padding">
 
                 <com.droidsans.photo.droidphoto.util.FlowLayout
                     android:id="@+id/tag_layout"
-                    android:layout_width="0dp"
-                    android:layout_weight="93"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/remove_tag_button"/>
 
                 <ImageButton
                     android:id="@+id/remove_tag_button"
-                    android:layout_width="0dp"
-                    android:layout_weight="7"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/minimum_icon_size"
+                    android:layout_height="@dimen/minimum_icon_size"
                     android:scaleType="fitCenter"
                     android:background="@null"
+                    android:padding="12dp"
                     android:src="@drawable/remove_tag_normal"
-                    android:layout_marginRight="15dp"/>
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/feed_recycleview"

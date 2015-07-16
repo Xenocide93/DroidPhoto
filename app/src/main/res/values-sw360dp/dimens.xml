@@ -2,4 +2,6 @@
 <resources>
     <dimen name="pic_viewer_cam_info_width">109dp</dimen>
     <dimen name="image_viewer_height">270dp</dimen>
+    <dimen name="pic_viewer_profile_pic_size">40dp</dimen>
+    <dimen name="small_padding">10dp</dimen>
 </resources>

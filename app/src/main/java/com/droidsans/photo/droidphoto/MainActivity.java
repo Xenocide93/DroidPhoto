@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     logoutMenuItem.setChecked(false);
-                                    if(previousMenuItem != null) previousMenuItem.setChecked(true);
+                                    if (previousMenuItem != null) previousMenuItem.setChecked(true);
                                 }
                             })
 //                            .setIcon(android.R.drawable.ic_dialog_alert)
@@ -322,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.getMenu().getItem(4).getSubMenu().removeItem(R.id.drawer_evaluate);
         drawerLayout.requestLayout();
         previousMenuItem = feedMenuItem;
+        toolbar.setTitle("Feed");
         feedMenuItem.setChecked(true);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,toolbar, R.string.drawer_open, R.string.drawer_close){
@@ -396,13 +397,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 return true;
             case R.id.action_search:
-                if(fragment instanceof FeedFragment){
-                    ((FeedFragment)fragment).launchAddFilterPopup();
-                }
+                Toast.makeText(getApplicationContext(), "Search", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_remove_picture:
                 if(fragment instanceof ProfileFragment){
                     ((ProfileFragment)fragment).toggleEditMode();
+                }
+                return true;
+            case R.id.action_filter:
+                if(fragment instanceof FeedFragment){
+                    ((FeedFragment)fragment).launchAddFilterPopup();
                 }
                 return true;
         }

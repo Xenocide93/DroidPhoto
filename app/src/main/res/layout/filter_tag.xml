@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@drawable/curve_primary_border"
-        android:layout_margin="4dp"
+        android:layout_margin="2dp"
         android:padding="5dp">
 
         <com.droidsans.photo.droidphoto.util.FontTextView
@@ -28,7 +28,4 @@
             android:textColor="@color/primary_color"
             android:layout_marginRight="5dp"/>
     </LinearLayout>
-
-
-
 </LinearLayout>

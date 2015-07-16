@@ -25,6 +25,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,7 +77,7 @@ public class FeedFragment extends Fragment {
     private ProgressBar loadingCircle;
     private FrameLayout imageViewLayout;
 
-    private LinearLayout tagField;
+    private RelativeLayout tagField;
     private FlowLayout tagLayout;
     private ImageButton removeTagBtn;
     private boolean isRemoveTagActive = false;
@@ -124,7 +125,12 @@ public class FeedFragment extends Fragment {
         findAllById();
         setupRecycleView();
         setupListener();
+        setupFloatingActionButton();
         initializeVendorModelList();
+    }
+
+    private void setupFloatingActionButton() {
+
     }
 
     private void setupRecycleView() {
@@ -192,10 +198,10 @@ public class FeedFragment extends Fragment {
                 isRemoveTagActive = !isRemoveTagActive;
                 if(isRemoveTagActive){
                     removeTagBtn.setImageResource(R.drawable.remove_tag_pressed);
-                    removeTagBtn.animate().scaleX(1.3f).scaleY(1.3f).setDuration(200).start();
+                    removeTagBtn.animate().scaleX(1.15f).scaleY(1.15f).setDuration(150).start();
                 } else {
                     removeTagBtn.setImageResource(R.drawable.remove_tag_normal);
-                    removeTagBtn.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start();
+                    removeTagBtn.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start();
                     if(removeTag()){
                         updateTagView();
                         updateFeed();
@@ -738,7 +744,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void findAllById() {
-        tagField = (LinearLayout) frameLayout.findViewById(R.id.tag_field);
+        tagField = (RelativeLayout) frameLayout.findViewById(R.id.tag_field);
 
         tagLayout = (FlowLayout) frameLayout.findViewById(R.id.tag_layout);
         logoLayout = frameLayout.findViewById(R.id.logo_layout);
