@@ -28,7 +28,7 @@
             android:icon="@drawable/ic_info_black_24dp" />
 
         <item
-            android:title="User">
+            android:title="@string/drawer_submenu_label">
 
             <menu>
 
@@ -39,6 +39,12 @@
                         android:checked="false"
                         android:title="@string/drawer_settings"
                         android:icon="@drawable/ic_settings_black_24dp" />
+
+                    <item
+                        android:id="@+id/drawer_evaluate"
+                        android:checked="false"
+                        android:title="@string/drawer_evaluate"
+                        />
 
                     <item
                         android:id="@+id/drawer_logout"

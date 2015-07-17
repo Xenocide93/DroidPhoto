@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceActivity;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -142,21 +144,26 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            JSONObject data = new JSONObject();
+                            JSONObject data = (JSONObject) args[0];
                             if (data.optBoolean("success")) {
                                 // happy
-//                                getUserdata().edit()
-//                                        .putString(getString(R.string.display_name), data.optString("disp_name"))
-//                                        .putString(getString(R.string.avatar_url), data.optString("avatar_url"))
-//                                        .apply();
-                                displayName.setText(data.optString("disp_name", ""));
+                                JSONObject userObj = data.optJSONObject("userObj");
+                                getUserdata().edit()
+                                        .putString(getString(R.string.display_name), userObj.optString("disp_name"))
+                                        .putString(getString(R.string.avatar_url), userObj.optString("avatar_url"))
+                                        .apply();
+                                displayName.setText(userObj.optString("disp_name", ""));
                                 Glide.with(getApplicationContext())
-                                        .load(GlobalSocket.serverURL + ProfileFragment.baseURL + data.optString("avatar_url"))
+                                        .load(GlobalSocket.serverURL + ProfileFragment.baseURL + userObj.optString("avatar_url"))
                                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                                         .placeholder(R.drawable.ic_account_circle_black_48dp)
                                         .centerCrop()
                                         .transform(new CircleTransform(getApplicationContext()))
                                         .into(profile);
+                                if(userObj.optInt("priviledge") == 2) {
+                                    navigationView.getMenu().clear();
+                                    navigationView.inflateMenu(R.menu.menu_drawer_mod);
+                                }
                             } else {
                                 switch (data.optString("msg")) {
                                     case "db error":
@@ -186,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(!GlobalSocket.globalEmit("user.getuserinfo", data)) {
+                    if (!GlobalSocket.globalEmit("user.getuserinfo", data)) {
                         //sad
                     }
                 }
@@ -265,15 +272,43 @@ public class MainActivity extends AppCompatActivity {
         String disp = getUserdata().getString(getString(R.string.display_name), "");
         displayName.setText(disp);
 //        if(!disp.equals("")) {
-            Glide.with(getApplicationContext())
-                    .load(GlobalSocket.serverURL + ProfileFragment.baseURL + getUserdata().getString(getString(R.string.avatar_url), ""))
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .placeholder(R.drawable.droidsans_logo)
-                    .centerCrop()
-                    .transform(new CircleTransform(getApplicationContext()))
-                    .into(profile);
+        Glide.with(getApplicationContext())
+                .load(GlobalSocket.serverURL + ProfileFragment.baseURL + getUserdata().getString(getString(R.string.avatar_url), ""))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .placeholder(R.drawable.droidsans_logo)
+                .centerCrop()
+                .transform(new CircleTransform(getApplicationContext()))
+                .into(profile);
 //        } else {
 //        }
+
+        switch (getUserdata().getString(getString(R.string.user_priviledge), "1")) {
+            case "1":
+//                navigationView.getMenu().clear();
+//                navigationView.inflateMenu(R.menu.menu_drawer);
+//                navigationView.requestLayout();
+                findUserMenuById();
+                break;
+            case "2":
+                navigationView.getMenu().clear();
+                navigationView.inflateMenu(R.menu.menu_drawer_mod);
+                navigationView.requestLayout();
+                findModMenuById();
+                break;
+        }
+
+
+
+        navigationHeader.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                Snackbar.make(findViewById(R.id.main_fragment), "onCreateContextMenu", Snackbar.LENGTH_SHORT)
+                        .setAction("OK", null)
+                        .setActionTextColor(getResources().getColor(R.color.accent_color))
+                        .show();
+                Log.d("droidphoto", "oncreatecontextmenu");
+            }
+        });
 
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -345,7 +380,6 @@ public class MainActivity extends AppCompatActivity {
                     previousMenuItem = aboutMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_settings))) {
                     settingsMenuItem.setChecked(true);
-                    evaluateMenuItem.setVisible(true);
                     fragmentTransaction.replace(R.id.main_fragment, new SettingsFragment());
                     fragmentTransaction.commit();
                     toolbar.setTitle("Settings");
@@ -354,6 +388,12 @@ public class MainActivity extends AppCompatActivity {
 //                    previousMenuItem.setChecked(true);
 //                    Intent settings = new Intent(getApplicationContext(), SettingsActivity.class);
 //                    startActivity(settings);
+                } else if (selectedMenu.equals(getString(R.string.drawer_evaluate))) {
+                    evaluateMenuItem.setChecked(true);
+                    fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
+                    fragmentTransaction.commit();
+                    toolbar.setTitle("Evaluate");
+                    previousMenuItem = evaluateMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_logout))) {
                     new AlertDialog.Builder(MainActivity.this)
                             .setTitle("Logout ?")
@@ -384,8 +424,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        navigationView.getMenu().getItem(4).getSubMenu().removeItem(R.id.drawer_evaluate);
-        drawerLayout.requestLayout();
         previousMenuItem = feedMenuItem;
         toolbar.setTitle("Feed");
         feedMenuItem.setChecked(true);
@@ -447,6 +485,9 @@ public class MainActivity extends AppCompatActivity {
         if(GlobalSocket.mSocket.hasListeners("get_csv")) {
             GlobalSocket.mSocket.off("get_csv");
         }
+        if(GlobalSocket.mSocket.hasListeners("get_user_info")) {
+            GlobalSocket.mSocket.off("get_user_info");
+        }
         finish();
         super.onDestroy();
     }
@@ -492,6 +533,19 @@ public class MainActivity extends AppCompatActivity {
         displayName = (FontTextView) findViewById(R.id.display_name);
         profile = (ImageView) findViewById(R.id.profile_image_circle);
 
+
+    }
+
+    private void findUserMenuById() {
+        feedMenuItem = navigationView.getMenu().getItem(0);
+        eventMenuItem = navigationView.getMenu().getItem(1);
+        helpMenuItem = navigationView.getMenu().getItem(2);
+        aboutMenuItem = navigationView.getMenu().getItem(3);
+        settingsMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(0);
+        logoutMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(1);
+    }
+
+    private void findModMenuById() {
         feedMenuItem = navigationView.getMenu().getItem(0);
         eventMenuItem = navigationView.getMenu().getItem(1);
         helpMenuItem = navigationView.getMenu().getItem(2);
