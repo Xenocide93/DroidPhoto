@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="image_viewer_height">450dp</dimen>
-    <dimen name="pic_viewer_icon_size">48dp</dimen>
-    <dimen name="pic_viewer_cam_info_width">178dp</dimen>
+    <dimen name="image_viewer_icon_size">48dp</dimen>
+    <dimen name="image_viewer_cam_info_width">178dp</dimen>
     <dimen name="pic_viewer_font_size">18sp</dimen>
-    <dimen name="pic_viewer_profile_pic_size">48dp</dimen>
+    <dimen name="image_viewer_profile_pic_size">48dp</dimen>
 
-    <dimen name="pic_viewer_image_top_margin">80dp</dimen>
+    <dimen name="image_viewer_image_top_margin">80dp</dimen>
     <dimen name="small_padding">16dp</dimen>
+    <dimen name="profile_header_height">200dp</dimen>
+    <dimen name="profile_picture_size">150dp</dimen>
+    <dimen name="font_th_normal_fontsize">40sp</dimen>
+    <dimen name="font_th_subtitle_fontsize">30sp</dimen>
 </resources>

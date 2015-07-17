@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="pic_viewer_cam_info_width">109dp</dimen>
+    <dimen name="image_viewer_cam_info_width">109dp</dimen>
     <dimen name="image_viewer_height">270dp</dimen>
-    <dimen name="pic_viewer_profile_pic_size">40dp</dimen>
+    <dimen name="image_viewer_profile_pic_size">40dp</dimen>
     <dimen name="small_padding">10dp</dimen>
+    <dimen name="font_th_normal_fontsize">25sp</dimen>
+    <dimen name="font_th_subtitle_fontsize">20sp</dimen>
 </resources>

@@ -18,6 +18,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,8 +38,8 @@ import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 
@@ -66,7 +69,7 @@ public class FeedFragment extends Fragment {
 //    private PictureGridAdapter adapter;
     private FeedRecycleViewAdapter recycleAdapter;
     private ArrayList<PicturePack> feedPicturePack;
-    private FloatingActionsMenu fam;
+    private FloatingActionMenu fam;
     private FloatingActionButton fabChoosePic, fabCamera;
 
     private FontTextView reloadText;
@@ -108,6 +111,10 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_feed_recycle, container, false);
+
+        //set toolbar to be overwrite by this fragment toolbar
+        setHasOptionsMenu(true);
+
         frameLayout = (FrameLayout) rootView.findViewById(R.id.main_view);
         reloadLayout = (LinearLayout) rootView.findViewById(R.id.reload_view);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.loading_circle);
@@ -129,6 +136,11 @@ public class FeedFragment extends Fragment {
         findAllById();
         setupRecycleView();
         setupListener();
+        setupFloatingActionButton();
+    }
+
+    private void setupFloatingActionButton() {
+
     }
 
     private void setupRecycleView() {
@@ -228,56 +240,54 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        fam.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+        fam.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
-            public void onMenuExpanded() {
-                dimView.animate().alpha(0.7f).setDuration(300).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        dimView.setVisibility(View.VISIBLE);
-                    }
+            public void onMenuToggle(boolean open) {
+                if (open) {
+                    dimView.animate().alpha(0.7f).setDuration(300).setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            dimView.setVisibility(View.VISIBLE);
+                        }
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                    }
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                        }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                    }
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                        }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                }).start();
-            }
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+                        }
+                    }).start();
+                } else {
+                    dimView.animate().alpha(0.0f).setDuration(300).setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                        }
 
-            @Override
-            public void onMenuCollapsed() {
-                dimView.animate().alpha(0.0f).setDuration(300).setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            dimView.setVisibility(View.GONE);
+                        }
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        dimView.setVisibility(View.GONE);
-                    }
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                        }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                }).start();
-
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+                        }
+                    }).start();
+                }
             }
         });
         dimView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fam.collapse();
+                fam.close(true);
             }
         });
 
@@ -286,7 +296,7 @@ public class FeedFragment extends Fragment {
             public void onClick(View v) {
                 dispatchTakePictureIntent();
                 Toast.makeText(getActivity(), "Launch Camera Intent", Toast.LENGTH_SHORT).show();
-                fam.collapse();
+                fam.close(true);
             }
         });
         fabChoosePic.setOnClickListener(new View.OnClickListener() {
@@ -294,7 +304,7 @@ public class FeedFragment extends Fragment {
             public void onClick(View v) {
                 dispatchPicturePickerIntent();
                 Toast.makeText(getActivity(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
-                fam.collapse();
+                fam.close(true);
             }
         });
 
@@ -625,6 +635,25 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_feed, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_search:
+                Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_filter:
+                launchAddFilterPopup();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == getActivity().RESULT_OK)
             switch (requestCode) {
@@ -861,7 +890,7 @@ public class FeedFragment extends Fragment {
 
         dimView = frameLayout.findViewById(R.id.dim_view);
 
-        fam = (FloatingActionsMenu) frameLayout.findViewById(R.id.fam);
+        fam = (FloatingActionMenu) frameLayout.findViewById(R.id.fam);
         fabCamera = (FloatingActionButton) frameLayout.findViewById(R.id.fab_camera);
         fabChoosePic = (FloatingActionButton) frameLayout.findViewById(R.id.fab_choosepic);
 

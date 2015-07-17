@@ -10,6 +10,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -53,8 +56,7 @@ public class ProfileFragment extends Fragment {
     private RelativeLayout mainLayout;
 
     private ImageView profilePic;
-    private FontTextView profileName;
-    private FontTextView usernameTV;
+    private FontTextView profileName, usernameTV, profileDescTV;
     private RecyclerView profileFeedPicRecyclerview;
 
     private FontTextView reloadText;
@@ -78,11 +80,31 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        setHasOptionsMenu(true);
         loadingCircle = (ProgressBar) rootView.findViewById(R.id.loading_circle);
         reloadLayout = (LinearLayout) rootView.findViewById(R.id.reload_view);
         mainLayout = (RelativeLayout) rootView.findViewById(R.id.main_view);
         initialize();
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_profile, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_edit_profile:
+                Toast.makeText(getActivity(), "edit profile", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_delete:
+                toggleEditMode();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initialize() {
@@ -136,6 +158,7 @@ public class ProfileFragment extends Fragment {
                                     .centerCrop()
                                     .transform(new CircleTransform(getActivity().getApplicationContext()))
                                     .into(profilePic);
+                            profileDescTV.setText(userObj.optString("profile_desc"));
                         } else {
                             switch (data.optString("msg")) {
                                 case "db error":
@@ -375,6 +398,8 @@ public class ProfileFragment extends Fragment {
     private void findAllById() {
         profilePic = (ImageView) mainLayout.findViewById(R.id.profile_image_circle);
         profileName = (FontTextView) mainLayout.findViewById(R.id.display_name);
+        profileDescTV = (FontTextView) mainLayout.findViewById(R.id.profile_desc);
+
         usernameTV = (FontTextView) mainLayout.findViewById(R.id.username);
         profileFeedPicRecyclerview = (RecyclerView) mainLayout.findViewById(R.id.recyclerview_profile_feed_picture);
 

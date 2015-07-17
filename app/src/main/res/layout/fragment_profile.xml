@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.droidsans.photo.droidphoto.ProfileFragment">
 
     <ProgressBar
@@ -21,44 +22,55 @@
         android:layout_height="match_parent"
         android:visibility="visible">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/header_user"
             android:layout_width="match_parent"
-            android:layout_height="148dp"
+            android:layout_height="@dimen/profile_header_height"
             android:background="@color/white"
-            android:gravity="top">
+            android:padding="@dimen/activity_horizontal_margin">
 
             <ImageView
                 android:id="@+id/profile_image_circle"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginLeft="56dp"/>
+                android:layout_width="@dimen/profile_picture_size"
+                android:layout_height="@dimen/profile_picture_size"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="24dp"
-                android:gravity="center|left"
-                android:orientation="vertical">
 
-                <com.droidsans.photo.droidphoto.util.FontTextView
-                    android:id="@+id/display_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:text="Profile Name"/>
+            <com.droidsans.photo.droidphoto.util.FontTextView
+                android:id="@+id/display_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile Name"
+                android:textSize="@dimen/font_th_normal_fontsize"
+                android:layout_toRightOf="@+id/profile_image_circle"
+                android:layout_alignTop="@+id/profile_image_circle"
+                app:customFont="th-bold.otf"/>
 
-                <com.droidsans.photo.droidphoto.util.FontTextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14dp"
-                    android:text="\@username"/>
+            <com.droidsans.photo.droidphoto.util.FontTextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\@username"
+                android:textSize="@dimen/font_th_subtitle_fontsize"
+                android:layout_toRightOf="@+id/profile_image_circle"
+                android:layout_below="@id/display_name"
+                app:customFont="th.otf"/>
 
-            </LinearLayout>
+            <com.droidsans.photo.droidphoto.util.FontTextView
+                android:id="@+id/profile_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dfmpomskers;oijbn[aoijrvm[apokretv[3ok4mvt,mfvkkpe"
+                android:textSize="@dimen/font_th_normal_fontsize"
+                android:layout_toRightOf="@+id/profile_image_circle"
+                android:layout_below="@+id/username"
+                android:layout_marginTop="@dimen/small_padding"
+                app:customFont="th.otf"/>
 
-        </LinearLayout>
+
+        </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_profile_feed_picture"

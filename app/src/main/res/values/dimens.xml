@@ -3,20 +3,26 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="minimum_icon_size">48dp</dimen>
+    <dimen name="small_padding">10dp</dimen>
 
     <dimen name="curve_corner_radius">7dp</dimen>
     <dimen name="selector_overlay_stroke_width">4dp</dimen>
 
-    <dimen name="pic_viewer_icon_size">30dp</dimen>
+    <dimen name="image_viewer_icon_size">30dp</dimen>
     <dimen name="feed_recycleview_item_space">4dp</dimen>
     <dimen name="profile_recycleview_item_space">2dp</dimen>
     <dimen name="image_viewer_height">246dp</dimen>
     <dimen name="image_viewer_size">150dp</dimen>
-    <dimen name="pic_viewer_cam_info_width">96dp</dimen>
-    <dimen name="pic_viewer_image_top_margin">60dp</dimen>
-    <dimen name="pic_viewer_profile_pic_size">40dp</dimen>
+    <dimen name="image_viewer_cam_info_width">96dp</dimen>
+    <dimen name="image_viewer_image_top_margin">60dp</dimen>
+    <dimen name="image_viewer_profile_pic_size">40dp</dimen>
+    <dimen name="pic_viewer_font_size">14sp</dimen>
 
     <dimen name="about_paragraph_spacing">24dp</dimen>
     <dimen name="about_text_spacing">16dp</dimen>
-    <dimen name="small_padding">10dp</dimen>
+
+    <dimen name="profile_header_height">150dp</dimen>
+    <dimen name="profile_picture_size">100dp</dimen>
+    <dimen name="font_th_normal_fontsize">22sp</dimen>
+    <dimen name="font_th_subtitle_fontsize">18sp</dimen>
 </resources>

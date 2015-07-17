@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.droidsans.photo.droidphoto.ProfileFragment">
+    <item
+        android:id="@+id/action_edit_profile"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_edit_white_24dp"/>
+    <item
+        android:id="@+id/action_delete"
+        android:title="delete photo"
+        android:orderInCategory="10"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_delete_white_24dp"/>
+</menu>
