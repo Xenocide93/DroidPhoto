@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.util.CircleTransform;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
@@ -127,22 +128,21 @@ public class ProfileFragment extends Fragment {
                             username = userObj.optString("username");
                             usernameTV.setText(username);
                             profileName.setText(userObj.optString("disp_name"));
-//                            Glide.with(getActivity().getApplicationContext())
-//                                    .load(GlobalSocket.serverURL + baseURL + data.optString("avatar_url"))
-//                                    .placeholder(R.drawable.droidsans_logo)
-//                                    .transform(new CircleTransform(getActivity().getApplicationContext()))
-//                                    .into(profilePic);
-                            if(data.has("avatar_url")) {
-                                Glide.with(getActivity().getApplicationContext())
-//                                        .load(GlobalSocket.serverURL + baseURL + data.optString("avatar_url"))
-                                        .load(GlobalSocket.serverURL + baseURL + "test.jpg")
-                                        .transform(new CircleTransform(getActivity().getApplicationContext()))
-                                        .into(profilePic);
-                            }
+                            Glide.with(getActivity().getApplicationContext())
+                                    .load(GlobalSocket.serverURL + baseURL + userObj.optString("avatar_url"))
+//                                    .load(GlobalSocket.serverURL + baseURL + "test.jpg")
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .placeholder(R.drawable.ic_account_circle_black_48dp)
+                                    .centerCrop()
+                                    .transform(new CircleTransform(getActivity().getApplicationContext()))
+                                    .into(profilePic);
                         } else {
                             switch (data.optString("msg")) {
                                 case "db error":
                                     Toast.makeText(getActivity().getApplicationContext(), "db error, please try again", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(mainLayout, "db error, please try again", Snackbar.LENGTH_SHORT)
+                                            .setAction("OK", null)
+                                            .show();
                                     break;
                                 case "token error":
                                     Toast.makeText(getActivity().getApplicationContext(), "what the fuck !!? how can you invalid your f*cking token ??", Toast.LENGTH_SHORT).show();
@@ -164,7 +164,7 @@ public class ProfileFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
                         JSONObject data = (JSONObject) args[0];
                         if(data.optBoolean("success")){
                             packs = new ArrayList<>();
@@ -218,7 +218,8 @@ public class ProfileFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+                        Log.e("droidphoto", "ProfileFragment: disconnected");
+                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
                         initReload();
                     }
                 });
@@ -249,6 +250,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void requestUserinfo() {
+        reloadButton.setClickable(false);
+        mainLayout.setVisibility(View.GONE);
+        reloadLayout.setVisibility(View.GONE);
+        loadingCircle.setVisibility(View.VISIBLE);
+
         JSONObject data = new JSONObject();
         try {
             data.put("_token", getActivity().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), ""));
@@ -306,9 +312,6 @@ public class ProfileFragment extends Fragment {
             reloadButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    reloadButton.setClickable(false);
-                    reloadLayout.setVisibility(View.GONE);
-                    loadingCircle.setVisibility(View.VISIBLE);
                     GlobalSocket.reconnect();
                     requestUserinfo();
                 }
@@ -356,7 +359,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
         if(GlobalSocket.mSocket.hasListeners("userinfo_respond")) {
             GlobalSocket.mSocket.off("userinfo_respond");
         }

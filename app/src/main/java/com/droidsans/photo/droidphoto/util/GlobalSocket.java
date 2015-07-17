@@ -2,6 +2,7 @@ package com.droidsans.photo.droidphoto.util;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 
 import com.droidsans.photo.droidphoto.MainActivity;
@@ -41,9 +42,12 @@ public class GlobalSocket {
 
     private static IO.Options opts = new IO.Options();
 
+    private Handler delayAction = new Handler();
+
     public static boolean reconnect() {
         Log.e("droidphoto", "globalsocket: reconnecting");
         mSocket.disconnect();
+
 //        mSocket.connect();
         return true;
     }
@@ -60,7 +64,8 @@ public class GlobalSocket {
         if(mSocket==null) {
             opts.secure = true;
             opts.forceNew = true;
-            opts.reconnection = false;
+            opts.reconnection = true;
+            opts.reconnectionDelay = 1000;
             opts.timeout = 5000;
 //            opts.upgrade = true;
             opts.transports = new String[]{"websocket"};
@@ -73,7 +78,7 @@ public class GlobalSocket {
             Log.e("droidphoto", "globalsocket: initialized");
             mSocket.on(Socket.EVENT_CONNECT, onConnect);
             mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectionTimeout);
-            mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+//            mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
 
             mSocket.connect();
         }

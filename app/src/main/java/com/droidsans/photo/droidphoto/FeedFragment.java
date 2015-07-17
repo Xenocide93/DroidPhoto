@@ -303,7 +303,8 @@ public class FeedFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+                        Log.e("droidphoto", "FeedFragment: disconnected");
+                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
                         initReload();
                     }
                 });
@@ -316,7 +317,7 @@ public class FeedFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
                         delayAction.removeCallbacks(timeout);
                         JSONObject data = (JSONObject) args[0];
                         if (data.optBoolean("success")) {
@@ -815,7 +816,7 @@ public class FeedFragment extends Fragment {
         if(GlobalSocket.mSocket.hasListeners("get_device_list")) {
             GlobalSocket.mSocket.off("get_device_list");
         }
-        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
 
 //        if (adapter != null) {
 //            //recycle bitmap and reset load state

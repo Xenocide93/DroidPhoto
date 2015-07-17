@@ -161,8 +161,11 @@ public class MainActivity extends AppCompatActivity {
                                         .transform(new CircleTransform(getApplicationContext()))
                                         .into(profile);
                                 if(userObj.optInt("priviledge") == 2) {
-                                    navigationView.getMenu().clear();
-                                    navigationView.inflateMenu(R.menu.menu_drawer_mod);
+//                                    if(previousMenuItem != null) previousMenuItem.setChecked(false);
+//                                    navigationView.getMenu().clear();
+//                                    navigationView.inflateMenu(R.menu.menu_drawer_mod);
+//                                    findModMenuById();
+                                    evaluateMenuItem.setVisible(true);
                                 }
                             } else {
                                 switch (data.optString("msg")) {
@@ -284,12 +287,15 @@ public class MainActivity extends AppCompatActivity {
 
         switch (getUserdata().getString(getString(R.string.user_priviledge), "1")) {
             case "1":
+//                if(previousMenuItem != null) previousMenuItem.setChecked(false);
 //                navigationView.getMenu().clear();
 //                navigationView.inflateMenu(R.menu.menu_drawer);
 //                navigationView.requestLayout();
-                findUserMenuById();
+//                findUserMenuById();
+                findModMenuById();
                 break;
             case "2":
+                if(previousMenuItem != null) previousMenuItem.setChecked(false);
                 navigationView.getMenu().clear();
                 navigationView.inflateMenu(R.menu.menu_drawer_mod);
                 navigationView.requestLayout();
@@ -303,7 +309,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 Snackbar.make(findViewById(R.id.main_fragment), "onCreateContextMenu", Snackbar.LENGTH_SHORT)
-                        .setAction("OK", null)
+                        .setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                            }
+                        })
                         .setActionTextColor(getResources().getColor(R.color.accent_color))
                         .show();
                 Log.d("droidphoto", "oncreatecontextmenu");
@@ -339,13 +349,13 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-//        previousMenuItem = navigationView.getMenu().getItem(0);
+//        previousMenuItem = feedMenuItem;
 //        evaluateMenuItem.setVisible(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(final MenuItem menuItem) {
-                if (previousMenuItem != null) previousMenuItem.setChecked(false);
+                if(previousMenuItem != null) previousMenuItem.setChecked(false);
 //                menuItem.setChecked(true);
                 String selectedMenu = menuItem.getTitle().toString();
                 getSupportFragmentManager().popBackStack();
@@ -383,11 +393,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.replace(R.id.main_fragment, new SettingsFragment());
                     fragmentTransaction.commit();
                     toolbar.setTitle("Settings");
-                    previousMenuItem = menuItem;
-//                    settingsMenuItem.setChecked(false);
-//                    previousMenuItem.setChecked(true);
-//                    Intent settings = new Intent(getApplicationContext(), SettingsActivity.class);
-//                    startActivity(settings);
+                    previousMenuItem = settingsMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_evaluate))) {
                     evaluateMenuItem.setChecked(true);
                     fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
@@ -420,13 +426,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "bug ?", Toast.LENGTH_SHORT).show();
                 }
                 drawerLayout.closeDrawers();
-                return false;
+                return true;
             }
         });
-
-        previousMenuItem = feedMenuItem;
-        toolbar.setTitle("Feed");
-        feedMenuItem.setChecked(true);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,toolbar, R.string.drawer_open, R.string.drawer_close){
             @Override
@@ -456,6 +458,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
         fragmentTransaction.commit();
         toolbar.setTitle("Feed");
+        previousMenuItem = feedMenuItem;
+        feedMenuItem.setChecked(true);
     }
 
     @Override
