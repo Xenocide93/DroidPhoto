@@ -32,7 +32,9 @@
 
             <menu>
 
-                <group android:checkableBehavior="all">
+                <group
+                    android:checkableBehavior="all">
+
 
                     <item
                         android:id="@+id/drawer_settings"
@@ -43,6 +45,7 @@
                     <item
                         android:id="@+id/drawer_evaluate"
                         android:checked="false"
+                        android:visible="false"
                         android:title="@string/drawer_evaluate"
                         />
 

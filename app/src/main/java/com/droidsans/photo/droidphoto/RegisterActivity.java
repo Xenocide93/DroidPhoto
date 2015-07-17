@@ -3,6 +3,7 @@ package com.droidsans.photo.droidphoto;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -59,7 +60,6 @@ public class RegisterActivity extends Activity {
         linktext.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Log.d("droidphoto", "onClick");
                 widget.getContext().startActivity(new Intent(getApplicationContext(), PlaceholderActivity.class));
             }
         }, 0, getString(R.string.register_accept_tos_link).length(), 0);
@@ -84,11 +84,12 @@ public class RegisterActivity extends Activity {
                             message = data.getString("msg");
                             Log.d("droidphoto", "isSuccess: " + isSuccess + " Message: " + message);
                             if(isSuccess){
-                                Toast.makeText(getApplicationContext(), "Register Successful", Toast.LENGTH_SHORT).show();
-                                //TODO auto-login (submit) or else just redirect user to login page
+//                                Toast.makeText(getApplicationContext(), "Register Successful", Toast.LENGTH_SHORT).show();
+//                                Snackbar.make(null, "Register Success", Snackbar.LENGTH_SHORT).show();
 //                                Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
 //                                startActivity(mainActIntent);
 //                                finish();
+                                MainActivity.snackString = R.string.snackbar_register_success;
                                 JSONObject loginStuff = new JSONObject();
                                 String hexPassword = "";
 
@@ -120,28 +121,34 @@ public class RegisterActivity extends Activity {
                                 String toastString = "";
                                 switch (message){
                                     case "null required field":
-                                        toastString = "Please fill every field provided above";
+                                        toastString = getString(R.string.snackbar_register_null_required);
                                         break;
                                     case "email exist":
-                                        toastString = "This email address has already been used";
+                                        toastString = getString(R.string.snackbar_register_email_exist);
                                         break;
                                     case "username exist":
-                                        toastString = "This username has already been used";
+                                        toastString = getString(R.string.snackbar_register_username_exist);
                                         break;
                                     case "both exist": //deprecated
                                         toastString = "Both username and email have already been used";
                                         break;
                                     case "db error":
-                                        toastString = "Database error, please try again later";
+                                        toastString = getString(R.string.snackbar_register_db_error);
                                         break;
                                     case "cannot save":
-                                        toastString = "Data cannot be save into database, please try again later";
+                                        toastString = getString(R.string.snackbar_register_cannot_save);
                                         break;
                                     case "undefined":
                                         toastString = "Unidentified error, please try again later";
                                         break;
                                 }
-                                Toast.makeText(getApplicationContext(),toastString, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getApplicationContext(),toastString, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(findViewById(R.id.register_layout), toastString, Snackbar.LENGTH_SHORT)
+                                        .setAction("ok", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {}
+                                        })
+                                        .show();
                                 registerBtn.setClickable(true);
                             }
                         } catch (JSONException e) {
@@ -163,11 +170,11 @@ public class RegisterActivity extends Activity {
                 public void onClick(View v) {
                     registerBtn.setClickable(false);
                     if (!password.getText().toString().equals(passwordConfirm.getText().toString())) {
-                        Toast.makeText(getApplicationContext(),
-                                "Missmatched comfirm password, please retype the password",
-                                Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "Mismatched comfirm password, please retype the password", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.register_layout), "password mismatch, please try again", Snackbar.LENGTH_LONG).show();
                         password.setText("");
                         passwordConfirm.setText("");
+                        registerBtn.setClickable(true);
                     } else {
                         JSONObject registerStuff = new JSONObject();
                         String hexPassword = "";
@@ -188,7 +195,9 @@ public class RegisterActivity extends Activity {
                         } catch (JSONException e) {
                         }
 
-                        GlobalSocket.globalEmit("user.register", registerStuff);
+                        if(GlobalSocket.globalEmit("user.register", registerStuff)) {
+                            //retry or die trying
+                        }
                     }
                 }
             });

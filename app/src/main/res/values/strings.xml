@@ -32,6 +32,21 @@
     <string name="settings_app_language_title">Select Application Language</string>
     <string name="settings_app_language_summary">Language : %s</string>
 
+    <!--login snackbar-->
+    <string name="snackbar_login_cannot_connect">cannot connect to server. please check your internet connection.</string>
+    <string name="snackbar_login_success">Login success</string>
+    <string name="snackbar_login_authen_failed">Login failed, please check you username and password and try again</string>
+    <string name="snackbar_login_db_error">Database error, please try again later</string>
+    <string name="snackbar_connection_timeout">connection timeout. retry ?</string>
+
+    <!--register snackbar-->
+    <string name="snackbar_register_null_required">Please fill every field provided above</string>
+    <string name="snackbar_register_email_exist">This email address has already been used</string>
+    <string name="snackbar_register_username_exist">This username has already been used</string>
+    <string name="snackbar_register_db_error">Database error, please try again later</string>
+    <string name="snackbar_register_cannot_save">Data cannot be save into database, please try again later</string>
+    <string name="snackbar_register_success">Data cannot be save into database, please try again later</string>
+
     <!--register hint-->
     <string name="register_username">username</string>
     <string name="register_password">password</string>
@@ -48,8 +63,9 @@
     <string name="change_password_new">new password</string>
     <string name="change_password_confirm">confirm new password</string>
 
-    <!--&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
-    <!--DO NOT TRANSLATE STRINGS BELOW-->
+    <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
+    <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
+    <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 
     <!--unreadable for security reasons: adding obfuscation level-->
     <string name="userdata">ewEgfoEWoi84tu3wsZLghB</string>

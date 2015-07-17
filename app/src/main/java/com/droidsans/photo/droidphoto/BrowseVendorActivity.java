@@ -83,7 +83,7 @@ public class BrowseVendorActivity extends AppCompatActivity {
                     break;
             }
         } else {
-            Toast.makeText(getApplicationContext(), "cancel", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "cancel", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -4,17 +4,14 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.text.Editable;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.github.nkzawa.emitter.Emitter;
@@ -35,6 +32,9 @@ public class SplashLoginActivity extends Activity {
     private Button loginBtn, registerBtn, bypassLoginBtn;
 
     private Emitter.Listener onLoginRespond;
+
+    private Handler delayAction = new Handler();
+    private Runnable timeout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,9 +107,10 @@ public class SplashLoginActivity extends Activity {
 //                                GlobalSocket.initializeToken(token);
 //                                GlobalSocket.writeStringToFile(GlobalSocket.USERNAME, ((String) userObject.get("username")));
 //                                GlobalSocket.writeStringToFile(GlobalSocket.DISPLAY_NAME, ((String)userObject.get("disp_name")));
-                                Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
+//                                Snackbar.make(null, getString(R.string.snackbar_login_success), Snackbar.LENGTH_SHORT).show();
+                                MainActivity.snackString = R.string.snackbar_login_success;
                                 Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                //TODO putExtra data return from server
                                 startActivity(mainActIntent);
                                 username.setText("");
                                 password.setText("");
@@ -121,14 +122,21 @@ public class SplashLoginActivity extends Activity {
                                 String toastString = " ";
                                 switch (message) {
                                     case "authen failed":
-                                        toastString = "Login failed, please check you username and password and try again";
+                                        toastString = getString(R.string.snackbar_login_authen_failed);
                                         break;
                                     case "db error":
-                                        toastString = "Database error, please try again later";
+                                        toastString = getString(R.string.snackbar_login_db_error);
                                         break;
                                 }
-                                Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_SHORT).show();
-                                password.setText("");
+//                                Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(loginLayout, toastString, Snackbar.LENGTH_LONG)
+                                        .setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                            }
+                                        })
+//                                        .setActionTextColor(getResources().getColor(R.color.accent_color))
+                                        .show();
                                 loginBtn.setClickable(true);
                                 loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
                             }
@@ -142,6 +150,52 @@ public class SplashLoginActivity extends Activity {
         if(!GlobalSocket.mSocket.hasListeners("login_respond")) GlobalSocket.mSocket.on("login_respond", onLoginRespond);
     }
 
+    private void emitlogin() {
+        final JSONObject loginStuff = new JSONObject();
+        String hexPassword = "";
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getText().toString().getBytes());
+            hexPassword = bytesToHex(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            loginStuff.put("login", username.getText().toString());
+            loginStuff.put("password", hexPassword);
+            loginStuff.put("_event", "login_respond");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//                    Log.d(APP_LOG, hexPassword);
+
+        if(!GlobalSocket.globalEmit("user.login", loginStuff)) {
+//                        Toast.makeText(getApplicationContext(), "cannot connect to server", Toast.LENGTH_SHORT).show();
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(!GlobalSocket.globalEmit("user.login", loginStuff)) {
+                        Snackbar.make(loginLayout, getString(R.string.snackbar_login_cannot_connect),Snackbar.LENGTH_LONG)
+                                .setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                    }
+                                })
+                                .show();
+                        loginBtn.setClickable(true);
+                        loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
+                    } else {
+                        delayAction.postDelayed(timeout, 5000);
+                    }
+                }
+            }, 2000);
+        } else {
+            delayAction.postDelayed(timeout, 5000);
+        }
+    }
+
     private void setupListener() {
         if(!loginBtn.hasOnClickListeners()) {
             loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -149,31 +203,7 @@ public class SplashLoginActivity extends Activity {
                 public void onClick(View v) {
                     loginBtn.setClickable(false);
                     loginBtn.setTextColor(getResources().getColor(R.color.light_gray));
-                    JSONObject loginStuff = new JSONObject();
-                    String hexPassword = "";
-
-                    try {
-                        MessageDigest md = MessageDigest.getInstance("SHA-256");
-                        md.update(password.getText().toString().getBytes());
-                        hexPassword = bytesToHex(md.digest());
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        loginStuff.put("login", username.getText().toString());
-                        loginStuff.put("password", hexPassword);
-                        loginStuff.put("_event", "login_respond");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-//                    Log.d(APP_LOG, hexPassword);
-
-                    if(GlobalSocket.globalEmit("user.login", loginStuff)) {
-                        Toast.makeText(getApplicationContext(), "cannot connect to server", Toast.LENGTH_SHORT).show();
-                        loginBtn.setClickable(true);
-                        loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
-                    }
+                    emitlogin();
                 }
 
             });
@@ -199,11 +229,30 @@ public class SplashLoginActivity extends Activity {
                 finish();
             }
         });
+
+        timeout = new Runnable() {
+            @Override
+            public void run() {
+                GlobalSocket.reconnect();
+                loginBtn.setClickable(true);
+                loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
+                Snackbar.make(loginLayout, getString(R.string.snackbar_connection_timeout), Snackbar.LENGTH_LONG)
+                        .setAction("retry", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                loginBtn.setClickable(false);
+                                loginBtn.setTextColor(getResources().getColor(R.color.light_gray));
+                                emitlogin();
+                            }
+                        })
+                        .show();
+            }
+        };
     }
 
     private void setupSplashAnimation() {
         logoLayout.animate()
-                .yBy(-280 * getResources().getDisplayMetrics().densityDpi / getResources().getDisplayMetrics().DENSITY_400)
+                .yBy(-280 * getResources().getDisplayMetrics().densityDpi / 400)
                 .setDuration(1200).setStartDelay(1500).start();
 //        loginLayout.animate().translationY(0).setDuration(1200).setStartDelay(1500).start();
         loginLayout.setVisibility(View.VISIBLE);

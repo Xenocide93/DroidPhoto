@@ -9,7 +9,7 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         android:indeterminate="true"/>
 
     <include android:id="@+id/reload_view"
@@ -19,7 +19,7 @@
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/header_user"
@@ -30,7 +30,6 @@
 
             <ImageView
                 android:id="@+id/profile_image_circle"
-                android:background="@drawable/droidsans_logo"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="24dp"
