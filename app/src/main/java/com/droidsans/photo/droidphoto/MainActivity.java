@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.util.CircleTransform;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
@@ -85,13 +86,14 @@ public class MainActivity extends AppCompatActivity {
         setupUIFrame();
         attachFragment();
         setupListener();
+        getUserInfo();
         printDeviceInfo();
         updateVersionMappingFile();
     }
 
     private void setupListener() {
-        if(!GlobalSocket.mSocket.hasListeners(getString(R.string.onGetCsvResponse))){
-            GlobalSocket.mSocket.on(getString(R.string.onGetCsvResponse), new Emitter.Listener() {
+        if(!GlobalSocket.mSocket.hasListeners("get_csv")){
+            GlobalSocket.mSocket.on("get_csv", new Emitter.Listener() {
                 @Override
                 public void call(final Object... args) {
                     runOnUiThread(new Runnable() {
@@ -132,6 +134,64 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        if(!GlobalSocket.mSocket.hasListeners("get_user_info")) {
+            GlobalSocket.mSocket.on("get_user_info", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            JSONObject data = new JSONObject();
+                            if (data.optBoolean("success")) {
+                                // happy
+//                                getUserdata().edit()
+//                                        .putString(getString(R.string.display_name), data.optString("disp_name"))
+//                                        .putString(getString(R.string.avatar_url), data.optString("avatar_url"))
+//                                        .apply();
+                                displayName.setText(data.optString("disp_name", ""));
+                                Glide.with(getApplicationContext())
+                                        .load(GlobalSocket.serverURL + ProfileFragment.baseURL + data.optString("avatar_url"))
+                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                        .placeholder(R.drawable.ic_account_circle_black_48dp)
+                                        .centerCrop()
+                                        .transform(new CircleTransform(getApplicationContext()))
+                                        .into(profile);
+                            } else {
+                                switch (data.optString("msg")) {
+                                    case "db error":
+                                        //sad
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                Toast.makeText(getApplicationContext(), data.optString("msg"), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void getUserInfo() {
+        final JSONObject data = new JSONObject();
+        try {
+            data.put("_event", "get_user_info");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if(!GlobalSocket.globalEmit("user.getuserinfo", data)) {
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(!GlobalSocket.globalEmit("user.getuserinfo", data)) {
+                        //sad
+                    }
+                }
+            }, 2500);
+        };
     }
 
     private void updateVersionMappingFile() {
@@ -139,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         final JSONObject data = new JSONObject();
         try {
             data.put("version", getVendorModelMapVersion());
-            data.put("_event", getString(R.string.onGetCsvResponse));
+            data.put("_event", "get_csv");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -151,13 +211,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, 3000);
         }
-
-
     }
 
     private String getVendorModelMapVersion() {
 //        return getSharedPreferences(getString(R.string.cvsMapPref), Context.MODE_PRIVATE)
-//                .getString(getString(R.string.csvVersion), "1.0");
+//                .getString(getString(R.string.csvVersion), "0.0");
         return "0.9";
     }
 
@@ -202,13 +260,20 @@ public class MainActivity extends AppCompatActivity {
 //
 //        toolbar.inflateMenu(R.menu.menu_main);
 
-        displayName.setText(getUserdata().getString(getString(R.string.display_name), ""));
         username.setText("@" + getUserdata().getString(getString(R.string.username), "... no username ?? must be a bug"));
-        Glide.with(getApplicationContext())
-                .load("https://pbs.twimg.com/profile_images/596106374725021696/r2zqUbK7_400x400.jpg")
-                .centerCrop()
-                .transform(new CircleTransform(getApplicationContext()))
-                .into(profile);
+
+        String disp = getUserdata().getString(getString(R.string.display_name), "");
+        displayName.setText(disp);
+//        if(!disp.equals("")) {
+            Glide.with(getApplicationContext())
+                    .load(GlobalSocket.serverURL + ProfileFragment.baseURL + getUserdata().getString(getString(R.string.avatar_url), ""))
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .placeholder(R.drawable.droidsans_logo)
+                    .centerCrop()
+                    .transform(new CircleTransform(getApplicationContext()))
+                    .into(profile);
+//        } else {
+//        }
 
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -379,6 +444,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if(GlobalSocket.mSocket.hasListeners("get_csv")) {
+            GlobalSocket.mSocket.off("get_csv");
+        }
         finish();
         super.onDestroy();
     }

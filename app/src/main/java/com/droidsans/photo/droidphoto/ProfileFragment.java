@@ -59,7 +59,7 @@ public class ProfileFragment extends Fragment {
     private FontTextView reloadText;
     private Button reloadButton;
 
-    private String baseURL = "/data/avatar/";
+    public static final String baseURL = "/data/avatar/";
     private String username;
 
     private Handler delayAction = new Handler();
@@ -134,7 +134,8 @@ public class ProfileFragment extends Fragment {
 //                                    .into(profilePic);
                             if(data.has("avatar_url")) {
                                 Glide.with(getActivity().getApplicationContext())
-                                        .load(GlobalSocket.serverURL + baseURL + data.optString("avatar_url"))
+//                                        .load(GlobalSocket.serverURL + baseURL + data.optString("avatar_url"))
+                                        .load(GlobalSocket.serverURL + baseURL + "test.jpg")
                                         .transform(new CircleTransform(getActivity().getApplicationContext()))
                                         .into(profilePic);
                             }
@@ -153,8 +154,8 @@ public class ProfileFragment extends Fragment {
                 });
             }
         };
-        if(!GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserInfoRespond))) {
-            GlobalSocket.mSocket.on(getString(R.string.onGetUserInfoRespond), onGetUserInfoRespond);
+        if(!GlobalSocket.mSocket.hasListeners("userinfo_respond")) {
+            GlobalSocket.mSocket.on("userinfo_respond", onGetUserInfoRespond);
         }
 
         onGetUserFeedRespond = new Emitter.Listener() {
@@ -207,8 +208,8 @@ public class ProfileFragment extends Fragment {
                 });
             }
         };
-        if(!GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserFeedRespond))){
-            GlobalSocket.mSocket.on(getString(R.string.onGetUserFeedRespond), onGetUserFeedRespond);
+        if(!GlobalSocket.mSocket.hasListeners("get_user_feed")){
+            GlobalSocket.mSocket.on("get_user_feed", onGetUserFeedRespond);
         }
 
         onDisconnect = new Emitter.Listener() {
@@ -224,14 +225,14 @@ public class ProfileFragment extends Fragment {
             }
         };
 
-        if(!GlobalSocket.mSocket.hasListeners(getString(R.string.onRemovePicRespond))){
-            GlobalSocket.mSocket.on(getString(R.string.onRemovePicRespond), new Emitter.Listener() {
+        if(!GlobalSocket.mSocket.hasListeners("remove_pic")){
+            GlobalSocket.mSocket.on("remove_pic", new Emitter.Listener() {
                 @Override
                 public void call(final Object... args) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            GlobalSocket.mSocket.off(getString(R.string.onRemovePicRespond));
+                            GlobalSocket.mSocket.off("remove_pic");
                             JSONObject returnData = (JSONObject) args[0];
                             if(returnData.optBoolean("success")){
                                 Snackbar.make(mainLayout, "Selected pictures are removed", Snackbar.LENGTH_SHORT).show();
@@ -251,7 +252,7 @@ public class ProfileFragment extends Fragment {
         JSONObject data = new JSONObject();
         try {
             data.put("_token", getActivity().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), ""));
-            data.put("_event", getString(R.string.onGetUserInfoRespond));
+            data.put("_event", "userinfo_respond");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -276,7 +277,7 @@ public class ProfileFragment extends Fragment {
         try {
             data.put("skip", 0);
             data.put("limit", 21);
-            data.put("_event", getString(R.string.onGetUserFeedRespond));
+            data.put("_event", "get_user_feed");
         } catch (JSONException e){e.printStackTrace();}
 
         if(!GlobalSocket.globalEmit("photo.getuserphoto", data)) {
@@ -335,7 +336,7 @@ public class ProfileFragment extends Fragment {
                 try {
                     removePicData.put("photo_count", count);
                     removePicData.put("remove_photo", removePicId);
-                    removePicData.put("_event", getString(R.string.onRemovePicRespond));
+                    removePicData.put("_event", "remove_pic");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -356,14 +357,14 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroy() {
         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
-        if(GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserInfoRespond))) {
-            GlobalSocket.mSocket.off(getString(R.string.onGetUserInfoRespond));
+        if(GlobalSocket.mSocket.hasListeners("userinfo_respond")) {
+            GlobalSocket.mSocket.off("userinfo_respond");
         }
-        if(GlobalSocket.mSocket.hasListeners(getString(R.string.onGetUserFeedRespond))) {
-            GlobalSocket.mSocket.off(getString(R.string.onGetUserFeedRespond));
+        if(GlobalSocket.mSocket.hasListeners("get_user_feed")) {
+            GlobalSocket.mSocket.off("get_user_feed");
         }
-        if(GlobalSocket.mSocket.hasListeners(getString(R.string.onRemovePicRespond))){
-            GlobalSocket.mSocket.off(getString(R.string.onRemovePicRespond));
+        if(GlobalSocket.mSocket.hasListeners("remove_pic")){
+            GlobalSocket.mSocket.off("remove_pic");
         }
         super.onDestroy();
     }

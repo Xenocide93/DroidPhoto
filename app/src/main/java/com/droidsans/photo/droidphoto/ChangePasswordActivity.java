@@ -75,7 +75,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     try {
                         changePassObj.put("old_pass", hexOldPassword);
                         changePassObj.put("new_pass", hexNewPassword);
-                        changePassObj.put("_event", "change_password_respond");
+                        changePassObj.put("_event", "change_password");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -98,7 +98,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     public void run() {
                         JSONObject data = (JSONObject) args[0];
                         if(data.optBoolean("success")) {
-                            GlobalSocket.mSocket.off("change_password_respond");
+                            GlobalSocket.mSocket.off("change_password");
                             getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).edit()
                                     .remove(getString(R.string.token))
                                     .putString(getString(R.string.token), data.optString("_token"))
@@ -125,7 +125,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             }
         };
 
-        if(!GlobalSocket.mSocket.hasListeners("change_password_respond")) GlobalSocket.mSocket.on("change_password_respond", onPasswordChangeRespond);
+        if(!GlobalSocket.mSocket.hasListeners("change_password")) GlobalSocket.mSocket.on("change_password", onPasswordChangeRespond);
     }
 
     private String bytesToHex(byte[] in) {
@@ -136,7 +136,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         return builder.toString();
     }
 
-//    @Override
+    @Override
+    protected void onDestroy() {
+        if(GlobalSocket.mSocket.hasListeners("change_password")) GlobalSocket.mSocket.off("change_password");
+        super.onDestroy();
+    }
+
+    //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.menu_change_password, menu);

@@ -236,8 +236,8 @@ public class SplashLoginActivity extends Activity {
         username.setText("");
         password.setText("");
 
-        if(GlobalSocket.mSocket.hasListeners(getString(R.string.onLoginRespond))) {
-            GlobalSocket.mSocket.off(getString(R.string.onLoginRespond));
+        if(GlobalSocket.mSocket.hasListeners("login_respond")) {
+            GlobalSocket.mSocket.off("login_respond");
         }
 
         super.onDestroy();
