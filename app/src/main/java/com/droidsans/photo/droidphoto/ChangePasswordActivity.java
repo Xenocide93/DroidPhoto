@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.github.nkzawa.emitter.Emitter;
 
@@ -25,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 public class ChangePasswordActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
+    private FontTextView username;
     private EditText oldPassword, newPassword, confirmPassword;
     private Button changeButton;
     private Emitter.Listener onPasswordChangeRespond;
@@ -35,6 +37,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_change_password);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        username = (FontTextView) findViewById(R.id.change_password_username);
         oldPassword = (EditText) findViewById(R.id.change_password_old);
         newPassword = (EditText) findViewById(R.id.change_password_new);
         confirmPassword = (EditText) findViewById(R.id.change_password_confirm);
@@ -45,6 +48,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        username.append(getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getString(getString(R.string.username), ""));
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,19 +146,22 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    //    @Override
+//    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.menu_change_password, menu);
 //        return true;
 //    }
-//
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
+            case R.id.action_done:
+
+                return true;
             case android.R.id.home:
                 finish();
                 return true;

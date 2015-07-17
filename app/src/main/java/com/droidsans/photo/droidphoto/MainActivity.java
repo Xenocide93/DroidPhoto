@@ -545,8 +545,6 @@ public class MainActivity extends AppCompatActivity {
         username = (FontTextView) findViewById(R.id.username);
         displayName = (FontTextView) findViewById(R.id.display_name);
         profile = (ImageView) findViewById(R.id.profile_image_circle);
-
-
     }
 
     private void findUserMenuById() {

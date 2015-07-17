@@ -121,6 +121,7 @@ public class FeedFragment extends Fragment {
         initializeVendorModelList();
         initRequestFeed();
         initLoading();
+        
         super.onActivityCreated(savedInstanceState);
     }
 
