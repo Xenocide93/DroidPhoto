@@ -108,7 +108,8 @@ public class SplashLoginActivity extends Activity {
 //                                GlobalSocket.writeStringToFile(GlobalSocket.USERNAME, ((String) userObject.get("username")));
 //                                GlobalSocket.writeStringToFile(GlobalSocket.DISPLAY_NAME, ((String)userObject.get("disp_name")));
 //                                Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
-                                Snackbar.make(loginLayout, getString(R.string.snackbar_login_success), Snackbar.LENGTH_SHORT).show();
+//                                Snackbar.make(null, getString(R.string.snackbar_login_success), Snackbar.LENGTH_SHORT).show();
+                                MainActivity.snackString = R.string.snackbar_login_success;
                                 Intent mainActIntent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(mainActIntent);
                                 username.setText("");
@@ -235,7 +236,7 @@ public class SplashLoginActivity extends Activity {
                 GlobalSocket.reconnect();
                 loginBtn.setClickable(true);
                 loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
-                Snackbar.make(loginLayout, "connection timeout. retry ?", Snackbar.LENGTH_LONG)
+                Snackbar.make(loginLayout, getString(R.string.snackbar_connection_timeout), Snackbar.LENGTH_LONG)
                         .setAction("retry", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

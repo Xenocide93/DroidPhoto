@@ -55,6 +55,7 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity {
 
     public static Context mContext;
+    public static int snackString;
 
     private Toolbar toolbar;
     private NavigationView navigationView;
@@ -91,6 +92,14 @@ public class MainActivity extends AppCompatActivity {
         getUserInfo();
         printDeviceInfo();
         updateVersionMappingFile();
+        makeSnack();
+    }
+
+    public void makeSnack() {
+        if(snackString != 0) {
+            Snackbar.make(findViewById(R.id.main_fragment), getString(snackString), Snackbar.LENGTH_SHORT).show();
+            snackString = 0;
+        }
     }
 
     private void setupListener() {

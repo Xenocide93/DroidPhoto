@@ -56,8 +56,7 @@ public class BrowseModelActivity extends AppCompatActivity {
         Intent previousIntent = getIntent();
         vendorNum = previousIntent.getIntExtra(BrowseVendorActivity.VENDOR_NUM, -1);
         vendorName = previousIntent.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
-        //TODO remove toast
-        Toast.makeText(getApplicationContext(), "Vendor Num: "+vendorNum, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "Vendor Num: "+vendorNum, Toast.LENGTH_SHORT).show();
     }
 
     private void setupModelListView() {
