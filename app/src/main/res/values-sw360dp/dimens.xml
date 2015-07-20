@@ -6,4 +6,5 @@
     <dimen name="small_padding">10dp</dimen>
     <dimen name="font_th_normal_fontsize">25sp</dimen>
     <dimen name="font_th_subtitle_fontsize">20sp</dimen>
+    <dimen name="edit_profile_profile_pic_size">150dp</dimen>
 </resources>

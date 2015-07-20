@@ -1,0 +1,172 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.droidsans.photo.droidphoto.EditProfileActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/profile_pic"
+                android:layout_width="@dimen/edit_profile_profile_pic_size"
+                android:layout_height="@dimen/edit_profile_profile_pic_size"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/droidsans_logo" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/profile_pic"
+                android:layout_alignRight="@id/profile_pic"
+                android:layout_alignTop="@id/profile_pic"
+                android:layout_alignBottom="@id/profile_pic"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/edit_profile_pic"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_edit_white_24dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/display_name_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_pic"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="@dimen/activity_horizontal_margin">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:alpha="0.3"
+                    android:src="@drawable/ic_person_black_48dp" />
+
+                <EditText
+                    android:id="@+id/display_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/small_padding"
+                    android:background="@null"
+                    android:hint="display name"
+                    android:singleLine="true"
+                    android:textColorHint="@color/light_gray" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_alignLeft="@id/display_name_layout"
+                android:layout_alignRight="@id/display_name_layout"
+                android:layout_below="@id/display_name_layout"
+                android:layout_marginTop="5dp"
+                android:alpha="0.2"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:id="@+id/profile_desc_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/display_name_layout"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="@dimen/activity_horizontal_margin">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:alpha="0.4"
+                    android:src="@drawable/ic_event_note_black_24dp" />
+
+                <EditText
+                    android:id="@+id/profile_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/small_padding"
+                    android:background="@null"
+                    android:hint="profile description"
+                    android:text="@string/long_text_50"
+                    android:textColorHint="@color/light_gray" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_alignLeft="@id/display_name_layout"
+                android:layout_alignRight="@id/display_name_layout"
+                android:layout_below="@id/profile_desc_layout"
+                android:layout_marginTop="5dp"
+                android:alpha="0.2"
+                android:background="@color/black" />
+
+            <RelativeLayout
+                android:id="@+id/change_password_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_desc_layout"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="@dimen/activity_horizontal_margin">
+
+                <ImageView
+                    android:id="@+id/key_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:alpha="0.4"
+                    android:src="@drawable/ic_vpn_key_black_48dp"
+                    android:layout_centerVertical="true"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/small_padding"
+                    android:layout_toRightOf="@+id/key_icon"
+                    android:layout_alignParentRight="true">
+
+                    <Button
+                        android:id="@+id/change_pass_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/curve_primary"
+                        android:layout_centerHorizontal="true"
+                        android:paddingLeft="@dimen/small_padding"
+                        android:paddingRight="@dimen/small_padding"
+                        android:textColor="@color/white"
+                        android:text="Change Password"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/item_toolbar" />
+
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@+id/toolbar"
+        android:background="@drawable/toolbar_dropshadow" />
+
+</RelativeLayout>

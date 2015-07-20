@@ -842,7 +842,6 @@ public class FillPostActivity extends AppCompatActivity {
                         JSONObject data = (JSONObject) args[0];
                         try {
                             if(data.getBoolean("success")){
-                                //TODO notify main activity of successfully upload
                                 Log.d("droidphoto", "upload success");
                                 if(FeedFragment.mFeedFragment != null) FeedFragment.mFeedFragment.updateFeed();
                             } else {
