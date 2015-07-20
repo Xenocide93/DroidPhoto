@@ -101,6 +101,14 @@
     <string name="test_140_char">111111111112222222222333333333344444444445555555555666666666677777777778888888888999999999900000000001111111111222222222233333333334444444444</string>
     <string name="test_90_char">1111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999</string>
     <string name="menu_filter">Filter</string>
+    <string name="title_activity_edit_profile">Edit profile</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="long_text_10">\@@@@@@@@@@</string>
+    <string name="long_text_20">\@@@@@@@@@@@@@@@@@@@@</string>
+    <string name="long_text_30">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
+    <string name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
+    <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
 
 
 </resources>

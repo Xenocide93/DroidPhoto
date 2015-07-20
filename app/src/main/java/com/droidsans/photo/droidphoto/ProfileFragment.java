@@ -1,7 +1,9 @@
 package com.droidsans.photo.droidphoto;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -15,11 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -34,8 +33,6 @@ import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.ProfileFeedRecycleViewAdapter;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
-import com.droidsans.photo.droidphoto.util.SquareImageView;
-import com.droidsans.photo.droidphoto.util.UserPictureGridAdapter;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 
@@ -50,13 +47,17 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment {
+    public static final int EDIT_PROFILE = 1;
+    public static final String DISPLAY_NAME = "displayName";
+    public static final String PROFILE_DESCRIPTION = "profileDesc";
+    public static Drawable profilePictureDrawable;
 
     private ProgressBar loadingCircle;
     private LinearLayout reloadLayout;
     private RelativeLayout mainLayout;
 
     private ImageView profilePic;
-    private FontTextView profileName, usernameTV, profileDescTV;
+    private FontTextView displayNameTv, usernameTV, profileDescTV;
     private RecyclerView profileFeedPicRecyclerview;
 
     private FontTextView reloadText;
@@ -69,6 +70,7 @@ public class ProfileFragment extends Fragment {
 
     private Emitter.Listener onGetUserInfoRespond;
     private Emitter.Listener onGetUserFeedRespond;
+    private Emitter.Listener onUpdateProfileRespond;
     private Emitter.Listener onDisconnect;
 
 //    private UserPictureGridAdapter adapter;
@@ -99,6 +101,11 @@ public class ProfileFragment extends Fragment {
         switch (item.getItemId()){
             case R.id.action_edit_profile:
                 Toast.makeText(getActivity(), "edit profile", Toast.LENGTH_SHORT).show();
+                Intent editProfileIntent = new Intent(getActivity(), EditProfileActivity.class);
+                editProfileIntent.putExtra(DISPLAY_NAME, displayNameTv.getText().toString());
+                editProfileIntent.putExtra(PROFILE_DESCRIPTION, profileDescTV.getText().toString());
+
+                startActivityForResult(editProfileIntent, EDIT_PROFILE);
                 return true;
             case R.id.action_delete:
                 toggleEditMode();
@@ -148,8 +155,8 @@ public class ProfileFragment extends Fragment {
 
                             Log.d("droidphoto", userObj.optString("username") + " | " + userObj.optString("disp_name"));
                             username = userObj.optString("username");
-                            usernameTV.setText(username);
-                            profileName.setText(userObj.optString("disp_name"));
+                            usernameTV.setText("@"+username);
+                            displayNameTv.setText(userObj.optString("disp_name"));
                             Glide.with(getActivity().getApplicationContext())
                                     .load(GlobalSocket.serverURL + baseURL + userObj.optString("avatar_url"))
 //                                    .load(GlobalSocket.serverURL + baseURL + "test.jpg")
@@ -235,6 +242,27 @@ public class ProfileFragment extends Fragment {
             GlobalSocket.mSocket.on("get_user_feed", onGetUserFeedRespond);
         }
 
+        if(!GlobalSocket.mSocket.hasListeners("onUpdateProfileRespond")){
+            GlobalSocket.mSocket.on("onUpdateProfileRespond", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalSocket.mSocket.off("onUpdateProfileRespond");
+                            JSONObject data = (JSONObject) args[0];
+                            if(data.optBoolean("success")){
+                                ((MainActivity) getActivity()).getUserInfo();
+                                Snackbar.make(getView(), "Profile information is updated", Snackbar.LENGTH_LONG).show();
+                            } else {
+                                Snackbar.make(getView(), "Error: "+data.optString("msg"), Snackbar.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
         onDisconnect = new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -258,12 +286,12 @@ public class ProfileFragment extends Fragment {
                         public void run() {
                             GlobalSocket.mSocket.off("remove_pic");
                             JSONObject returnData = (JSONObject) args[0];
-                            if(returnData.optBoolean("success")){
+                            if (returnData.optBoolean("success")) {
                                 Snackbar.make(mainLayout, "Selected pictures are removed", Snackbar.LENGTH_SHORT).show();
                                 Log.d("droidphoto", "Selected pictures are removed");
                             } else {
-                                Snackbar.make(mainLayout, "Error: "+ returnData.optString("msg"), Snackbar.LENGTH_SHORT).show();
-                                Log.d("droidphoto", "Error: "+ returnData.optString("msg"));
+                                Snackbar.make(mainLayout, "Error: " + returnData.optString("msg"), Snackbar.LENGTH_SHORT).show();
+                                Log.d("droidphoto", "Error: " + returnData.optString("msg"));
                             }
                         }
                     });
@@ -324,6 +352,33 @@ public class ProfileFragment extends Fragment {
         } else {
             //can emit: detect loss on the way
             GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK){
+            switch (requestCode){
+                case EDIT_PROFILE:
+                    String profileDesc = data.getStringExtra(PROFILE_DESCRIPTION);
+                    String displayName = data.getStringExtra(DISPLAY_NAME);
+                    displayNameTv.setText(displayName);
+                    profileDescTV.setText(profileDesc);
+
+                    JSONObject emitData = new JSONObject();
+                    try {
+                        emitData.put("disp_name", displayName);
+                        emitData.put("profile_desc", profileDesc);
+                        emitData.put("_event", "onUpdateProfileRespond");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    GlobalSocket.globalEmit("user.edit", emitData);
+                    break;
+            }
+        } else {
+            Log.d("droidphoto", "edit profile: result canceled");
         }
     }
 
@@ -397,7 +452,7 @@ public class ProfileFragment extends Fragment {
 
     private void findAllById() {
         profilePic = (ImageView) mainLayout.findViewById(R.id.profile_image_circle);
-        profileName = (FontTextView) mainLayout.findViewById(R.id.display_name);
+        displayNameTv = (FontTextView) mainLayout.findViewById(R.id.display_name);
         profileDescTV = (FontTextView) mainLayout.findViewById(R.id.profile_desc);
 
         usernameTV = (FontTextView) mainLayout.findViewById(R.id.username);

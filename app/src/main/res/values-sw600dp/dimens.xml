@@ -12,4 +12,5 @@
     <dimen name="profile_picture_size">150dp</dimen>
     <dimen name="font_th_normal_fontsize">40sp</dimen>
     <dimen name="font_th_subtitle_fontsize">30sp</dimen>
+    <dimen name="edit_profile_profile_pic_size">150dp</dimen>
 </resources>

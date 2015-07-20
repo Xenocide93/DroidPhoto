@@ -898,6 +898,11 @@ public class FeedFragment extends Fragment {
         reloadButton = (Button) reloadLayout.findViewById(R.id.reload_button);
     }
 
+    public void runUploadingAnimation(){ //will be called when emit upload
+        //TODO get picture from path in parameter
+        //TODO create placeholder view of the uploading photo with upload animation
+    }
+
     public void updateFeed(){
         JSONObject filter = new JSONObject();
         JSONArray filterData = new JSONArray();
