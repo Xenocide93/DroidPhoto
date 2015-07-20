@@ -21,7 +21,7 @@ public class ProfileFeedRecycleViewAdapter extends RecyclerView.Adapter {
     private LayoutInflater inflater;
     private Context context;
     public static boolean isClickOnce = false;
-    public boolean isInEditMode;
+    public boolean isInEditMode = false;
     public boolean[] isMarkedAsRemove;
 
     public ProfileFeedRecycleViewAdapter(Context context, ArrayList<PicturePack> packs){

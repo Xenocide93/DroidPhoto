@@ -23,13 +23,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
+
+import javax.net.ssl.SSLContext;
 
 public class GlobalSocket {
 //    public static final String TOKEN = "token";
 //    public static final String USERNAME = "username";
 //    public static final String DISPLAY_NAME = "displayName";
 
+//    public static String serverURL = "https://209.208.65.102:12000";
     public static String serverURL = "http://209.208.65.102:3000";
     public static Socket mSocket;
 //    private static String mToken;
@@ -62,7 +66,15 @@ public class GlobalSocket {
 
     private static boolean setupGlobalSocket() {
         if(mSocket==null) {
+//            SSLContext context = null;
+//            try {
+//                context = SSLContext.getDefault();
+//            } catch (NoSuchAlgorithmException e) {
+//                e.printStackTrace();
+//            }
+//            IO.setDefaultSSLContext(context);
             opts.secure = true;
+//            opts.sslContext = context;
             opts.forceNew = true;
             opts.reconnection = true;
             opts.reconnectionDelay = 1000;

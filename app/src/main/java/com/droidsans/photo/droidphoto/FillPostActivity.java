@@ -1,10 +1,8 @@
 package com.droidsans.photo.droidphoto;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -17,8 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -33,16 +29,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
+import com.droidsans.photo.droidphoto.util.retrofit.CountingTypedFile;
 import com.droidsans.photo.droidphoto.util.Devices;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
+import com.droidsans.photo.droidphoto.util.retrofit.PhotoPostService;
+import com.droidsans.photo.droidphoto.util.retrofit.ProgressListener;
+import com.droidsans.photo.droidphoto.util.retrofit.UploadResponseModel;
 import com.github.nkzawa.emitter.Emitter;
+import com.squareup.okhttp.OkHttpClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +64,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.OkClient;
+import retrofit.client.Response;
 
 public class FillPostActivity extends AppCompatActivity {
 
@@ -320,6 +329,12 @@ public class FillPostActivity extends AppCompatActivity {
 //        Log.d("droidphoto", "aperture (drewnoakes) :" + exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE) + " | max : " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAX_APERTURE));
 //        Log.d("droidphoto", "aperture (exifint.) :" + mExif.getAttribute(ExifInterface.TAG_APERTURE));
 
+        Glide.with(getApplicationContext())
+                .load(mCurrentPhotoPath)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(photo);
+
+        /*
         boolean isSampledDown = false;
         //get width/height without load bitmap into memory
         BitmapFactory.Options opt = new BitmapFactory.Options();
@@ -388,6 +403,7 @@ public class FillPostActivity extends AppCompatActivity {
             }
         }
         photo.setImageBitmap(imageBitmap);
+        */
     }
 
     private void reGeocode(Double lat, Double lng) {
@@ -657,61 +673,154 @@ public class FillPostActivity extends AppCompatActivity {
                     return;
                 }
 
-
                 new Thread(new Runnable() {
                     public void run() {
                         Log.d("droidphoto", "uploading...");
-                        JSONObject respond = post(GlobalSocket.serverURL + postURL, mCurrentPhotoPath);
-                        Log.d("droidphoto", "respond: " + respond.toString());
 
-                        try {
-                            if (respond.getBoolean("success")) {
-                                final JSONObject photoDetailStuff = new JSONObject();
-                                photoDetailStuff.put("photo_url", respond.getString("filename"));
-                                photoDetailStuff.put("caption", caption.getText().toString());
-                                photoDetailStuff.put("model", model.getText().toString());
-                                photoDetailStuff.put("vendor", vendor.getText().toString());
-                                photoDetailStuff.put("is_flash", exifDirectory.getString(ExifSubIFDDirectory.TAG_FLASH));
-                                photoDetailStuff.put("exp_time", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
-                                photoDetailStuff.put("tag_date", exifDirectory.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL));
-                                photoDetailStuff.put("width", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_WIDTH));
-                                photoDetailStuff.put("height", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_HEIGHT));
-                                photoDetailStuff.put("iso", exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
+                        //create client
+                        OkHttpClient okHttpClient = new OkHttpClient();
+                        okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
+
+                        //create rest adapter
+                        RestAdapter restAdapter = new RestAdapter.Builder()
+                                .setEndpoint(GlobalSocket.serverURL)
+                                .setClient(new OkClient(okHttpClient))
+                                .build();
+                        PhotoPostService postService = restAdapter.create(PhotoPostService.class);
+                        ProgressListener listener = new ProgressListener() {
+                            @Override
+                            public void transferred(long num) {
+
+                            }
+                        };
+                        postService.postPhoto(new CountingTypedFile("image/jpeg", new File(mCurrentPhotoPath), listener),
+                                getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getString(getString(R.string.token), ""),
+                                new Callback<UploadResponseModel>() {
+                                    @Override
+                                    public void success(UploadResponseModel jsonObject, Response response) {
+
+                                        if(response.getStatus() == HttpURLConnection.HTTP_OK) {
+                                            Log.d("droidphoto", "success");
+                                            Log.d("droidphoto", "response body : " + response.getBody().toString());
+                                            Log.d("droidphoto", "jsonObject : " + jsonObject);
+                                        }
+                                        try {
+//                                            if (jsonObject.getBoolean("success")) {
+                                            if(jsonObject.success) {
+                                                final JSONObject photoDetailStuff = new JSONObject();
+//                                                photoDetailStuff.put("photo_url", jsonObject.getString("filename"));
+                                                photoDetailStuff.put("photo_url", jsonObject.filename);
+                                                photoDetailStuff.put("caption", caption.getText().toString());
+                                                photoDetailStuff.put("model", model.getText().toString());
+                                                photoDetailStuff.put("vendor", vendor.getText().toString());
+                                                photoDetailStuff.put("is_flash", exifDirectory.getString(ExifSubIFDDirectory.TAG_FLASH));
+                                                photoDetailStuff.put("exp_time", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
+                                                photoDetailStuff.put("tag_date", exifDirectory.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL));
+                                                photoDetailStuff.put("width", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_WIDTH));
+                                                photoDetailStuff.put("height", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_HEIGHT));
+                                                photoDetailStuff.put("iso", exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
+//                                           photoDetailStuff.put("aperture", exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE));
+                                                photoDetailStuff.put("aperture", mExif.getAttribute(ExifInterface.TAG_APERTURE)); //because drewnoakes' aperture sometimes missing
+//                                            if(gpsDirectory != null) {
+//                                                photoDetailStuff.put("gps_lat", gpsDirectory.getString(GpsDirectory.TAG_LATITUDE));
+//                                                photoDetailStuff.put("gps_long", gpsDirectory.getString(GpsDirectory.TAG_LONGITUDE));
+//                                                photoDetailStuff.put("gps_lat_ref", gpsDirectory.getString(GpsDirectory.TAG_LATITUDE_REF));
+//                                                photoDetailStuff.put("gps_long_ref", gpsDirectory.getString(GpsDirectory.TAG_LONGITUDE_REF));
+//                                            }
+                                                if(resolvedLocation != null && useLocation.isChecked()) {
+                                                    photoDetailStuff.put("gps_lat", gpsLat);
+                                                    photoDetailStuff.put("gps_long", gpsLong);
+                                                    photoDetailStuff.put("gps_location", resolvedLocation);
+                                                    if(resolvedLocalizedLocation != null) {
+                                                        photoDetailStuff.put("gps_localized", resolvedLocalizedLocation);
+                                                    }
+                                                }
+                                                photoDetailStuff.put("_event", "photoupload_respond");
+                                                photoDetailStuff.put("is_accept", isAccept.isChecked());
+                                                photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
+
+                                                if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
+                                                    delayAction.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
+                                                                //???
+                                                                Toast.makeText(getApplicationContext(), "upload failed (on socket.io)", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    }, 2000);
+                                                }
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "upload failed (on success check)", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void failure(RetrofitError error) {
+                                        Log.d("droidphoto", "error " + error.toString());
+                                    }
+                                });
+/*
+                        //old
+                        /*
+                        JSONObject respond = post(GlobalSocket.serverURL + postURL, mCurrentPhotoPath);
+                        if(respond != null) {
+                            Log.d("droidphoto", "respond: " + respond.toString());
+
+                            try {
+                                if (respond.getBoolean("success")) {
+                                    final JSONObject photoDetailStuff = new JSONObject();
+                                    photoDetailStuff.put("photo_url", respond.getString("filename"));
+                                    photoDetailStuff.put("caption", caption.getText().toString());
+                                    photoDetailStuff.put("model", model.getText().toString());
+                                    photoDetailStuff.put("vendor", vendor.getText().toString());
+                                    photoDetailStuff.put("is_flash", exifDirectory.getString(ExifSubIFDDirectory.TAG_FLASH));
+                                    photoDetailStuff.put("exp_time", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
+                                    photoDetailStuff.put("tag_date", exifDirectory.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL));
+                                    photoDetailStuff.put("width", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_WIDTH));
+                                    photoDetailStuff.put("height", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_HEIGHT));
+                                    photoDetailStuff.put("iso", exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
 //                                photoDetailStuff.put("aperture", exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE));
-                                photoDetailStuff.put("aperture", mExif.getAttribute(ExifInterface.TAG_APERTURE)); //because drewnoakes' aperture sometimes missing
+                                    photoDetailStuff.put("aperture", mExif.getAttribute(ExifInterface.TAG_APERTURE)); //because drewnoakes' aperture sometimes missing
 //                                if(gpsDirectory != null) {
 //                                    photoDetailStuff.put("gps_lat", gpsDirectory.getString(GpsDirectory.TAG_LATITUDE));
 //                                    photoDetailStuff.put("gps_long", gpsDirectory.getString(GpsDirectory.TAG_LONGITUDE));
 //                                    photoDetailStuff.put("gps_lat_ref", gpsDirectory.getString(GpsDirectory.TAG_LATITUDE_REF));
 //                                    photoDetailStuff.put("gps_long_ref", gpsDirectory.getString(GpsDirectory.TAG_LONGITUDE_REF));
 //                                }
-                                if(resolvedLocation != null && useLocation.isChecked()) {
-                                    photoDetailStuff.put("gps_lat", gpsLat);
-                                    photoDetailStuff.put("gps_long", gpsLong);
-                                    photoDetailStuff.put("gps_location", resolvedLocation);
-                                    if(resolvedLocalizedLocation != null) {
-                                        photoDetailStuff.put("gps_localized", resolvedLocalizedLocation);
+                                    if(resolvedLocation != null && useLocation.isChecked()) {
+                                        photoDetailStuff.put("gps_lat", gpsLat);
+                                        photoDetailStuff.put("gps_long", gpsLong);
+                                        photoDetailStuff.put("gps_location", resolvedLocation);
+                                        if(resolvedLocalizedLocation != null) {
+                                            photoDetailStuff.put("gps_localized", resolvedLocalizedLocation);
+                                        }
+                                    }
+                                    photoDetailStuff.put("_event", "photoupload_respond");
+                                    photoDetailStuff.put("is_accept", isAccept.isChecked());
+                                    photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
+
+                                    if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
+                                        delayAction.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
+                                                    //???
+                                                }
+                                            }
+                                        }, 2000);
                                     }
                                 }
-                                photoDetailStuff.put("_event", "photoupload_respond");
-                                photoDetailStuff.put("is_accept", isAccept.isChecked());
-                                photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
-
-                                if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
-                                    delayAction.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
-                                                //???
-                                            }
-                                        }
-                                    }, 2000);
-                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "upload failed", Toast.LENGTH_SHORT).show();
                         }
-
+                        */
                     }
                 }).start();
 
