@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -38,6 +40,10 @@ import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.nkzawa.emitter.Emitter;
@@ -49,6 +55,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Target;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,6 +69,7 @@ public class FeedFragment extends Fragment {
     public static final int FILTER_FEED = 2;
     public static final int FILL_POST = 4;
     public static final int SELECT_PHOTO = 8;
+    public static final String FIRST_TIME_FEED_FRAGMENT = "firstTimeFeedFragment";
 
     private View logoLayout, dimView;
 //    private GridView feedGridView;
@@ -136,11 +144,26 @@ public class FeedFragment extends Fragment {
         findAllById();
         setupRecycleView();
         setupListener();
-        setupFloatingActionButton();
     }
 
-    private void setupFloatingActionButton() {
+    private void checkFirstTimeLaunch() {
 
+        if(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(FIRST_TIME_FEED_FRAGMENT, true)){
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.CENTER_IN_PARENT);
+            int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+            params.setMargins(margin, margin, margin, margin);
+
+            ViewTarget targetFam = new ViewTarget(fam.getMenuIconView());
+            ShowcaseView sv = new ShowcaseView.Builder(getActivity())
+                    .setTarget(targetFam)
+                    .setContentTitle("Upload photo")
+                    .setContentText("Press this button to post picture")
+                    .hideOnTouchOutside()
+                    .build();
+            sv.setShouldCentreText(true);
+            sv.setButtonPosition(params);
+        }
     }
 
     private void setupRecycleView() {
@@ -377,6 +400,8 @@ public class FeedFragment extends Fragment {
                             //setup new recycle view adapter
                             recycleAdapter = new FeedRecycleViewAdapter(getActivity(), feedPicturePack);
                             feedRecycleView.setAdapter(recycleAdapter);
+
+                            checkFirstTimeLaunch();
 
                         } else {
                             Log.d("droidphoto", "Feed error: " + data.optString("msg"));
