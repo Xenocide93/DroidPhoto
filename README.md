@@ -10,4 +10,5 @@ metadata (drewnoakes) : https://github.com/drewnoakes/metadata-extractor
 read more
 ```sh
 android.suport full   :	https://developer.android.com/tools/support-library/features.html
+colorize toolbar icon : https://snowdog.co/blog/how-to-dynamicaly-change-android-toolbar-icons-color
 ```
