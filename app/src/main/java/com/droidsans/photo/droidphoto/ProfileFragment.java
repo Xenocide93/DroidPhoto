@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -108,7 +110,7 @@ public class ProfileFragment extends Fragment {
                 startActivityForResult(editProfileIntent, EDIT_PROFILE);
                 return true;
             case R.id.action_delete:
-                toggleEditMode();
+                toggleEditMode(item);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -398,35 +400,45 @@ public class ProfileFragment extends Fragment {
         reloadButton.setClickable(true);
     }
 
-    public void toggleEditMode(){
-        adapter.isInEditMode = !adapter.isInEditMode;
-        if(!adapter.isInEditMode){ //exit edit mode
-            int count = 0;
-            JSONArray removePicId = new JSONArray();
-            for (int i=adapter.getItemCount()-1; i>=0; i--){
-                if(adapter.isMarkedAsRemove[i]){
-                    removePicId.put(packs.get(i).photoId);
-                    packs.remove(i);
-                    count++;
-                    adapter.isMarkedAsRemove[i] = false;
+    public void toggleEditMode(MenuItem item) {
+        if(adapter != null) {
+            adapter.isInEditMode = !adapter.isInEditMode;
+            if(adapter.isInEditMode) {
+                //TODO set open bin icon
+                item.setIcon(R.drawable.ic_check_circle_accent_24dp);
+//                item.getIcon().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.accent_color), PorterDuff.Mode.MULTIPLY));
+            } else {
+                item.setIcon(R.drawable.ic_delete_white_24dp);
+//                item.getIcon().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.MULTIPLY));
+            }
+            if (!adapter.isInEditMode) { //exit edit mode
+                int count = 0;
+                JSONArray removePicId = new JSONArray();
+                for (int i = adapter.getItemCount() - 1; i >= 0; i--) {
+                    if (adapter.isMarkedAsRemove[i]) {
+                        removePicId.put(packs.get(i).photoId);
+                        packs.remove(i);
+                        count++;
+                        adapter.isMarkedAsRemove[i] = false;
+                    }
+                }
+
+                if (count > 0) {
+                    JSONObject removePicData = new JSONObject();
+                    try {
+                        removePicData.put("photo_count", count);
+                        removePicData.put("remove_photo", removePicId);
+                        removePicData.put("_event", "remove_pic");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    GlobalSocket.globalEmit("photo.remove", removePicData);
                 }
             }
 
-            if(count>0){
-                JSONObject removePicData = new JSONObject();
-                try {
-                    removePicData.put("photo_count", count);
-                    removePicData.put("remove_photo", removePicId);
-                    removePicData.put("_event", "remove_pic");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                GlobalSocket.globalEmit("photo.remove", removePicData);
-            }
+            adapter.notifyDataSetChanged();
         }
-
-        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -502,35 +502,35 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-//        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+////        return super.onCreateOptionsMenu(menu);
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
-        switch(item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-            case R.id.action_search:
-                Toast.makeText(getApplicationContext(), "Search", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_remove_picture:
-                if(fragment instanceof ProfileFragment){
-                    ((ProfileFragment)fragment).toggleEditMode();
-                }
-                return true;
-            case R.id.action_filter:
-                if(fragment instanceof FeedFragment){
-                    ((FeedFragment)fragment).launchAddFilterPopup();
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+//        switch(item.getItemId()) {
+//            case R.id.action_settings:
+//                return true;
+//            case R.id.action_search:
+//                Toast.makeText(getApplicationContext(), "Search", Toast.LENGTH_SHORT).show();
+//                return true;
+//            case R.id.action_remove_picture:
+//                if(fragment instanceof ProfileFragment){
+//                    ((ProfileFragment)fragment).toggleEditMode();
+//                }
+//                return true;
+//            case R.id.action_filter:
+//                if(fragment instanceof FeedFragment){
+//                    ((FeedFragment)fragment).launchAddFilterPopup();
+//                }
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private void findAllById() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
