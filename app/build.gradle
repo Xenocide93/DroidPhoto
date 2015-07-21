@@ -30,5 +30,7 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'com.diegocarloslima:byakugallery:0.1.0'
     compile 'com.github.clans:fab:1.5.4'
+    compile 'com.loopj.android:android-async-http:1.4.7'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.github.amlcurran.showcaseview:library:5.0.0'
 }
