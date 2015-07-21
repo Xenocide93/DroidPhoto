@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -282,7 +283,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         Metadata metadata;
                         ExifIFD0Directory orientationDirectory = null;
                         try {
-                            metadata = ImageMetadataReader.readMetadata(tempFile);
+                            metadata = ImageMetadataReader.readMetadata(new BufferedInputStream(getContentResolver().openInputStream(avatarURI)));
                             orientationDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
                         } catch (ImageProcessingException e) {
                             e.printStackTrace();
@@ -326,7 +327,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             BitmapFactory.decodeStream(in, null, options).compress(Bitmap.CompressFormat.JPEG, 80, out);
                         } else {
                             Log.d("droidphoto", "has matrix");
-                            Bitmap.createBitmap(BitmapFactory.decodeStream(in, null, options), 0, 0, options.outWidth / options.inSampleSize, options.outHeight / options.inSampleSize, matrix, true)
+                            Bitmap.createBitmap(BitmapFactory.decodeStream(in, null, options), 0, 0, options.outWidth, options.outHeight, matrix, true)
                                     .compress(Bitmap.CompressFormat.JPEG, 80, out);
                         }
                         if(out != null) {
