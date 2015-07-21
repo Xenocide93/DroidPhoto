@@ -262,7 +262,7 @@ public class EditProfileActivity extends AppCompatActivity {
             case R.id.action_done:
                 if(isUpdateProfilePic) {
                     //resize image save to cache
-                    File tempFile = new File(getCacheDir() + "/" + "avatartemp.jpg");
+                    final File tempFile = new File(getCacheDir() + "/" + "avatartemp.jpg");
                     FileOutputStream out = null;
                     Bitmap bmp = null;
                     try {
@@ -293,7 +293,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         android.graphics.Matrix matrix = null;
                         if(orientationDirectory != null && orientationDirectory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
                             matrix = new android.graphics.Matrix();
-                            Log.d("droidphoto", "rotating...");
+//                            Log.d("droidphoto", "rotating...");
                             try {
                                 switch (orientationDirectory.getInt(ExifIFD0Directory.TAG_ORIENTATION)) {
                                     case 1:                                                             break; //ExifInterface.ORIENTATION_NORMAL
@@ -306,7 +306,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                     case 8:     matrix.postRotate(270);                                 break; //ExifInterface.ORIENTATION_ROTATE_270
 
                                     default:
-                                        Log.d("droidphoto", "what!!?? NO ROTATION!!?");
+//                                        Log.d("droidphoto", "what!!?? NO ROTATION!!?");
                                         break;
                                 }
                             } catch (MetadataException e) {
@@ -323,10 +323,10 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
                         options.inJustDecodeBounds = false;
                         if(matrix == null) {
-                            Log.d("droidphoto", "no matrix");
+//                            Log.d("droidphoto", "no matrix");
                             BitmapFactory.decodeStream(in, null, options).compress(Bitmap.CompressFormat.JPEG, 80, out);
                         } else {
-                            Log.d("droidphoto", "has matrix");
+//                            Log.d("droidphoto", "has matrix");
                             Bitmap.createBitmap(BitmapFactory.decodeStream(in, null, options), 0, 0, options.outWidth, options.outHeight, matrix, true)
                                     .compress(Bitmap.CompressFormat.JPEG, 80, out);
                         }
@@ -359,6 +359,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             new Callback<AvatarResponseModel>() {
                                 @Override
                                 public void success(AvatarResponseModel data, Response response) {
+                                    tempFile.delete();
                                     if(data.success) {
                                         //update profile if any
                                         JSONObject emitData = new JSONObject();
@@ -393,6 +394,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 }
                                 @Override
                                 public void failure(RetrofitError error) {
+                                    tempFile.delete();
                                     Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             });
