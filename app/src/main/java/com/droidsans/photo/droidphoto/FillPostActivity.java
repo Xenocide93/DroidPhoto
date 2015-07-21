@@ -40,7 +40,7 @@ import com.drew.metadata.exif.GpsDirectory;
 import com.droidsans.photo.droidphoto.util.retrofit.CountingTypedFile;
 import com.droidsans.photo.droidphoto.util.Devices;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
-import com.droidsans.photo.droidphoto.util.retrofit.PhotoPostService;
+import com.droidsans.photo.droidphoto.util.retrofit.PostService;
 import com.droidsans.photo.droidphoto.util.retrofit.ProgressListener;
 import com.droidsans.photo.droidphoto.util.retrofit.UploadResponseModel;
 import com.github.nkzawa.emitter.Emitter;
@@ -686,11 +686,10 @@ public class FillPostActivity extends AppCompatActivity {
                                 .setEndpoint(GlobalSocket.serverURL)
                                 .setClient(new OkClient(okHttpClient))
                                 .build();
-                        PhotoPostService postService = restAdapter.create(PhotoPostService.class);
+                        PostService postService = restAdapter.create(PostService.class);
                         ProgressListener listener = new ProgressListener() {
                             @Override
                             public void transferred(long num) {
-
                             }
                         };
                         postService.postPhoto(new CountingTypedFile("image/jpeg", new File(mCurrentPhotoPath), listener),

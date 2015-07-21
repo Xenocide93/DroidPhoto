@@ -20,8 +20,7 @@
                 android:layout_width="@dimen/edit_profile_profile_pic_size"
                 android:layout_height="@dimen/edit_profile_profile_pic_size"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/droidsans_logo" />
+                android:layout_centerHorizontal="true" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

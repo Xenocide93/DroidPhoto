@@ -76,8 +76,8 @@ public class GlobalSocket {
             opts.secure = true;
 //            opts.sslContext = context;
             opts.forceNew = true;
-            opts.reconnection = true;
-            opts.reconnectionDelay = 1000;
+            opts.reconnection = false;
+//            opts.reconnectionDelay = 1000;
             opts.timeout = 5000;
 //            opts.upgrade = true;
             opts.transports = new String[]{"websocket"};

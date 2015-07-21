@@ -52,7 +52,7 @@ public class ProfileFragment extends Fragment {
     public static final int EDIT_PROFILE = 1;
     public static final String DISPLAY_NAME = "displayName";
     public static final String PROFILE_DESCRIPTION = "profileDesc";
-    public static Drawable profilePictureDrawable;
+    public static final String AVATAR_URL = "avatarURL";
 
     private ProgressBar loadingCircle;
     private LinearLayout reloadLayout;
@@ -67,6 +67,7 @@ public class ProfileFragment extends Fragment {
 
     public static final String baseURL = "/data/avatar/";
     private String username;
+    private String avatarURL;
 
     private Handler delayAction = new Handler();
 
@@ -102,11 +103,11 @@ public class ProfileFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_edit_profile:
-                Toast.makeText(getActivity(), "edit profile", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "edit profile", Toast.LENGTH_SHORT).show();
                 Intent editProfileIntent = new Intent(getActivity(), EditProfileActivity.class);
                 editProfileIntent.putExtra(DISPLAY_NAME, displayNameTv.getText().toString());
                 editProfileIntent.putExtra(PROFILE_DESCRIPTION, profileDescTV.getText().toString());
-
+                editProfileIntent.putExtra(AVATAR_URL, avatarURL);
                 startActivityForResult(editProfileIntent, EDIT_PROFILE);
                 return true;
             case R.id.action_delete:
@@ -159,15 +160,19 @@ public class ProfileFragment extends Fragment {
                             username = userObj.optString("username");
                             usernameTV.setText("@"+username);
                             displayNameTv.setText(userObj.optString("disp_name"));
+                            avatarURL = userObj.optString("avatar_url");
                             Glide.with(getActivity().getApplicationContext())
-                                    .load(GlobalSocket.serverURL + baseURL + userObj.optString("avatar_url"))
+                                    .load(GlobalSocket.serverURL + baseURL + avatarURL)
 //                                    .load(GlobalSocket.serverURL + baseURL + "test.jpg")
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .placeholder(R.drawable.ic_account_circle_black_48dp)
                                     .centerCrop()
                                     .transform(new CircleTransform(getActivity().getApplicationContext()))
+//                                    .dontAnimate()
                                     .into(profilePic);
                             profileDescTV.setText(userObj.optString("profile_desc"));
+
+
                         } else {
                             switch (data.optString("msg")) {
                                 case "db error":
@@ -186,9 +191,9 @@ public class ProfileFragment extends Fragment {
                 });
             }
         };
-        if(!GlobalSocket.mSocket.hasListeners("userinfo_respond")) {
-            GlobalSocket.mSocket.on("userinfo_respond", onGetUserInfoRespond);
-        }
+//        if(!GlobalSocket.mSocket.hasListeners("get_user_info")) {
+            GlobalSocket.mSocket.on("get_user_info", onGetUserInfoRespond);
+//        }
 
         onGetUserFeedRespond = new Emitter.Listener() {
             @Override
@@ -199,6 +204,7 @@ public class ProfileFragment extends Fragment {
                         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
                         JSONObject data = (JSONObject) args[0];
                         if(data.optBoolean("success")){
+                            GlobalSocket.mSocket.off("get_user_feed");
                             packs = new ArrayList<>();
                             JSONArray photoList = data.optJSONArray("photoList");
                             for(int i=0; i<photoList.length(); i++){
@@ -242,27 +248,6 @@ public class ProfileFragment extends Fragment {
         };
         if(!GlobalSocket.mSocket.hasListeners("get_user_feed")){
             GlobalSocket.mSocket.on("get_user_feed", onGetUserFeedRespond);
-        }
-
-        if(!GlobalSocket.mSocket.hasListeners("onUpdateProfileRespond")){
-            GlobalSocket.mSocket.on("onUpdateProfileRespond", new Emitter.Listener() {
-                @Override
-                public void call(final Object... args) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GlobalSocket.mSocket.off("onUpdateProfileRespond");
-                            JSONObject data = (JSONObject) args[0];
-                            if(data.optBoolean("success")){
-                                ((MainActivity) getActivity()).getUserInfo();
-                                Snackbar.make(getView(), "Profile information is updated", Snackbar.LENGTH_LONG).show();
-                            } else {
-                                Snackbar.make(getView(), "Error: "+data.optString("msg"), Snackbar.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                }
-            });
         }
 
         onDisconnect = new Emitter.Listener() {
@@ -310,8 +295,7 @@ public class ProfileFragment extends Fragment {
 
         JSONObject data = new JSONObject();
         try {
-            data.put("_token", getActivity().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), ""));
-            data.put("_event", "userinfo_respond");
+            data.put("_event", "get_user_info");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -362,21 +346,12 @@ public class ProfileFragment extends Fragment {
         if(resultCode == Activity.RESULT_OK){
             switch (requestCode){
                 case EDIT_PROFILE:
+
                     String profileDesc = data.getStringExtra(PROFILE_DESCRIPTION);
                     String displayName = data.getStringExtra(DISPLAY_NAME);
                     displayNameTv.setText(displayName);
                     profileDescTV.setText(profileDesc);
-
-                    JSONObject emitData = new JSONObject();
-                    try {
-                        emitData.put("disp_name", displayName);
-                        emitData.put("profile_desc", profileDesc);
-                        emitData.put("_event", "onUpdateProfileRespond");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    GlobalSocket.globalEmit("user.edit", emitData);
+                    Snackbar.make(getView(), "Profile information has been updated", Snackbar.LENGTH_LONG).show();
                     break;
             }
         } else {
@@ -450,14 +425,17 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroy() {
         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
-        if(GlobalSocket.mSocket.hasListeners("userinfo_respond")) {
-            GlobalSocket.mSocket.off("userinfo_respond");
-        }
+//        if(GlobalSocket.mSocket.hasListeners("get_user_info")) {
+            GlobalSocket.mSocket.off("get_user_info", onGetUserInfoRespond);
+//        }
         if(GlobalSocket.mSocket.hasListeners("get_user_feed")) {
             GlobalSocket.mSocket.off("get_user_feed");
         }
         if(GlobalSocket.mSocket.hasListeners("remove_pic")){
             GlobalSocket.mSocket.off("remove_pic");
+        }
+        if(GlobalSocket.mSocket.hasListeners("onUpdateProfileRespond")) {
+            GlobalSocket.mSocket.off("onUpdateProfileRespond");
         }
         super.onDestroy();
     }

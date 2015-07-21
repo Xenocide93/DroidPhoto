@@ -99,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void makeSnack(String s) {
+        Snackbar.make(findViewById(R.id.main_fragment), s, Snackbar.LENGTH_SHORT).show();
+    }
+
     private void setupListener() {
         if(!GlobalSocket.mSocket.hasListeners("get_csv")){
             GlobalSocket.mSocket.on("get_csv", new Emitter.Listener() {
@@ -161,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                                 displayName.setText(userObj.optString("disp_name", ""));
                                 Glide.with(getApplicationContext())
                                         .load(GlobalSocket.serverURL + ProfileFragment.baseURL + userObj.optString("avatar_url"))
-                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
                                         .placeholder(R.drawable.ic_account_circle_black_48dp)
                                         .centerCrop()
                                         .transform(new CircleTransform(getApplicationContext()))
@@ -283,8 +287,7 @@ public class MainActivity extends AppCompatActivity {
 //        if(!disp.equals("")) {
         Glide.with(getApplicationContext())
                 .load(GlobalSocket.serverURL + ProfileFragment.baseURL + getUserdata().getString(getString(R.string.avatar_url), ""))
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .placeholder(R.drawable.droidsans_logo)
+                .placeholder(R.drawable.ic_account_circle_black_48dp)
                 .centerCrop()
                 .transform(new CircleTransform(getApplicationContext()))
                 .into(profile);

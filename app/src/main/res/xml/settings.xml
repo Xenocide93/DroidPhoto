@@ -11,20 +11,20 @@
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="com.droidsans.photo.droidphoto"
-                android:targetClass="com.droidsans.photo.droidphoto.PlaceholderActivity"/>
+                android:targetClass="com.droidsans.photo.droidphoto.EditProfileActivity"/>
 
         </PreferenceScreen>
 
-        <PreferenceScreen
-            android:title="Change Profile Color Theme"
-            android:summary="so your f*cking profile will be a little bit awesome">
+        <!--<PreferenceScreen-->
+            <!--android:title="Change Profile Color Theme"-->
+            <!--android:summary="so your f*cking profile will be a little bit awesome">-->
 
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:targetPackage="com.droidsans.photo.droidphoto"
-                android:targetClass="com.droidsans.photo.droidphoto.PlaceholderActivity" />
+            <!--<intent-->
+                <!--android:action="android.intent.action.VIEW"-->
+                <!--android:targetPackage="com.droidsans.photo.droidphoto"-->
+                <!--android:targetClass="com.droidsans.photo.droidphoto.PlaceholderActivity" />-->
 
-        </PreferenceScreen>
+        <!--</PreferenceScreen>-->
 
         <PreferenceScreen
             android:title="Change Password"

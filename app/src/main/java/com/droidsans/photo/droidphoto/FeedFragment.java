@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -680,7 +682,7 @@ public class FeedFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK)
+        if (resultCode == FragmentActivity.RESULT_OK)
             switch (requestCode) {
                 case FILTER_FEED:
                     String vendorName = data.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
@@ -744,7 +746,7 @@ public class FeedFragment extends Fragment {
 
                     break;
             }
-        else if(resultCode == getActivity().RESULT_CANCELED) {
+        else if(resultCode == FragmentActivity.RESULT_CANCELED) {
             Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
             if(data != null && data.hasExtra("return code")) {
                 switch (data.getStringExtra("return code")) {
