@@ -64,6 +64,13 @@
     <string name="change_password_new">new password</string>
     <string name="change_password_confirm">confirm new password</string>
 
+    <!--Tutorial-->
+    <string name="tutorial_string_fam">Create new post</string>
+    <string name="tutorial_string_filter">Choose smartphone model</string>
+
+    <!--Feed-->
+    <string name="recent_tag">Most Recent</string>
+
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->

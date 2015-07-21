@@ -46,6 +46,7 @@ public class TourGuide {
     private ToolTip mToolTip;
     private Pointer mPointer;
     private Overlay mOverlay;
+    private View.OnClickListener mOnToolTipClickListener;
 
     /*************
      *
@@ -108,6 +109,16 @@ public class TourGuide {
         mToolTip = toolTip;
         return this;
     }
+
+    /**
+     * Set the mOnToolTipClickListener
+     * @param listener
+     * @return return null
+     */
+    public void setOnToolTipClickListener(View.OnClickListener listener){
+        this.mOnToolTipClickListener = listener;
+    }
+
     /**
      * Set the Pointer
      * @param pointer
@@ -240,6 +251,9 @@ public class TourGuide {
             if (width > parent.getWidth()){
                 mToolTipViewGroup.getLayoutParams().width = parent.getWidth();
 
+            }
+            if(mOnToolTipClickListener!=null){
+                mToolTipViewGroup.setOnClickListener(mOnToolTipClickListener);
             }
         }
 

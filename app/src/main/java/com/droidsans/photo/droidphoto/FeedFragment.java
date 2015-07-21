@@ -17,15 +17,19 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -42,10 +46,6 @@ import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
-import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.nkzawa.emitter.Emitter;
@@ -61,6 +61,11 @@ import java.lang.annotation.Target;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import tourguide.tourguide.Overlay;
+import tourguide.tourguide.Pointer;
+import tourguide.tourguide.ToolTip;
+import tourguide.tourguide.TourGuide;
 
 
 /**
@@ -117,6 +122,11 @@ public class FeedFragment extends Fragment {
 
     public static FeedFragment mFeedFragment;
 
+    private TourGuide tutorialHandler;
+    private ArrayList<View> tutorialViewList;
+    private ArrayList<String> tutorialStringList;
+    private int nextTutorial = 1;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -136,6 +146,7 @@ public class FeedFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         initializeVendorModelList();
+        updateTagView();
         initRequestFeed();
         initLoading();
         
@@ -146,26 +157,71 @@ public class FeedFragment extends Fragment {
         findAllById();
         setupRecycleView();
         setupListener();
+        setupEmitterListener();
     }
 
-    private void checkFirstTimeLaunch() {
-
+    private void checkFirstTimeLaunch() { //call from onGetFeedRespond
         if(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(FIRST_TIME_FEED_FRAGMENT, true)){
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.CENTER_IN_PARENT);
-            int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
-            params.setMargins(margin, margin, margin, margin);
+            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                    .putBoolean(FIRST_TIME_FEED_FRAGMENT, false).apply();
 
-            ViewTarget targetFam = new ViewTarget(fam.getMenuIconView());
-            ShowcaseView sv = new ShowcaseView.Builder(getActivity())
-                    .setTarget(targetFam)
-                    .setContentTitle("Upload photo")
-                    .setContentText("Press this button to post picture")
-                    .hideOnTouchOutside()
-                    .build();
-            sv.setShouldCentreText(true);
-            sv.setButtonPosition(params);
+            // setup enter and exit animation
+            Animation enterAnimation = new AlphaAnimation(0f, 1f);
+            enterAnimation.setDuration(600);
+            enterAnimation.setFillAfter(true);
+
+            Animation exitAnimation = new AlphaAnimation(1f, 0f);
+            exitAnimation.setDuration(600);
+            exitAnimation.setFillAfter(true);
+
+            //set tooltip list
+            tutorialViewList = new ArrayList<>();
+            tutorialStringList = new ArrayList<>();
+            tutorialViewList.add(fam.getMenuIconView());
+            tutorialStringList.add(getResources().getString(R.string.tutorial_string_fam));
+            tutorialViewList.add(getActivity().getWindow().getDecorView().findViewById(R.id.action_filter));
+            tutorialStringList.add(getResources().getString(R.string.tutorial_string_filter));
+
+            //launch first tooltip (auto launch the rest)
+            tutorialHandler = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
+                    .setToolTip(new ToolTip()
+                        .setTitle(tutorialStringList.get(0))
+                        .setDescription("Touch to dismiss")
+                        .setGravity(Gravity.LEFT|Gravity.TOP))
+                    .setOverlay(new Overlay()
+                        .setEnterAnimation(enterAnimation)
+                        .setExitAnimation(exitAnimation))
+                    .playOn(tutorialViewList.get(0));
+
+            tutorialHandler.setOnToolTipClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showNextTutorial();
+                }
+            });
+
+            setupListener();
         }
+    }
+
+    private void showNextTutorial(){
+        if(tutorialHandler==null){
+            tutorialHandler = TourGuide.init(getActivity()).with(TourGuide.Technique.Click);
+        }
+
+        if(nextTutorial>=tutorialViewList.size()){
+            tutorialHandler.cleanUp();
+            return;
+        }
+
+        tutorialHandler.cleanUp();
+        tutorialHandler.setToolTip(new ToolTip()
+                .setTitle(tutorialStringList.get(nextTutorial))
+                .setDescription("Touch to dismiss")
+                .setGravity(Gravity.LEFT | Gravity.BOTTOM))
+                .playOn(tutorialViewList.get(nextTutorial));
+
+        nextTutorial++;
     }
 
     private void setupRecycleView() {
@@ -214,7 +270,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void requestFeedPicture(JSONObject filter) {
-        tagField.setVisibility(filterCount == 0? LinearLayout.GONE:LinearLayout.VISIBLE);
+        removeTagBtn.setVisibility(filterCount == 0? LinearLayout.GONE:LinearLayout.VISIBLE);
 
         try {
             filter.put("filter_count", filterCount);
@@ -332,6 +388,10 @@ public class FeedFragment extends Fragment {
                 fam.close(true);
             }
         });
+
+    }
+
+    private void setupEmitterListener(){
 
         onDisconnect = new Emitter.Listener() {
             @Override
@@ -527,7 +587,7 @@ public class FeedFragment extends Fragment {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                feedGridView.setClickable(false);
-                //reset all packreload -> code moved to onPause
+        //reset all packreload -> code moved to onPause
 //                PicturePack currentPack = adapter.getItem(position);
 //                Fragment imageViewerFragment = new ImageViewerFragment();
 //
@@ -599,7 +659,6 @@ public class FeedFragment extends Fragment {
         });
         reloadButton.setClickable(true);
     }
-
 
     private File createFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMDD_HHmmss").format(new Date());
@@ -936,7 +995,7 @@ public class FeedFragment extends Fragment {
 
         try {
             //create filter data
-            filterCount = tagViewArray.size();
+//            filterCount = tagViewArray.size();
             for(TagView view : tagViewArray) {
                 JSONObject value = new JSONObject();
                 value.put("vendor", view.vendorName);
@@ -960,12 +1019,17 @@ public class FeedFragment extends Fragment {
         for(TagView view : tagViewArray) {
             tagLayout.addView(view.getTagView());
         }
+        if(filterCount==0){
+            View recentTag = LayoutInflater.from(getActivity()).inflate(R.layout.recent_tag, null, false);
+            tagLayout.addView(recentTag);
+        }
     }
 
     private void addTag(String vendorName, String modelName){
         TagView tagView = new TagView(tagLayout, vendorName, modelName);
         tagView.tagIndex = tagViewArray.size();
         tagViewArray.add(tagView);
+        filterCount++;
     }
 
     private boolean removeTag(){
@@ -975,6 +1039,7 @@ public class FeedFragment extends Fragment {
             if(!view.selected) tempArray.add(view);
             else someTagWasRemoved = true;
         }
+        filterCount = tempArray.size();
         tagViewArray = tempArray;
         if(someTagWasRemoved) updateTagView();
 

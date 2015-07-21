@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/tag_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/curve_blue"
+        android:layout_margin="2dp"
+        android:padding="5dp">
+
+        <com.droidsans.photo.droidphoto.util.FontTextView
+            android:id="@+id/vendor_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recent_tag"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+</LinearLayout>
