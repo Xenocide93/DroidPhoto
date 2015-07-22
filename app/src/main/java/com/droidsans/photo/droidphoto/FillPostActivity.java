@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -294,7 +295,7 @@ public class FillPostActivity extends AppCompatActivity {
         }
 
         if(exifDirectory == null || orientationDirectory == null) {
-            Toast.makeText(getApplicationContext(), "Error: selected image must have exif", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), "Error: selected image must have exif", Toast.LENGTH_LONG).show();
 //            Snackbar.make(null, "Error: selected image must have exif", Snackbar.LENGTH_LONG).show();
             Intent returnIntent = new Intent();
             returnIntent.putExtra("return code", "no exif");
@@ -659,23 +660,32 @@ public class FillPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!isAccept.isChecked()) {
-                    Toast.makeText(getApplicationContext(), "Please accpet our term of service", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "Please accpet our term of service", Toast.LENGTH_LONG).show();
+                    Snackbar.make(photo, "Please accept our term of service", Toast.LENGTH_LONG).show();
                     return;
                 }
 //                if (mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME) == null ||
 //                        mExif.getAttribute(ExifInterface.TAG_ISO) == null ||
 //                        mExif.getAttribute(ExifInterface.TAG_APERTURE) == null) {
-                if(exifDirectory == null) {
-                    Toast.makeText(getApplicationContext(), "image has no exif", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null) {
-                    Toast.makeText(getApplicationContext(), "image has no required exif", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+//                if(exifDirectory == null) {
+//                    Toast.makeText(getApplicationContext(), "image has no exif", Toast.LENGTH_SHORT).show();
+//                    return;
+//                } else if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null) {
+//                    Toast.makeText(getApplicationContext(), "image has no required exif", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+
 
                 new Thread(new Runnable() {
                     public void run() {
                         Log.d("droidphoto", "uploading...");
+                        //init value
+                        FeedFragment.percentage = 0;
+                        FeedFragment.isFailedToUpload = false;
+
+                        //create file
+                        File uploadFile = new File(mCurrentPhotoPath);
+                        final long filesize = uploadFile.length();
 
                         //create client
                         OkHttpClient okHttpClient = new OkHttpClient();
@@ -690,6 +700,7 @@ public class FillPostActivity extends AppCompatActivity {
                         ProgressListener listener = new ProgressListener() {
                             @Override
                             public void transferred(long num) {
+                                FeedFragment.percentage = (int)((80 * num) / filesize);
                             }
                         };
                         postService.postPhoto(new CountingTypedFile("image/jpeg", new File(mCurrentPhotoPath), listener),
@@ -738,19 +749,22 @@ public class FillPostActivity extends AppCompatActivity {
                                                 photoDetailStuff.put("is_accept", isAccept.isChecked());
                                                 photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
 
+                                                FeedFragment.percentage = 90;
                                                 if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
                                                     delayAction.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
                                                             if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
                                                                 //???
-                                                                Toast.makeText(getApplicationContext(), "upload failed (on socket.io)", Toast.LENGTH_SHORT).show();
+                                                                FeedFragment.isFailedToUpload = true;
+//                                                                Toast.makeText(getApplicationContext(), "upload failed (on socket.io)", Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
                                                     }, 2000);
                                                 }
                                             } else {
-                                                Toast.makeText(getApplicationContext(), "upload failed (on success check)", Toast.LENGTH_SHORT).show();
+                                                FeedFragment.isFailedToUpload = true;
+//                                                Toast.makeText(getApplicationContext(), "upload failed (on success check)", Toast.LENGTH_SHORT).show();
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -759,6 +773,7 @@ public class FillPostActivity extends AppCompatActivity {
 
                                     @Override
                                     public void failure(RetrofitError error) {
+                                        FeedFragment.isFailedToUpload = true;
                                         Log.d("droidphoto", "error " + error.toString());
                                     }
                                 });
@@ -842,13 +857,17 @@ public class FillPostActivity extends AppCompatActivity {
                         try {
                             if(data.getBoolean("success")){
                                 Log.d("droidphoto", "upload success");
+                                FeedFragment.percentage = 100;
                                 if(FeedFragment.mFeedFragment != null) FeedFragment.mFeedFragment.updateFeed();
                             } else {
+                                FeedFragment.isFailedToUpload = true;
                                 Log.d("droidphoto", "upload error: " + data.getString("msg"));
                             }
                         } catch (JSONException e) {
+                            FeedFragment.isFailedToUpload = true;
                             e.printStackTrace();
                         }
+                        finish();
                     }
                 });
             }
@@ -858,7 +877,7 @@ public class FillPostActivity extends AppCompatActivity {
             GlobalSocket.mSocket.on("photoupload_respond", onPhotoUploadRespond);
         }
     }
-
+/*
     public JSONObject post(String url, String path) {
         byte[] data = fileToByteArray(path);
         String attachmentName = "image";
@@ -951,7 +970,7 @@ public class FillPostActivity extends AppCompatActivity {
         }
         return null;
     }
-
+*/
     @Override
     protected void onDestroy() {
         if(imageBitmap != null) imageBitmap.recycle();

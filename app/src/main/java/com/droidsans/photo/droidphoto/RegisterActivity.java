@@ -110,11 +110,18 @@ public class RegisterActivity extends Activity {
                                 }
 
                                 if(!GlobalSocket.mSocket.connected()) {
-                                    Toast.makeText(getApplicationContext(), "cannot connect to server", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getApplicationContext(), "cannot connect to server", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(displayName, getString(R.string.snackbar_login_cannot_connect), Snackbar.LENGTH_LONG)
+                                            .setAction("OK", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                }
+                                            })
+                                            .show();;
                                 } else if(GlobalSocket.mSocket.hasListeners("login_respond")) {
                                     GlobalSocket.globalEmit("user.login", loginStuff); //this automatic finish() this activity
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "no login respond listener", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getApplicationContext(), "no login respond listener", Toast.LENGTH_SHORT).show();
                                 }
 
                             } else {

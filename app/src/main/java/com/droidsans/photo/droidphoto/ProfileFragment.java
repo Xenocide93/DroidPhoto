@@ -176,13 +176,13 @@ public class ProfileFragment extends Fragment {
                         } else {
                             switch (data.optString("msg")) {
                                 case "db error":
-                                    Toast.makeText(getActivity().getApplicationContext(), "db error, please try again", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getActivity().getApplicationContext(), "db error, please try again", Toast.LENGTH_SHORT).show();
                                     Snackbar.make(mainLayout, "db error, please try again", Snackbar.LENGTH_SHORT)
-                                            .setAction("OK", null)
+//                                            .setAction("OK", null)
                                             .show();
                                     break;
                                 case "token error":
-                                    Toast.makeText(getActivity().getApplicationContext(), "what the fuck !!? how can you invalid your f*cking token ??", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getActivity().getApplicationContext(), "what the fuck !!? how can you invalid your f*cking token ??", Toast.LENGTH_SHORT).show();
                                     break;
                             }
                             initReload();

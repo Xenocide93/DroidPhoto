@@ -117,6 +117,7 @@ public class FeedFragment extends Fragment {
 
     private Handler delayAction = new Handler();
     private Runnable timeout;
+    private Runnable loop;
 
     private ArrayList<TagView> tagViewArray;
 
@@ -126,6 +127,9 @@ public class FeedFragment extends Fragment {
     private ArrayList<View> tutorialViewList;
     private ArrayList<String> tutorialStringList;
     private int nextTutorial = 1;
+
+    public static int percentage = 0;
+    public static boolean isFailedToUpload = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -149,7 +153,7 @@ public class FeedFragment extends Fragment {
         updateTagView();
         initRequestFeed();
         initLoading();
-        
+
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -270,7 +274,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void requestFeedPicture(JSONObject filter) {
-        removeTagBtn.setVisibility(filterCount == 0? LinearLayout.GONE:LinearLayout.VISIBLE);
+        removeTagBtn.setVisibility(filterCount == 0 ? LinearLayout.GONE : LinearLayout.VISIBLE);
 
         try {
             filter.put("filter_count", filterCount);
@@ -376,7 +380,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dispatchTakePictureIntent();
-                Toast.makeText(getActivity(), "Launch Camera Intent", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Launch Camera Intent", Toast.LENGTH_SHORT).show();
                 fam.close(true);
             }
         });
@@ -384,7 +388,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dispatchPicturePickerIntent();
-                Toast.makeText(getActivity(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
                 fam.close(true);
             }
         });
@@ -730,7 +734,7 @@ public class FeedFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_search:
-                Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_filter:
                 launchAddFilterPopup();
@@ -766,7 +770,7 @@ public class FeedFragment extends Fragment {
 
                 case SELECT_PHOTO:
                     String path = getImagePath(data.getData());
-                    Toast.makeText(getActivity(), path, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), path, Toast.LENGTH_LONG).show();
                     Intent fillPostFromPicturePickerIntent = new Intent(getActivity(), FillPostActivity.class);
                     fillPostFromPicturePickerIntent.putExtra("photoPath", path);
                     fillPostFromPicturePickerIntent.putExtra("imageFrom", "Picture Picker");
@@ -774,7 +778,7 @@ public class FeedFragment extends Fragment {
                     break;
 
                 case REQUEST_IMAGE_CAPTURE:
-                    Toast.makeText(getActivity(), staticPhotoPath, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), staticPhotoPath, Toast.LENGTH_LONG).show();
                     galleryAddPic();
                     hasImageInPhotoPath = true;
                     File f = new File(staticPhotoPath);
@@ -801,12 +805,30 @@ public class FeedFragment extends Fragment {
                     }
 
                 case FILL_POST:
-                    //TODO show upload status
-
+                    final int loopdelay = 250;
+                    loop = new Runnable() {
+                        @Override
+                        public void run() {
+                            if(isFailedToUpload) {
+                                //TODO show failed
+                                Snackbar.make(frameLayout, "upload failed.", Snackbar.LENGTH_LONG).show();
+                            } else {
+                                if (percentage < 100) {
+                                    //TODO update upload progress
+//                                    Log.d("droidphoto", "uploaded : " + percentage + "%");
+                                    delayAction.postDelayed(loop, loopdelay);
+                                } else {
+                                    //TODO upload done.
+                                    Snackbar.make(frameLayout, "upload success.", Snackbar.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    };
+                    delayAction.postDelayed(loop, loopdelay);
+//                    Snackbar.make(frameLayout, "uploading...", Snackbar.LENGTH_LONG).show();
                     break;
             }
         else if(resultCode == FragmentActivity.RESULT_CANCELED) {
-            Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
             if(data != null && data.hasExtra("return code")) {
                 switch (data.getStringExtra("return code")) {
                     case "not your photo":
@@ -857,9 +879,9 @@ public class FeedFragment extends Fragment {
             File image = new File(staticPhotoPath);
             if (image.delete()) {
                 hasImageInPhotoPath = false;
-                Toast.makeText(getActivity(), "temp file removed", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getActivity(), "temp file removed", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(getActivity(), "cannot remove temp file", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getActivity(), "cannot remove temp file", Toast.LENGTH_LONG).show();
             }
             staticPhotoPath = null;
         }
