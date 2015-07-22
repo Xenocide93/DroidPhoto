@@ -529,7 +529,7 @@ public class FeedFragment extends Fragment {
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.samsung_300;
                                             break;
                                         default:
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.curve_white;
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.default_300;
                                             break;
                                     }
                                 }

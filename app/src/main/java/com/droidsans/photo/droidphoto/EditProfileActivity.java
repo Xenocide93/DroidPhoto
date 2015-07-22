@@ -264,7 +264,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     //resize image save to cache
                     final File tempFile = new File(getCacheDir() + "/" + "avatartemp.jpg");
                     FileOutputStream out = null;
-                    Bitmap bmp = null;
                     try {
                         InputStream in = new BufferedInputStream(getContentResolver().openInputStream(avatarURI));
                         BitmapFactory.Options options = new BitmapFactory.Options();
