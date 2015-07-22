@@ -45,14 +45,14 @@ public class ImageViewerFullScreenActivity extends AppCompatActivity {
             picture.setImage(ImageSource.uri(cacheFile.getAbsolutePath()));
             picture.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
         } else {
-            Snackbar.make(rootView , "Error: picture is not finish loading", Snackbar.LENGTH_LONG)
-                    .setAction("Retry", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            setupPicture();
-                        }
-                    })
-                    .show();
+//            Snackbar.make(rootView , "Error: picture is not finish loading", Snackbar.LENGTH_LONG)
+//                    .setAction("Retry", new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            setupPicture();
+//                        }
+//                    })
+//                    .show();
         }
     }
 
