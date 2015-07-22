@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.ImageViewerActivity;
 import com.droidsans.photo.droidphoto.R;
 
@@ -31,7 +33,7 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter {
     @Override
     public FeedRecycleViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(inflater==null) inflater = LayoutInflater.from(parent.getContext());
-        View itemHolderView = inflater.inflate(R.layout.item_feed_pic, null);
+        View itemHolderView = inflater.inflate(R.layout.item_feed_pic_uploading, null);
 
         ViewHolder holder = new ViewHolder(itemHolderView);
         return holder;
@@ -42,12 +44,24 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter {
         final PicturePack pack = packs.get(position);
         ViewHolder myHolder = (ViewHolder) holder;
 
-        Glide.with(context)
-                .load(GlobalSocket.serverURL + pack.baseURL + pack.photoURL)
-                .centerCrop()
-                .placeholder(R.drawable.droidsans_logo)
-                .crossFade()
-                .into(myHolder.picture);
+        if(pack.isUploading){
+            Glide.with(context)
+                    .load(pack.localPicturePath)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .centerCrop()
+                    .placeholder(R.drawable.droidsans_logo)
+                    .into(myHolder.picture);
+            myHolder.uploadLayout.setVisibility(View.VISIBLE);
+        } else {
+            Glide.with(context)
+                    .load(GlobalSocket.serverURL + pack.baseURL + pack.photoURL)
+                    .centerCrop()
+                    .placeholder(R.drawable.droidsans_logo)
+                    .crossFade()
+                    .into(myHolder.picture);
+            myHolder.uploadLayout.setVisibility(View.GONE);
+        }
+
         myHolder.deviceName.setText(pack.vendor + " " + pack.model);
         myHolder.user.setText(pack.username + "");
 
@@ -102,17 +116,16 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        FontTextView deviceName, user, shutterSpeed, aperture, iso;
+        FontTextView deviceName, user;
         SquareImageView picture;
+        RelativeLayout uploadLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             picture = (SquareImageView) itemView.findViewById(R.id.picture);
             deviceName = (FontTextView) itemView.findViewById(R.id.device_name);
             user = (FontTextView) itemView.findViewById(R.id.user);
-            shutterSpeed = (FontTextView) itemView.findViewById(R.id.shutter_speed);
-            aperture = (FontTextView) itemView.findViewById(R.id.aperture);
-            iso = (FontTextView) itemView.findViewById(R.id.iso);
+            uploadLayout = (RelativeLayout) itemView.findViewById(R.id.upload_layout);
         }
     }
 }

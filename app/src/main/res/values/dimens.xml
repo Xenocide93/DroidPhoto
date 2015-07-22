@@ -17,6 +17,7 @@
     <dimen name="image_viewer_image_top_margin">60dp</dimen>
     <dimen name="image_viewer_profile_pic_size">40dp</dimen>
     <dimen name="pic_viewer_font_size">14sp</dimen>
+    <dimen name="feed_upload_progress_size">120dp</dimen>
 
     <dimen name="about_paragraph_spacing">24dp</dimen>
     <dimen name="about_text_spacing">16dp</dimen>
@@ -25,5 +26,5 @@
     <dimen name="profile_picture_size">100dp</dimen>
     <dimen name="font_th_normal_fontsize">22sp</dimen>
     <dimen name="font_th_subtitle_fontsize">18sp</dimen>
-    <dimen name="edit_profile_profile_pic_size">150dp</dimen>
+    <dimen name="edit_profile_profile_pic_size">120dp</dimen>
 </resources>

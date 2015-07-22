@@ -7,4 +7,5 @@
     <dimen name="font_th_normal_fontsize">25sp</dimen>
     <dimen name="font_th_subtitle_fontsize">20sp</dimen>
     <dimen name="edit_profile_profile_pic_size">150dp</dimen>
+    <dimen name="feed_upload_progress_size">120dp</dimen>
 </resources>

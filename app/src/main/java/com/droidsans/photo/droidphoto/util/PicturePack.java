@@ -14,10 +14,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class PicturePack {
-    public String photoURL, caption, vendor, model, eventId, shutterSpeed, aperture, iso, username, submitDate, gpsLocation, photoId, userId, gpsLocalizedLocation;
+    public String photoURL, caption, vendor, model,
+            eventId, shutterSpeed, aperture, iso, username, submitDate,
+            gpsLocation, photoId, userId, gpsLocalizedLocation,
+            localPicturePath;
     public int rank, width, height;
     public double gpsLat, gpsLong;
-    public boolean isEnhanced, isFlash;
+    public boolean isEnhanced, isFlash, isUploading;
     public int percentage = 0;
     public final String baseURL = "/data/photo/500px/";
 
@@ -25,14 +28,20 @@ public class PicturePack {
         //default constructor
     }
 
-    public PicturePack(String userId, String vendor, String model,
+    public PicturePack(String username, String vendor, String model,
                        String shutterSpeed, String aperture, String iso) {
         this.vendor = vendor;
         this.model = model;
-        this.userId = userId;
+        this.username = username;
         this.shutterSpeed = shutterSpeed;
         this.aperture = aperture;
         this.iso = iso;
+        isUploading = false;
+    }
+
+    public void setIsUploading(boolean isUploading, String localPicturePath){
+        this.isUploading = isUploading;
+        this.localPicturePath = localPicturePath;
     }
 
     public void setPhotoId(String photoId) {

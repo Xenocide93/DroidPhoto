@@ -42,12 +42,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.util.FeedRecycleViewAdapter;
 import com.droidsans.photo.droidphoto.util.FlowLayout;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
+import com.droidsans.photo.droidphoto.util.SquareImageView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.nkzawa.emitter.Emitter;
@@ -807,21 +810,47 @@ public class FeedFragment extends Fragment {
                     }
 
                 case FILL_POST:
-                    final int loopdelay = 250;
+                    PicturePack uploadingPicturePack = new PicturePack(
+                            getActivity().getApplicationContext().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE)
+                                    .getString(getString(R.string.username), ""),
+                            data.getStringExtra("vendor"),
+                            data.getStringExtra("model"),
+                            "", "", ""
+                    );
+                    uploadingPicturePack.setIsUploading(true, data.getStringExtra("path"));
+                    feedPicturePack.add(0, uploadingPicturePack);
+                    recycleAdapter.notifyDataSetChanged();
+
+                    View uploadingView = feedRecycleView.getChildAt(0);
+                    SquareImageView picture = (SquareImageView) uploadingView.findViewById(R.id.picture);
+                    final ProgressBar progressBar = (ProgressBar) uploadingView.findViewById(R.id.upload_progress);
+//                    FontTextView deviceName = (FontTextView) uploadingView.findViewById(R.id.device_name);
+//                    FontTextView username = (FontTextView) uploadingView.findViewById(R.id.user);
+
+                    Glide.with(getActivity().getApplicationContext())
+                            .load(data.getStringExtra("path"))
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .centerCrop()
+                            .placeholder(R.drawable.droidsans_logo)
+                            .into(picture);
+
+                    final int loopdelay = 500;
                     loop = new Runnable() {
                         @Override
                         public void run() {
-                            if(isFailedToUpload) {
-                                //TODO show failed
-                                Snackbar.make(frameLayout, "upload failed.", Snackbar.LENGTH_LONG).show();
+                            if(isFailedToUpload) { //show failed
+                                feedPicturePack.remove(0);
+                                recycleAdapter.notifyDataSetChanged();
+                                Snackbar.make(frameLayout, "upload failed", Snackbar.LENGTH_LONG).show();
                             } else {
-                                if (percentage < 100) {
-                                    //TODO update upload progress
+                                if (percentage < 100) {//update upload progress
 //                                    Log.d("droidphoto", "uploaded : " + percentage + "%");
+                                    progressBar.setProgress(percentage);
                                     delayAction.postDelayed(loop, loopdelay);
-                                } else {
-                                    //TODO upload done.
-                                    Snackbar.make(frameLayout, "upload success.", Snackbar.LENGTH_LONG).show();
+                                } else { //upload done
+                                    progressBar.setProgress(percentage);
+                                    updateFeed();
+                                    Snackbar.make(frameLayout, "upload success", Snackbar.LENGTH_LONG).show();
                                 }
                             }
                         }
@@ -1011,10 +1040,6 @@ public class FeedFragment extends Fragment {
     public void runUploadingAnimation(){ //will be called when emit upload
         //TODO get picture from path in parameter
         //TODO create placeholder view of the uploading photo with upload animation
-    }
-
-    private SharedPreferences getUserdata() {
-        return getActivity().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE);
     }
 
     public void updateFeed(){

@@ -380,7 +380,7 @@ public class ProfileFragment extends Fragment {
             adapter.isInEditMode = !adapter.isInEditMode;
             if(adapter.isInEditMode) {
                 //TODO set open bin icon
-                item.setIcon(R.drawable.ic_check_circle_accent_24dp);
+                item.setIcon(R.drawable.ic_delete_open_accent_24px);
 //                item.getIcon().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.accent_color), PorterDuff.Mode.MULTIPLY));
             } else {
                 item.setIcon(R.drawable.ic_delete_white_24dp);

@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            GlobalSocket.mSocket.off("get_csv");
                             Log.d("droidphoto", "csv.get: response");
 
                             JSONObject data = (JSONObject) args[0];

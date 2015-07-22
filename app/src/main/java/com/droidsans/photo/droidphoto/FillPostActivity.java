@@ -661,7 +661,7 @@ public class FillPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!isAccept.isChecked()) {
 //                    Toast.makeText(getApplicationContext(), "Please accpet our term of service", Toast.LENGTH_LONG).show();
-                    Snackbar.make(photo, "Please accept our term of service", Toast.LENGTH_LONG).show();
+                    Snackbar.make(photo, "Please accept our term of service", Snackbar.LENGTH_LONG).show();
                     return;
                 }
 //                if (mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME) == null ||
@@ -842,6 +842,7 @@ public class FillPostActivity extends AppCompatActivity {
                 returnIntent.putExtra("caption", caption.getText().toString());
                 returnIntent.putExtra("vendor", vendor.getText().toString());
                 returnIntent.putExtra("model", model.getText().toString());
+                returnIntent.putExtra("path", mCurrentPhotoPath);
                 setResult(RESULT_OK, returnIntent);
                 finish();
             }
@@ -858,7 +859,6 @@ public class FillPostActivity extends AppCompatActivity {
                             if(data.getBoolean("success")){
                                 Log.d("droidphoto", "upload success");
                                 FeedFragment.percentage = 100;
-                                if(FeedFragment.mFeedFragment != null) FeedFragment.mFeedFragment.updateFeed();
                             } else {
                                 FeedFragment.isFailedToUpload = true;
                                 Log.d("droidphoto", "upload error: " + data.getString("msg"));
