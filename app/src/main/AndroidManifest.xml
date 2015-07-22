@@ -53,10 +53,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".FloatingSampleActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".FillPostActivity"
             android:configChanges="keyboard|keyboardHidden"
             android:label="@string/title_activity_fill_post"
@@ -86,7 +82,7 @@
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
-            android:name=".util.FullScreenImageViewerActivity"
+            android:name=".ImageViewerFullScreenActivity"
             android:label="@string/title_activity_full_screen_image_viewer" >
         </activity>
     </application>

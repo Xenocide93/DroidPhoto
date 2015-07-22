@@ -10,14 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.diegocarloslima.byakugallery.lib.TileBitmapDrawable;
-import com.diegocarloslima.byakugallery.lib.TouchImageView;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 import java.io.File;
 
 public class ImageViewerFullScreenActivity extends AppCompatActivity {
     private String cacheFileName;
-    private TouchImageView picture;
+    private SubsamplingScaleImageView picture;
     private Toolbar toolbar;
 
     @Override
@@ -34,7 +34,7 @@ public class ImageViewerFullScreenActivity extends AppCompatActivity {
     }
 
     private void setupPicture() {
-        picture = (TouchImageView) findViewById(R.id.picture);
+        picture = (SubsamplingScaleImageView) findViewById(R.id.picture);
         View rootView = findViewById(R.id.root_view);
 
         Intent oldIntent = getIntent();
@@ -42,7 +42,8 @@ public class ImageViewerFullScreenActivity extends AppCompatActivity {
 
         File cacheFile = new File(getCacheDir(), cacheFileName);
         if(cacheFile.exists()) {
-            TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + cacheFileName, null, null);
+            picture.setImage(ImageSource.uri(cacheFile.getAbsolutePath()));
+            picture.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
         } else {
             Snackbar.make(rootView , "Error: picture is not finish loading", Snackbar.LENGTH_LONG)
                     .setAction("Retry", new View.OnClickListener() {
@@ -105,5 +106,11 @@ public class ImageViewerFullScreenActivity extends AppCompatActivity {
     public void onBackPressed() {
         finish();
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        picture.recycle();
+        super.onDestroy();
     }
 }

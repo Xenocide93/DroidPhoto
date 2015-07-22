@@ -19,8 +19,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.diegocarloslima.byakugallery.lib.TileBitmapDrawable;
-import com.diegocarloslima.byakugallery.lib.TouchImageView;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 
@@ -78,12 +76,12 @@ public class ImageViewerActivity extends AppCompatActivity {
             File cachedFile = new File(getCacheDir(), photoURL.split("\\.")[0]);
             if(cachedFile.exists()) {
                 //load image from cache
-//                Glide.with(getApplicationContext())
-//                        .load(cachedFile)
-//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-////                        .crossFade()
-//                        .into(picture);
-                TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
+                Glide.with(getApplicationContext())
+                        .load(cachedFile)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                        .crossFade()
+                        .into(picture);
+//                TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
                 setupPictureClickListener();
             } else {
                 //download image
@@ -206,7 +204,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         reloadBtn.setClickable(false);
 
         reloadLayout.setVisibility(LinearLayout.GONE);
-        picture.setVisibility(TouchImageView.GONE);
+        picture.setVisibility(ImageView.GONE);
         progressBar.setVisibility(ProgressBar.VISIBLE);
         progressText.setVisibility(FontTextView.VISIBLE);
 
@@ -220,7 +218,7 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         progressBar.setVisibility(ProgressBar.GONE);
         progressText.setVisibility(FontTextView.GONE);
-        picture.setVisibility(TouchImageView.GONE);
+        picture.setVisibility(ImageView.GONE);
         reloadLayout.setVisibility(LinearLayout.VISIBLE);
     }
 
@@ -457,7 +455,7 @@ public class ImageViewerActivity extends AppCompatActivity {
 //                    TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
 
                     setupPictureClickListener();
-                    picture.setVisibility(TouchImageView.VISIBLE);
+                    picture.setVisibility(ImageView.VISIBLE);
 
                     break;
                 case "timeout":
