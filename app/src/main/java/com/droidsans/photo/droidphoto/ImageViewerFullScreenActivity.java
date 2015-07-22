@@ -35,7 +35,7 @@ public class ImageViewerFullScreenActivity extends AppCompatActivity {
 
     private void setupPicture() {
         picture = (SubsamplingScaleImageView) findViewById(R.id.picture);
-        View rootView = findViewById(R.id.root_view);
+//        View rootView = findViewById(R.id.root_view);
 
         Intent oldIntent = getIntent();
         cacheFileName = oldIntent.getStringExtra(ImageViewerActivity.CACHE_FILE_NAME);
@@ -45,7 +45,7 @@ public class ImageViewerFullScreenActivity extends AppCompatActivity {
             picture.setImage(ImageSource.uri(cacheFile.getAbsolutePath()));
             picture.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
         } else {
-//            Snackbar.make(rootView , "Error: picture is not finish loading", Snackbar.LENGTH_LONG)
+//            Snackbar.make(picture , "Error: picture is not finish loading", Snackbar.LENGTH_LONG)
 //                    .setAction("Retry", new View.OnClickListener() {
 //                        @Override
 //                        public void onClick(View v) {
