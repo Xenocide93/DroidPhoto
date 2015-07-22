@@ -3,6 +3,7 @@ package com.droidsans.photo.droidphoto;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -35,6 +36,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
+import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
@@ -55,6 +57,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -72,6 +76,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 public class FillPostActivity extends AppCompatActivity {
 
@@ -86,7 +91,8 @@ public class FillPostActivity extends AppCompatActivity {
     private ExifInterface mExif;
     private String mCurrentPhotoPath;
     private String mImageFrom;
-    private String postURL = "/photo";
+    private static String postURL = "/photo";
+    private static int MAX_THUMBNAIL_SIZE = 500;
 
     Metadata metadata;
     ExifSubIFDDirectory exifDirectory;
@@ -260,10 +266,10 @@ public class FillPostActivity extends AppCompatActivity {
     private void setDefaultUseLocationText() {
         switch (mImageFrom) {
             case "Picture Picker":
-                useLocation.setText("use location (from exif)");
+                useLocation.setText(getString(R.string.fill_post_checkbox_use_exif));
                 break;
             case "Camera":
-                useLocation.setText("use location (from location services)");
+                useLocation.setText(getString(R.string.fill_post_checkbox_use_gps));
                 break;
         }
     }
@@ -411,13 +417,13 @@ public class FillPostActivity extends AppCompatActivity {
 //        if(false) { //debug
 //            useLocation.setText("Location : " + resolvedLocation + " (cache) " + gpsLat + " " + gpsLong);
         if(resolvedLocation != null)  {
-            useLocation.setText("Location : " + resolvedLocation);
+            useLocation.setText(getString(R.string.fill_post_checkbox_location_prefix) + resolvedLocation);
             if(resolvedLocalizedLocation != null) {
                 useLocation.append(" (" + resolvedLocalizedLocation + ")");
             }
         } else {
             useLocation.setClickable(false);
-            useLocation.setText("resolving ...");
+            useLocation.setText(getString(R.string.fill_post_checkbox_location_resolving));
             Double[] params = {lat, lng};
             new reverseGeocode().execute(params);
         }
@@ -446,17 +452,17 @@ public class FillPostActivity extends AppCompatActivity {
                 else useLocation.append(".");
                 loopCount++;
                 if (loopCount < 60) {
-                    Log.d("droidphoto", "location loop (" + loopCount + "x) | gpsAcc = " + gpsAcc);
+//                    Log.d("droidphoto", "location loop (" + loopCount + "x) | gpsAcc = " + gpsAcc);
                     if (gpsAcc > 0) {
                         locationManager.removeUpdates(locationListener);
-                        Log.d("droidphoto", "location from manager:" + gpsLat + " " + gpsLong);
+//                        Log.d("droidphoto", "location from manager:" + gpsLat + " " + gpsLong);
                         reGeocode(gpsLat, gpsLong);
                     } else {
                         startLoopForGps();
                     }
                 } else {
                     useLocation.setChecked(false);
-                    useLocation.setText(Html.fromHtml("error: gps is taking too long to respond " + "<font color='" + getResources().getColor(R.color.link) + "'>retry?</font>"));
+                    useLocation.setText(Html.fromHtml(getString(R.string.fill_post_checkbox_error_gps_timeout) + " <font color='" + getResources().getColor(R.color.link) + getString(R.string.fill_post_checkbox_location_retry)));
                 }
             }
         };
@@ -484,8 +490,8 @@ public class FillPostActivity extends AppCompatActivity {
 
             if(addressList != null && addressList.size() > 0) {
                 Address address = addressList.get(0);
-                Log.d("droidphoto", "reverse geocode: " + address.toString());
-                Log.d("droidphoto", "lat=" + params[0] + "|long=" + params[1]);
+//                Log.d("droidphoto", "reverse geocode: " + address.toString());
+//                Log.d("droidphoto", "lat=" + params[0] + "|long=" + params[1]);
 
                 resolvedLocation = ""; //init
                 resolvedLocation += (address.getLocality() == null) ? "" : (address.getLocality() + ", ");
@@ -522,8 +528,8 @@ public class FillPostActivity extends AppCompatActivity {
 
                     if(addressList != null && addressList.size() > 0) {
                         address = addressList.get(0);
-                        Log.d("droidphoto", "localized reverse geocode: " + address.toString());
-                        Log.d("droidphoto", "localized lat=" + params[0] + "|long=" + params[1]);
+//                        Log.d("droidphoto", "localized reverse geocode: " + address.toString());
+//                        Log.d("droidphoto", "localized lat=" + params[0] + "|long=" + params[1]);
 
                         resolvedLocalizedLocation = "";
                         resolvedLocalizedLocation += (address.getLocality() == null)? "":address.getLocality() + ", ";
@@ -548,31 +554,31 @@ public class FillPostActivity extends AppCompatActivity {
             switch (s) {
                 case "error getting location :(":
                     useLocation.setChecked(false);
-                    useLocation.setText(Html.fromHtml(s + " <font color='" + getResources().getColor(R.color.link) + "'>retry?</font>"));
+                    useLocation.setText(Html.fromHtml(getString(R.string.fill_post_checkbox_error_location_get) + " <font color='" + getResources().getColor(R.color.link) + getString(R.string.fill_post_checkbox_location_retry)));
                     useLocation.setClickable(true);
                     resetLocation();
                     break;
                 case "error resolving location :(":
                     useLocation.setChecked(false);
-                    useLocation.setText(Html.fromHtml(s + " <font color='" + getResources().getColor(R.color.link) + "'>retry?</font>"));
+                    useLocation.setText(Html.fromHtml(getString(R.string.fill_post_checkbox_error_location_resolve) + " <font color='" + getResources().getColor(R.color.link) + getString(R.string.fill_post_checkbox_location_retry)));
                     useLocation.setClickable(true);
                     resetLocation();
                     break;
                 case "error resolving localized location :(":
                     useLocation.setChecked(false);
-                    useLocation.setText(Html.fromHtml(s + " <font color='" + getResources().getColor(R.color.link) + "'>retry?</font>"));
+                    useLocation.setText(Html.fromHtml(getString(R.string.fill_post_checkbox_error_localize_resolve) + " <font color='" + getResources().getColor(R.color.link) + getString(R.string.fill_post_checkbox_location_retry)));
                     useLocation.setClickable(true);
                     resetLocation();
                     break;
                 case "error no location found":
                     useLocation.setChecked(false);
-                    useLocation.setText(s);
+                    useLocation.setText(getString(R.string.fill_post_checkbox_error_location_notfound));
                     useLocation.setTextColor(getResources().getColor(R.color.light_gray));
                     resetLocation();
                     useLocation.setEnabled(false);
                     break;
                 default: //has location data
-                    useLocation.setText("Location : " + s);
+                    useLocation.setText(getString(R.string.fill_post_checkbox_location_prefix) + s);
                     useLocation.setClickable(true);
                     break;
             }
@@ -632,11 +638,11 @@ public class FillPostActivity extends AppCompatActivity {
                                 startLoopForGps();
                                 toastText += "get location from GPS";
                             } else {
-                                useLocation.setText("error: location service must be turned on");
+                                useLocation.setText(getString(R.string.fill_post_checkbox_location_off));
                             }
                         }
                     } else {
-                        useLocation.setText("error: no location data in exif :(");
+                        useLocation.setText(getString(R.string.fill_post_checkbox_no_location_exif));
                         useLocation.setTextColor(getResources().getColor(R.color.light_gray));
                         useLocation.setChecked(false);
                         useLocation.setEnabled(false);
@@ -661,7 +667,7 @@ public class FillPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!isAccept.isChecked()) {
 //                    Toast.makeText(getApplicationContext(), "Please accpet our term of service", Toast.LENGTH_LONG).show();
-                    Snackbar.make(photo, "Please accept our term of service", Toast.LENGTH_LONG).show();
+                    Snackbar.make(photo, getString(R.string.snackbar_fill_post_accept_tos), Toast.LENGTH_LONG).show();
                     return;
                 }
 //                if (mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME) == null ||
@@ -678,14 +684,102 @@ public class FillPostActivity extends AppCompatActivity {
 
                 new Thread(new Runnable() {
                     public void run() {
-                        Log.d("droidphoto", "uploading...");
+//                        Log.d("droidphoto", "uploading...");
                         //init value
                         FeedFragment.percentage = 0;
                         FeedFragment.isFailedToUpload = false;
 
+                        //resize image save to cache
+                        final File tempFile = new File(getCacheDir() + "/" + "uploadtemp.jpg");
+                        final File originalFile = new File(mCurrentPhotoPath);
+                        FileOutputStream out = null;
+                        Bitmap bmp = null;
+                        try {
+                            InputStream in = new BufferedInputStream(new FileInputStream(originalFile));
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inJustDecodeBounds = true;
+                            BitmapFactory.decodeStream(in, null, options);
+                            if(options.outHeight > MAX_THUMBNAIL_SIZE || options.outWidth > MAX_THUMBNAIL_SIZE) {
+                                // Calculate ratios of height and width to requested height and width
+                                final int heightRatio = Math.round((float) options.outHeight / MAX_THUMBNAIL_SIZE);
+                                final int widthRatio = Math.round((float) options.outWidth / MAX_THUMBNAIL_SIZE);
+
+                                // Choose the smallest ratio as inSampleSize value, this will guarantee
+                                // a final image with both dimensions larger than or equal to the
+                                // requested height and width.
+                                options.inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+                            }
+                            Metadata metadata;
+                            ExifIFD0Directory orientationDirectory = null;
+                            try {
+                                metadata = ImageMetadataReader.readMetadata(originalFile);
+                                orientationDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+                            } catch (ImageProcessingException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            android.graphics.Matrix matrix = new android.graphics.Matrix();
+                            if(orientationDirectory != null && orientationDirectory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+//                            Log.d("droidphoto", "rotating...");
+                                try {
+                                    switch (orientationDirectory.getInt(ExifIFD0Directory.TAG_ORIENTATION)) {
+                                        case 1:                                                             break; //ExifInterface.ORIENTATION_NORMAL
+                                        case 2:                                 matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_FLIP_HORIZONTAL
+                                        case 3:     matrix.postRotate(180);                                 break; //ExifInterface.ORIENTATION_ROTATE_180
+                                        case 4:     matrix.postRotate(180);     matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_FLIP_VERTICAL
+                                        case 5:     matrix.postRotate(90);      matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_TRANSPOSE
+                                        case 6:     matrix.postRotate(90);                                  break; //ExifInterface.ORIENTATION_ROTATE_90
+                                        case 7:     matrix.postRotate(270);     matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_TRANSVERSE
+                                        case 8:     matrix.postRotate(270);                                 break; //ExifInterface.ORIENTATION_ROTATE_270
+
+                                        default:
+//                                        Log.d("droidphoto", "what!!?? NO ROTATION!!?");
+                                            break;
+                                    }
+                                } catch (MetadataException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            try {
+                                in.close();
+                                in = new BufferedInputStream(new FileInputStream(originalFile));
+                                out = new FileOutputStream(tempFile);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            options.inJustDecodeBounds = false;
+//                            Log.d("droidphoto", "has matrix");
+//                            Bitmap.createBitmap(
+//                                    BitmapFactory.decodeStream(in, null, options),
+//                                    (options.outWidth > options.outHeight) ? ((options.outWidth / 2) - (options.outHeight / 2)):0,
+//                                    (options.outWidth > options.outHeight) ? 0:(options.outHeight / 2 - options.outWidth / 2),
+//                                    (options.outWidth > options.outHeight) ? options.outHeight:options.outWidth,
+//                                    (options.outWidth > options.outHeight) ? options.outHeight:options.outWidth,
+//                                    matrix,
+//                                    true)
+//                                    .compress(Bitmap.CompressFormat.JPEG, 80, out);
+                            Bitmap.createScaledBitmap(Bitmap.createBitmap(
+                                    BitmapFactory.decodeStream(in, null, options),
+                                    (options.outWidth > options.outHeight) ? ((options.outWidth / 2) - (options.outHeight / 2)) : 0,
+                                    (options.outWidth > options.outHeight) ? 0 : (options.outHeight / 2 - options.outWidth / 2),
+                                    (options.outWidth > options.outHeight) ? options.outHeight : options.outWidth,
+                                    (options.outWidth > options.outHeight) ? options.outHeight : options.outWidth,
+                                    matrix, true), MAX_THUMBNAIL_SIZE, MAX_THUMBNAIL_SIZE, true).compress(Bitmap.CompressFormat.JPEG, 80, out);
+                            if(out != null) {
+                                try {
+                                    out.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
                         //create file
-                        File uploadFile = new File(mCurrentPhotoPath);
-                        final long filesize = uploadFile.length();
+                        final long filesize = originalFile.length();
 
                         //create client
                         OkHttpClient okHttpClient = new OkHttpClient();
@@ -703,17 +797,18 @@ public class FillPostActivity extends AppCompatActivity {
                                 FeedFragment.percentage = (int)((80 * num) / filesize);
                             }
                         };
-                        postService.postPhoto(new CountingTypedFile("image/jpeg", new File(mCurrentPhotoPath), listener),
+                        postService.postPhoto(new CountingTypedFile("image/jpeg", originalFile, listener),
+                                new TypedFile("image/jpeg", tempFile),
                                 getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getString(getString(R.string.token), ""),
                                 new Callback<UploadResponseModel>() {
                                     @Override
                                     public void success(UploadResponseModel jsonObject, Response response) {
-
-                                        if(response.getStatus() == HttpURLConnection.HTTP_OK) {
-                                            Log.d("droidphoto", "success");
-                                            Log.d("droidphoto", "response body : " + response.getBody().toString());
-                                            Log.d("droidphoto", "jsonObject : " + jsonObject);
-                                        }
+                                        tempFile.delete();
+//                                        if(response.getStatus() == HttpURLConnection.HTTP_OK) {
+//                                            Log.d("droidphoto", "success");
+//                                            Log.d("droidphoto", "response body : " + response.getBody().toString());
+//                                            Log.d("droidphoto", "jsonObject : " + jsonObject);
+//                                        }
                                         try {
 //                                            if (jsonObject.getBoolean("success")) {
                                             if(jsonObject.success) {
@@ -773,8 +868,9 @@ public class FillPostActivity extends AppCompatActivity {
 
                                     @Override
                                     public void failure(RetrofitError error) {
+                                        tempFile.delete();
                                         FeedFragment.isFailedToUpload = true;
-                                        Log.d("droidphoto", "error " + error.toString());
+                                        error.printStackTrace();
                                     }
                                 });
 /*
@@ -839,6 +935,7 @@ public class FillPostActivity extends AppCompatActivity {
                 }).start();
 
                 Intent returnIntent = new Intent();
+
                 returnIntent.putExtra("caption", caption.getText().toString());
                 returnIntent.putExtra("vendor", vendor.getText().toString());
                 returnIntent.putExtra("model", model.getText().toString());
@@ -867,6 +964,7 @@ public class FillPostActivity extends AppCompatActivity {
                             FeedFragment.isFailedToUpload = true;
                             e.printStackTrace();
                         }
+                        finish();
                         finish();
                     }
                 });
