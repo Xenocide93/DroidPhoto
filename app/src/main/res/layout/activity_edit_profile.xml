@@ -100,7 +100,6 @@
                     android:layout_marginLeft="@dimen/small_padding"
                     android:background="@null"
                     android:hint="profile description"
-                    android:text="@string/long_text_50"
                     android:textColorHint="@color/light_gray" />
             </LinearLayout>
 
@@ -141,13 +140,13 @@
                     <Button
                         android:id="@+id/change_pass_btn"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="36dp"
                         android:background="@drawable/curve_primary"
                         android:layout_centerHorizontal="true"
                         android:paddingLeft="@dimen/small_padding"
                         android:paddingRight="@dimen/small_padding"
                         android:textColor="@color/white"
-                        android:text="Change Password"/>
+                        android:text="@string/change_password"/>
 
                 </RelativeLayout>
 

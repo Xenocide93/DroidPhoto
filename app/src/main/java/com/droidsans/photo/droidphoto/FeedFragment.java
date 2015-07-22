@@ -3,8 +3,10 @@ package com.droidsans.photo.droidphoto;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -1009,6 +1011,10 @@ public class FeedFragment extends Fragment {
     public void runUploadingAnimation(){ //will be called when emit upload
         //TODO get picture from path in parameter
         //TODO create placeholder view of the uploading photo with upload animation
+    }
+
+    private SharedPreferences getUserdata() {
+        return getActivity().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE);
     }
 
     public void updateFeed(){
