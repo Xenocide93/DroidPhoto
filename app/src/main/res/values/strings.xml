@@ -32,6 +32,7 @@
     <!--settings text-->
     <string name="settings_app_language_title">Select Application Language</string>
     <string name="settings_app_language_summary">Language : %s</string>
+    <string name="change_password">Change password</string>
 
     <!--login snackbar-->
     <string name="snackbar_login_cannot_connect">cannot connect to server. please check your internet connection.</string>
@@ -116,6 +117,7 @@
     <string name="long_text_30">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
+    <string name="title_activity_full_screen_image_viewer">FullScreenImageViewerActivity</string>
 
 
 </resources>

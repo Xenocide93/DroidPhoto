@@ -2,8 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.droidsans.photo.droidphoto.ImageViewerActivity">
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item android:id="@+id/action_hide_pic"
+        android:title="Hide Picture"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        app:showAsAction="always"
+        android:icon="@drawable/ic_delete_white_24dp"/>
 </menu>

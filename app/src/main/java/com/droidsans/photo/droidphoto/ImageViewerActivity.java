@@ -2,14 +2,8 @@ package com.droidsans.photo.droidphoto;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
-import android.support.v4.util.LruCache;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,22 +18,16 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.disklrucache.DiskLruCache;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.cache.DiskCache;
-import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.diegocarloslima.byakugallery.lib.TileBitmapDrawable;
 import com.diegocarloslima.byakugallery.lib.TouchImageView;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
-import com.droidsans.photo.droidphoto.util.PicturePack;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -48,12 +36,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Scanner;
 
 
 public class ImageViewerActivity extends AppCompatActivity {
     private static final int MAX_CACHE_SIZE = 1024*1024*50; //50MB
-    private TouchImageView picture;
+    public static final String CACHE_FILE_NAME = "cacheFileName";
+
+    private ImageView picture;
     private Bitmap imageBitmap;
     private byte imageByte[];
     private FontTextView deviceName, exposureTime, aperture, iso, location, user, caption;
@@ -95,9 +84,10 @@ public class ImageViewerActivity extends AppCompatActivity {
 ////                        .crossFade()
 //                        .into(picture);
                 TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
+                setupPictureClickListener();
             } else {
                 //download image
-                setupTouchListener();
+                setupReloadButtonListener();
                 initImageLoader();
             }
         } else {
@@ -107,8 +97,12 @@ public class ImageViewerActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_image_viewer, menu);
+        //TODO check privilege
+        if(true){
+            getMenuInflater().inflate(R.menu.menu_image_viewer_mod, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.menu_no_menu, menu);
+        }
         return true;
     }
 
@@ -125,20 +119,29 @@ public class ImageViewerActivity extends AppCompatActivity {
                 return true;
             case R.id.action_settings:
                 return true;
+            case R.id.action_hide_pic:
+                //TODO check privilege again before send hide pic request
+                //TODO send hide pic request to server
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupTouchListener() {
+    private void setupPictureClickListener() { //called nly when picture is finish downloaded
         if(!picture.hasOnClickListeners()) {
             picture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(),"image clicked !!",Toast.LENGTH_SHORT).show();
+                    Intent fullscreenViewerIntent = new Intent(getApplicationContext(), ImageViewerFullScreenActivity.class);
+                    fullscreenViewerIntent.putExtra(CACHE_FILE_NAME, photoURL.split("\\.")[0]);
+                    startActivity(fullscreenViewerIntent);
                 }
             });
         }
+    }
+
+    private void setupReloadButtonListener(){
         if(!reloadBtn.hasOnClickListeners()) {
             reloadBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -231,7 +234,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     private void findAllById() {
         caption = (FontTextView) findViewById(R.id.caption);
         captionLayout = (LinearLayout) findViewById(R.id.caption_layout);
-        picture = (TouchImageView) findViewById(R.id.picture);
+        picture = (ImageView) findViewById(R.id.picture);
         deviceName = (FontTextView) findViewById(R.id.device_name);
         exposureTime = (FontTextView) findViewById(R.id.shutter_speed);
         aperture = (FontTextView) findViewById(R.id.aperture);
@@ -260,7 +263,6 @@ public class ImageViewerActivity extends AppCompatActivity {
      * </p>
      *
      */
-
     private class ImageLoader extends AsyncTask<String, Integer, String> {
         int fileLength;
 
@@ -446,14 +448,17 @@ public class ImageViewerActivity extends AppCompatActivity {
                     }
                     progressBar.setVisibility(ProgressBar.GONE);
                     progressText.setVisibility(FontTextView.GONE);
-//                    Glide.with(getApplicationContext())
-//                            .load(imageByte)
-//                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                            .crossFade()
-//                            .into(picture);
+                    Glide.with(getApplicationContext())
+                            .load(getCacheDir() + "/" + filename)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .crossFade()
+                            .into(picture);
 
-                    TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
+//                    TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
+
+                    setupPictureClickListener();
                     picture.setVisibility(TouchImageView.VISIBLE);
+
                     break;
                 case "timeout":
                     initReload();
