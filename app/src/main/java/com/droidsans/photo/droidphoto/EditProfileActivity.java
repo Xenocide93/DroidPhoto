@@ -290,9 +290,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        android.graphics.Matrix matrix = null;
+                        android.graphics.Matrix matrix = new android.graphics.Matrix();
                         if(orientationDirectory != null && orientationDirectory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
-                            matrix = new android.graphics.Matrix();
 //                            Log.d("droidphoto", "rotating...");
                             try {
                                 switch (orientationDirectory.getInt(ExifIFD0Directory.TAG_ORIENTATION)) {
@@ -322,14 +321,14 @@ public class EditProfileActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         options.inJustDecodeBounds = false;
-                        if(matrix == null) {
-//                            Log.d("droidphoto", "no matrix");
-                            BitmapFactory.decodeStream(in, null, options).compress(Bitmap.CompressFormat.JPEG, 80, out);
-                        } else {
 //                            Log.d("droidphoto", "has matrix");
-                            Bitmap.createBitmap(BitmapFactory.decodeStream(in, null, options), 0, 0, options.outWidth, options.outHeight, matrix, true)
-                                    .compress(Bitmap.CompressFormat.JPEG, 80, out);
-                        }
+                        Bitmap.createScaledBitmap(Bitmap.createBitmap(
+                                BitmapFactory.decodeStream(in, null, options),
+                                (options.outWidth > options.outHeight) ? ((options.outWidth / 2) - (options.outHeight / 2)) : 0,
+                                (options.outWidth > options.outHeight) ? 0 : (options.outHeight / 2 - options.outWidth / 2),
+                                (options.outWidth > options.outHeight) ? options.outHeight : options.outWidth,
+                                (options.outWidth > options.outHeight) ? options.outHeight : options.outWidth,
+                                matrix, true), MAX_AVATAR_SIZE, MAX_AVATAR_SIZE, true).compress(Bitmap.CompressFormat.JPEG, 80, out);
                         if(out != null) {
                             try {
                                 out.close();

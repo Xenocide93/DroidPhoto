@@ -62,7 +62,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/small_padding"
                     android:background="@null"
-                    android:hint="display name"
+                    android:hint="@string/edit_profile_display_name"
                     android:singleLine="true"
                     android:textColorHint="@color/light_gray" />
 
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/small_padding"
                     android:background="@null"
-                    android:hint="profile description"
+                    android:hint="@string/edit_profile_description"
                     android:textColorHint="@color/light_gray" />
             </LinearLayout>
 
@@ -142,11 +142,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
                         android:background="@drawable/curve_primary"
-                        android:layout_centerHorizontal="true"
+                        android:layout_centerHorizontal="false"
                         android:paddingLeft="@dimen/small_padding"
                         android:paddingRight="@dimen/small_padding"
                         android:textColor="@color/white"
-                        android:text="@string/change_password"/>
+                        android:text="@string/settings_changepass_title"/>
 
                 </RelativeLayout>
 

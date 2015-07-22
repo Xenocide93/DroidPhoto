@@ -13,7 +13,7 @@ import retrofit.mime.TypedFile;
 public interface PostService {
     @Multipart
     @POST("/photo")
-    void postPhoto(@Part("image") TypedFile file, @Part("_token") String token, Callback<UploadResponseModel> callback);
+    void postPhoto(@Part("image") TypedFile file, @Part("thumbnail") TypedFile thumb, @Part("_token") String token, Callback<UploadResponseModel> callback);
 
     @Multipart
     @POST("/avatar")

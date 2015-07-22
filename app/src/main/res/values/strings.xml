@@ -3,7 +3,8 @@
 
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
-    <string name="action_done">  Done  </string>
+    <string name="action_done">"  Done  "</string>
+    <string name="menu_filter">Filter</string>
 
     <string name="title_activity_browse">Vendor List</string>
     <string name="title_activity_browse_model">Model List</string>
@@ -11,6 +12,8 @@
     <string name="title_activity_image_viewer">ImageViewer</string>
     <string name="title_activity_placeholder">Placeholder</string>
     <string name="title_activity_change_password">Change Password</string>
+    <string name="title_activity_full_screen_image_viewer">      </string>
+    <string name="title_activity_edit_profile">Edit profile</string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>
@@ -30,9 +33,21 @@
     <string name="drawer_close">Close Drawer</string>
 
     <!--settings text-->
+    <string name="settings_submenu_account_title">Account</string>
+    <string name="settings_editprofile_title">Edit Profile</string>
+    <string name="settings_editprofile_summary">update avatar, change profile name/description</string>
+    <string name="settings_changepass_title">Change Password</string>
+    <string name="settings_changepass_summary">please choose something not too stupid such as passw0rd (or something HackerTeam used)</string>
+    <string name="settings_submenu_display_title">Display</string>
+    <string name="settings_display_eng_location_title">Display English Location</string>
+    <string name="settings_display_eng_location_summary">Application will display English location</string>
+    <string name="settings_display_local_location_title">Display Localized Location</string>
+    <string name="settings_display_local_location_summary">Application will try to display location language according to the actual location</string>
+    <string name="settings_submenu_imageupload_title">Image Upload</string>
+    <string name="settings_uselocation_title">Use Location by Default</string>
+    <string name="settings_uselocation_summary">Attach resolved location to uploaded image by default</string>
     <string name="settings_app_language_title">Select Application Language</string>
     <string name="settings_app_language_summary">Language : %s</string>
-    <string name="change_password">Change password</string>
 
     <!--login snackbar-->
     <string name="snackbar_login_cannot_connect">cannot connect to server. please check your internet connection.</string>
@@ -58,12 +73,37 @@
     <string name="register_accept_tos">By clicking Register, you agree to our  </string>
     <string name="register_accept_tos_link">Terms of Services</string>
 
-    <!--settings text-->
-
-    <!--password change hint-->
+    <!--password change activity hint-->
     <string name="change_password_old">old password</string>
     <string name="change_password_new">new password</string>
     <string name="change_password_confirm">confirm new password</string>
+    <string name="change_password_button_confirm">Confirm</string>
+    <string name="change_password_username_label">username : </string>
+
+    <!--edit profile activity-->
+    <string name="edit_profile_display_name">profile name</string>
+    <string name="edit_profile_description">profile description</string>
+
+    <!--fill post activity-->
+    <string name="fill_post_caption_hint">Caption</string>
+    <string name="fill_post_vendor_hint">Vendor</string>
+    <string name="fill_post_model_hint">Model</string>
+    <string name="fill_post_checkbox_attach_location">attach current location</string>
+    <string name="fill_post_checkbox_accept_tos">Accept terms of service</string>
+    <string name="fill_post_checkbox_enhanced">Enhanced photo</string>
+    <string name="fill_post_button_upload">Upload</string>
+    <string name="fill_post_checkbox_use_exif">use location (from exif)</string>
+    <string name="fill_post_checkbox_use_gps">use location (from location services)</string>
+    <string name="fill_post_checkbox_location_prefix">"Location : "</string>
+    <string name="fill_post_checkbox_location_resolving">resolving ...</string>
+    <string name="fill_post_checkbox_error_gps_timeout">error: gps is taking too long to respond</string>
+    <string name="fill_post_checkbox_location_retry"><![CDATA[\'>retry?</font>]]></string>
+    <string name="fill_post_checkbox_error_location_get">error getting location :(</string>
+    <string name="fill_post_checkbox_error_location_resolve">error resolving location :(</string>
+    <string name="fill_post_checkbox_error_localize_resolve">error resolving localized location :(</string>
+    <string name="fill_post_checkbox_error_location_notfound">error no location found</string>
+    <string name="fill_post_checkbox_location_off">error: location service must be turned on</string>
+    <string name="fill_post_checkbox_no_location_exif">error: no location data in exif :(</string>
 
     <!--Tutorial-->
     <string name="tutorial_string_fam">Create new post</string>
@@ -71,6 +111,7 @@
 
     <!--Feed-->
     <string name="recent_tag">Most Recent</string>
+
 
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
@@ -91,7 +132,6 @@
     <string name="settings_local_location">localized_location_naming</string>
     <string name="settings_use_location">use_location_by_default</string>
     <string name="settings_app_language">use_app_language</string>
-
     <string-array name="settings_app_language_entrylist">
         <item>English (EN)</item>
         <item>ไทย (TH)</item>
@@ -108,8 +148,6 @@
 
     <string name="test_140_char">111111111112222222222333333333344444444445555555555666666666677777777778888888888999999999900000000001111111111222222222233333333334444444444</string>
     <string name="test_90_char">1111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999</string>
-    <string name="menu_filter">Filter</string>
-    <string name="title_activity_edit_profile">Edit profile</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="long_text_10">\@@@@@@@@@@</string>
@@ -117,7 +155,7 @@
     <string name="long_text_30">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
-    <string name="title_activity_full_screen_image_viewer">FullScreenImageViewerActivity</string>
 
+    <string name="snackbar_fill_post_accept_tos">Please accept our term of service</string>
 
 </resources>

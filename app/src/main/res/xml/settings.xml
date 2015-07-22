@@ -2,11 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="Account">
+        android:title="@string/settings_submenu_account_title">
 
         <PreferenceScreen
-            android:title="Edit Profile"
-            android:summary="update avatar, change profile name/description">
+            android:title="@string/settings_editprofile_title"
+            android:summary="@string/settings_editprofile_summary">
 
             <intent
                 android:action="android.intent.action.VIEW"
@@ -27,8 +27,8 @@
         <!--</PreferenceScreen>-->
 
         <PreferenceScreen
-            android:title="Change Password"
-            android:summary="please choose something not too stupid such as passw0rd (or something HackerTeam used)">
+            android:title="@string/settings_changepass_title"
+            android:summary="@string/settings_changepass_summary">
 
             <intent
                 android:action="android.intent.action.VIEW"
@@ -40,37 +40,37 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Display">
+        android:title="@string/settings_submenu_display_title">
 
-        <ListPreference
-            android:key="@string/settings_app_language"
-            android:title="@string/settings_app_language_title"
-            android:summary="@string/settings_app_language_summary"
-            android:entries="@array/settings_app_language_entrylist"
-            android:entryValues="@array/settings_app_language_entryvalue"
-            android:defaultValue="en"/>
+        <!--<ListPreference-->
+            <!--android:key="@string/settings_app_language"-->
+            <!--android:title="@string/settings_app_language_title"-->
+            <!--android:summary="@string/settings_app_language_summary"-->
+            <!--android:entries="@array/settings_app_language_entrylist"-->
+            <!--android:entryValues="@array/settings_app_language_entryvalue"-->
+            <!--android:defaultValue="en"/>-->
 
         <CheckBoxPreference
             android:key="@string/settings_eng_location"
-            android:title="Display English Location"
-            android:summary="Application will display English location"
+            android:title="@string/settings_display_eng_location_title"
+            android:summary="@string/settings_display_eng_location_summary"
             android:defaultValue="true" />
 
         <CheckBoxPreference
             android:key="@string/settings_local_location"
-            android:title="Display Localized Location"
-            android:summary="Application will try to display location language according to the actual location"
+            android:title="@string/settings_display_local_location_title"
+            android:summary="@string/settings_display_local_location_summary"
             android:defaultValue="true" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Image Upload">
+        android:title="@string/settings_submenu_imageupload_title">
 
         <CheckBoxPreference
             android:key="@string/settings_use_location"
-            android:title="Use Location by Default"
-            android:summary="Attach resolved location to uploaded image by default"
+            android:title="@string/settings_uselocation_title"
+            android:summary="@string/settings_uselocation_summary"
             android:defaultValue="true" />
 
     </PreferenceCategory>

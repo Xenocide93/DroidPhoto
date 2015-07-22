@@ -41,7 +41,7 @@
                         android:id="@+id/caption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Caption"
+                        android:hint="@string/fill_post_caption_hint"
                         android:singleLine="true"
                         android:maxLength="140"/>
 
@@ -55,7 +55,7 @@
                         android:id="@+id/vendor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Vendor"
+                        android:hint="@string/fill_post_vendor_hint"
                         android:singleLine="true"
                         android:maxLength="20"/>
 
@@ -69,7 +69,7 @@
                         android:id="@+id/model"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Model"
+                        android:hint="@string/fill_post_model_hint"
                         android:singleLine="true"
                         android:maxLength="30"/>
 
@@ -85,7 +85,7 @@
                         android:id="@+id/use_current_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="attach current location"/>
+                        android:text="@string/fill_post_checkbox_attach_location"/>
 
                 </LinearLayout>
 
@@ -100,14 +100,14 @@
                         android:layout_width="0dp"
                         android:layout_weight="4"
                         android:layout_height="wrap_content"
-                        android:text="Accept terms of service"/>
+                        android:text="@string/fill_post_checkbox_accept_tos"/>
 
                     <CheckBox
                         android:id="@+id/is_enhanced"
                         android:layout_width="0dp"
                         android:layout_weight="3"
                         android:layout_height="wrap_content"
-                        android:text="Enhanced photo"/>
+                        android:text="@string/fill_post_checkbox_enhanced"/>
 
                 </LinearLayout>
 
@@ -118,7 +118,7 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Upload"
+                    android:text="@string/fill_post_button_upload"
                     android:textSize="18sp"
                     android:background="@drawable/curve_white"
                     android:textColor="@color/primary_color"/>
