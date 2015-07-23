@@ -255,7 +255,12 @@ public class FillPostActivity extends AppCompatActivity {
         setDefaultUseLocationText();
         applyUserSettings();
         setThumbnailImage();
-        setVendorAndModel();
+//        setVendorAndModel();
+        setResolvedName();
+    }
+
+    private void setResolvedName() {
+
     }
 
     private void applyUserSettings() {
@@ -266,6 +271,8 @@ public class FillPostActivity extends AppCompatActivity {
         Intent previousIntent = getIntent();
         mCurrentPhotoPath = previousIntent.getStringExtra("photoPath");
         mImageFrom = previousIntent.getStringExtra("imageFrom");
+        if(previousIntent.getStringExtra("vendor") != null) vendor.setText(previousIntent.getStringExtra("vendor"));
+        if(previousIntent.getStringExtra("model") != null) model.setText(previousIntent.getStringExtra("model"));
     }
 
     private void setDefaultUseLocationText() {
@@ -284,9 +291,9 @@ public class FillPostActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
-
+/*
     private void setVendorAndModel(){
-        resolveDeviceVendorModel();
+//        resolveDeviceVendorModel();
         vendor.setText(outputVendor);
         model.setText(outputModel);
     }
@@ -330,7 +337,7 @@ public class FillPostActivity extends AppCompatActivity {
             Log.d("droidphoto", "do resolve vendor: " + outputVendor);
         }
     }
-
+*/
     private void setThumbnailImage() {
         try {
             metadata = ImageMetadataReader.readMetadata(new File(mCurrentPhotoPath));

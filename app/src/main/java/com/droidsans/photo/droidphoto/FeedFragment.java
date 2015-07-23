@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -111,6 +112,9 @@ public class FeedFragment extends Fragment {
     private int filterCount;
     private String skipDate;
     private boolean isUpdate = false;
+
+    private String resolvedVendor;
+    private String resolvedModel;
 //    private NotifyAdapter packreload[];
 
 //    private int firstAtPause;
@@ -424,7 +428,8 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dispatchTakePictureIntent();
-                updateCSV();
+                resolveDeviceName();
+//                updateCSV();
                 fam.close(true);
             }
         });
@@ -432,11 +437,32 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dispatchPicturePickerIntent();
-                updateCSV();
+                resolveDeviceName();
+//                updateCSV();
                 fam.close(true);
             }
         });
 
+    }
+
+    private void resolveDeviceName() {
+        final JSONObject data = new JSONObject();
+        try {
+            data.put("build_device", Build.DEVICE);
+            data.put("build_model", Build.MODEL);
+            data.put("manufacturer", Build.MANUFACTURER.trim());
+            data.put("_event", "get_device_name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(!GlobalSocket.globalEmit("device.resolve", data)) {
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    GlobalSocket.globalEmit("device.resolve", data);
+                }
+            }, 850);
+        }
     }
 
     private void updateCSV(){
@@ -639,11 +665,11 @@ public class FeedFragment extends Fragment {
                         feedPicturePack.remove(feedPicturePack.size() - 1);
                         recycleAdapter.notifyDataSetChanged();
                         JSONObject data = (JSONObject) args[0];
-                        if(data.optBoolean("success")) {
+                        if (data.optBoolean("success")) {
 //                            String[] photoList = data.optJSONArray("photoList").join(",").replaceAll("\"", "").split(",");
                             JSONArray photoList = data.optJSONArray("photoList");
                             int len = photoList.length();
-                            for(int i = 0; i < len; i++) {
+                            for (int i = 0; i < len; i++) {
                                 JSONObject jsonPack = photoList.optJSONObject(i);
                                 PicturePack picturePack = new PicturePack();
 
@@ -675,7 +701,7 @@ public class FeedFragment extends Fragment {
                                 feedPicturePack.add(picturePack);
                             }
                             recycleAdapter.notifyDataSetChanged();
-                            if(len == FEED_LIMIT_PER_REQUEST) {
+                            if (len == FEED_LIMIT_PER_REQUEST) {
                                 PicturePack footer = new PicturePack();
                                 feedPicturePack.add(footer);
                             }
@@ -699,6 +725,25 @@ public class FeedFragment extends Fragment {
                 GlobalSocket.mSocket.disconnect();
             }
         };
+
+        Emitter.Listener onGetDeviceNameRespond = new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                if(data.optBoolean("success")) {
+                    resolvedVendor = data.optString("retail_vendor");
+                    resolvedModel = data.optString("retail_model");
+                    Log.d("droidphoto", "resolved name : " + resolvedVendor + resolvedModel);
+                } else {
+                    Log.d("droidphoto", "error name resolve : " + data.optString("msg"));
+                    //sad
+                }
+            }
+        };
+
+        if(!GlobalSocket.mSocket.hasListeners("get_device_name")) {
+            GlobalSocket.mSocket.on("get_device_name", onGetDeviceNameRespond);
+        }
 
 //
 //        feedGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -779,35 +824,35 @@ public class FeedFragment extends Fragment {
 //            }
 //        });
 
-        if(!GlobalSocket.mSocket.hasListeners("get_csv")){
-            GlobalSocket.mSocket.on("get_csv", new Emitter.Listener() {
-                @Override
-                public void call(final Object... args) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GlobalSocket.mSocket.off("get_csv");
-                            Log.d("droidphoto", "csv.get: response");
-
-                            JSONObject data = (JSONObject) args[0];
-                            if (data.optBoolean("success")) {
-                                Log.d("droidphoto", "csv.get: success");
-                                Object csvObj = data.opt("csv");
-                                String version = data.optString("version");
-
-                                Log.d("droidphoto", "csv version: " + version);
-
-                                writeObjToInternalStorage(csvObj, getString(R.string.csvFileName));
-                                writeObjToInternalStorage(version, getString(R.string.csvVersion));
-                            } else {
-                                String msg = data.optString("msg");
-                                Log.d("droidphoto", "Error update csv: " + msg);
-                            }
-                        }
-                    });
-                }
-            });
-        }
+//        if(!GlobalSocket.mSocket.hasListeners("get_csv")){
+//            GlobalSocket.mSocket.on("get_csv", new Emitter.Listener() {
+//                @Override
+//                public void call(final Object... args) {
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            GlobalSocket.mSocket.off("get_csv");
+//                            Log.d("droidphoto", "csv.get: response");
+//
+//                            JSONObject data = (JSONObject) args[0];
+//                            if (data.optBoolean("success")) {
+//                                Log.d("droidphoto", "csv.get: success");
+//                                Object csvObj = data.opt("csv");
+//                                String version = data.optString("version");
+//
+//                                Log.d("droidphoto", "csv version: " + version);
+//
+//                                writeObjToInternalStorage(csvObj, getString(R.string.csvFileName));
+//                                writeObjToInternalStorage(version, getString(R.string.csvVersion));
+//                            } else {
+//                                String msg = data.optString("msg");
+//                                Log.d("droidphoto", "Error update csv: " + msg);
+//                            }
+//                        }
+//                    });
+//                }
+//            });
+//        }
     }
 
     private void initLoading() {
@@ -947,6 +992,8 @@ public class FeedFragment extends Fragment {
                     Intent fillPostFromPicturePickerIntent = new Intent(getActivity(), FillPostActivity.class);
                     fillPostFromPicturePickerIntent.putExtra("photoPath", path);
                     fillPostFromPicturePickerIntent.putExtra("imageFrom", "Picture Picker");
+                    fillPostFromPicturePickerIntent.putExtra("vendor", resolvedVendor);
+                    fillPostFromPicturePickerIntent.putExtra("model", resolvedModel);
                     startActivityForResult(fillPostFromPicturePickerIntent, FILL_POST);
                     break;
 
@@ -959,6 +1006,8 @@ public class FeedFragment extends Fragment {
                         Intent fillPostIntent = new Intent(getActivity(), FillPostActivity.class);
                         fillPostIntent.putExtra("photoPath", staticPhotoPath);
                         fillPostIntent.putExtra("imageFrom", "Camera");
+                        fillPostIntent.putExtra("vendor", resolvedVendor);
+                        fillPostIntent.putExtra("model", resolvedModel);
                         startActivityForResult(fillPostIntent, FILL_POST);
                         break;
                     } else {
@@ -1166,7 +1215,7 @@ public class FeedFragment extends Fragment {
 //        }
         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
         GlobalSocket.mSocket.off("update_feed");
-        GlobalSocket.mSocket.off("get_csv");
+//        GlobalSocket.mSocket.off("get_csv");
 //        if (adapter != null) {
 //            //recycle bitmap and reset load state
 //            Log.d("droidphoto", "count before destroy : " + adapter.getCount());

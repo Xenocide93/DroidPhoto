@@ -395,9 +395,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if(GlobalSocket.mSocket.hasListeners("get_csv")) {
-            GlobalSocket.mSocket.off("get_csv");
-        }
+//        if(GlobalSocket.mSocket.hasListeners("get_csv")) {
+//            GlobalSocket.mSocket.off("get_csv");
+//        }
         if(GlobalSocket.mSocket.hasListeners("get_user_info")) {
             GlobalSocket.mSocket.off("get_user_info");
         }
