@@ -1267,8 +1267,12 @@ public class FeedFragment extends Fragment {
     }
     
     private boolean isFirstTime(){
-//        return PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(FIRST_TIME_FEED_FRAGMENT, true);
-        return false;
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.JELLY_BEAN){
+            return PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(FIRST_TIME_FEED_FRAGMENT, true);
+        } else {
+            return false;
+        }
     }
 
     private void findAllById() {
