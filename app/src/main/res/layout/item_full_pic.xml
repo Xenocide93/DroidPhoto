@@ -233,16 +233,15 @@
         android:alpha="0.8"
         android:layout_alignParentTop="true" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/user_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/image_viewer_image_top_margin"
         android:layout_marginBottom="10dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/small_padding"
         android:paddingBottom="@dimen/small_padding"
-        android:orientation="horizontal"
         android:layout_alignParentTop="true">
 
         <ImageView
@@ -261,16 +260,18 @@
             android:layout_marginLeft="10dp"
             android:gravity="center"
             android:text="usertest"
+            android:layout_toRightOf="@id/avatar"
             android:textSize="@dimen/pic_viewer_font_size"/>
 
         <com.droidsans.photo.droidphoto.util.FontTextView
             android:id="@+id/submit_date"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center|right"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
             android:text="0s"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
 
