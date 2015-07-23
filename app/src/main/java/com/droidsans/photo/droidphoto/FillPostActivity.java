@@ -29,7 +29,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -41,7 +40,6 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.droidsans.photo.droidphoto.util.retrofit.CountingTypedFile;
-import com.droidsans.photo.droidphoto.util.Devices;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.retrofit.PostService;
 import com.droidsans.photo.droidphoto.util.retrofit.ProgressListener;
@@ -53,19 +51,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -992,9 +983,13 @@ public class FillPostActivity extends AppCompatActivity {
                                                                 //???
                                                                 FeedFragment.isFailedToUpload = true;
 //                                                                Toast.makeText(getApplicationContext(), "upload failed (on socket.io)", Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                if(!hasResolvedName) storeDeviceName();
                                                             }
                                                         }
                                                     }, 2000);
+                                                } else {
+                                                    if(!hasResolvedName) storeDeviceName();
                                                 }
                                             } else {
                                                 FeedFragment.isFailedToUpload = true;
@@ -1093,7 +1088,8 @@ public class FillPostActivity extends AppCompatActivity {
                         try {
                             if(data.getBoolean("success")){
                                 Log.d("droidphoto", "upload success");
-                                FeedFragment.percentage = 100;
+                                if(hasResolvedName) FeedFragment.percentage = 100;
+                                else FeedFragment.percentage += 1;
                             } else {
                                 FeedFragment.isFailedToUpload = true;
                                 Log.d("droidphoto", "upload error: " + data.getString("msg"));
@@ -1102,7 +1098,7 @@ public class FillPostActivity extends AppCompatActivity {
                             FeedFragment.isFailedToUpload = true;
                             e.printStackTrace();
                         }
-                        finish();
+                        if(FeedFragment.percentage == 100) finish();
                     }
                 });
             }
@@ -1111,101 +1107,145 @@ public class FillPostActivity extends AppCompatActivity {
         if(!GlobalSocket.mSocket.hasListeners("photoupload_respond")){
             GlobalSocket.mSocket.on("photoupload_respond", onPhotoUploadRespond);
         }
+
+        Emitter.Listener onStoreNameRespond = new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                FillPostActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            if(data.getBoolean("success")){
+                                Log.d("droidphoto", "update success");
+                                FeedFragment.percentage += 1;
+                            } else {
+                                FeedFragment.isFailedToUpload = true;
+                                Log.d("droidphoto", "update error: " + data.getString("msg"));
+                            }
+                        } catch (JSONException e) {
+                            FeedFragment.isFailedToUpload = true;
+                            e.printStackTrace();
+                        }
+                        if(FeedFragment.percentage == 100) finish();
+                    }
+                });
+            }
+        };
+
+        if(!GlobalSocket.mSocket.hasListeners("device_store_respond")){
+            GlobalSocket.mSocket.on("device_store_respond", onStoreNameRespond);
+        }
     }
-/*
-    public JSONObject post(String url, String path) {
-        byte[] data = fileToByteArray(path);
-        String attachmentName = "image";
-        String attachmentFileName = "image.jpg";
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary =  "*****";
 
-        HttpURLConnection httpUrlConnection = null;
-
+    private void storeDeviceName() {
+        JSONObject send = new JSONObject();
         try {
-            httpUrlConnection = (HttpURLConnection) (new URL(url)).openConnection();
-            httpUrlConnection.setUseCaches(false);
-            httpUrlConnection.setDoOutput(true);
-
-            httpUrlConnection.setRequestMethod("POST");
-            httpUrlConnection.setRequestProperty("Connection", "Keep-Alive");
-            httpUrlConnection.setRequestProperty("Cache-Control", "no-cache");
-            httpUrlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-
-            DataOutputStream request = new DataOutputStream(httpUrlConnection.getOutputStream());
-            //start request section
-            request.writeBytes(twoHyphens + boundary + lineEnd);
-
-            /////////////////////////////////////////////////////////////////////////////////////////////
-
-            //body heading
-            request.writeBytes("Content-Disposition: form-data; name=\"_token\"" + lineEnd);
-            request.writeBytes("Content-Type: text/plain" + lineEnd);
-            request.writeBytes("Content-Transfer-Encoding: base64" + lineEnd);
-
-            //request body
-//            request.writeBytes(lineEnd + GlobalSocket.getToken() + lineEnd);
-            request.writeBytes(lineEnd + getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), "") + lineEnd);
-
-            //end of body section
-            request.writeBytes(twoHyphens + boundary + lineEnd);
-
-            /////////////////////////////////////////////////////////////////////////////////////////////
-
-            //heading
-            request.writeBytes("Content-Disposition: form-data; name=\"" + attachmentName + "\";filename=\"" + attachmentFileName + "\"" + lineEnd);
-            request.writeBytes("Content-Type: image/jpeg" + lineEnd);
-            request.writeBytes("Content-Transfer-Encoding: base64" + lineEnd);
-
-            //request file
-            request.writeBytes(lineEnd);
-            request.write(data);
-            request.writeBytes(lineEnd);
-
-            //end of file section
-            request.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-            request.flush();
-            request.close();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }  catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //get respond
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            InputStream responseStream = new BufferedInputStream(httpUrlConnection.getInputStream());
-            BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
-            String line;
-            while ((line = responseStreamReader.readLine()) != null)
-            {
-                stringBuilder.append(line).append("\n");
-            }
-            responseStreamReader.close();
-//            httpUrlConnection.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                httpUrlConnection.disconnect();
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            return new JSONObject(stringBuilder.toString());
+            send.put("retail_vendor", vendor.getText().toString());
+            send.put("retail_model", model.getText().toString());
+            send.put("build_device", Build.DEVICE);
+            send.put("build_model", Build.MODEL);
+            send.put("_event", "device_store_respond");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        GlobalSocket.globalEmit("device.store", send);
     }
-*/
+
+    /*
+        public JSONObject post(String url, String path) {
+            byte[] data = fileToByteArray(path);
+            String attachmentName = "image";
+            String attachmentFileName = "image.jpg";
+            String lineEnd = "\r\n";
+            String twoHyphens = "--";
+            String boundary =  "*****";
+
+            HttpURLConnection httpUrlConnection = null;
+
+            try {
+                httpUrlConnection = (HttpURLConnection) (new URL(url)).openConnection();
+                httpUrlConnection.setUseCaches(false);
+                httpUrlConnection.setDoOutput(true);
+
+                httpUrlConnection.setRequestMethod("POST");
+                httpUrlConnection.setRequestProperty("Connection", "Keep-Alive");
+                httpUrlConnection.setRequestProperty("Cache-Control", "no-cache");
+                httpUrlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+                DataOutputStream request = new DataOutputStream(httpUrlConnection.getOutputStream());
+                //start request section
+                request.writeBytes(twoHyphens + boundary + lineEnd);
+
+                /////////////////////////////////////////////////////////////////////////////////////////////
+
+                //body heading
+                request.writeBytes("Content-Disposition: form-data; name=\"_token\"" + lineEnd);
+                request.writeBytes("Content-Type: text/plain" + lineEnd);
+                request.writeBytes("Content-Transfer-Encoding: base64" + lineEnd);
+
+                //request body
+    //            request.writeBytes(lineEnd + GlobalSocket.getToken() + lineEnd);
+                request.writeBytes(lineEnd + getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), "") + lineEnd);
+
+                //end of body section
+                request.writeBytes(twoHyphens + boundary + lineEnd);
+
+                /////////////////////////////////////////////////////////////////////////////////////////////
+
+                //heading
+                request.writeBytes("Content-Disposition: form-data; name=\"" + attachmentName + "\";filename=\"" + attachmentFileName + "\"" + lineEnd);
+                request.writeBytes("Content-Type: image/jpeg" + lineEnd);
+                request.writeBytes("Content-Transfer-Encoding: base64" + lineEnd);
+
+                //request file
+                request.writeBytes(lineEnd);
+                request.write(data);
+                request.writeBytes(lineEnd);
+
+                //end of file section
+                request.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                request.flush();
+                request.close();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }  catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            //get respond
+            StringBuilder stringBuilder = new StringBuilder();
+            try {
+                InputStream responseStream = new BufferedInputStream(httpUrlConnection.getInputStream());
+                BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
+                String line;
+                while ((line = responseStreamReader.readLine()) != null)
+                {
+                    stringBuilder.append(line).append("\n");
+                }
+                responseStreamReader.close();
+    //            httpUrlConnection.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    httpUrlConnection.disconnect();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                return new JSONObject(stringBuilder.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    */
     @Override
     protected void onDestroy() {
         if(imageBitmap != null) imageBitmap.recycle();

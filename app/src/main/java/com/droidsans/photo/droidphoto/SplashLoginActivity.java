@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
+import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.github.nkzawa.emitter.Emitter;
 
 import org.json.JSONException;
@@ -28,6 +29,7 @@ public class SplashLoginActivity extends Activity {
     public static Context mContext;
 
     private View logoLayout, loginLayout;
+    private FontTextView description;
     private EditText username, password;
     private Button loginBtn, registerBtn, bypassLoginBtn;
 
@@ -252,11 +254,12 @@ public class SplashLoginActivity extends Activity {
 
     private void setupSplashAnimation() {
         logoLayout.animate()
-                .yBy(-280 * getResources().getDisplayMetrics().densityDpi / 400)
-                .setDuration(1200).setStartDelay(1500).start();
+                .yBy((-280 -50) * getResources().getDisplayMetrics().densityDpi / 400)
+                .setDuration(1500).setStartDelay(1500).start();
 //        loginLayout.animate().translationY(0).setDuration(1200).setStartDelay(1500).start();
+        description.animate().alpha(1).setDuration(1500).setStartDelay(2500);
         loginLayout.setVisibility(View.VISIBLE);
-        loginLayout.animate().alpha(1).setDuration(700).setStartDelay(2000).setListener(new Animator.AnimatorListener() {
+        loginLayout.animate().alpha(1).setDuration(1000).setStartDelay(2000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
             }
@@ -300,6 +303,7 @@ public class SplashLoginActivity extends Activity {
         loginBtn = (Button) findViewById(R.id.login_btn);
         registerBtn = (Button) findViewById(R.id.register_btn);
         bypassLoginBtn = (Button) findViewById(R.id.bypass_login);
+        description = (FontTextView) findViewById(R.id.app_desc);
     }
 
     private String bytesToHex(byte[] in) {

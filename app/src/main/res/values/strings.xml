@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Droid Photo</string>
+    <string name="app_name">DroidShot</string>
+    <string name="app_desc">Shot on Android</string>
 
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
@@ -159,5 +160,7 @@
     <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
 
     <string name="snackbar_fill_post_accept_tos">Please accept our term of service</string>
+    <string name="login_button_login">Login</string>
+    <string name="login_button_register">Register</string>
 
 </resources>

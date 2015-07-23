@@ -129,6 +129,7 @@ public class FeedFragment extends Fragment {
     private Handler delayAction = new Handler();
     private Runnable timeout;
     private Runnable loop;
+    private int loopcount = 0;
     private Runnable update;
 
     private ArrayList<TagView> tagViewArray;
@@ -1054,7 +1055,7 @@ public class FeedFragment extends Fragment {
 //                            .placeholder(R.drawable.droidsans_logo)
 //                            .into(picture);
 
-                    final int loopdelay = 500;
+                    final int loopdelay = 250;
                     update = new Runnable() {
                         @Override
                         public void run() {
@@ -1071,19 +1072,23 @@ public class FeedFragment extends Fragment {
                             } else {
                                 if (percentage < 100) {//update upload progress
                                     Log.d("droidphoto", "uploaded : " + percentage + "%");
+                                    if(percentage > 97) {
+                                        loopcount++;
+                                    }
 //                                    progressBar.setProgress(percentage);
-                                    getActivity().runOnUiThread(update);
+                                    if(getActivity() != null) getActivity().runOnUiThread(update);
+                                    if(loopcount < 60) isFailedToUpload = true;
                                     delayAction.postDelayed(loop, loopdelay);
                                 } else { //upload done
 //                                    progressBar.setProgress(percentage);
-                                    getActivity().runOnUiThread(update);
+                                    if(getActivity() != null) getActivity().runOnUiThread(update);
                                     refreshFeed();
                                     Snackbar.make(frameLayout, "upload success", Snackbar.LENGTH_LONG).show();
                                 }
                             }
                         }
                     };
-
+                    loopcount = 0;
                     delayAction.postDelayed(loop, loopdelay);
                     Snackbar.make(frameLayout, "uploading...", Snackbar.LENGTH_LONG).show();
                     break;
