@@ -216,7 +216,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         if(caption.getText().equals("")) captionLayout.setVisibility(LinearLayout.GONE);
         deviceName.setText(previousIntent.getStringExtra("vendor") + " " + previousIntent.getStringExtra("model"));
         if(!previousIntent.getStringExtra("exposureTime").equals("")) {
-            if(previousIntent.getStringExtra("exposureTime").contains("1/")) {
+            if(previousIntent.getStringExtra("exposureTime").substring(0,2).contains("1/")) {
                 exposureTime.setText(previousIntent.getStringExtra("exposureTime"));
             } else if(previousIntent.getStringExtra("exposureTime").contains("/")) {
                 String expTime = previousIntent.getStringExtra("exposureTime");
