@@ -6,6 +6,5 @@
 /build
 /captures
 /app/app.iml
-app/app.iml
-.idea
-tourguide/tourguide.iml
+/tourguide/tourguide.iml
+/.idea
