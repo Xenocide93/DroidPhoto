@@ -1077,7 +1077,7 @@ public class FeedFragment extends Fragment {
                                     }
 //                                    progressBar.setProgress(percentage);
                                     if(getActivity() != null) getActivity().runOnUiThread(update);
-                                    if(loopcount < 60) isFailedToUpload = true;
+                                    if(loopcount > 60) isFailedToUpload = true;
                                     delayAction.postDelayed(loop, loopdelay);
                                 } else { //upload done
 //                                    progressBar.setProgress(percentage);
