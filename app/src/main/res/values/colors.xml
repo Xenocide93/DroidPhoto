@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="global_bg_white">#fff0f0f0</color>
+    <color name="global_text_black">#ff383838</color>
 
     <color name="gray">#222327</color>
     <color name="light_gray">#ff7d7e8d</color>

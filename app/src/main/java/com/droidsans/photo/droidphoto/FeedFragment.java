@@ -713,6 +713,7 @@ public class FeedFragment extends Fragment {
         Emitter.Listener onGetDeviceNameRespond = new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                GlobalSocket.mSocket.off("get_device_name");
                 JSONObject data = (JSONObject) args[0];
                 if(data.optBoolean("success")) {
                     resolvedVendor = data.optString("retail_vendor");
@@ -1188,13 +1189,14 @@ public class FeedFragment extends Fragment {
     @Override
     public void onDestroy() {
 //        if(GlobalSocket.mSocket.hasListeners("get_feed")) {
+        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
             GlobalSocket.mSocket.off("get_feed");
 //        }
 //        if(GlobalSocket.mSocket.hasListeners("get_device_list")) {
             GlobalSocket.mSocket.off("get_device_list");
 //        }
-        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
         GlobalSocket.mSocket.off("update_feed");
+        GlobalSocket.mSocket.off("get_device_name");
 //        GlobalSocket.mSocket.off("get_csv");
 //        if (adapter != null) {
 //            //recycle bitmap and reset load state

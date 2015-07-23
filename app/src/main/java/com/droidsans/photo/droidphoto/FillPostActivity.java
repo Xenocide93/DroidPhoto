@@ -100,9 +100,10 @@ public class FillPostActivity extends AppCompatActivity {
     ExifIFD0Directory orientationDirectory;
     GpsDirectory gpsDirectory;
 
-    private boolean isResolvedVendor = false;
-    private boolean isResolvedModel = false;
-    private String outputVendor, outputModel;
+//    private boolean isResolvedVendor = false;
+//    private boolean isResolvedModel = false;
+//    private String outputVendor, outputModel;
+    private boolean hasResolvedName;
 
     private Toolbar toolbar;
 
@@ -256,11 +257,7 @@ public class FillPostActivity extends AppCompatActivity {
         applyUserSettings();
         setThumbnailImage();
 //        setVendorAndModel();
-        setResolvedName();
-    }
-
-    private void setResolvedName() {
-
+        getResolvedName();
     }
 
     private void applyUserSettings() {
@@ -271,8 +268,98 @@ public class FillPostActivity extends AppCompatActivity {
         Intent previousIntent = getIntent();
         mCurrentPhotoPath = previousIntent.getStringExtra("photoPath");
         mImageFrom = previousIntent.getStringExtra("imageFrom");
-        if(previousIntent.getStringExtra("vendor") != null) vendor.setText(previousIntent.getStringExtra("vendor"));
-        if(previousIntent.getStringExtra("model") != null) model.setText(previousIntent.getStringExtra("model"));
+        if(previousIntent.getStringExtra("vendor") != null) {
+            vendor.setText(previousIntent.getStringExtra("vendor"));
+        }
+        if(previousIntent.getStringExtra("model") != null) {
+            hasResolvedName = true;
+            model.setText(previousIntent.getStringExtra("model"));
+        } else {
+            hasResolvedName = false;
+            vendor.setText(getLocalManufacturer());
+            model.setText(Build.MODEL);
+            getResolvedName();
+        }
+    }
+
+    private String getLocalManufacturer() {
+        switch (Build.MANUFACTURER.toLowerCase().trim()) {
+            case "lge":
+                return "LG";
+            case "htc":
+                return "HTC";
+            case "oppo":
+                return "OPPO";
+            case "hp":
+                return "HP";
+            case "zte":
+                return "ZTE";
+            case "oneplus":
+                return "OnePlus";
+            case "sony ericsson":
+                return "Sony Ericsson";
+            case "viewsonic":
+                return "ViewSonic";
+            case "true":
+                return "TRUE";
+            case "dtac":
+                return "dtac";
+            case "ais":
+                return "AIS";
+            case "lava":
+                return "LAVA";
+            case "i-mobile":
+                return "i-mobile";
+            case "samsung":
+                return "Samsung";
+            case "asus":
+                return "Asus";
+            default:
+//                return Build.MANUFACTURER.substring(0,1).toUpperCase() + Build.MANUFACTURER.substring(1, Build.MANUFACTURER.length()).toLowerCase();
+                return Build.MANUFACTURER;
+        }
+    }
+
+    private void getResolvedName() {
+        if(!GlobalSocket.mSocket.hasListeners("get_resolve_name")) {
+            GlobalSocket.mSocket.on("get_resolve_name", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalSocket.mSocket.off("get_resolve_name");
+                            JSONObject data = (JSONObject) args[0];
+                            if(data.optBoolean("success")) {
+                                vendor.setText(data.optString("retail_vendor"));
+                                model.setText(data.optString("retail_model"));
+                                hasResolvedName = true;
+                            } else {
+                                Log.d("droidphoto", "error : " + data.optString("msg"));
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        JSONObject send = new JSONObject();
+        final JSONObject data = new JSONObject();
+        try {
+            data.put("build_device", Build.DEVICE);
+            data.put("build_model", Build.MODEL);
+            data.put("manufacturer", Build.MANUFACTURER.trim());
+            data.put("_event", "get_resolve_name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (!GlobalSocket.globalEmit("device.resolve", data)) {
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    GlobalSocket.globalEmit("device.resolve", data);
+                }
+            }, 850);
+        }
     }
 
     private void setDefaultUseLocationText() {
@@ -1122,6 +1209,7 @@ public class FillPostActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if(imageBitmap != null) imageBitmap.recycle();
+        GlobalSocket.mSocket.off("get_resolve_name");
         super.onDestroy();
     }
 
