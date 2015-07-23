@@ -1,9 +1,12 @@
 package com.droidsans.photo.droidphoto;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,6 +24,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.util.transform.CircleTransform;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
+import com.github.nkzawa.emitter.Emitter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -55,6 +62,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     private FontTextView progressText;
     private FontTextView reloadText;
     private Button reloadBtn;
+    private Intent previousIntent;
 
     private Toolbar toolbar;
     private int percentage = 0;
@@ -92,14 +100,15 @@ public class ImageViewerActivity extends AppCompatActivity {
                 initImageLoader();
             }
         } else {
-            Toast.makeText(getApplicationContext(),"cannot initialize imageviewer (bug ?)",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "cannot initialize imageviewer (bug ?)", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //TODO check privilege
-        if(true){
+        if(getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getInt(getString(R.string.user_priviledge), 1) > 1) {
+//        if(true){
             getMenuInflater().inflate(R.menu.menu_image_viewer_mod, menu);
         } else {
             getMenuInflater().inflate(R.menu.menu_no_menu, menu);
@@ -121,6 +130,53 @@ public class ImageViewerActivity extends AppCompatActivity {
             case R.id.action_settings:
                 return true;
             case R.id.action_hide_pic:
+                new AlertDialog.Builder(ImageViewerActivity.this)
+                        .setTitle("Hide this photo")
+                        .setMessage("are you sure ?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(!GlobalSocket.mSocket.hasListeners("hide_photo")) {
+                                    GlobalSocket.mSocket.on("hide_photo", new Emitter.Listener() {
+                                        @Override
+                                        public void call(final Object... args) {
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    GlobalSocket.mSocket.off("hide_photo");
+                                                    JSONObject data = (JSONObject) args[0];
+                                                    if(data.optBoolean("success")) {
+                                                        Log.d("droidphoto", "removed");
+                                                        Toast.makeText(getApplicationContext(), "removed", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Log.d("droidphoto", "error " + data.optString("msg"));
+                                                        Toast.makeText(getApplicationContext(), "error : " + data.optString("msg"), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    finish();
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                                JSONObject send = new JSONObject();
+                                try {
+                                    send.put("photo_id", previousIntent.getStringExtra("photoId"));
+                                    send.put("user_id", previousIntent.getStringExtra("userId"));
+                                    send.put("_event", "hide_photo");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                GlobalSocket.globalEmit("photo.hide", send);
+//                                finish();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+//                            .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
                 //TODO check privilege again before send hide pic request
                 //TODO send hide pic request to server
                 return true;
@@ -154,7 +210,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     }
 
     private boolean setup() {
-        Intent previousIntent = getIntent();
+        previousIntent = getIntent();
         photoURL = previousIntent.getStringExtra("photoURL");
         caption.setText(previousIntent.getStringExtra("caption"));
         if(caption.getText().equals("")) captionLayout.setVisibility(LinearLayout.GONE);
@@ -268,6 +324,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if(loader != null && loader.getStatus() != AsyncTask.Status.FINISHED) loader.cancel(true);
+        GlobalSocket.mSocket.off("hide_photo");
         super.onDestroy();
     }
 

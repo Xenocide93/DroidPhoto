@@ -408,7 +408,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dispatchTakePictureIntent();
-//                updateCSV();
+                updateCSV();
                 fam.close(true);
             }
         });
@@ -416,7 +416,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dispatchPicturePickerIntent();
-//                updateCSV();
+                updateCSV();
                 fam.close(true);
             }
         });
@@ -951,7 +951,7 @@ public class FeedFragment extends Fragment {
                                     }
                                 })
                                 .show();
-                        //TODO remove photo entry from mediastore or rescan
+                        //remove photo entry from mediastore or rescan | maybe it is impossible.. ?
                         hasImageInPhotoPath = false;
                         staticPhotoPath = null;
                         break;
@@ -1146,6 +1146,7 @@ public class FeedFragment extends Fragment {
 //        }
         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
         GlobalSocket.mSocket.off("update_feed");
+        GlobalSocket.mSocket.off("get_csv");
 //        if (adapter != null) {
 //            //recycle bitmap and reset load state
 //            Log.d("droidphoto", "count before destroy : " + adapter.getCount());

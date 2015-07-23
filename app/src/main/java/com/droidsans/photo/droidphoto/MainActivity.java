@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                                 getUserdata().edit()
                                         .putString(getString(R.string.display_name), userObj.optString("disp_name"))
                                         .putString(getString(R.string.avatar_url), userObj.optString("avatar_url"))
+                                        .putInt(getString(R.string.user_priviledge), userObj.optInt("priviledge"))
                                         .apply();
                                 displayName.setText(userObj.optString("disp_name", ""));
                                 Glide.with(getApplicationContext())
@@ -192,8 +193,8 @@ public class MainActivity extends AppCompatActivity {
 //        } else {
 //        }
 
-        switch (getUserdata().getString(getString(R.string.user_priviledge), "1")) {
-            case "1":
+        switch (getUserdata().getInt(getString(R.string.user_priviledge), 1)) {
+            case 1:
 //                if(previousMenuItem != null) previousMenuItem.setChecked(false);
 //                navigationView.getMenu().clear();
 //                navigationView.inflateMenu(R.menu.menu_drawer);
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 //                findUserMenuById();
                 findModMenuById();
                 break;
-            case "2":
+            case 2:
                 if(previousMenuItem != null) previousMenuItem.setChecked(false);
                 navigationView.getMenu().clear();
                 navigationView.inflateMenu(R.menu.menu_drawer_mod);

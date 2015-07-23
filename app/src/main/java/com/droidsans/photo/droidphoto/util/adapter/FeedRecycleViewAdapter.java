@@ -85,6 +85,7 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                             .into(myHolder.picture);
                     myHolder.uploadLayout.setVisibility(View.GONE);
 
+
                     myHolder.deviceName.setText(pack.vendor + " " + pack.model);
                     myHolder.user.setText(pack.username + "");
 
