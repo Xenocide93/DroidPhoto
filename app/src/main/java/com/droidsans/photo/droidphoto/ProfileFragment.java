@@ -421,7 +421,7 @@ public class ProfileFragment extends Fragment {
                 deletePicFakeSnackbar.animate()
                         .y(profileFeedPicRecyclerview.getBottom() - getResources().getDimension(R.dimen.snackbar_height))
 //                        .yBy(-10 * getResources().getDimension(R.dimen.snackbar_height))
-                        .setDuration(300)
+                        .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
                         .start();
             } else { //exit edit mode
 //                item.setIcon(R.drawable.ic_delete_white_24dp);
@@ -465,7 +465,7 @@ public class ProfileFragment extends Fragment {
                             GlobalSocket.globalEmit("photo.remove", removePicData);
                             deletePicFakeSnackbar.animate()
                                     .yBy(2 * getResources().getDimension(R.dimen.snackbar_height))
-                                    .setDuration(300)
+                                    .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
                                     .start();
 
                             menu.clear();
@@ -500,7 +500,7 @@ public class ProfileFragment extends Fragment {
 
         deletePicFakeSnackbar.animate()
                 .yBy(getResources().getDimension(R.dimen.snackbar_height))
-                .setDuration(300)
+                .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
                 .start();
     }
 
