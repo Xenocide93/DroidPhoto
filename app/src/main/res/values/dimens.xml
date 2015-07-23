@@ -27,4 +27,5 @@
     <dimen name="font_th_normal_fontsize">22sp</dimen>
     <dimen name="font_th_subtitle_fontsize">18sp</dimen>
     <dimen name="edit_profile_profile_pic_size">120dp</dimen>
+    <dimen name="snackbar_height">48dp</dimen>
 </resources>

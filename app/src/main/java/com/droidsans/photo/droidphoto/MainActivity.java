@@ -1,5 +1,6 @@
 package com.droidsans.photo.droidphoto;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -404,7 +405,21 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-//    @Override
+    @Override
+    public void onBackPressed() {
+        if(ProfileFragment.mProfileFragment!=null){
+            if(ProfileFragment.mProfileFragment.adapter.isInEditMode){
+                ProfileFragment.mProfileFragment.cancelEditMode();
+                return;
+            } else {
+                super.onBackPressed();
+            }
+        }
+
+        super.onBackPressed();
+    }
+
+    //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        getMenuInflater().inflate(R.menu.menu_main, menu);
 //        return true;

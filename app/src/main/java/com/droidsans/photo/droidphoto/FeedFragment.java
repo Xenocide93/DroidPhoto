@@ -172,15 +172,14 @@ public class FeedFragment extends Fragment {
     private void initialize() {
         findAllById();
         setupRecycleView();
-        setupListener();
+        if(!isFirstTime()){
+            setupListener();
+        }
         setupEmitterListener();
     }
 
     private void checkFirstTimeLaunch() { //call from onGetFeedRespond
-        if(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(FIRST_TIME_FEED_FRAGMENT, true)){
-            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-                    .putBoolean(FIRST_TIME_FEED_FRAGMENT, false).apply();
-
+        if(isFirstTime()){
             // setup enter and exit animation
             Animation enterAnimation = new AlphaAnimation(0f, 1f);
             enterAnimation.setDuration(600);
@@ -206,7 +205,9 @@ public class FeedFragment extends Fragment {
                         .setGravity(Gravity.LEFT|Gravity.TOP))
                     .setOverlay(new Overlay()
                         .setEnterAnimation(enterAnimation)
-                        .setExitAnimation(exitAnimation))
+                        .setExitAnimation(exitAnimation)
+                        .setBackgroundColor(getResources().getColor(R.color.black_transparent_overlay))
+                        .setPadding(30))
                     .playOn(tutorialViewList.get(0));
 
             tutorialHandler.setOnToolTipClickListener(new View.OnClickListener() {
@@ -226,15 +227,30 @@ public class FeedFragment extends Fragment {
         }
 
         if(nextTutorial>=tutorialViewList.size()){
+            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                    .putBoolean(FIRST_TIME_FEED_FRAGMENT, false).apply();
             tutorialHandler.cleanUp();
             return;
         }
+
+        Animation enterAnimation = new AlphaAnimation(0f, 1f);
+        enterAnimation.setDuration(600);
+        enterAnimation.setFillAfter(true);
+
+        Animation exitAnimation = new AlphaAnimation(1f, 0f);
+        exitAnimation.setDuration(600);
+        exitAnimation.setFillAfter(true);
 
         tutorialHandler.cleanUp();
         tutorialHandler.setToolTip(new ToolTip()
                 .setTitle(tutorialStringList.get(nextTutorial))
                 .setDescription("Touch to dismiss")
                 .setGravity(Gravity.LEFT | Gravity.BOTTOM))
+                .setOverlay(new Overlay()
+                        .setEnterAnimation(enterAnimation)
+                        .setExitAnimation(exitAnimation)
+                        .setBackgroundColor(getResources().getColor(R.color.black_transparent_overlay))
+                        .setPadding(20))
                 .playOn(tutorialViewList.get(nextTutorial));
 
         nextTutorial++;
@@ -936,7 +952,11 @@ public class FeedFragment extends Fragment {
 //                Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_filter:
-                launchAddFilterPopup();
+                if(!isFirstTime()){
+                    launchAddFilterPopup();
+                } else {
+                    showNextTutorial();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -1246,6 +1266,15 @@ public class FeedFragment extends Fragment {
         ObjectOutputStream o = new ObjectOutputStream(b);
         o.writeObject(obj);
         return b.toByteArray();
+    }
+    
+    private boolean isFirstTime(){
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.JELLY_BEAN){
+            return PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(FIRST_TIME_FEED_FRAGMENT, true);
+        } else {
+            return false;
+        }
     }
 
     private void findAllById() {

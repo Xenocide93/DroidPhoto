@@ -11,6 +11,7 @@ public class Overlay {
     public boolean mDisableClick;
     public Style mStyle;
     public Animation mEnterAnimation, mExitAnimation;
+    public int mPadding;
 
     public enum Style {
         Circle, Rectangle
@@ -66,6 +67,16 @@ public class Overlay {
      */
     public Overlay setExitAnimation(Animation exitAnimation){
         mExitAnimation = exitAnimation;
+        return this;
+    }
+
+    /**
+     * Set overlay padding in dp
+     * @param padding
+     * @return return Overlay instance for chaining purpose
+     */
+    public Overlay setPadding(int padding){
+        mPadding = padding;
         return this;
     }
 }
