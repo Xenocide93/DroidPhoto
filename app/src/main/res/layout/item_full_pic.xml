@@ -243,7 +243,6 @@
         android:paddingTop="@dimen/small_padding"
         android:paddingBottom="@dimen/small_padding"
         android:layout_alignParentTop="true">
-
         <ImageView
             android:id="@+id/avatar"
             android:layout_width="@dimen/image_viewer_profile_pic_size"
