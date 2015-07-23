@@ -29,7 +29,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -41,7 +40,6 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.droidsans.photo.droidphoto.util.retrofit.CountingTypedFile;
-import com.droidsans.photo.droidphoto.util.Devices;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.retrofit.PostService;
 import com.droidsans.photo.droidphoto.util.retrofit.ProgressListener;
@@ -53,19 +51,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -100,9 +91,10 @@ public class FillPostActivity extends AppCompatActivity {
     ExifIFD0Directory orientationDirectory;
     GpsDirectory gpsDirectory;
 
-    private boolean isResolvedVendor = false;
-    private boolean isResolvedModel = false;
-    private String outputVendor, outputModel;
+//    private boolean isResolvedVendor = false;
+//    private boolean isResolvedModel = false;
+//    private String outputVendor, outputModel;
+    private boolean hasResolvedName;
 
     private Toolbar toolbar;
 
@@ -256,11 +248,7 @@ public class FillPostActivity extends AppCompatActivity {
         applyUserSettings();
         setThumbnailImage();
 //        setVendorAndModel();
-        setResolvedName();
-    }
-
-    private void setResolvedName() {
-
+        getResolvedName();
     }
 
     private void applyUserSettings() {
@@ -271,8 +259,98 @@ public class FillPostActivity extends AppCompatActivity {
         Intent previousIntent = getIntent();
         mCurrentPhotoPath = previousIntent.getStringExtra("photoPath");
         mImageFrom = previousIntent.getStringExtra("imageFrom");
-        if(previousIntent.getStringExtra("vendor") != null) vendor.setText(previousIntent.getStringExtra("vendor"));
-        if(previousIntent.getStringExtra("model") != null) model.setText(previousIntent.getStringExtra("model"));
+        if(previousIntent.getStringExtra("vendor") != null) {
+            vendor.setText(previousIntent.getStringExtra("vendor"));
+        }
+        if(previousIntent.getStringExtra("model") != null) {
+            hasResolvedName = true;
+            model.setText(previousIntent.getStringExtra("model"));
+        } else {
+            hasResolvedName = false;
+            vendor.setText(getLocalManufacturer());
+            model.setText(Build.MODEL);
+            getResolvedName();
+        }
+    }
+
+    private String getLocalManufacturer() {
+        switch (Build.MANUFACTURER.toLowerCase().trim()) {
+            case "lge":
+                return "LG";
+            case "htc":
+                return "HTC";
+            case "oppo":
+                return "OPPO";
+            case "hp":
+                return "HP";
+            case "zte":
+                return "ZTE";
+            case "oneplus":
+                return "OnePlus";
+            case "sony ericsson":
+                return "Sony Ericsson";
+            case "viewsonic":
+                return "ViewSonic";
+            case "true":
+                return "TRUE";
+            case "dtac":
+                return "dtac";
+            case "ais":
+                return "AIS";
+            case "lava":
+                return "LAVA";
+            case "i-mobile":
+                return "i-mobile";
+            case "samsung":
+                return "Samsung";
+            case "asus":
+                return "Asus";
+            default:
+//                return Build.MANUFACTURER.substring(0,1).toUpperCase() + Build.MANUFACTURER.substring(1, Build.MANUFACTURER.length()).toLowerCase();
+                return Build.MANUFACTURER;
+        }
+    }
+
+    private void getResolvedName() {
+        if(!GlobalSocket.mSocket.hasListeners("get_resolve_name")) {
+            GlobalSocket.mSocket.on("get_resolve_name", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalSocket.mSocket.off("get_resolve_name");
+                            JSONObject data = (JSONObject) args[0];
+                            if(data.optBoolean("success")) {
+                                vendor.setText(data.optString("retail_vendor"));
+                                model.setText(data.optString("retail_model"));
+                                hasResolvedName = true;
+                            } else {
+                                Log.d("droidphoto", "error : " + data.optString("msg"));
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        JSONObject send = new JSONObject();
+        final JSONObject data = new JSONObject();
+        try {
+            data.put("build_device", Build.DEVICE);
+            data.put("build_model", Build.MODEL);
+            data.put("manufacturer", Build.MANUFACTURER.trim());
+            data.put("_event", "get_resolve_name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (!GlobalSocket.globalEmit("device.resolve", data)) {
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    GlobalSocket.globalEmit("device.resolve", data);
+                }
+            }, 850);
+        }
     }
 
     private void setDefaultUseLocationText() {
@@ -905,9 +983,13 @@ public class FillPostActivity extends AppCompatActivity {
                                                                 //???
                                                                 FeedFragment.isFailedToUpload = true;
 //                                                                Toast.makeText(getApplicationContext(), "upload failed (on socket.io)", Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                if(!hasResolvedName) storeDeviceName();
                                                             }
                                                         }
                                                     }, 2000);
+                                                } else {
+                                                    if(!hasResolvedName) storeDeviceName();
                                                 }
                                             } else {
                                                 FeedFragment.isFailedToUpload = true;
@@ -1006,7 +1088,8 @@ public class FillPostActivity extends AppCompatActivity {
                         try {
                             if(data.getBoolean("success")){
                                 Log.d("droidphoto", "upload success");
-                                FeedFragment.percentage = 100;
+                                if(hasResolvedName) FeedFragment.percentage = 100;
+                                else FeedFragment.percentage += 1;
                             } else {
                                 FeedFragment.isFailedToUpload = true;
                                 Log.d("droidphoto", "upload error: " + data.getString("msg"));
@@ -1015,7 +1098,7 @@ public class FillPostActivity extends AppCompatActivity {
                             FeedFragment.isFailedToUpload = true;
                             e.printStackTrace();
                         }
-                        finish();
+                        if(FeedFragment.percentage == 100) finish();
                     }
                 });
             }
@@ -1024,104 +1107,149 @@ public class FillPostActivity extends AppCompatActivity {
         if(!GlobalSocket.mSocket.hasListeners("photoupload_respond")){
             GlobalSocket.mSocket.on("photoupload_respond", onPhotoUploadRespond);
         }
+
+        Emitter.Listener onStoreNameRespond = new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                FillPostActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            if(data.getBoolean("success")){
+                                Log.d("droidphoto", "update success");
+                                FeedFragment.percentage += 1;
+                            } else {
+                                FeedFragment.isFailedToUpload = true;
+                                Log.d("droidphoto", "update error: " + data.getString("msg"));
+                            }
+                        } catch (JSONException e) {
+                            FeedFragment.isFailedToUpload = true;
+                            e.printStackTrace();
+                        }
+                        if(FeedFragment.percentage == 100) finish();
+                    }
+                });
+            }
+        };
+
+        if(!GlobalSocket.mSocket.hasListeners("device_store_respond")){
+            GlobalSocket.mSocket.on("device_store_respond", onStoreNameRespond);
+        }
     }
-/*
-    public JSONObject post(String url, String path) {
-        byte[] data = fileToByteArray(path);
-        String attachmentName = "image";
-        String attachmentFileName = "image.jpg";
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary =  "*****";
 
-        HttpURLConnection httpUrlConnection = null;
-
+    private void storeDeviceName() {
+        JSONObject send = new JSONObject();
         try {
-            httpUrlConnection = (HttpURLConnection) (new URL(url)).openConnection();
-            httpUrlConnection.setUseCaches(false);
-            httpUrlConnection.setDoOutput(true);
-
-            httpUrlConnection.setRequestMethod("POST");
-            httpUrlConnection.setRequestProperty("Connection", "Keep-Alive");
-            httpUrlConnection.setRequestProperty("Cache-Control", "no-cache");
-            httpUrlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-
-            DataOutputStream request = new DataOutputStream(httpUrlConnection.getOutputStream());
-            //start request section
-            request.writeBytes(twoHyphens + boundary + lineEnd);
-
-            /////////////////////////////////////////////////////////////////////////////////////////////
-
-            //body heading
-            request.writeBytes("Content-Disposition: form-data; name=\"_token\"" + lineEnd);
-            request.writeBytes("Content-Type: text/plain" + lineEnd);
-            request.writeBytes("Content-Transfer-Encoding: base64" + lineEnd);
-
-            //request body
-//            request.writeBytes(lineEnd + GlobalSocket.getToken() + lineEnd);
-            request.writeBytes(lineEnd + getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), "") + lineEnd);
-
-            //end of body section
-            request.writeBytes(twoHyphens + boundary + lineEnd);
-
-            /////////////////////////////////////////////////////////////////////////////////////////////
-
-            //heading
-            request.writeBytes("Content-Disposition: form-data; name=\"" + attachmentName + "\";filename=\"" + attachmentFileName + "\"" + lineEnd);
-            request.writeBytes("Content-Type: image/jpeg" + lineEnd);
-            request.writeBytes("Content-Transfer-Encoding: base64" + lineEnd);
-
-            //request file
-            request.writeBytes(lineEnd);
-            request.write(data);
-            request.writeBytes(lineEnd);
-
-            //end of file section
-            request.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-            request.flush();
-            request.close();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }  catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //get respond
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            InputStream responseStream = new BufferedInputStream(httpUrlConnection.getInputStream());
-            BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
-            String line;
-            while ((line = responseStreamReader.readLine()) != null)
-            {
-                stringBuilder.append(line).append("\n");
-            }
-            responseStreamReader.close();
-//            httpUrlConnection.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                httpUrlConnection.disconnect();
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            return new JSONObject(stringBuilder.toString());
+            send.put("retail_vendor", vendor.getText().toString());
+            send.put("retail_model", model.getText().toString());
+            send.put("build_device", Build.DEVICE);
+            send.put("build_model", Build.MODEL);
+            send.put("_event", "device_store_respond");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        GlobalSocket.globalEmit("device.store", send);
     }
-*/
+
+    /*
+        public JSONObject post(String url, String path) {
+            byte[] data = fileToByteArray(path);
+            String attachmentName = "image";
+            String attachmentFileName = "image.jpg";
+            String lineEnd = "\r\n";
+            String twoHyphens = "--";
+            String boundary =  "*****";
+
+            HttpURLConnection httpUrlConnection = null;
+
+            try {
+                httpUrlConnection = (HttpURLConnection) (new URL(url)).openConnection();
+                httpUrlConnection.setUseCaches(false);
+                httpUrlConnection.setDoOutput(true);
+
+                httpUrlConnection.setRequestMethod("POST");
+                httpUrlConnection.setRequestProperty("Connection", "Keep-Alive");
+                httpUrlConnection.setRequestProperty("Cache-Control", "no-cache");
+                httpUrlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+                DataOutputStream request = new DataOutputStream(httpUrlConnection.getOutputStream());
+                //start request section
+                request.writeBytes(twoHyphens + boundary + lineEnd);
+
+                /////////////////////////////////////////////////////////////////////////////////////////////
+
+                //body heading
+                request.writeBytes("Content-Disposition: form-data; name=\"_token\"" + lineEnd);
+                request.writeBytes("Content-Type: text/plain" + lineEnd);
+                request.writeBytes("Content-Transfer-Encoding: base64" + lineEnd);
+
+                //request body
+    //            request.writeBytes(lineEnd + GlobalSocket.getToken() + lineEnd);
+                request.writeBytes(lineEnd + getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), "") + lineEnd);
+
+                //end of body section
+                request.writeBytes(twoHyphens + boundary + lineEnd);
+
+                /////////////////////////////////////////////////////////////////////////////////////////////
+
+                //heading
+                request.writeBytes("Content-Disposition: form-data; name=\"" + attachmentName + "\";filename=\"" + attachmentFileName + "\"" + lineEnd);
+                request.writeBytes("Content-Type: image/jpeg" + lineEnd);
+                request.writeBytes("Content-Transfer-Encoding: base64" + lineEnd);
+
+                //request file
+                request.writeBytes(lineEnd);
+                request.write(data);
+                request.writeBytes(lineEnd);
+
+                //end of file section
+                request.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                request.flush();
+                request.close();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }  catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            //get respond
+            StringBuilder stringBuilder = new StringBuilder();
+            try {
+                InputStream responseStream = new BufferedInputStream(httpUrlConnection.getInputStream());
+                BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
+                String line;
+                while ((line = responseStreamReader.readLine()) != null)
+                {
+                    stringBuilder.append(line).append("\n");
+                }
+                responseStreamReader.close();
+    //            httpUrlConnection.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    httpUrlConnection.disconnect();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                return new JSONObject(stringBuilder.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    */
     @Override
     protected void onDestroy() {
         if(imageBitmap != null) imageBitmap.recycle();
+        GlobalSocket.mSocket.off("get_resolve_name");
         super.onDestroy();
     }
 
