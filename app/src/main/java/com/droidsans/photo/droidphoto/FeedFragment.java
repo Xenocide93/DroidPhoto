@@ -61,8 +61,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.lang.annotation.Target;
 import java.sql.Time;
 import java.text.DateFormatSymbols;
@@ -340,7 +348,7 @@ public class FeedFragment extends Fragment {
                 } else {
                     removeTagBtn.setImageResource(R.drawable.remove_tag_normal);
                     removeTagBtn.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start();
-                    if(removeTag()){
+                    if (removeTag()) {
                         updateTagView();
                         updateFeed();
                         initLoading();
@@ -404,7 +412,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dispatchTakePictureIntent();
-//                Toast.makeText(getActivity(), "Launch Camera Intent", Toast.LENGTH_SHORT).show();
+                updateCSV();
                 fam.close(true);
             }
         });
@@ -412,15 +420,38 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dispatchPicturePickerIntent();
-//                Toast.makeText(getActivity(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
+                updateCSV();
                 fam.close(true);
             }
         });
 
     }
 
-    private void setupEmitterListener(){
+    private void updateCSV(){
+        final JSONObject data = new JSONObject();
+        try {
+            data.put("version", getVendorModelMapVersion());
+            data.put("_event", "get_csv");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(!GlobalSocket.globalEmit("csv.get", data)){
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    GlobalSocket.globalEmit("csv.get", data);
+                }
+            }, 3000);
+        }
+    }
 
+    private String getVendorModelMapVersion() {
+//        return getSharedPreferences(getString(R.string.cvsMapPref), Context.MODE_PRIVATE)
+//                .getString(getString(R.string.csvVersion), "0.0");
+        return "0.9";
+    }
+
+    private void setupEmitterListener(){
         onDisconnect = new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -666,6 +697,36 @@ public class FeedFragment extends Fragment {
 //                ActivityCompat.startActivity(getActivity(),imageViewerIntent, options.toBundle());
 //            }
 //        });
+
+        if(!GlobalSocket.mSocket.hasListeners("get_csv")){
+            GlobalSocket.mSocket.on("get_csv", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalSocket.mSocket.off("get_csv");
+                            Log.d("droidphoto", "csv.get: response");
+
+                            JSONObject data = (JSONObject) args[0];
+                            if (data.optBoolean("success")) {
+                                Log.d("droidphoto", "csv.get: success");
+                                Object csvObj = data.opt("csv");
+                                String version = data.optString("version");
+
+                                Log.d("droidphoto", "csv version: " + version);
+
+                                writeObjToInternalStorage(csvObj, getString(R.string.csvFileName));
+                                writeObjToInternalStorage(version, getString(R.string.csvVersion));
+                            } else {
+                                String msg = data.optString("msg");
+                                Log.d("droidphoto", "Error update csv: " + msg);
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
 
     private void initLoading() {
@@ -1034,6 +1095,29 @@ public class FeedFragment extends Fragment {
         cursor.close();
 
         return path;
+    }
+
+    private void writeObjToInternalStorage(Object obj, String filename){
+        File file = new File(getActivity().getApplicationContext().getExternalFilesDir(null), filename);
+
+        try {
+            InputStream is = new ByteArrayInputStream(serialize(obj));
+            OutputStream os = new FileOutputStream(file);
+            byte[] writeData = new byte[is.available()];
+            is.read(writeData);
+            os.write(writeData);
+            is.close();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        ObjectOutputStream o = new ObjectOutputStream(b);
+        o.writeObject(obj);
+        return b.toByteArray();
     }
 
     private void findAllById() {

@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         setupListener();
         getUserInfo();
         printDeviceInfo();
-        updateVersionMappingFile();
         makeSnack();
     }
 
@@ -104,50 +103,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupListener() {
-        if(!GlobalSocket.mSocket.hasListeners("get_csv")){
-            GlobalSocket.mSocket.on("get_csv", new Emitter.Listener() {
-                @Override
-                public void call(final Object... args) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GlobalSocket.mSocket.off("get_csv");
-                            Log.d("droidphoto", "csv.get: response");
-
-                            JSONObject data = (JSONObject) args[0];
-                            if (data.optBoolean("success")) {
-                                Log.d("droidphoto", "csv.get: success");
-                                Object csvObj = data.opt("csv");
-                                String version = data.optString("version");
-
-                                writeObjToInternalStorage(csvObj, getString(R.string.csvFileName));
-                                writeObjToInternalStorage(version, getString(R.string.csvVersion));
-
-                                //try read csv from file and print
-                                File file = new File(getApplicationContext().getExternalFilesDir(null), getString(R.string.csvFileName));
-                                BufferedReader reader;
-
-                                try {
-                                    reader = new BufferedReader(new FileReader(file));
-                                    String line;
-
-                                    while ((line = reader.readLine()) != null) {
-                                        //TODO create hashMap to store key value
-                                    }
-                                    reader.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                String msg = data.optString("msg");
-                                Log.d("droidphoto", "Error update csv: " + msg);
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
         if(!GlobalSocket.mSocket.hasListeners("get_user_info")) {
             GlobalSocket.mSocket.on("get_user_info", new Emitter.Listener() {
                 @Override
@@ -214,51 +169,6 @@ public class MainActivity extends AppCompatActivity {
             }, 2500);
         };
     }
-
-    private void updateVersionMappingFile() {
-
-        final JSONObject data = new JSONObject();
-        try {
-            data.put("version", getVendorModelMapVersion());
-            data.put("_event", "get_csv");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if(!GlobalSocket.globalEmit("csv.get", data)){
-            delayAction.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    GlobalSocket.globalEmit("csv.get", data);
-                }
-            }, 3000);
-        }
-    }
-
-    private String getVendorModelMapVersion() {
-//        return getSharedPreferences(getString(R.string.cvsMapPref), Context.MODE_PRIVATE)
-//                .getString(getString(R.string.csvVersion), "0.0");
-        return "0.9";
-    }
-
-    private boolean parseCsvToHashMap(Object csvObject){
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-
-            oos.writeObject(csvObject);
-            oos.flush(); oos.close();
-
-            InputStream is = new ByteArrayInputStream(baos.toByteArray());
-
-
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
-
-        return false;
-    }
-
 
     private void printDeviceInfo(){
         String s =  "brand:" + Build.BRAND
@@ -569,28 +479,5 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getUserdata() {
         return getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE);
-    }
-
-    public static byte[] serialize(Object obj) throws IOException {
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        ObjectOutputStream o = new ObjectOutputStream(b);
-        o.writeObject(obj);
-        return b.toByteArray();
-    }
-
-    private void writeObjToInternalStorage(Object obj, String filename){
-        File file = new File(getApplicationContext().getExternalFilesDir(null), filename);
-
-        try {
-            InputStream is = new ByteArrayInputStream(serialize(obj));
-            OutputStream os = new FileOutputStream(file);
-            byte[] writeData = new byte[is.available()];
-            is.read(writeData);
-            os.write(writeData);
-            is.close();
-            os.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

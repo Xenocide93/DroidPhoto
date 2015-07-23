@@ -59,6 +59,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -98,6 +99,10 @@ public class FillPostActivity extends AppCompatActivity {
     ExifSubIFDDirectory exifDirectory;
     ExifIFD0Directory orientationDirectory;
     GpsDirectory gpsDirectory;
+
+    private boolean isResolvedVendor = false;
+    private boolean isResolvedModel = false;
+    private String outputVendor, outputModel;
 
     private Toolbar toolbar;
 
@@ -280,13 +285,53 @@ public class FillPostActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
-    private void setVendorAndModel() {
-        vendor.setText(Devices.getDeviceVendor());
-        model.setText(Devices.getDeviceModel());
+    private void setVendorAndModel(){
+        resolveDeviceVendorModel();
+        vendor.setText(outputVendor);
+        model.setText(outputModel);
+    }
+
+    private void resolveDeviceVendorModel(){
+        File file = new File(getApplicationContext().getExternalFilesDir(null), getString(R.string.csvFileName));
+        BufferedReader reader;
+
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String line;
+            reader.readLine(); //
+
+            while ((line = reader.readLine()) != null) {
+                String[] csv = line.split(",");
+                if(csv[1].trim().contains(Build.MODEL)){
+                    isResolvedVendor = true;
+                    outputVendor = csv[2].trim();
+                    if (csv[0].trim().contains(Build.DEVICE)){
+                        isResolvedModel = true;
+                        outputModel = csv[3].trim();
+                        break;
+                    }
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(!isResolvedModel){
+            outputModel = Build.MODEL;
+            Log.d("droidphoto", "not resolve model: " + outputModel);
+        } else {
+            Log.d("droidphoto", "do resolve model: " + outputModel);
+        }
+        if(!isResolvedVendor){
+            outputVendor = Build.DEVICE;
+            Log.d("droidphoto", "not resolve vendor: " + outputVendor);
+        } else {
+            Log.d("droidphoto", "do resolve vendor: " + outputVendor);
+        }
     }
 
     private void setThumbnailImage() {
-
         try {
             metadata = ImageMetadataReader.readMetadata(new File(mCurrentPhotoPath));
 

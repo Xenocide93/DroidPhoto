@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:text="Sony"
             android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             android:textColor="@color/primary_color"/>
 
         <com.droidsans.photo.droidphoto.util.FontTextView
