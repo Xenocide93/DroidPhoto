@@ -8,9 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.droidsans.photo.droidphoto.util.ModelListAdapter;
+import com.droidsans.photo.droidphoto.util.adapter.ModelListAdapter;
 
 
 public class BrowseModelActivity extends AppCompatActivity {

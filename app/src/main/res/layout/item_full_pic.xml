@@ -46,7 +46,7 @@
                     android:progressDrawable="@drawable/progress_circular"
                     android:rotation="-90" />
 
-                <com.droidsans.photo.droidphoto.util.FontTextView
+                <com.droidsans.photo.droidphoto.util.view.FontTextView
                     android:id="@+id/progress_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
                         android:alpha="0.7"
                         android:src="@drawable/ic_comment_black_48dp" />
 
-                    <com.droidsans.photo.droidphoto.util.FontTextView
+                    <com.droidsans.photo.droidphoto.util.view.FontTextView
                         android:id="@+id/caption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                         android:alpha="0.7"
                         android:src="@drawable/ic_smartphone_black_48dp" />
 
-                    <com.droidsans.photo.droidphoto.util.FontTextView
+                    <com.droidsans.photo.droidphoto.util.view.FontTextView
                         android:id="@+id/device_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
                             android:alpha="0.7"
                             android:src="@drawable/ic_timer_black_48dp" />
 
-                        <com.droidsans.photo.droidphoto.util.FontTextView
+                        <com.droidsans.photo.droidphoto.util.view.FontTextView
                             android:id="@+id/shutter_speed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
                             android:alpha="0.7"
                             android:src="@drawable/ic_camera_2_black_48dp" />
 
-                        <com.droidsans.photo.droidphoto.util.FontTextView
+                        <com.droidsans.photo.droidphoto.util.view.FontTextView
                             android:id="@+id/aperture"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -183,7 +183,7 @@
                             android:alpha="0.7"
                             android:src="@drawable/ic_camera_black_48dp" />
 
-                        <com.droidsans.photo.droidphoto.util.FontTextView
+                        <com.droidsans.photo.droidphoto.util.view.FontTextView
                             android:id="@+id/iso"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -210,7 +210,7 @@
                         android:alpha="0.7"
                         android:src="@drawable/ic_public_black_48dp" />
 
-                    <com.droidsans.photo.droidphoto.util.FontTextView
+                    <com.droidsans.photo.droidphoto.util.view.FontTextView
                         android:id="@+id/location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -253,7 +253,7 @@
             android:src="@drawable/ic_account_circle_black_48dp" />
 
 
-        <com.droidsans.photo.droidphoto.util.FontTextView
+        <com.droidsans.photo.droidphoto.util.view.FontTextView
             android:id="@+id/user"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -263,7 +263,7 @@
             android:layout_toRightOf="@id/avatar"
             android:textSize="@dimen/pic_viewer_font_size"/>
 
-        <com.droidsans.photo.droidphoto.util.FontTextView
+        <com.droidsans.photo.droidphoto.util.view.FontTextView
             android:id="@+id/submit_date"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

@@ -1,4 +1,4 @@
-package com.droidsans.photo.droidphoto.util;
+package com.droidsans.photo.droidphoto.util.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.droidsans.photo.droidphoto.R;
+import com.droidsans.photo.droidphoto.util.view.FontTextView;
 
 public class ModelListAdapter extends ArrayAdapter<String> {
     private int resourceLayout;

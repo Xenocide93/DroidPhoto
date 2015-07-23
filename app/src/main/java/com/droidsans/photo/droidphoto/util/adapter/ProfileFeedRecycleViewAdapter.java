@@ -1,4 +1,4 @@
-package com.droidsans.photo.droidphoto.util;
+package com.droidsans.photo.droidphoto.util.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.droidsans.photo.droidphoto.ImageViewerActivity;
 import com.droidsans.photo.droidphoto.R;
+import com.droidsans.photo.droidphoto.util.GlobalSocket;
+import com.droidsans.photo.droidphoto.util.PicturePack;
+import com.droidsans.photo.droidphoto.util.view.SquareImageView;
 
 import java.util.ArrayList;
 

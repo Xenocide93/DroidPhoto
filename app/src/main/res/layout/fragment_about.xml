@@ -11,27 +11,27 @@
         android:layout_gravity="center"
         android:src="@drawable/droidsans_logo" />
 
-    <com.droidsans.photo.droidphoto.util.FontTextView
+    <com.droidsans.photo.droidphoto.util.view.FontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/about_paragraph_spacing"
         android:textSize="18sp"
         android:text="Created by"/>
 
-    <com.droidsans.photo.droidphoto.util.FontTextView
+    <com.droidsans.photo.droidphoto.util.view.FontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/about_text_spacing"
         android:textSize="14sp"
         android:text="Thanakorn Yodthong (froztic)"/>
 
-    <com.droidsans.photo.droidphoto.util.FontTextView
+    <com.droidsans.photo.droidphoto.util.view.FontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:text="Patinya Petcharit (ong29673)"/>
 
-    <com.droidsans.photo.droidphoto.util.FontTextView
+    <com.droidsans.photo.droidphoto.util.view.FontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

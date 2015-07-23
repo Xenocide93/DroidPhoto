@@ -1,8 +1,6 @@
 package com.droidsans.photo.droidphoto;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
@@ -20,8 +18,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.droidsans.photo.droidphoto.util.CircleTransform;
-import com.droidsans.photo.droidphoto.util.FontTextView;
+import com.droidsans.photo.droidphoto.util.transform.CircleTransform;
+import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 
 import java.io.BufferedReader;
@@ -221,18 +219,18 @@ public class ImageViewerActivity extends AppCompatActivity {
             String unit;
             if((diff/1000) < 60) {//seconds
                 diff = diff/1000;
-                unit = "s";
+                unit = "s"; // วินาที
             } else if(diff/(1000*60) < 60) { //minutes
                 diff = diff/(1000*60);
-                unit = "m";
+                unit = "m"; // นาที
             } else if(diff/(1000*60*60) < 24) { //hours
                 diff = diff/(1000*60*60);
-                unit = "h";
+                unit = "h"; // ชม.
             } else {
                 diff = diff/(1000*60*60*24);
-                unit = "d";
+                unit = "d"; // วัน
             }
-            submit.setText(" " + diff + unit + " ago");
+            submit.setText(" " + diff + unit);
 //            Log.d("droidphoto", "diff : " + diff + unit);
         } catch (ParseException e) {
             e.printStackTrace();

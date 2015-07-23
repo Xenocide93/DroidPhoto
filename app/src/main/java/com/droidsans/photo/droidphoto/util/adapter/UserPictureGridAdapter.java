@@ -1,17 +1,16 @@
-package com.droidsans.photo.droidphoto.util;
+package com.droidsans.photo.droidphoto.util.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.droidsans.photo.droidphoto.R;
+import com.droidsans.photo.droidphoto.util.GlobalSocket;
+import com.droidsans.photo.droidphoto.util.PicturePack;
+import com.droidsans.photo.droidphoto.util.view.SquareImageView;
 
 import java.util.ArrayList;
 

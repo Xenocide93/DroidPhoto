@@ -1,4 +1,4 @@
-package com.droidsans.photo.droidphoto.util;
+package com.droidsans.photo.droidphoto.util.adapter;
 
 import android.content.Context;
 import android.view.View;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.droidsans.photo.droidphoto.BrowseVendorActivity;
 import com.droidsans.photo.droidphoto.R;
+import com.droidsans.photo.droidphoto.util.view.FontTextView;
 
 public class VendorGridAdapter extends ArrayAdapter<Integer> {
     private int resourceLayout;

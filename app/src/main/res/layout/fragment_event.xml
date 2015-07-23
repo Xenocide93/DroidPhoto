@@ -10,7 +10,7 @@
         android:layout_height="150dp"
         android:src="@drawable/curve_primary" />
 
-    <com.droidsans.photo.droidphoto.util.FontTextView
+    <com.droidsans.photo.droidphoto.util.view.FontTextView
         android:paddingTop="@dimen/about_paragraph_spacing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

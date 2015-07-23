@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.droidsans.photo.droidphoto.util.SquareImageView
+    <com.droidsans.photo.droidphoto.util.view.SquareImageView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/picture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/droidsans_logo"
         android:adjustViewBounds="true">
-    </com.droidsans.photo.droidphoto.util.SquareImageView>
+    </com.droidsans.photo.droidphoto.util.view.SquareImageView>
 
     <View
         android:id="@+id/select_view"

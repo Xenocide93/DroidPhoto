@@ -15,7 +15,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="24dp" />
 
-    <com.droidsans.photo.droidphoto.util.FontTextView
+    <com.droidsans.photo.droidphoto.util.view.FontTextView
         android:id="@+id/display_name"
         android:layout_above="@id/username"
         android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
         android:text="display_name"
         android:layout_alignLeft="@id/profile_image_circle"
         android:layout_alignStart="@id/profile_image_circle"/>
-    <com.droidsans.photo.droidphoto.util.FontTextView
+    <com.droidsans.photo.droidphoto.util.view.FontTextView
         android:id="@+id/username"
         android:textSize="14sp"
         android:textColor="@color/black"

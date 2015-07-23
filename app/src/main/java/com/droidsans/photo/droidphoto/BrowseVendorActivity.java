@@ -1,18 +1,15 @@
 package com.droidsans.photo.droidphoto;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
-import com.droidsans.photo.droidphoto.util.VendorGridAdapter;
+import com.droidsans.photo.droidphoto.util.adapter.VendorGridAdapter;
 
 public class BrowseVendorActivity extends AppCompatActivity {
     public static final int CHOOOSE_MODEL_REQUEST = 3;

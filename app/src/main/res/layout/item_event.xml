@@ -26,7 +26,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <com.droidsans.photo.droidphoto.util.FontTextView
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
                 android:id="@+id/event_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             android:gravity="center_vertical|left"
             android:orientation="horizontal">
 
-            <com.droidsans.photo.droidphoto.util.FontTextView
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
                 android:id="@+id/event_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

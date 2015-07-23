@@ -38,36 +38,36 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
 
-            <com.droidsans.photo.droidphoto.util.FontTextView
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
                 android:id="@+id/display_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Profile Name"
-                android:textSize="@dimen/font_th_normal_fontsize"
+                android:textSize="16dp"
                 android:layout_toRightOf="@+id/profile_image_circle"
                 android:layout_alignTop="@+id/profile_image_circle"
-                app:customFont="th-bold.otf"/>
+                app:customFont="Roboto-Medium.ttf"/>
 
-            <com.droidsans.photo.droidphoto.util.FontTextView
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="\@username"
-                android:textSize="@dimen/font_th_subtitle_fontsize"
+                android:textSize="14dp"
                 android:layout_toRightOf="@+id/profile_image_circle"
                 android:layout_below="@id/display_name"
-                app:customFont="th.otf"/>
+                app:customFont="Roboto-Light.ttf"/>
 
-            <com.droidsans.photo.droidphoto.util.FontTextView
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
                 android:id="@+id/profile_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="dfmpomskers;oijbn[aoijrvm[apokretv[3ok4mvt,mfvkkpe"
-                android:textSize="@dimen/font_th_normal_fontsize"
+                android:textSize="14dp"
                 android:layout_toRightOf="@+id/profile_image_circle"
                 android:layout_below="@+id/username"
                 android:layout_marginTop="@dimen/small_padding"
-                app:customFont="th.otf"/>
+                app:customFont="Roboto-Light.ttf"/>
 
 
         </RelativeLayout>

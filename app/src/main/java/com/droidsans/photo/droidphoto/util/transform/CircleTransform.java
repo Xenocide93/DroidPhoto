@@ -1,4 +1,4 @@
-package com.droidsans.photo.droidphoto.util;
+package com.droidsans.photo.droidphoto.util.transform;
 
 import android.content.Context;
 import android.graphics.Bitmap;

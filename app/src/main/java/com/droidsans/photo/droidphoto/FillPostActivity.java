@@ -839,7 +839,7 @@ public class FillPostActivity extends AppCompatActivity {
                         ProgressListener listener = new ProgressListener() {
                             @Override
                             public void transferred(long num) {
-                                FeedFragment.percentage = (int)((80 * num) / filesize);
+                                FeedFragment.percentage = (int)((95 * num) / filesize);
                             }
                         };
                         postService.postPhoto(new CountingTypedFile("image/jpeg", originalFile, listener),
@@ -889,7 +889,7 @@ public class FillPostActivity extends AppCompatActivity {
                                                 photoDetailStuff.put("is_accept", isAccept.isChecked());
                                                 photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
 
-                                                FeedFragment.percentage = 90;
+                                                FeedFragment.percentage = 98;
                                                 if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
                                                     delayAction.postDelayed(new Runnable() {
                                                         @Override
