@@ -2,6 +2,7 @@ package com.droidsans.photo.droidphoto;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.droidsans.photo.droidphoto.util.CircleTransform;
 import com.droidsans.photo.droidphoto.util.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 
@@ -34,16 +36,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 public class ImageViewerActivity extends AppCompatActivity {
     private static final int MAX_CACHE_SIZE = 1024*1024*50; //50MB
     public static final String CACHE_FILE_NAME = "cacheFileName";
 
-    private ImageView picture;
-    private Bitmap imageBitmap;
+    private ImageView picture, avatar;
     private byte imageByte[];
-    private FontTextView deviceName, exposureTime, aperture, iso, location, user, caption;
+    private FontTextView deviceName, exposureTime, aperture, iso, location, user, caption, submit;
     private LinearLayout locationLayout, captionLayout, reloadLayout;
     private String photoURL;
     private final String baseURL = "/data/photo/original/";
@@ -195,6 +200,46 @@ public class ImageViewerActivity extends AppCompatActivity {
         if(location.getText().equals("")) locationLayout.setVisibility(LinearLayout.GONE);
 
         user.setText(previousIntent.getStringExtra("username"));
+        Glide.with(getApplicationContext())
+                .load(GlobalSocket.serverURL + ProfileFragment.baseURL + previousIntent.getStringExtra("avatarURL"))
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .fitCenter()
+                .transform(new CircleTransform(getApplicationContext()))
+                .placeholder(R.drawable.ic_account_circle_black_48dp)
+                .into(avatar);
+
+        //date parsing
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        try {
+            Date submitDate = format.parse(previousIntent.getStringExtra("submitDate"));
+            Date now = new Date();
+            Log.d("droidphoto", "submit time : " + submitDate.toString());
+            Log.d("droidphoto", "now : " + now.toString());
+            long diff = now.getTime() - submitDate.getTime();
+            String unit;
+            if((diff/1000) < 60) {//seconds
+                diff = diff/1000;
+                unit = "s";
+            } else if(diff/(1000*60) < 60) { //minutes
+                diff = diff/(1000*60);
+                unit = "m";
+            } else if(diff/(1000*60*60) < 24) { //hours
+                diff = diff/(1000*60*60);
+                unit = "h";
+            } else {
+                diff = diff/(1000*60*60*24);
+                unit = "d";
+            }
+            submit.setText(" " + diff + unit + " ago");
+//            Log.d("droidphoto", "diff : " + diff + unit);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
         return true;
     }
 
@@ -225,7 +270,6 @@ public class ImageViewerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if(loader != null && loader.getStatus() != AsyncTask.Status.FINISHED) loader.cancel(true);
-        if(imageBitmap != null) imageBitmap.recycle();
         super.onDestroy();
     }
 
@@ -240,6 +284,8 @@ public class ImageViewerActivity extends AppCompatActivity {
         location = (FontTextView) findViewById(R.id.location);
         locationLayout = (LinearLayout) findViewById(R.id.location_layout);
         user = (FontTextView) findViewById(R.id.user);
+        avatar = (ImageView) findViewById(R.id.avatar);
+        submit = (FontTextView) findViewById(R.id.submit_date);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         progressBar = (ProgressBar) findViewById(R.id.progress);

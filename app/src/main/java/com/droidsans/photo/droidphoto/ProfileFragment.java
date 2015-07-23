@@ -164,7 +164,7 @@ public class ProfileFragment extends Fragment {
                             Glide.with(getActivity().getApplicationContext())
                                     .load(GlobalSocket.serverURL + baseURL + avatarURL)
 //                                    .load(GlobalSocket.serverURL + baseURL + "test.jpg")
-//                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .placeholder(R.drawable.ic_account_circle_black_48dp)
                                     .centerCrop()
                                     .transform(new CircleTransform(getActivity().getApplicationContext()))
@@ -229,6 +229,7 @@ public class ProfileFragment extends Fragment {
                                 pack.setIsEnhanced(jsonPhoto.optBoolean("is_enhanced"));
                                 pack.setIsFlash(jsonPhoto.optBoolean("is_flash"));
                                 pack.setSubmitDate(jsonPhoto.optString("submit_date"));
+                                pack.setAvatarURL(jsonPhoto.optString("avatar_url"));
 
                                 packs.add(pack);
                             }

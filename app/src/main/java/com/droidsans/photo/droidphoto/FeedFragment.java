@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -63,9 +64,14 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Target;
+import java.sql.Time;
+import java.text.DateFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import tourguide.tourguide.Overlay;
 import tourguide.tourguide.Pointer;
@@ -110,6 +116,7 @@ public class FeedFragment extends Fragment {
 
     private boolean isLoaded;
     private int filterCount;
+    private String skipDate;
 //    private NotifyAdapter packreload[];
 
 //    private int firstAtPause;
@@ -240,6 +247,17 @@ public class FeedFragment extends Fragment {
                 (int) getResources().getDimension(R.dimen.feed_recycleview_item_space),
                 false, false, false, false
         ));
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_feed_col_num));
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+
+                switch (recycleAdapter.getItemViewType(position)) {
+//                    case
+                }
+                return 0;
+            }
+        });
         feedRecycleView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_feed_col_num)));
     }
 
@@ -266,6 +284,7 @@ public class FeedFragment extends Fragment {
 
     private void initRequestFeed() {
         filterCount = 0;
+        skipDate = null;
         JSONObject filter = new JSONObject();
         JSONObject[] data = new JSONObject[0];
 
@@ -283,8 +302,8 @@ public class FeedFragment extends Fragment {
 
         try {
             filter.put("filter_count", filterCount);
-            filter.put("skip", 0);
-            filter.put("limit", 100);
+            if(skipDate != null) filter.put("skip", skipDate);
+            filter.put("limit", 20);
             filter.put("sptag", null);
             filter.put("_event", "get_feed");
         } catch (JSONException e) {
@@ -430,7 +449,7 @@ public class FeedFragment extends Fragment {
                             JSONArray photoList = data.optJSONArray("photoList");
                             int len = photoList.length();
                             for (int i = 0; i < len; i++) {
-//                                    Log.d("droidphoto", "photoList(" + i + "):" + ((JSONObject) photoList.get(i)));
+//                                Log.d("droidphoto", "photoList(" + i + "):" + ((JSONObject) photoList.opt(i)));
                                 JSONObject jsonPack = photoList.optJSONObject(i);
                                 PicturePack picturePack = new PicturePack();
 
@@ -455,6 +474,9 @@ public class FeedFragment extends Fragment {
                                 picturePack.setIsEnhanced(jsonPack.optBoolean("is_enhanced"));
                                 picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
                                 picturePack.setSubmitDate(jsonPack.optString("submit_date"));
+                                picturePack.setAvatarURL(jsonPack.optString("avatar_url"));
+                                Log.d("droidphoto", jsonPack.optString("submit_date"));
+                                skipDate = jsonPack.optString("submit_date");
 
                                 feedPicturePack.add(picturePack);
                             }
@@ -663,7 +685,7 @@ public class FeedFragment extends Fragment {
                 reloadLayout.setVisibility(LinearLayout.GONE);
                 loadingCircle.setVisibility(ProgressBar.VISIBLE);
                 GlobalSocket.reconnect(); //reconnect
-                initRequestFeed();
+                updateFeed();
             }
         });
         reloadButton.setClickable(true);

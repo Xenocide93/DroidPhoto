@@ -96,9 +96,8 @@ public class EditProfileActivity extends AppCompatActivity {
         editProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO update image
                 dispatchPicturePickerIntent();
-                Toast.makeText(getApplicationContext(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -166,7 +165,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private void loadProfileData() {
         oldIntent = getIntent();
         if(oldIntent == null || !oldIntent.hasExtra(ProfileFragment.AVATAR_URL)) {
-            Toast.makeText(getApplicationContext(), "from settings", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "from settings", Toast.LENGTH_SHORT).show();
 
             //TODO load data from server
             JSONObject data = new JSONObject();
@@ -181,11 +180,12 @@ public class EditProfileActivity extends AppCompatActivity {
                 //detect data loss
             }
         } else {
-            Toast.makeText(getApplicationContext(), "from profile", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "from profile", Toast.LENGTH_SHORT).show();
             displayName.setText(oldIntent.getStringExtra(ProfileFragment.DISPLAY_NAME));
             profileDescription.setText(oldIntent.getStringExtra(ProfileFragment.PROFILE_DESCRIPTION));
             Glide.with(getApplicationContext())
                     .load(GlobalSocket.serverURL + ProfileFragment.baseURL + oldIntent.getStringExtra(ProfileFragment.AVATAR_URL))
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .centerCrop()
                     .transform(new CircleTransform(getApplicationContext()))
                     .placeholder(R.drawable.ic_account_circle_black_48dp)
@@ -229,7 +229,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 case SELECT_AVATAR:
                     profilePicPath = getImagePath(data.getData());
                     avatarURI = data.getData();
-                    Toast.makeText(getApplicationContext(), profilePicPath, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), profilePicPath, Toast.LENGTH_LONG).show();
                     Glide.with(getApplicationContext())
                             .load(profilePicPath)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -387,13 +387,13 @@ public class EditProfileActivity extends AppCompatActivity {
                                             default:
                                                 break;
                                         }
-                                        Toast.makeText(getApplicationContext(), data.msg, Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(getApplicationContext(), data.msg, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 @Override
                                 public void failure(RetrofitError error) {
                                     tempFile.delete();
-                                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             });
                 } else {

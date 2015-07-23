@@ -16,7 +16,7 @@ import java.net.URL;
 public class PicturePack {
     public String photoURL, caption, vendor, model,
             eventId, shutterSpeed, aperture, iso, username, submitDate,
-            gpsLocation, photoId, userId, gpsLocalizedLocation,
+            gpsLocation, photoId, userId, gpsLocalizedLocation, avatarURL,
             localPicturePath;
     public int rank, width, height;
     public double gpsLat, gpsLong;
@@ -84,12 +84,16 @@ public class PicturePack {
         this.username = username;
     }
 
-    public void setSubmitDate(String submitDate) {
-        this.submitDate = submitDate;
-    }
-
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void setAvatarURL(String avatarURL) {
+        this.avatarURL = avatarURL;
+    }
+
+    public void setSubmitDate(String submitDate) {
+        this.submitDate = submitDate;
     }
 
     public void setRank(int rank) {

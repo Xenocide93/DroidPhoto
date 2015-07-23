@@ -117,6 +117,8 @@ public class ProfileFeedRecycleViewAdapter extends RecyclerView.Adapter {
                         imageViewerIntent.putExtra("username", pack.username);
                         imageViewerIntent.putExtra("gpsLocation", pack.gpsLocation);
                         imageViewerIntent.putExtra("gpsLocalized", pack.gpsLocalizedLocation);
+                        imageViewerIntent.putExtra("submitDate", pack.submitDate);
+                        imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
 
                         context.startActivity(imageViewerIntent);
                     }

@@ -242,14 +242,17 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/small_padding"
         android:paddingBottom="@dimen/small_padding"
+        android:orientation="horizontal"
         android:layout_alignParentTop="true">
 
         <ImageView
+            android:id="@+id/avatar"
             android:layout_width="@dimen/image_viewer_profile_pic_size"
             android:layout_height="@dimen/image_viewer_profile_pic_size"
             android:alpha="0.7"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_account_circle_black_48dp" />
+
 
         <com.droidsans.photo.droidphoto.util.FontTextView
             android:id="@+id/user"
@@ -259,6 +262,13 @@
             android:gravity="center"
             android:text="usertest"
             android:textSize="@dimen/pic_viewer_font_size"/>
+
+        <com.droidsans.photo.droidphoto.util.FontTextView
+            android:id="@+id/submit_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center|right"
+            android:text="0s"/>
 
     </LinearLayout>
 
