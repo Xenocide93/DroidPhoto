@@ -46,6 +46,7 @@ public class TourGuide {
     private ToolTip mToolTip;
     private Pointer mPointer;
     private Overlay mOverlay;
+    private int mOverlayPadding;
     private View.OnClickListener mOnToolTipClickListener;
 
     /*************
@@ -91,6 +92,13 @@ public class TourGuide {
      */
     public TourGuide playOn(View view){
         mHighlightedView = view;
+        setupView();
+        return this;
+    }
+
+    public TourGuide playOn(View view, int overlayPadding){
+        mHighlightedView = view;
+        mOverlayPadding = overlayPadding;
         setupView();
         return this;
     }

@@ -1,14 +1,20 @@
 package com.droidsans.photo.droidphoto;
 
+import android.animation.Animator;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +54,9 @@ public class ProfileFragment extends Fragment {
     public static final String DISPLAY_NAME = "displayName";
     public static final String PROFILE_DESCRIPTION = "profileDesc";
     public static final String AVATAR_URL = "avatarURL";
+    public static final int TARGET_PROFILE_FRAGMENT = 12345;
+
+    public static ProfileFragment mProfileFragment;
 
     private ProgressBar loadingCircle;
     private LinearLayout reloadLayout;
@@ -72,8 +81,13 @@ public class ProfileFragment extends Fragment {
     private Emitter.Listener onDisconnect;
 
 //    private UserPictureGridAdapter adapter;
-    private ProfileFeedRecycleViewAdapter adapter;
+    public ProfileFeedRecycleViewAdapter adapter;
     ArrayList<PicturePack> packs;
+
+    private MenuInflater menuInflater;
+    private Menu menu;
+    private RelativeLayout deletePicFakeSnackbar;
+    private Button deletePic;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,6 +104,9 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menuInflater = inflater;
+        this.menu = menu;
+
         menu.clear();
         inflater.inflate(R.menu.menu_profile, menu);
     }
@@ -106,13 +123,17 @@ public class ProfileFragment extends Fragment {
                 startActivityForResult(editProfileIntent, EDIT_PROFILE);
                 return true;
             case R.id.action_delete:
-                toggleEditMode(item);
+                toggleEditMode();
+                return true;
+            case R.id.action_cancel_delete:
+                cancelEditMode();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void initialize() {
+        setTargetFragment(this, TARGET_PROFILE_FRAGMENT);
         findAllById();
         setupProfileFeedRecyclerView();
         setupListener();
@@ -138,6 +159,13 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupListener() {
+        deletePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleEditMode();
+            }
+        });
+
         onGetUserInfoRespond = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
@@ -371,51 +399,122 @@ public class ProfileFragment extends Fragment {
         reloadButton.setClickable(true);
     }
 
-    public void toggleEditMode(MenuItem item) {
+    public void toggleEditMode() {
         if(adapter != null) {
-            adapter.isInEditMode = !adapter.isInEditMode;
-            if(adapter.isInEditMode) {
-                //TODO set open bin icon
-                item.setIcon(R.drawable.ic_delete_open_accent_24px);
-//                item.getIcon().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.accent_color), PorterDuff.Mode.MULTIPLY));
-            } else {
-                item.setIcon(R.drawable.ic_delete_white_24dp);
-//                item.getIcon().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.MULTIPLY));
-            }
-            if (!adapter.isInEditMode) { //exit edit mode
+            if(!adapter.isInEditMode) {
+                adapter.isInEditMode = true;
+                adapter.notifyDataSetChanged();
+
+                menu.clear();
+                menuInflater.inflate(R.menu.menu_profile_cancel_delete, menu);
+
+
+
+//                item.setIcon(R.drawable.ic_delete_open_accent_24px);
+
+//                Point size = new Point();
+//                getActivity().getWindowManager().getDefaultDisplay().getSize(size);
+//                deletePicFakeSnackbar.setY(size.y);
+//                deletePicFakeSnackbar.setVisibility(View.VISIBLE);
+                deletePicFakeSnackbar.setVisibility(View.VISIBLE);
+                deletePicFakeSnackbar.setY(profileFeedPicRecyclerview.getBottom());
+                deletePicFakeSnackbar.animate()
+                        .y(profileFeedPicRecyclerview.getBottom() - getResources().getDimension(R.dimen.snackbar_height))
+//                        .yBy(-10 * getResources().getDimension(R.dimen.snackbar_height))
+                        .setDuration(300)
+                        .start();
+            } else { //exit edit mode
+//                item.setIcon(R.drawable.ic_delete_white_24dp);
+
                 int count = 0;
-                JSONArray removePicId = new JSONArray();
+                final JSONArray removePicId = new JSONArray();
                 for (int i = adapter.getItemCount() - 1; i >= 0; i--) {
                     if (adapter.isMarkedAsRemove[i]) {
-                        removePicId.put(packs.get(i).photoId);
-                        packs.remove(i);
                         count++;
-                        adapter.isMarkedAsRemove[i] = false;
                     }
                 }
 
                 if (count > 0) {
-                    JSONObject removePicData = new JSONObject();
-                    try {
-                        removePicData.put("photo_count", count);
-                        removePicData.put("remove_photo", removePicId);
-                        removePicData.put("_event", "remove_pic");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                    String pictureWord = (count > 1) ? " pictures" : " picture";
+                    dialog.setTitle("Deleting " + count + pictureWord);
+                    dialog.setMessage(count + " " + pictureWord + " will be deleted. Are you sure ?");
+                    dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final JSONArray removePicId = new JSONArray();
+                            int countInside = 0;
+                            for (int i = adapter.getItemCount() - 1; i >= 0; i--) {
+                                if (adapter.isMarkedAsRemove[i]) {
+                                    removePicId.put(packs.get(i).photoId);
+                                    packs.remove(i);
+                                    countInside++;
+                                    adapter.isMarkedAsRemove[i] = false;
+                                }
+                            }
 
-                    GlobalSocket.globalEmit("photo.remove", removePicData);
+                            JSONObject removePicData = new JSONObject();
+                            try {
+                                removePicData.put("photo_count", countInside);
+                                removePicData.put("remove_photo", removePicId);
+                                removePicData.put("_event", "remove_pic");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            GlobalSocket.globalEmit("photo.remove", removePicData);
+                            deletePicFakeSnackbar.animate()
+                                    .yBy(2 * getResources().getDimension(R.dimen.snackbar_height))
+                                    .setDuration(300)
+                                    .start();
+
+                            menu.clear();
+                            menuInflater.inflate(R.menu.menu_profile, menu);
+                            adapter.isInEditMode = false;
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                    dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                } else if(count==0){
+                    cancelEditMode();
                 }
             }
-
-            adapter.notifyDataSetChanged();
         }
+    }
+
+    public void cancelEditMode(){
+        menu.clear();
+        menuInflater.inflate(R.menu.menu_profile, menu);
+
+        adapter.isInEditMode = false;
+        for (int i = adapter.getItemCount() - 1; i >= 0; i--) {
+            adapter.isMarkedAsRemove[i] = false;
+        }
+        adapter.notifyDataSetChanged();
+
+        deletePicFakeSnackbar.animate()
+                .yBy(getResources().getDimension(R.dimen.snackbar_height))
+                .setDuration(300)
+                .start();
     }
 
     @Override
     public void onStart() {
         ProfileFeedRecycleViewAdapter.isClickOnce = false;
+        ProfileFragment.mProfileFragment = this;
         super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        ProfileFragment.mProfileFragment = null;
+        super.onStop();
     }
 
     @Override
@@ -446,5 +545,8 @@ public class ProfileFragment extends Fragment {
 
         reloadText = (FontTextView) reloadLayout.findViewById(R.id.reload_text);
         reloadButton = (Button) reloadLayout.findViewById(R.id.reload_button);
+
+        deletePicFakeSnackbar = (RelativeLayout) mainLayout.findViewById(R.id.delete_pic_fake_snackbar_layout);
+        deletePic = (Button) mainLayout.findViewById(R.id.delete_pic_fake_snackbar);
     }
 }

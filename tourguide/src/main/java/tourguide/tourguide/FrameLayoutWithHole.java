@@ -39,6 +39,7 @@ public class FrameLayoutWithHole extends FrameLayout {
     private int [] mPos;
     private float mDensity;
     private Overlay mOverlay;
+    private int mPadding;
 
     private ArrayList<AnimatorSet> mAnimatorSetArrayList;
 
@@ -82,6 +83,7 @@ public class FrameLayoutWithHole extends FrameLayout {
 
     public FrameLayoutWithHole(Activity context, View view, TourGuide.MotionType motionType, Overlay overlay) {
         super(context);
+        mPadding = overlay.mPadding;
         mActivity = context;
         mViewHole = view;
         init(null, 0);
@@ -93,7 +95,7 @@ public class FrameLayoutWithHole extends FrameLayout {
         mPos = pos;
 
         mDensity = context.getResources().getDisplayMetrics().density;
-        int padding = (int)(20 * mDensity);
+        int padding = (int)(mPadding * mDensity);
 
         if (mViewHole.getHeight() > mViewHole.getWidth()) {
             mRadius = mViewHole.getHeight()/2 + padding;
@@ -102,6 +104,7 @@ public class FrameLayoutWithHole extends FrameLayout {
         }
         mMotionType = motionType;
     }
+
     private void init(AttributeSet attrs, int defStyle) {
         // Load attributes
 //        final TypedArray a = getContext().obtainStyledAttributes(

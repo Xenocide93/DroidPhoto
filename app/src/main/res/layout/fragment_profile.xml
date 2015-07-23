@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -68,8 +69,6 @@
                 android:layout_below="@+id/username"
                 android:layout_marginTop="@dimen/small_padding"
                 app:customFont="Roboto-Light.ttf"/>
-
-
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -78,6 +77,38 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:layout_below="@+id/header_user"/>
+
+        <RelativeLayout
+            android:id="@+id/delete_pic_fake_snackbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/snackbar_height"
+            android:layout_alignBottom="@id/recyclerview_profile_feed_picture"
+            android:background="@color/default_snackbar"
+            android:paddingLeft="24dp"
+            android:visibility="gone">
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:customFont="Roboto-Regular.ttf"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"
+                android:text="@string/delete_user_pic_fake_snackbar"/>
+
+            <Button
+                android:id="@+id/delete_pic_fake_snackbar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:layout_alignParentRight="true"
+                android:background="@color/transparent"
+                android:text="DELETE"
+                android:textColor="@color/accent_color"
+                />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
