@@ -480,7 +480,7 @@ public class FillPostActivity extends AppCompatActivity {
             Log.d("droidphoto", "phone make: " + Build.MANUFACTURER);
             Log.d("droidphoto", "phone model: " + Build.MODEL);
 
-            if(!orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).trim().equalsIgnoreCase(Build.MANUFACTURER.trim()) ||
+            if(!(Build.MANUFACTURER).toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim()) ||
                     !Build.MODEL.toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim())) {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("return code", "not your photo");

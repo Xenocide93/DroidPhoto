@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -86,6 +87,7 @@ public class FeedFragment extends Fragment {
     private RecyclerView feedRecycleView;
 //    private PictureGridAdapter adapter;
     private FeedRecycleViewAdapter recycleAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<PicturePack> feedPicturePack;
     private FloatingActionMenu fam;
     private FloatingActionButton fabChoosePic, fabCamera;
@@ -256,6 +258,15 @@ public class FeedFragment extends Fragment {
     }
 
     private void setupRecycleView() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshFeed();
+            }
+        });
+
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.accent_color), getResources().getColor(R.color.primary_color));
+
         feedRecycleView.addItemDecoration(new SpacesItemDecoration(
                 getActivity(),
                 getResources().getInteger(R.integer.main_feed_col_num),
@@ -566,6 +577,7 @@ public class FeedFragment extends Fragment {
                             }
                             recycleAdapter = new FeedRecycleViewAdapter(getActivity(), feedPicturePack);
                             feedRecycleView.setAdapter(recycleAdapter);
+                            swipeRefreshLayout.setRefreshing(false);
 
                             checkFirstTimeLaunch();
 
@@ -754,7 +766,6 @@ public class FeedFragment extends Fragment {
                                 picturePack.setAvatarURL(jsonPack.optString("avatar_url"));
 
                                 skipDate = jsonPack.optString("submit_date");
-
                                 feedPicturePack.add(picturePack);
                             }
                             recycleAdapter.notifyDataSetChanged();
@@ -1364,6 +1375,7 @@ public class FeedFragment extends Fragment {
 
         if(feedRecycleView != null) feedRecycleView.invalidate();
         feedRecycleView = (RecyclerView) frameLayout.findViewById(R.id.feed_recycleview);
+        swipeRefreshLayout = (SwipeRefreshLayout) frameLayout.findViewById(R.id.swipe_refresh_layout);
 
         dimView = frameLayout.findViewById(R.id.dim_view);
 
