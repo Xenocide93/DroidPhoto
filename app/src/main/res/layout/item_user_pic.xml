@@ -9,7 +9,6 @@
         android:id="@+id/picture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/droidsans_logo"
         android:adjustViewBounds="true">
     </com.droidsans.photo.droidphoto.util.view.SquareImageView>
 

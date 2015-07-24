@@ -101,7 +101,7 @@ public class FillPostActivity extends AppCompatActivity {
     private LinearLayout edittextLayout;
     private EditText vendorET, modelET;
 
-    private RelativeLayout resolvedLayout;
+    private LinearLayout resolvedLayout;
     private TextView vendorTV, modelTV;
 
     private boolean hasResolvedName;
@@ -1300,7 +1300,7 @@ public class FillPostActivity extends AppCompatActivity {
         caption = (EditText) findViewById(R.id.caption);
 
         edittextLayout = (LinearLayout) findViewById(R.id.edittext_vendor_model_layout);
-        resolvedLayout = (RelativeLayout) findViewById(R.id.resolved_vendor_model_layout);
+        resolvedLayout = (LinearLayout) findViewById(R.id.resolved_vendor_model_layout);
         vendorET = (EditText) findViewById(R.id.vendor_edittext);
         modelET = (EditText) findViewById(R.id.model_edittext);
         vendorTV = (TextView) findViewById(R.id.resolved_vendor);

@@ -86,7 +86,7 @@ public class UserPictureGridAdapter extends ArrayAdapter<PicturePack> {
         Glide.with(getContext())
                 .load(GlobalSocket.serverURL + pack.baseURL + pack.photoURL)
                 .centerCrop()
-                .placeholder(R.drawable.droidsans_logo)
+                .placeholder(R.drawable.picture_placeholder_500_center)
                 .crossFade()
                 .into(squareImageView);
 

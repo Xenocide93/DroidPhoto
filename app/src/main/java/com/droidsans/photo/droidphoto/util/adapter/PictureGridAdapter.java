@@ -51,12 +51,12 @@ public class PictureGridAdapter extends ArrayAdapter<PicturePack> {
 //            holder.picture.setImageBitmap(pack.imageBitmap);
 //        } else {
 //            Log.d("droidphoto", "set placeholder :" + position);
-//            holder.picture.setImageDrawable(getContext().getResources().getDrawable(R.drawable.droidsans_logo));
+//            holder.picture.setImageDrawable(getContext().getResources().getDrawable(R.drawable.picture_placeholder_500_center));
 //        }
         Glide.with(getContext())
                 .load(GlobalSocket.serverURL + pack.baseURL + pack.photoURL)
                 .centerCrop()
-                .placeholder(R.drawable.droidsans_logo)
+                .placeholder(R.drawable.picture_placeholder_500_center)
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .crossFade()
                 .into(holder.picture);

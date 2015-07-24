@@ -53,7 +53,7 @@ public class ProfileFeedRecycleViewAdapter extends RecyclerView.Adapter {
         Glide.with(context)
                 .load(GlobalSocket.serverURL + pack.baseURL + pack.photoURL)
                 .centerCrop()
-                .placeholder(R.drawable.droidsans_logo)
+                .placeholder(R.drawable.picture_placeholder_500_center)
                 .crossFade()
                 .into(myHolder.picture);
 
