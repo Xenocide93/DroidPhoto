@@ -83,6 +83,7 @@ public class SplashLoginActivity extends Activity {
                     SplashLoginActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            delayAction.removeCallbacks(timeout);
                             JSONObject data = (JSONObject) args[0];
                             Boolean isSuccess;
                             String message;
@@ -291,6 +292,7 @@ public class SplashLoginActivity extends Activity {
         if(GlobalSocket.mSocket.hasListeners("login_respond")) {
             GlobalSocket.mSocket.off("login_respond");
         }
+        delayAction.removeCallbacks(timeout);
 
         super.onDestroy();
     }
