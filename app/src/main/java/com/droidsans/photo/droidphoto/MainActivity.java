@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
+    public static ActionBarDrawerToggle actionBarDrawerToggle;
 
     private RelativeLayout navigationHeader;
 
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                                         .centerCrop()
                                         .transform(new CircleTransform(getApplicationContext()))
                                         .into(profile);
-                                if(userObj.optInt("priviledge") == 2) {
+                                if (userObj.optInt("priviledge") == 2) {
 //                                    if(previousMenuItem != null) previousMenuItem.setChecked(false);
 //                                    navigationView.getMenu().clear();
 //                                    navigationView.inflateMenu(R.menu.menu_drawer_mod);
@@ -241,6 +241,17 @@ public class MainActivity extends AppCompatActivity {
                 previousMenuItem = null;
 
             }
+        });
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                boolean canback = getSupportFragmentManager().getBackStackEntryCount() > 0;
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
+            }
+
+
+
         });
 
 //        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -415,8 +426,17 @@ public class MainActivity extends AppCompatActivity {
                 super.onBackPressed();
             }
         }
-
         super.onBackPressed();
+        if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        getSupportFragmentManager().popBackStack();
+        actionBarDrawerToggle.syncState();
+        return true;
     }
 
     //    @Override

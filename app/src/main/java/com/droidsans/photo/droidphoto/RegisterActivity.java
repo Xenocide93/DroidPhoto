@@ -80,6 +80,7 @@ public class RegisterActivity extends Activity {
                 RegisterActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        delayAction.removeCallbacks(timeout);
                         JSONObject data = (JSONObject) args[0];
                         Boolean isSuccess;
                         String message;
@@ -134,15 +135,18 @@ public class RegisterActivity extends Activity {
                                     case "null required field":
                                         toastString = getString(R.string.snackbar_register_null_required);
                                         break;
+                                    case "invalid email":
+                                        toastString = getString(R.string.snackbar_register_email_invalid);
+                                        break;
                                     case "email exist":
                                         toastString = getString(R.string.snackbar_register_email_exist);
                                         break;
                                     case "username exist":
                                         toastString = getString(R.string.snackbar_register_username_exist);
                                         break;
-                                    case "both exist": //deprecated
-                                        toastString = "Both username and email have already been used";
-                                        break;
+//                                    case "both exist": //deprecated
+//                                        toastString = "Both username and email have already been used";
+//                                        break;
                                     case "db error":
                                         toastString = getString(R.string.snackbar_register_db_error);
                                         break;
@@ -229,7 +233,7 @@ public class RegisterActivity extends Activity {
 //        } else if (!email.getText().toString().contains("@") ||
 //                !email.getText().toString().contains(".") ||
 //                email.getText().toString().lastIndexOf(".") < email.getText().toString().length() - 4) {
-        } else if(Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
+        } else if(!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
             Snackbar.make(email, getString(R.string.snackbar_register_email_invalid), Snackbar.LENGTH_LONG).show();
             registerBtn.setClickable(true);
             registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
@@ -265,12 +269,12 @@ public class RegisterActivity extends Activity {
                             registerBtn.setClickable(true);
                             registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
                         } else {
-                            delayAction.postDelayed(timeout, 5000);
+                            delayAction.postDelayed(timeout, 7000);
                         }
                     }
                 }, 2000);
             } else {
-                delayAction.postDelayed(timeout, 5000);
+                delayAction.postDelayed(timeout, 7000);
             }
         }
     }
@@ -280,6 +284,7 @@ public class RegisterActivity extends Activity {
         if(GlobalSocket.mSocket.hasListeners("register_respond")) {
             GlobalSocket.mSocket.off("register_respond");
         }
+        delayAction.removeCallbacks(timeout);
         username.setText("");
         password.setText("");
         passwordConfirm.setText("");

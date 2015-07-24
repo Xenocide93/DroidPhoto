@@ -26,6 +26,7 @@ import java.util.ArrayList;
 public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_CONTENT = 64;
     public static final int TYPE_FOOTER = 128;
+    public static final int TYPE_HEADER = 256;
     private ArrayList<PicturePack> packs;
 //    private LayoutInflater inflater;
     private Context context;
