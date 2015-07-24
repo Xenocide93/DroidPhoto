@@ -35,6 +35,7 @@ public class GlobalSocket {
 
 //    public static String serverURL = "https://209.208.65.102:12000";
     public static String serverURL = "http://209.208.65.102:3000";
+//    public static String serverURL = "http://128.199.187.195:7520";
     public static Socket mSocket;
 //    private static String mToken;
 //    private static String mUsername;

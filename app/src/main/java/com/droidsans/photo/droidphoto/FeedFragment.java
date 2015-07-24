@@ -109,6 +109,7 @@ public class FeedFragment extends Fragment {
     private int filterCount;
     private String skipDate;
     private boolean isUpdate = false;
+    private boolean noData = true;
 
     private String resolvedVendor;
     private String resolvedModel;
@@ -599,6 +600,10 @@ public class FeedFragment extends Fragment {
                                     BrowseModelActivity.modelName[i] = ((JSONArray) models.get(i)).join(",").replaceAll("\"", "").split(",");
                                 }
 
+                                if(models.length() > 0) {
+                                    noData = false;
+                                }
+
                                 //set drawable for vendor
                                 int vendorSize = BrowseVendorActivity.vendorName.length;
                                 BrowseVendorActivity.vendorPicResource = new Integer[vendorSize];
@@ -1004,11 +1009,15 @@ public class FeedFragment extends Fragment {
 //                Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_filter:
-                if(!isFirstTime()){
-                    launchAddFilterPopup();
-                } else {
-                    showNextTutorial();
+                if(noData) {
+                    Snackbar.make(frameLayout, "fresh start !! upload first image now -->", Snackbar.LENGTH_LONG).show();
+                    return true;
                 }
+                if(isFirstTime()){
+                    showNextTutorial();
+                    return true;
+                }
+                launchAddFilterPopup();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -1149,11 +1158,11 @@ public class FeedFragment extends Fragment {
                 switch (data.getStringExtra("return code")) {
                     case "not your photo":
                         new AlertDialog.Builder(getActivity())
-                                .setTitle("Not Your Image")
-                                .setMessage("Please select a photo taken by this phone.")
+                                .setTitle(getString(R.string.alert_not_your_photo_title))
+                                .setMessage(getString(R.string.alert_not_your_photo_message))
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                    public void onClick(DialogInterface dalog, int which) {
                                     }
                                 })
                                 .setIcon(R.drawable.ic_error_outline_black_24dp)
@@ -1161,8 +1170,19 @@ public class FeedFragment extends Fragment {
                         break;
                     case "no exif":
                         new AlertDialog.Builder(getActivity())
-                                .setTitle("Not From Camera")
-                                .setMessage("Selected image must have exif.")
+                                .setTitle(getString(R.string.alert_not_from_camera_title))
+                                .setMessage(getString(R.string.alert_not_from_camera_summary))
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .show();
+                        break;
+                    case "no required exif":
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(getString(R.string.alert_no_required_exif_title))
+                                .setMessage(getString(R.string.alert_no_required_exif_summary))
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -1203,7 +1223,6 @@ public class FeedFragment extends Fragment {
         }
     }
 
-//
 //    @Override
 //    public void onPause() {
 //        //reset all packreload

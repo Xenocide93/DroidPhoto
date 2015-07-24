@@ -442,6 +442,16 @@ public class FillPostActivity extends AppCompatActivity {
             return;
         }
 
+        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null ||
+                mExif.getAttribute(ExifInterface.TAG_APERTURE) == null ||
+                exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) == null) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("return code", "no required exif");
+            setResult(RESULT_CANCELED, returnIntent);
+            finish();
+            return;
+        }
+
         if(mImageFrom.equals("Picture Picker")) {
 //            if(!orientationDirectory.hasTagName(ExifIFD0Directory.TAG_MAKE) || !orientationDirectory.hasTagName(ExifIFD0Directory.TAG_MODEL)) {
 //                Intent returnIntent = new Intent();
@@ -805,12 +815,13 @@ public class FillPostActivity extends AppCompatActivity {
 //                if (mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME) == null ||
 //                        mExif.getAttribute(ExifInterface.TAG_ISO) == null ||
 //                        mExif.getAttribute(ExifInterface.TAG_APERTURE) == null) {
-//                if(exifDirectory == null) {
-//                    Toast.makeText(getApplicationContext(), "image has no exif", Toast.LENGTH_SHORT).show();
-//                    return;
-//                } else if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null) {
-//                    Toast.makeText(getApplicationContext(), "image has no required exif", Toast.LENGTH_SHORT).show();
-//                    return;
+//                    if (exifDirectory == null) {
+//                        Snackbar.make(uploadBtn, "image has no exif", Snackbar.LENGTH_SHORT).show();
+//                        return;
+//                    } else if (exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null) {
+//                        Snackbar.make(uploadBtn, "image has no required exif", Snackbar.LENGTH_SHORT).show();
+//                        return;
+//                    }
 //                }
 
 

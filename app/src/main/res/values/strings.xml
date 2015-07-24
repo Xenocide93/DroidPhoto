@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DroidShot</string>
-    <string name="app_version">version 0.9</string>
     <string name="app_desc">Shot on Android</string>
+    <string name="app_version">version 1.0</string>
 
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
@@ -12,7 +12,7 @@
     <string name="title_activity_browse">Vendor List</string>
     <string name="title_activity_browse_model">Model List</string>
     <string name="title_activity_fill_post">Image Upload</string>
-    <string name="title_activity_image_viewer">ImageViewer</string>
+    <string name="title_activity_image_viewer">Photo</string>
     <string name="title_activity_placeholder">Placeholder</string>
     <string name="title_activity_change_password">Change Password</string>
     <string name="title_activity_full_screen_image_viewer">      </string>
@@ -56,6 +56,10 @@
     <string name="settings_app_language_title">Select Application Language</string>
     <string name="settings_app_language_summary">Language : %s</string>
 
+    <!--login hint-->
+    <string name="login_username_hint">username or email</string>
+    <string name="login_password_hint">password</string>
+
     <!--login snackbar-->
     <string name="snackbar_login_cannot_connect">cannot connect to server. please check your internet connection.</string>
     <string name="snackbar_login_success">Login success</string>
@@ -73,7 +77,6 @@
     <string name="snackbar_register_username_toolong">username is too long :( (max 15 characters)</string>
     <string name="snackbar_register_email_invalid">invalid email address</string>
     <string name="snackbar_register_profilename_toolong">profile name is too long :( (max 25 characters)</string>
-
 
     <!--register hint-->
     <string name="register_username">username</string>
@@ -130,6 +133,20 @@
 
     <!--Feed-->
     <string name="recent_tag">Most Recent</string>
+    <string name="alert_not_your_photo_title">Not Your Photo</string>
+    <string name="alert_not_your_photo_message">Please select a photo taken by this phone.</string>
+    <string name="alert_not_from_camera_title">Not From Camera</string>
+    <string name="alert_not_from_camera_summary">Selected photo must have exif.</string>
+    <string name="alert_no_required_exif_title">Incomplete Photo Data</string>
+    <string name="alert_no_required_exif_summary">Selected photo must have every required exif.</string>
+
+    <string-array name="about_list">
+        <item>Application Info</item>
+        <item>Privacy Policy</item>
+        <item>Terms of Service</item>
+        <item>Open Source Licenses</item>
+        <item>Developer Team</item>
+    </string-array>
 
 
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
@@ -174,15 +191,5 @@
     <string name="long_text_30">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
-    <string name="login_username_hint">username or email</string>
-    <string name="login_password_hint">password</string>
-
-    <string-array name="about_list">
-        <item>Application Info</item>
-        <item>Privacy Policy</item>
-        <item>Terms of Service</item>
-        <item>Open Source Licenses</item>
-        <item>Developer Team</item>
-    </string-array>
 
 </resources>

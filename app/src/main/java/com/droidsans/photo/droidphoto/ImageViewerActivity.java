@@ -216,21 +216,32 @@ public class ImageViewerActivity extends AppCompatActivity {
         if(caption.getText().equals("")) captionLayout.setVisibility(LinearLayout.GONE);
         deviceName.setText(previousIntent.getStringExtra("vendor") + " " + previousIntent.getStringExtra("model"));
         if(!previousIntent.getStringExtra("exposureTime").equals("")) {
-            if(previousIntent.getStringExtra("exposureTime").substring(0,2).contains("1/")) {
+            if (previousIntent.getStringExtra("exposureTime").substring(0, 2).contains("1/")) {
                 exposureTime.setText(previousIntent.getStringExtra("exposureTime"));
-            } else if(previousIntent.getStringExtra("exposureTime").contains("/")) {
+            } else if (previousIntent.getStringExtra("exposureTime").contains("/")) {
                 String expTime = previousIntent.getStringExtra("exposureTime");
                 exposureTime.setText("1/" + (int) (Double.parseDouble(expTime.substring(expTime.indexOf("/") + 1, expTime.length())) / Double.parseDouble(expTime.substring(0, expTime.indexOf("/")))));
             } else {
                 exposureTime.setText("1/" + (int) (1.0 / Double.parseDouble(previousIntent.getStringExtra("exposureTime"))));
             }
-            if(previousIntent.getStringExtra("aperture").contains("f/")) {
+        } else {
+            exposureTime.setText("---");
+        }
+        if(!previousIntent.getStringExtra("aperture").equals("")) {
+            if (previousIntent.getStringExtra("aperture").contains("f/")) {
                 aperture.setText(previousIntent.getStringExtra("aperture"));
             } else {
                 aperture.setText("f/" + previousIntent.getStringExtra("aperture"));
             }
-            iso.setText(previousIntent.getStringExtra("iso"));
+        } else {
+            aperture.setText("---");
         }
+        if(!previousIntent.getStringExtra("iso").equals("0")) {
+            iso.setText(previousIntent.getStringExtra("iso"));
+        } else {
+            iso.setText("---");
+        }
+
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_eng_location), true)) {
             if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_local_location), true)) {
                 //eng + local
