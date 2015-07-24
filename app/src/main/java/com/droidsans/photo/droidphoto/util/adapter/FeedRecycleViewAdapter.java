@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -15,8 +14,6 @@ import com.droidsans.photo.droidphoto.ImageViewerActivity;
 import com.droidsans.photo.droidphoto.R;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -74,14 +71,14 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                             .load(pack.localPicturePath)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .centerCrop()
-                            .placeholder(R.drawable.droidsans_logo)
+                            .placeholder(R.drawable.picture_placeholder_500_center)
                             .into(myHolder.picture);
                     myHolder.uploadLayout.setVisibility(View.VISIBLE);
                 } else {
                     Glide.with(context)
                             .load(GlobalSocket.serverURL + pack.baseURL + pack.photoURL)
                             .centerCrop()
-                            .placeholder(R.drawable.droidsans_logo)
+                            .placeholder(R.drawable.picture_placeholder_500_center)
                             .crossFade()
                             .into(myHolder.picture);
                     myHolder.uploadLayout.setVisibility(View.GONE);
@@ -140,7 +137,6 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     //        }
                 break;
             case TYPE_FOOTER:
-                Toast.makeText(context, "load more !! nau !!", Toast.LENGTH_SHORT).show();
                 FeedFragment.mFeedFragment.updateFeed();
                 GlobalSocket.mSocket.on("update_feed", FeedFragment.mFeedFragment.onUpdateFeedRespond);
                 break;

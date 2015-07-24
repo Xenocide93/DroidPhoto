@@ -30,8 +30,7 @@
                     android:id="@+id/photo"
                     android:layout_width="match_parent"
                     android:layout_height="204dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/droidsans_logo"/>
+                    android:scaleType="fitCenter"/>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"

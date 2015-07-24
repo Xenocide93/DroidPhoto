@@ -1112,7 +1112,7 @@ public class FeedFragment extends Fragment {
 //                            .load(data.getStringExtra("path"))
 //                            .diskCacheStrategy(DiskCacheStrategy.NONE)
 //                            .centerCrop()
-//                            .placeholder(R.drawable.droidsans_logo)
+//                            .placeholder(R.drawable.picture_placeholder_500_center)
 //                            .into(picture);
 
                     final int loopdelay = 250;

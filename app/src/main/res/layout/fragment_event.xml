@@ -8,13 +8,6 @@
     <ImageView
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/curve_primary" />
-
-    <com.droidsans.photo.droidphoto.util.view.FontTextView
-        android:paddingTop="@dimen/about_paragraph_spacing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Under Construction" />
+        android:src="@drawable/coming_soon_light_300" />
 
 </LinearLayout>

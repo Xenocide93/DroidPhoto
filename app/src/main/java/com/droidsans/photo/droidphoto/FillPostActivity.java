@@ -29,6 +29,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -77,7 +80,7 @@ public class FillPostActivity extends AppCompatActivity {
 
     private ImageView photo;
     private Bitmap imageBitmap;
-    private EditText caption, vendor, model;
+    private EditText caption;
     private Button uploadBtn;
     private CheckBox isEnhanced, isAccept, useLocation;
     private ExifInterface mExif;
@@ -94,6 +97,13 @@ public class FillPostActivity extends AppCompatActivity {
 //    private boolean isResolvedVendor = false;
 //    private boolean isResolvedModel = false;
 //    private String outputVendor, outputModel;
+
+    private LinearLayout edittextLayout;
+    private EditText vendorET, modelET;
+
+    private LinearLayout resolvedLayout;
+    private TextView vendorTV, modelTV;
+
     private boolean hasResolvedName;
 
     private Toolbar toolbar;
@@ -114,9 +124,23 @@ public class FillPostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fill_post);
+        setContentView(R.layout.activity_fill_post_alt);
 
         initialize();
+    }
+
+    private void initialize() {
+        findAllById();
+        initStateHashMap();
+        initMapLocaleHashMap();
+        getStringExtra();
+        setupToolbar();
+        setupListener();
+        setDefaultUseLocationText();
+        applyUserSettings();
+        setThumbnailImage();
+//        setVendorAndModel();
+        getResolvedName();
     }
 
     private void initStateHashMap() {
@@ -237,20 +261,6 @@ public class FillPostActivity extends AppCompatActivity {
         mapLocale.put("UZ", "uz"); //Uzbekistan -> Uzbek (uz-Latn)
     }
 
-    private void initialize() {
-        findAllById();
-        initStateHashMap();
-        initMapLocaleHashMap();
-        getStringExtra();
-        setupToolbar();
-        setupListener();
-        setDefaultUseLocationText();
-        applyUserSettings();
-        setThumbnailImage();
-//        setVendorAndModel();
-        getResolvedName();
-    }
-
     private void applyUserSettings() {
         useLocation.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_use_location), true));
     }
@@ -260,15 +270,19 @@ public class FillPostActivity extends AppCompatActivity {
         mCurrentPhotoPath = previousIntent.getStringExtra("photoPath");
         mImageFrom = previousIntent.getStringExtra("imageFrom");
         if(previousIntent.getStringExtra("vendor") != null) {
-            vendor.setText(previousIntent.getStringExtra("vendor"));
+            vendorTV.setText(previousIntent.getStringExtra("vendor"));
         }
         if(previousIntent.getStringExtra("model") != null) {
             hasResolvedName = true;
-            model.setText(previousIntent.getStringExtra("model"));
+            resolvedLayout.setVisibility(View.VISIBLE);
+            edittextLayout.setVisibility(View.GONE);
+            modelTV.setText(previousIntent.getStringExtra("model"));
         } else {
             hasResolvedName = false;
-            vendor.setText(getLocalManufacturer());
-            model.setText(Build.MODEL);
+            resolvedLayout.setVisibility(View.GONE);
+            edittextLayout.setVisibility(View.VISIBLE);
+            vendorET.setText(getLocalManufacturer());
+            modelET.setText(Build.MODEL);
             getResolvedName();
         }
     }
@@ -324,9 +338,11 @@ public class FillPostActivity extends AppCompatActivity {
                             GlobalSocket.mSocket.off("get_resolve_name");
                             JSONObject data = (JSONObject) args[0];
                             if(data.optBoolean("success")) {
-                                vendor.setText(data.optString("retail_vendor"));
-                                model.setText(data.optString("retail_model"));
+                                vendorTV.setText(data.optString("retail_vendor"));
+                                modelTV.setText(data.optString("retail_model"));
                                 hasResolvedName = true;
+                                resolvedLayout.setVisibility(View.VISIBLE);
+                                edittextLayout.setVisibility(View.GONE);
                             } else {
                                 Log.d("droidphoto", "error : " + data.optString("msg"));
                             }
@@ -959,8 +975,13 @@ public class FillPostActivity extends AppCompatActivity {
 //                                                photoDetailStuff.put("photo_url", jsonObject.getString("filename"));
                                                 photoDetailStuff.put("photo_url", jsonObject.filename);
                                                 photoDetailStuff.put("caption", caption.getText().toString());
-                                                photoDetailStuff.put("model", model.getText().toString());
-                                                photoDetailStuff.put("vendor", vendor.getText().toString());
+                                                if(hasResolvedName){
+                                                    photoDetailStuff.put("model", modelTV.getText());
+                                                    photoDetailStuff.put("vendor", vendorTV.getText());
+                                                } else {
+                                                    photoDetailStuff.put("model", modelET.getText().toString());
+                                                    photoDetailStuff.put("vendor", vendorET.getText().toString());
+                                                }
                                                 photoDetailStuff.put("is_flash", exifDirectory.getString(ExifSubIFDDirectory.TAG_FLASH));
                                                 photoDetailStuff.put("exp_time", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
                                                 photoDetailStuff.put("tag_date", exifDirectory.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL));
@@ -1083,8 +1104,13 @@ public class FillPostActivity extends AppCompatActivity {
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("caption", caption.getText().toString());
-                returnIntent.putExtra("vendor", vendor.getText().toString());
-                returnIntent.putExtra("model", model.getText().toString());
+                if(hasResolvedName){
+                    returnIntent.putExtra("vendor", vendorTV.getText());
+                    returnIntent.putExtra("model", modelTV.getText());
+                } else {
+                    returnIntent.putExtra("vendor", vendorET.getText().toString());
+                    returnIntent.putExtra("model", modelET.getText().toString());
+                }
                 returnIntent.putExtra("path", mCurrentPhotoPath);
                 setResult(RESULT_OK, returnIntent);
                 finish();
@@ -1151,11 +1177,11 @@ public class FillPostActivity extends AppCompatActivity {
         }
     }
 
-    private void storeDeviceName() {
+    private void storeDeviceName() { //only called when !hasResolvedName
         JSONObject send = new JSONObject();
         try {
-            send.put("retail_vendor", vendor.getText().toString());
-            send.put("retail_model", model.getText().toString());
+            send.put("retail_vendor", vendorET.getText().toString());
+            send.put("retail_model", modelET.getText().toString());
             send.put("build_device", Build.DEVICE);
             send.put("build_model", Build.MODEL);
             send.put("_event", "device_store_respond");
@@ -1283,8 +1309,14 @@ public class FillPostActivity extends AppCompatActivity {
     private void findAllById() {
         photo = (ImageView) findViewById(R.id.photo);
         caption = (EditText) findViewById(R.id.caption);
-        vendor = (EditText) findViewById(R.id.vendor);
-        model = (EditText) findViewById(R.id.model);
+
+        edittextLayout = (LinearLayout) findViewById(R.id.edittext_vendor_model_layout);
+        resolvedLayout = (LinearLayout) findViewById(R.id.resolved_vendor_model_layout);
+        vendorET = (EditText) findViewById(R.id.vendor_edittext);
+        modelET = (EditText) findViewById(R.id.model_edittext);
+        vendorTV = (TextView) findViewById(R.id.resolved_vendor);
+        modelTV = (TextView) findViewById(R.id.resolved_model);
+
         uploadBtn = (Button) findViewById(R.id.upload_btn);
         isAccept = (CheckBox) findViewById(R.id.is_accept);
         isEnhanced = (CheckBox) findViewById(R.id.is_enhanced);

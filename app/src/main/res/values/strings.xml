@@ -108,6 +108,8 @@
     <string name="fill_post_caption_hint">Caption</string>
     <string name="fill_post_vendor_hint">Vendor</string>
     <string name="fill_post_model_hint">Model</string>
+    <string name="fill_post_vendor_hint_colon">Vendor:</string>
+    <string name="fill_post_model_hint_colon">Model:</string>
     <string name="fill_post_checkbox_attach_location">attach current location</string>
     <string name="fill_post_checkbox_accept_tos">Accept terms of service</string>
     <string name="fill_post_checkbox_enhanced">Enhanced photo</string>
