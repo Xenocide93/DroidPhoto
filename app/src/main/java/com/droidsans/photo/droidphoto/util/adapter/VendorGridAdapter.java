@@ -37,7 +37,7 @@ public class VendorGridAdapter extends ArrayAdapter<Integer> {
         }
 
         holder.vendorPic.setImageResource(getItem(position));
-        if(getItem(position) == R.drawable.default_300) {
+        if(getItem(position) == R.drawable.vendor_logo_default_300) {
             holder.vendorText.setVisibility(FontTextView.VISIBLE);
             holder.vendorText.setText(BrowseVendorActivity.vendorName[position]);
         }

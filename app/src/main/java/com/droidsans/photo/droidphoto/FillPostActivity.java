@@ -292,7 +292,7 @@ public class FillPostActivity extends AppCompatActivity {
             case "viewsonic":
                 return "ViewSonic";
             case "true":
-                return "TRUE";
+                return "True";
             case "dtac":
                 return "dtac";
             case "ais":
@@ -305,6 +305,8 @@ public class FillPostActivity extends AppCompatActivity {
                 return "Samsung";
             case "asus":
                 return "Asus";
+            case "wiko":
+                return "Wiko";
             default:
 //                return Build.MANUFACTURER.substring(0,1).toUpperCase() + Build.MANUFACTURER.substring(1, Build.MANUFACTURER.length()).toLowerCase();
                 return Build.MANUFACTURER;

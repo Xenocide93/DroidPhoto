@@ -21,21 +21,9 @@ public class BrowseVendorActivity extends AppCompatActivity {
     private GridView vendorGridView;
     private VendorGridAdapter vendorGridAdapter;
     public static Integer[] vendorPicResource = {
-            R.drawable.oppo_300,
-            R.drawable.asus_300,
-            R.drawable.wiko_300,
-            R.drawable.lg_300,
-            R.drawable.sony_300,
-            R.drawable.samsung_300
     };
 
     public static String[] vendorName = {
-            "OPPO",
-            "Asus",
-            "WIKO",
-            "LG",
-            "Sony",
-            "Samsung"
     };
 
     @Override

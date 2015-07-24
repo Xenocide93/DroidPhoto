@@ -34,12 +34,16 @@
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
 
+    <!--login-->
+    <string name="login_button_login">Login</string>
+    <string name="login_button_register">Register</string>
+
     <!--settings text-->
     <string name="settings_submenu_account_title">Account</string>
     <string name="settings_editprofile_title">Edit Profile</string>
     <string name="settings_editprofile_summary">update avatar, change profile name/description</string>
     <string name="settings_changepass_title">Change Password</string>
-    <string name="settings_changepass_summary">please choose something not too stupid such as passw0rd (or something HackerTeam used)</string>
+    <string name="settings_changepass_summary">at least 6 characters</string>
     <string name="settings_submenu_display_title">Display</string>
     <string name="settings_display_eng_location_title">Display English Location</string>
     <string name="settings_display_eng_location_summary">Application will display English location</string>
@@ -65,6 +69,10 @@
     <string name="snackbar_register_db_error">Database error, please try again later</string>
     <string name="snackbar_register_cannot_save">Data cannot be save into database, please try again later</string>
     <string name="snackbar_register_success">Data cannot be save into database, please try again later</string>
+    <string name="snackbar_register_username_toolong">username is too long :( (max 15 characters)</string>
+    <string name="snackbar_register_email_invalid">invalid email address</string>
+    <string name="snackbar_register_profilename_toolong">profile name is too long :( (max 25 characters)</string>
+
 
     <!--register hint-->
     <string name="register_username">username</string>
@@ -75,17 +83,22 @@
     <string name="register_accept_tos">By clicking Register, you agree to our  </string>
     <string name="register_accept_tos_link">Terms of Services</string>
 
-    <!--password change activity hint-->
+    <!--password change activity-->
     <string name="change_password_old">old password</string>
     <string name="change_password_new">new password</string>
     <string name="change_password_confirm">confirm new password</string>
     <string name="change_password_button_confirm">Confirm</string>
     <string name="change_password_username_label">username : </string>
+    <string name="snackbar_changepass_mismatch">password mismatch</string>
+    <string name="snackbar_changepass_tooshort">password is too short, must be at least 6 characters long</string>
+    <string name="snackbar_changepass_tooshort_shortver">password is too short</string>
+    <string name="snackbar_changepass_wrongpass">wrong password</string>
 
     <!--edit profile activity-->
     <string name="edit_profile_display_name">profile name</string>
     <string name="edit_profile_description">profile description</string>
     <string name="delete_user_pic_fake_snackbar">Select file to be deleted</string>
+    <string name="snackbar_editprofile_profiledesc_toolong">profile description length exceed limit (60)</string>
 
     <!--fill post activity-->
     <string name="fill_post_caption_hint">Caption</string>
@@ -107,6 +120,8 @@
     <string name="fill_post_checkbox_error_location_notfound">error no location found</string>
     <string name="fill_post_checkbox_location_off">error: location service must be turned on</string>
     <string name="fill_post_checkbox_no_location_exif">error: no location data in exif :(</string>
+
+    <string name="snackbar_fill_post_accept_tos">Please accept our term of service</string>
 
     <!--Tutorial-->
     <string name="tutorial_string_fam">Create new post</string>
@@ -158,9 +173,8 @@
     <string name="long_text_30">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
+    <string name="login_username_hint">username or email</string>
+    <string name="login_password_hint">password</string>
 
-    <string name="snackbar_fill_post_accept_tos">Please accept our term of service</string>
-    <string name="login_button_login">Login</string>
-    <string name="login_button_register">Register</string>
 
 </resources>

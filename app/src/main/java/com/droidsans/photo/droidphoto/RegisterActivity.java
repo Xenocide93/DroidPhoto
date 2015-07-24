@@ -3,12 +3,14 @@ package com.droidsans.photo.droidphoto;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +39,8 @@ public class RegisterActivity extends Activity {
     public static Activity mRegisterActivity;
 
     private Emitter.Listener onRegisterRespond;
+    private Handler delayAction = new Handler();
+    private Runnable timeout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +161,7 @@ public class RegisterActivity extends Activity {
                                         })
                                         .show();
                                 registerBtn.setClickable(true);
+                                registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -175,39 +180,98 @@ public class RegisterActivity extends Activity {
             registerBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    registerBtn.setClickable(false);
-                    if (!password.getText().toString().equals(passwordConfirm.getText().toString())) {
-//                        Toast.makeText(getApplicationContext(), "Mismatched comfirm password, please retype the password", Toast.LENGTH_SHORT).show();
-                        Snackbar.make(findViewById(R.id.register_layout), "password mismatch, please try again", Snackbar.LENGTH_LONG).show();
-                        password.setText("");
-                        passwordConfirm.setText("");
-                        registerBtn.setClickable(true);
-                    } else {
-                        JSONObject registerStuff = new JSONObject();
-                        String hexPassword = "";
-
-                        try {
-                            MessageDigest md = MessageDigest.getInstance("SHA-256");
-                            md.update(password.getText().toString().getBytes());
-                            hexPassword = bytesToHex(md.digest());
-                        } catch (NoSuchAlgorithmException e) {
-                        }
-
-                        try {
-                            registerStuff.put("username", username.getText().toString());
-                            registerStuff.put("password", hexPassword);
-                            registerStuff.put("email", email.getText().toString());
-                            registerStuff.put("disp_name", displayName.getText().toString());
-                            registerStuff.put("_event", "register_respond");
-                        } catch (JSONException e) {
-                        }
-
-                        if(GlobalSocket.globalEmit("user.register", registerStuff)) {
-                            //retry or die trying
-                        }
-                    }
+                    emitregister();
                 }
             });
+        }
+
+        timeout = new Runnable() {
+            @Override
+            public void run() {
+                GlobalSocket.reconnect();
+                registerBtn.setClickable(true);
+                registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
+                Snackbar.make(registerBtn, getString(R.string.snackbar_connection_timeout), Snackbar.LENGTH_LONG)
+                        .setAction("retry", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                emitregister();
+                            }
+                        })
+                        .show();
+            }
+        };
+    }
+
+    private void emitregister() {
+        registerBtn.setClickable(false);
+        registerBtn.setTextColor(getResources().getColor(R.color.light_gray));
+        Log.d("droidphoto", "lastindexof : " + email.getText().toString().lastIndexOf(".") + "| length : " + email.getText().toString().length());
+        if(username.getText().toString().length() == 0 || password.getText().toString().length() == 0 || passwordConfirm.getText().toString().length() == 0 || email.getText().toString().length() == 0 || displayName.getText().toString().length() == 0) {
+            Snackbar.make(registerBtn, getString(R.string.snackbar_register_null_required), Snackbar.LENGTH_LONG).show();
+            registerBtn.setClickable(true);
+            registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
+        } else if (!password.getText().toString().equals(passwordConfirm.getText().toString())) {
+//                        Toast.makeText(getApplicationContext(), "Mismatched comfirm password, please retype the password", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.register_layout), getString(R.string.snackbar_changepass_mismatch), Snackbar.LENGTH_LONG).show();
+            password.setText("");
+            passwordConfirm.setText("");
+            registerBtn.setClickable(true);
+            registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
+        } else if (username.getText().toString().length() > getResources().getInteger(R.integer.max_username_size)) {
+            Snackbar.make(username, getString(R.string.snackbar_register_username_toolong), Snackbar.LENGTH_LONG).show();
+            registerBtn.setClickable(true);
+            registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
+        } else if (password.getText().toString().length() < getResources().getInteger(R.integer.min_password_size)) {
+            Snackbar.make(password, getString(R.string.snackbar_changepass_tooshort), Snackbar.LENGTH_LONG).show();
+            registerBtn.setClickable(true);
+            registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
+//        } else if (!email.getText().toString().contains("@") ||
+//                !email.getText().toString().contains(".") ||
+//                email.getText().toString().lastIndexOf(".") < email.getText().toString().length() - 4) {
+        } else if(Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
+            Snackbar.make(email, getString(R.string.snackbar_register_email_invalid), Snackbar.LENGTH_LONG).show();
+            registerBtn.setClickable(true);
+            registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
+        } else if (displayName.getText().toString().length() > getResources().getInteger(R.integer.max_profilename_size)) {
+            Snackbar.make(username, getString(R.string.snackbar_register_profilename_toolong), Snackbar.LENGTH_LONG).show();
+            registerBtn.setClickable(true);
+            registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
+        } else {
+            final JSONObject registerStuff = new JSONObject();
+            String hexPassword = "";
+
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(password.getText().toString().getBytes());
+                hexPassword = bytesToHex(md.digest());
+            } catch (NoSuchAlgorithmException e) {
+            }
+
+            try {
+                registerStuff.put("username", username.getText().toString());
+                registerStuff.put("password", hexPassword);
+                registerStuff.put("email", email.getText().toString());
+                registerStuff.put("disp_name", displayName.getText().toString());
+                registerStuff.put("_event", "register_respond");
+            } catch (JSONException e) {
+            }
+
+            if (!GlobalSocket.globalEmit("user.register", registerStuff)) {
+                delayAction.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!GlobalSocket.globalEmit("user.register", registerStuff)) {
+                            registerBtn.setClickable(true);
+                            registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
+                        } else {
+                            delayAction.postDelayed(timeout, 5000);
+                        }
+                    }
+                }, 2000);
+            } else {
+                delayAction.postDelayed(timeout, 5000);
+            }
         }
     }
 

@@ -38,15 +38,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.util.adapter.FeedRecycleViewAdapter;
 import com.droidsans.photo.droidphoto.util.FlowLayout;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
-import com.droidsans.photo.droidphoto.util.view.SquareImageView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.nkzawa.emitter.Emitter;
@@ -607,26 +604,80 @@ public class FeedFragment extends Fragment {
                                 BrowseVendorActivity.vendorPicResource = new Integer[vendorSize];
                                 for(int i = 0; i < vendorSize; i++) {
                                     switch (BrowseVendorActivity.vendorName[i]) {
+                                        case "Acer":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_acer_300;
+                                            break;
                                         case "Asus":
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.asus_300;
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_asus_300;
                                             break;
-                                        case "OPPO":
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.oppo_300;
+                                        case "Dell":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_dell_300;
                                             break;
-                                        case "WIKO":
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.wiko_300;
+                                        case "HP":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_hp_300;
+                                            break;
+                                        case "HTC":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_htc_300;
+                                            break;
+                                        case "Huawei":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_huawei_300;
+                                            break;
+                                        case "i-mobile":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_imobile_300;
+                                            break;
+                                        case "Intel":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_intel_300;
+                                            break;
+                                        case "LAVA":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_lava_300;
+                                            break;
+                                        case "Lenovo":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_lenovo_300;
                                             break;
                                         case "LG":
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.lg_300;
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_lg_300;
                                             break;
-                                        case "Sony":
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.sony_300;
+                                        case "Motorola":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_motorolar;
+                                            break;
+                                        case "Nikon":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_nikon_300;
+                                            break;
+                                        case "OnePlus":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_oneplus_300;
+                                            break;
+                                        case "OPPO":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_oppo_300;
+                                            break;
+                                        case "Panasonic":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_panasonic_300;
+                                            break;
+                                        case "Polaroid":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_polaroid_300;
                                             break;
                                         case "Samsung":
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.samsung_300;
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_samsung_300;
+                                            break;
+                                        case "Sony":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_sony_300;
+                                            break;
+                                        case "True":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_true_300;
+                                            break;
+                                        case "ViewSonic":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_viewsonic_300;
+                                            break;
+                                        case "Wiko":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_wiko_300;
+                                            break;
+                                        case "Xiaomi":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_xiaomi_300;
+                                            break;
+                                        case "ZTE":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_zte_300;
                                             break;
                                         default:
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.default_300;
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_default_300;
                                             break;
                                     }
                                 }

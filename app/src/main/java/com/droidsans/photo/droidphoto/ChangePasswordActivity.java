@@ -1,8 +1,10 @@
 package com.droidsans.photo.droidphoto;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -49,7 +51,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(newPassword.getText().toString().equals(confirmPassword.getText().toString())) {
+                if(newPassword.getText().toString().length() < getResources().getInteger(R.integer.min_password_size)) {
+                    newPassword.setError(getString(R.string.snackbar_changepass_tooshort_shortver));
+                    newPassword.setSelected(true);
+                    Snackbar.make(newPassword, getString(R.string.snackbar_changepass_tooshort), Snackbar.LENGTH_LONG).show();
+                } else if(newPassword.getText().toString().equals(confirmPassword.getText().toString())) {
                     changeButton.setClickable(false);
                     changeButton.setTextColor(getResources().getColor(R.color.light_gray));
 
@@ -82,12 +88,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     }
 //                    Log.d(APP_LOG, hexPassword);
                     if (!GlobalSocket.globalEmit("user.changepass", changePassObj)) {
-                        Toast.makeText(getApplicationContext(), "cannot connect to server, please try again", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(changeButton, getString(R.string.snackbar_login_cannot_connect), Snackbar.LENGTH_LONG).show();
                         changeButton.setClickable(true);
                         changeButton.setTextColor(getResources().getColor(R.color.black));
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "newpass != confirm", Toast.LENGTH_SHORT).show();
+                    confirmPassword.setError(getString(R.string.snackbar_changepass_mismatch));
+                    confirmPassword.setSelected(true);
+                    Snackbar.make(confirmPassword, getString(R.string.snackbar_changepass_mismatch), Snackbar.LENGTH_LONG).show();
                 }
             }
         });
@@ -113,6 +121,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                 case "db error":
                                     break;
                                 case "not found":
+                                    oldPassword.setError(getString(R.string.snackbar_changepass_wrongpass));
+                                    oldPassword.setSelected(true);
+                                    Snackbar.make(oldPassword, getString(R.string.snackbar_changepass_wrongpass), Snackbar.LENGTH_LONG).show();
                                     break;
                                 default:
                                     break;
@@ -143,12 +154,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_change_password, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_change_password, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

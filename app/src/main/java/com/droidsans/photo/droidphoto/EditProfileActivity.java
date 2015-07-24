@@ -256,6 +256,14 @@ public class EditProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_done:
+                if(profileDescription.getText().toString().length() > getResources().getInteger(R.integer.max_profiledesc_size)) {
+                    Snackbar.make(profileDescription, getString(R.string.snackbar_editprofile_profiledesc_toolong), Snackbar.LENGTH_LONG).show();
+                    return true;
+                }
+                if(displayName.getText().toString().length() > getResources().getInteger(R.integer.max_profilename_size)) {
+                    Snackbar.make(profileDescription, getString(R.string.snackbar_register_profilename_toolong), Snackbar.LENGTH_LONG).show();
+                    return true;
+                }
                 if(isUpdateProfilePic) {
                     //resize image save to cache
                     final File tempFile = new File(getCacheDir() + "/" + "avatartemp.jpg");
