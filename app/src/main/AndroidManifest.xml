@@ -85,6 +85,10 @@
             android:name=".ImageViewerFullScreenActivity"
             android:label="@string/title_activity_full_screen_image_viewer" >
         </activity>
+        <activity
+            android:name=".OpenSourceLicensesActivity"
+            android:label="@string/title_activity_open_source_licenses" >
+        </activity>
     </application>
 
 </manifest>

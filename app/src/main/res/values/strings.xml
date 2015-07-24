@@ -8,6 +8,7 @@
     <string name="action_done">"  Done  "</string>
     <string name="menu_filter">Filter</string>
     <string name="action_cancel">"  Cancel  "</string>
+    <string name="action_print">Print</string>
 
     <string name="title_activity_browse">Vendor List</string>
     <string name="title_activity_browse_model">Model List</string>
@@ -17,6 +18,7 @@
     <string name="title_activity_change_password">Change Password</string>
     <string name="title_activity_full_screen_image_viewer">      </string>
     <string name="title_activity_edit_profile">Edit profile</string>
+    <string name="title_activity_open_source_licenses">Open Source Licenses</string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>

@@ -54,7 +54,7 @@ public class AboutFragment extends Fragment {
                         startActivity(new Intent(getActivity().getApplicationContext(), PlaceholderActivity.class));
                         break;
                     case 4: //osl
-                        startActivity(new Intent(getActivity().getApplicationContext(), PlaceholderActivity.class));
+                        startActivity(new Intent(getActivity().getApplicationContext(), OpenSourceLicensesActivity.class));
                         break;
                     case 5: //team
                         startActivity(new Intent(getActivity().getApplicationContext(), PlaceholderActivity.class));
