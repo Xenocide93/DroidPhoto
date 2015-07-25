@@ -851,7 +851,7 @@ public class FillPostActivity extends AppCompatActivity {
 
                     String toastText = "location checked | ";
                     //try read location from exif first
-                    if(gpsDirectory != null && (gpsDirectory.getGeoLocation().getLatitude() != 0.0d) && (gpsDirectory.getGeoLocation().getLongitude() != 0.0d)) {
+                    if(gpsDirectory != null && (gpsDirectory.getGeoLocation() != null)) {
 //                    if(gpsDirectory != null) {
 //                    if(false) { //debug
                         Log.d("droidphoto", "location from exif:" + gpsDirectory.getGeoLocation().toString());
