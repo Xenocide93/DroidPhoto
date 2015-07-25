@@ -98,7 +98,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 fab:menu_colorNormal="@color/accent_color"
-                fab:menu_icon="@drawable/ic_edit_white_24dp"
+                fab:menu_icon="@drawable/ic_post_white_24px"
                 fab:menu_labels_style="@style/menu_labels_style"
                 android:layout_marginBottom="16dp"
                 android:layout_marginRight="16dp"

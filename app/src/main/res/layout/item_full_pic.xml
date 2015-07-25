@@ -240,7 +240,6 @@
             android:id="@+id/avatar"
             android:layout_width="@dimen/image_viewer_profile_pic_size"
             android:layout_height="@dimen/image_viewer_profile_pic_size"
-            android:alpha="0.7"
             android:scaleType="fitCenter"
             android:src="@drawable/avatar_placeholder_300" />
 

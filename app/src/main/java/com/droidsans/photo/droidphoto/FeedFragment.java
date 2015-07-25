@@ -405,14 +405,30 @@ public class FeedFragment extends Fragment {
             }
         });
 
+        final int famAnimationDuration = 50;
         fam.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean open) {
                 if (open) {
+                    dimView.setVisibility(View.VISIBLE);
                     dimView.animate().alpha(0.7f).setDuration(300).setListener(new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animation) {
-                            dimView.setVisibility(View.VISIBLE);
+                            fam.getMenuIconView().animate()
+                                    .alpha(0f)
+                                    .setDuration(famAnimationDuration)
+                                    .start();
+                            delayAction.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    fam.getMenuIconView().setImageResource(R.drawable.fab_add);
+                                    fam.getMenuIconView().invalidate();
+                                    fam.getMenuIconView().animate()
+                                            .alpha(1f)
+                                            .setDuration(famAnimationDuration)
+                                            .start();
+                                }
+                            }, famAnimationDuration);
                         }
 
                         @Override
@@ -431,6 +447,26 @@ public class FeedFragment extends Fragment {
                     dimView.animate().alpha(0.0f).setDuration(300).setListener(new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animation) {
+                            delayAction.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    fam.getMenuIconView().animate()
+                                            .alpha(0f)
+                                            .setDuration(famAnimationDuration)
+                                            .start();
+                                    delayAction.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            fam.getMenuIconView().setImageResource(R.drawable.ic_post_white_24px);
+                                            fam.getMenuIconView().invalidate();
+                                            fam.getMenuIconView().animate()
+                                                    .alpha(1f)
+                                                    .setDuration(famAnimationDuration)
+                                                    .start();
+                                        }
+                                    }, famAnimationDuration);
+                                }
+                            }, 150);
                         }
 
                         @Override
@@ -1159,6 +1195,7 @@ public class FeedFragment extends Fragment {
 
                     isUploading = true;
                     staticPhotoPath = data.getStringExtra("path");
+                    hasImageInPhotoPath = true;
                     setFamEnable(false);
                     showUploadProgress(true);
 
@@ -1321,6 +1358,9 @@ public class FeedFragment extends Fragment {
 
     private void setFamEnable(Boolean enable){
         if(enable){
+            if(normalFamPositionX == 0 || normalFamPositionY == 0){
+                return;
+            }
             fam.animate()
                     .x(normalFamPositionX).y(normalFamPositionY)
                     .setDuration(300);
@@ -1376,6 +1416,7 @@ public class FeedFragment extends Fragment {
                         uploadProgressbar.setProgress(percentage);
                         if(getActivity() != null) getActivity().runOnUiThread(update);
                         refreshFeed();
+                        initializeVendorModelList();
 
                         //animate
                         hideUploadProgress();
