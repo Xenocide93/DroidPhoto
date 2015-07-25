@@ -22,6 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,11 +35,14 @@ import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.util.adapter.FeedRecycleViewAdapter;
 import com.droidsans.photo.droidphoto.util.FlowLayout;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
@@ -115,6 +119,7 @@ public class FeedFragment extends Fragment {
 
     private String resolvedVendor;
     private String resolvedModel;
+
 //    private NotifyAdapter packreload[];
 
 //    private int firstAtPause;
@@ -143,6 +148,10 @@ public class FeedFragment extends Fragment {
 
     public static int percentage = 0;
     public static boolean isFailedToUpload = false;
+    public static boolean isUploading = false;
+    private RelativeLayout uploadProgressLayout;
+
+    private float normalFamPositionX, normalFamPositionY;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -1100,45 +1109,51 @@ public class FeedFragment extends Fragment {
                     }
 
                 case FILL_POST:
-                    PicturePack uploadingPicturePack = new PicturePack(
-                            getActivity().getApplicationContext().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE)
-                                    .getString(getString(R.string.username), ""),
-                            data.getStringExtra("vendor"),
-                            data.getStringExtra("model"),
-                            "", "", ""
-                    );
-                    uploadingPicturePack.setIsUploading(true, data.getStringExtra("path"));
-                    feedPicturePack.add(0, uploadingPicturePack);
-                    recycleAdapter.notifyDataSetChanged();
+                    //initialize
+                    isUploading = true; setFamEnable(false);
+                    ImageView uploadImagePreview = (ImageView) uploadProgressLayout.findViewById(R.id.uploading_imageview);
+                    final ProgressBar uploadProgressbar = (ProgressBar) uploadProgressLayout.findViewById(R.id.upload_progressbar);
+                    Button cancelUpload = (Button) uploadProgressLayout.findViewById(R.id.cancel_pic_fake_snackbar);
 
-                    View uploadingView = feedRecycleView.getChildAt(0);
+//                    PicturePack uploadingPicturePack = new PicturePack(
+//                            getActivity().getApplicationContext().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE)
+//                                    .getString(getString(R.string.username), ""),
+//                            data.getStringExtra("vendor"),
+//                            data.getStringExtra("model"),
+//                            "", "", ""
+//                    );
+//                    uploadingPicturePack.setIsUploading(true, data.getStringExtra("path"));
+//                    feedPicturePack.add(0, uploadingPicturePack);
+//                    recycleAdapter.notifyDataSetChanged();
+
+//                    View uploadingView = feedRecycleView.getChildAt(0);
 //                    SquareImageView picture = (SquareImageView) uploadingView.findViewById(R.id.picture);
-                    final ProgressBar progressBar = (ProgressBar) uploadingView.findViewById(R.id.upload_progress);
+//                    final ProgressBar progressBar = (ProgressBar) uploadingView.findViewById(R.id.upload_progress);
 //                    uploadingView.findViewById(R.id.upload_layout).setVisibility(RelativeLayout.VISIBLE);
 //                    progressBar.setVisibility(ProgressBar.VISIBLE);
 //                    FontTextView deviceName = (FontTextView) uploadingView.findViewById(R.id.device_name);
 //                    FontTextView username = (FontTextView) uploadingView.findViewById(R.id.user);
 
-//                    Glide.with(getActivity().getApplicationContext())
-//                            .load(data.getStringExtra("path"))
-//                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                            .centerCrop()
-//                            .placeholder(R.drawable.picture_placeholder_500_center)
-//                            .into(picture);
+                    Glide.with(getActivity().getApplicationContext())
+                            .load(data.getStringExtra("path"))
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .centerCrop()
+                            .placeholder(R.drawable.picture_placeholder_500_center)
+                            .into(uploadImagePreview);
 
                     final int loopdelay = 250;
                     update = new Runnable() {
                         @Override
                         public void run() {
-                            progressBar.setProgress(percentage);
+                            uploadProgressbar.setProgress(percentage);
                         }
                     };
                     loop = new Runnable() {
                         @Override
                         public void run() {
                             if(isFailedToUpload) { //show failed
-                                feedPicturePack.remove(0);
-                                recycleAdapter.notifyDataSetChanged();
+                                isUploading = false; setFamEnable(true);
+                                refreshFeed();
                                 Snackbar.make(frameLayout, "upload failed", Snackbar.LENGTH_LONG).show();
                             } else {
                                 if (percentage < 100) {//update upload progress
@@ -1146,14 +1161,29 @@ public class FeedFragment extends Fragment {
                                     if(percentage > 97) {
                                         loopcount++;
                                     }
-//                                    progressBar.setProgress(percentage);
+                                    uploadProgressbar.setProgress(percentage);
                                     if(getActivity() != null) getActivity().runOnUiThread(update);
                                     if(loopcount > 60) isFailedToUpload = true;
                                     delayAction.postDelayed(loop, loopdelay);
                                 } else { //upload done
-//                                    progressBar.setProgress(percentage);
+                                    isUploading = false; setFamEnable(true);
+                                    uploadProgressbar.setProgress(percentage);
                                     if(getActivity() != null) getActivity().runOnUiThread(update);
                                     refreshFeed();
+
+                                    //animate
+                                    uploadProgressLayout.animate()
+                                            .y(frameLayout.getBottom())
+                                            .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
+                                            .start();
+
+                                    delayAction.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            uploadProgressLayout.setVisibility(View.INVISIBLE);
+                                        }
+                                    }, getResources().getInteger(R.integer.fake_snackbar_animation_speed));
+
                                     Snackbar.make(frameLayout, "upload success", Snackbar.LENGTH_LONG).show();
                                 }
                             }
@@ -1161,7 +1191,17 @@ public class FeedFragment extends Fragment {
                     };
                     loopcount = 0;
                     delayAction.postDelayed(loop, loopdelay);
-                    Snackbar.make(frameLayout, "uploading...", Snackbar.LENGTH_LONG).show();
+
+                    //animate
+                    uploadProgressLayout.setVisibility(View.VISIBLE);
+                    uploadProgressLayout.setY(frameLayout.getBottom());
+                    uploadProgressLayout.animate()
+                            .y(frameLayout.getBottom() - getResources().getDimension(R.dimen.snackbar_height))
+//                        .yBy(-10 * getResources().getDimension(R.dimen.snackbar_height))
+                            .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
+                            .setStartDelay(500)
+                            .start();
+
                     break;
             }
         else if(resultCode == FragmentActivity.RESULT_CANCELED) {
@@ -1316,6 +1356,23 @@ public class FeedFragment extends Fragment {
         super.onDestroy();
     }
 
+    private void setFamEnable(Boolean enable){
+        if(enable){
+            fam.animate()
+                    .x(normalFamPositionX).y(normalFamPositionY)
+                    .setDuration(300);
+        } else {
+            if(normalFamPositionX == 0 || normalFamPositionY == 0){
+                normalFamPositionX = fam.getX();
+                normalFamPositionY = fam.getY();
+            }
+            fam.animate()
+                    .xBy(fam.getWidth()/2)
+                    .setStartDelay(500)
+            .setDuration(400);
+        }
+    }
+
     private String getImagePath(Uri uri) {
         Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
@@ -1385,6 +1442,8 @@ public class FeedFragment extends Fragment {
 
         reloadText = (FontTextView) reloadLayout.findViewById(R.id.reload_text);
         reloadButton = (Button) reloadLayout.findViewById(R.id.reload_button);
+
+        uploadProgressLayout = (RelativeLayout) frameLayout.findViewById(R.id.uploading_fake_snackbar_layout);
     }
 
     public void runUploadingAnimation(){ //will be called when emit upload
