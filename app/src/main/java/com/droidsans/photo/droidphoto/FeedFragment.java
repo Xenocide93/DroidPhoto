@@ -3,7 +3,6 @@ package com.droidsans.photo.droidphoto;
 
 import android.animation.Animator;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,7 +21,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -148,10 +146,14 @@ public class FeedFragment extends Fragment {
 
     public static int percentage = 0;
     public static boolean isFailedToUpload = false;
-    public static boolean isUploading = false;
+    public static boolean isUploading;
     private RelativeLayout uploadProgressLayout;
 
-    private float normalFamPositionX, normalFamPositionY;
+    private static float normalFamPositionX, normalFamPositionY;
+    private ImageView uploadImagePreview;
+    private ProgressBar uploadProgressbar;
+    private Button cancelUpload;
+    private final int LOOP_DELAY = 250;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -185,7 +187,18 @@ public class FeedFragment extends Fragment {
         if(!isFirstTime()){
             setupListener();
         }
+        setupUploadProgress();
         setupEmitterListener();
+    }
+
+    private void setupUploadProgress() {
+        if(isUploading){
+            showUploadProgress(false);
+            setFamEnable(false);
+        } else {
+            hideUploadProgress();
+            setFamEnable(true);
+        }
     }
 
     private void checkFirstTimeLaunch() { //call from onGetFeedRespond
@@ -586,6 +599,15 @@ public class FeedFragment extends Fragment {
                             }
                             recycleAdapter = new FeedRecycleViewAdapter(getActivity(), feedPicturePack);
                             feedRecycleView.setAdapter(recycleAdapter);
+
+                            if(feedRecycleView.getAlpha() < 1f) {
+                                feedRecycleView.animate()
+                                        .alpha(1f)
+                                        .setDuration(300)
+                                        .start();
+                                Log.d("droidphoto", "alpha:1");
+                            }
+
                             swipeRefreshLayout.setRefreshing(false);
 
                             checkFirstTimeLaunch();
@@ -1109,12 +1131,6 @@ public class FeedFragment extends Fragment {
                     }
 
                 case FILL_POST:
-                    //initialize
-                    isUploading = true; setFamEnable(false);
-                    ImageView uploadImagePreview = (ImageView) uploadProgressLayout.findViewById(R.id.uploading_imageview);
-                    final ProgressBar uploadProgressbar = (ProgressBar) uploadProgressLayout.findViewById(R.id.upload_progressbar);
-                    Button cancelUpload = (Button) uploadProgressLayout.findViewById(R.id.cancel_pic_fake_snackbar);
-
 //                    PicturePack uploadingPicturePack = new PicturePack(
 //                            getActivity().getApplicationContext().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE)
 //                                    .getString(getString(R.string.username), ""),
@@ -1134,73 +1150,10 @@ public class FeedFragment extends Fragment {
 //                    FontTextView deviceName = (FontTextView) uploadingView.findViewById(R.id.device_name);
 //                    FontTextView username = (FontTextView) uploadingView.findViewById(R.id.user);
 
-                    Glide.with(getActivity().getApplicationContext())
-                            .load(data.getStringExtra("path"))
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .centerCrop()
-                            .placeholder(R.drawable.picture_placeholder_500_center)
-                            .into(uploadImagePreview);
-
-                    final int loopdelay = 250;
-                    update = new Runnable() {
-                        @Override
-                        public void run() {
-                            uploadProgressbar.setProgress(percentage);
-                        }
-                    };
-                    loop = new Runnable() {
-                        @Override
-                        public void run() {
-                            if(isFailedToUpload) { //show failed
-                                isUploading = false; setFamEnable(true);
-                                refreshFeed();
-                                Snackbar.make(frameLayout, "upload failed", Snackbar.LENGTH_LONG).show();
-                            } else {
-                                if (percentage < 100) {//update upload progress
-                                    Log.d("droidphoto", "uploaded : " + percentage + "%");
-                                    if(percentage > 97) {
-                                        loopcount++;
-                                    }
-                                    uploadProgressbar.setProgress(percentage);
-                                    if(getActivity() != null) getActivity().runOnUiThread(update);
-                                    if(loopcount > 60) isFailedToUpload = true;
-                                    delayAction.postDelayed(loop, loopdelay);
-                                } else { //upload done
-                                    isUploading = false; setFamEnable(true);
-                                    uploadProgressbar.setProgress(percentage);
-                                    if(getActivity() != null) getActivity().runOnUiThread(update);
-                                    refreshFeed();
-
-                                    //animate
-                                    uploadProgressLayout.animate()
-                                            .y(frameLayout.getBottom())
-                                            .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
-                                            .start();
-
-                                    delayAction.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            uploadProgressLayout.setVisibility(View.INVISIBLE);
-                                        }
-                                    }, getResources().getInteger(R.integer.fake_snackbar_animation_speed));
-
-                                    Snackbar.make(frameLayout, "upload success", Snackbar.LENGTH_LONG).show();
-                                }
-                            }
-                        }
-                    };
-                    loopcount = 0;
-                    delayAction.postDelayed(loop, loopdelay);
-
-                    //animate
-                    uploadProgressLayout.setVisibility(View.VISIBLE);
-                    uploadProgressLayout.setY(frameLayout.getBottom());
-                    uploadProgressLayout.animate()
-                            .y(frameLayout.getBottom() - getResources().getDimension(R.dimen.snackbar_height))
-//                        .yBy(-10 * getResources().getDimension(R.dimen.snackbar_height))
-                            .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
-                            .setStartDelay(500)
-                            .start();
+                    isUploading = true;
+                    staticPhotoPath = data.getStringExtra("path");
+                    setFamEnable(false);
+                    showUploadProgress(true);
 
                     break;
             }
@@ -1306,7 +1259,6 @@ public class FeedFragment extends Fragment {
 //        }
 //    }
 
-
     @Override
     public void onStop() {
 //        feedGridView.setClickable(false);
@@ -1353,6 +1305,10 @@ public class FeedFragment extends Fragment {
 //            }
 //        }
 
+        if(isUploading){
+            delayAction.removeCallbacks(loop);
+        }
+
         super.onDestroy();
     }
 
@@ -1371,6 +1327,85 @@ public class FeedFragment extends Fragment {
                     .setStartDelay(500)
             .setDuration(400);
         }
+    }
+
+    private void showUploadProgress(boolean animate){
+        Glide.with(getActivity().getApplicationContext())
+                .load(staticPhotoPath)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .centerCrop()
+                .placeholder(R.drawable.picture_placeholder_500_center)
+                .into(uploadImagePreview);
+
+        update = new Runnable() {
+            @Override
+            public void run() {
+                uploadProgressbar.setProgress(percentage);
+            }
+        };
+
+        loop = new Runnable() {
+            @Override
+            public void run() {
+                if(isFailedToUpload) { //show failed
+                    isUploading = false;
+                    setFamEnable(true);
+                    hideUploadProgress();
+                    refreshFeed();
+                    Snackbar.make(frameLayout, "upload failed", Snackbar.LENGTH_LONG).show();
+                } else {
+                    if (percentage < 100) {//update upload progress
+                        Log.d("droidphoto", "uploaded : " + percentage + "%");
+                        if(percentage > 97) {
+                            loopcount++;
+                        }
+                        uploadProgressbar.setProgress(percentage);
+                        if(getActivity() != null) getActivity().runOnUiThread(update);
+                        if(loopcount > 60) isFailedToUpload = true;
+                        delayAction.postDelayed(loop, LOOP_DELAY);
+                    } else { //upload done
+                        isUploading = false;
+                        setFamEnable(true);
+                        uploadProgressbar.setProgress(percentage);
+                        if(getActivity() != null) getActivity().runOnUiThread(update);
+                        refreshFeed();
+
+                        //animate
+                        hideUploadProgress();
+                    }
+                }
+            }
+        };
+
+        loopcount = 0;
+        delayAction.postDelayed(loop, LOOP_DELAY);
+
+        uploadProgressLayout.setVisibility(View.VISIBLE);
+        if(animate){
+            uploadProgressLayout.setY(frameLayout.getBottom());
+            uploadProgressLayout.animate()
+                    .y(frameLayout.getBottom() - getResources().getDimension(R.dimen.snackbar_height))
+                    .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
+                    .setStartDelay(500)
+                    .start();
+        } else {
+            uploadProgressLayout.setBottom(frameLayout.getBottom());
+        }
+
+    }
+
+    private void hideUploadProgress(){
+        uploadProgressLayout.animate()
+                .y(frameLayout.getBottom())
+                .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
+                .start();
+
+        delayAction.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                uploadProgressLayout.setVisibility(View.INVISIBLE);
+            }
+        }, getResources().getInteger(R.integer.fake_snackbar_animation_speed));
     }
 
     private String getImagePath(Uri uri) {
@@ -1444,6 +1479,9 @@ public class FeedFragment extends Fragment {
         reloadButton = (Button) reloadLayout.findViewById(R.id.reload_button);
 
         uploadProgressLayout = (RelativeLayout) frameLayout.findViewById(R.id.uploading_fake_snackbar_layout);
+        uploadImagePreview = (ImageView) uploadProgressLayout.findViewById(R.id.uploading_imageview);
+        uploadProgressbar = (ProgressBar) uploadProgressLayout.findViewById(R.id.upload_progressbar);
+        cancelUpload = (Button) uploadProgressLayout.findViewById(R.id.cancel_pic_fake_snackbar);
     }
 
     public void runUploadingAnimation(){ //will be called when emit upload
@@ -1452,6 +1490,11 @@ public class FeedFragment extends Fragment {
     }
 
     public void refreshFeed(){
+        feedRecycleView.animate()
+                .alpha(0f)
+                .setDuration(300)
+                .start();
+
         skipDate = null;
         isUpdate = false;
         JSONObject filter = new JSONObject();
