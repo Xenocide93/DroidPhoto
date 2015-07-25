@@ -216,12 +216,15 @@ public class ImageViewerActivity extends AppCompatActivity {
         if(caption.getText().equals("")) captionLayout.setVisibility(LinearLayout.GONE);
         deviceName.setText(previousIntent.getStringExtra("vendor") + " " + previousIntent.getStringExtra("model"));
         if(!previousIntent.getStringExtra("exposureTime").equals("")) {
-            if (previousIntent.getStringExtra("exposureTime").substring(0, 2).contains("1/")) {
+            Log.i("droidphoto", previousIntent.getStringExtra("exposureTime"));
+            if (!previousIntent.getStringExtra("exposureTime").contains("/") && !previousIntent.getStringExtra("exposureTime").substring(0,1).equals("0")) { // 4
+                exposureTime.setText(previousIntent.getStringExtra("exposureTime") + " s");
+            } else if (previousIntent.getStringExtra("exposureTime").substring(0, 2).contains("1/")) { // 1/3
                 exposureTime.setText(previousIntent.getStringExtra("exposureTime"));
-            } else if (previousIntent.getStringExtra("exposureTime").contains("/")) {
+            } else if (previousIntent.getStringExtra("exposureTime").contains("/")) { //60001/100000
                 String expTime = previousIntent.getStringExtra("exposureTime");
                 exposureTime.setText("1/" + (int) (Double.parseDouble(expTime.substring(expTime.indexOf("/") + 1, expTime.length())) / Double.parseDouble(expTime.substring(0, expTime.indexOf("/")))));
-            } else {
+            } else { // 0.2234235
                 exposureTime.setText("1/" + (int) (1.0 / Double.parseDouble(previousIntent.getStringExtra("exposureTime"))));
             }
         } else {
