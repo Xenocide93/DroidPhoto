@@ -325,6 +325,8 @@ public class FillPostActivity extends AppCompatActivity {
                 return "Asus";
             case "wiko":
                 return "Wiko";
+            case "huawei":
+                return "Huawei";
             default:
 //                return Build.MANUFACTURER.substring(0,1).toUpperCase() + Build.MANUFACTURER.substring(1, Build.MANUFACTURER.length()).toLowerCase();
                 return Build.MANUFACTURER;
@@ -1345,12 +1347,12 @@ public class FillPostActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
      }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_fill_post, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_fill_post, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
