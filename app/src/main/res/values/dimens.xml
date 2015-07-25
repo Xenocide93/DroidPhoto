@@ -28,4 +28,6 @@
     <dimen name="font_th_subtitle_fontsize">18sp</dimen>
     <dimen name="edit_profile_profile_pic_size">120dp</dimen>
     <dimen name="snackbar_height">48dp</dimen>
+    <dimen name="upload_preview_snackbar_height">30dp</dimen>
+
 </resources>

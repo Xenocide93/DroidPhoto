@@ -249,7 +249,7 @@
             android:layout_height="@dimen/image_viewer_profile_pic_size"
             android:alpha="0.7"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_account_circle_black_48dp" />
+            android:src="@drawable/avatar_placeholder_300" />
 
 
         <com.droidsans.photo.droidphoto.util.view.FontTextView

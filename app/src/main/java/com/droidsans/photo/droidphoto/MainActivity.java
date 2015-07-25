@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                                 Glide.with(getApplicationContext())
                                         .load(GlobalSocket.serverURL + ProfileFragment.baseURL + userObj.optString("avatar_url"))
 //                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                        .placeholder(R.drawable.ic_account_circle_black_48dp)
+                                        .placeholder(R.drawable.avatar_placeholder_300)
                                         .centerCrop()
                                         .transform(new CircleTransform(getApplicationContext()))
                                         .into(profile);
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 //        if(!disp.equals("")) {
         Glide.with(getApplicationContext())
                 .load(GlobalSocket.serverURL + ProfileFragment.baseURL + getUserdata().getString(getString(R.string.avatar_url), ""))
-                .placeholder(R.drawable.ic_account_circle_black_48dp)
+                .placeholder(R.drawable.avatar_placeholder_300)
                 .centerCrop()
                 .transform(new CircleTransform(getApplicationContext()))
                 .into(profile);

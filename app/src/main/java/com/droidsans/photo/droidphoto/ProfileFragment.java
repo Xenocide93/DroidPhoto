@@ -188,7 +188,7 @@ public class ProfileFragment extends Fragment {
                                     .load(GlobalSocket.serverURL + baseURL + avatarURL)
 //                                    .load(GlobalSocket.serverURL + baseURL + "test.jpg")
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                    .placeholder(R.drawable.ic_account_circle_black_48dp)
+                                    .placeholder(R.drawable.avatar_placeholder_300)
                                     .centerCrop()
                                     .transform(new CircleTransform(getActivity().getApplicationContext()))
 //                                    .dontAnimate()

@@ -270,7 +270,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .fitCenter()
                 .transform(new CircleTransform(getApplicationContext()))
-                .placeholder(R.drawable.ic_account_circle_black_48dp)
+                .placeholder(R.drawable.avatar_placeholder_300)
                 .into(avatar);
 
         //date parsing

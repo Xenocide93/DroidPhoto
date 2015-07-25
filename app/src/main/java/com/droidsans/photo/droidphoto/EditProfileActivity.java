@@ -184,7 +184,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .centerCrop()
                     .transform(new CircleTransform(getApplicationContext()))
-                    .placeholder(R.drawable.ic_account_circle_black_48dp)
+                    .placeholder(R.drawable.avatar_placeholder_300)
                     .dontAnimate()
                     .into(profilePic);
         }
