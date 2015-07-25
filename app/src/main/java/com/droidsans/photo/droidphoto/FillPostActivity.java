@@ -850,6 +850,7 @@ public class FillPostActivity extends AppCompatActivity {
                         //init value
                         FeedFragment.percentage = 0;
                         FeedFragment.isFailedToUpload = false;
+                        FeedFragment.isCancelUpload = false;
 
                         //resize image save to cache
                         final File tempFile = new File(getCacheDir() + "/" + "uploadtemp.jpg");
