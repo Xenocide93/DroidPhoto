@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,15 +42,22 @@ public class AboutFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Snackbar.make(mainList, "position : " + position, Snackbar.LENGTH_SHORT).show();
 
+                Intent intent;
                 switch (position) {
                     case 1: //app info
                         startActivity(new Intent(getActivity().getApplicationContext(), PlaceholderActivity.class));
                         break;
                     case 2: //pp
-                        startActivity(new Intent(getActivity().getApplicationContext(), PlaceholderActivity.class));
+                        intent = new Intent(getActivity().getApplicationContext(), WebViewActivity.class);
+                        intent.putExtra("URL", getString(R.string.url_privacy_policy));
+                        intent.putExtra("Title", getString(R.string.title_activity_privacy_policy));
+                        startActivity(intent);
                         break;
                     case 3: //tos
-                        startActivity(new Intent(getActivity().getApplicationContext(), PlaceholderActivity.class));
+                        intent = new Intent(getActivity().getApplicationContext(), WebViewActivity.class);
+                        intent.putExtra("URL", getString(R.string.url_terms_of_service));
+                        intent.putExtra("Title", getString(R.string.title_activity_terms_of_service));
+                        startActivity(intent);
                         break;
                     case 4: //osl
                         startActivity(new Intent(getActivity().getApplicationContext(), OpenSourceLicensesActivity.class));

@@ -1,22 +1,26 @@
 package com.droidsans.photo.droidphoto;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 
 
-public class OpenSourceLicensesActivity extends AppCompatActivity {
+public class WebViewActivity extends AppCompatActivity {
     Toolbar toolbar;
+    WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_open_source_licenses);
+        setContentView(R.layout.activity_web_view);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getIntent().getStringExtra("Title"));
+
+        webView = (WebView) findViewById(R.id.web_tos);
+        webView.loadUrl(getIntent().getStringExtra("URL"));
 
         setSupportActionBar(toolbar);
 
@@ -29,7 +33,7 @@ public class OpenSourceLicensesActivity extends AppCompatActivity {
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_open_source_licenses, menu);
+//        getMenuInflater().inflate(R.menu.menu_web_view, menu);
 //        return true;
 //    }
 
@@ -40,10 +44,10 @@ public class OpenSourceLicensesActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_print:
-                return true;
+                break;
             case android.R.id.home:
                 onBackPressed();
-                return true;
+                break;
         }
 
         return super.onOptionsItemSelected(item);

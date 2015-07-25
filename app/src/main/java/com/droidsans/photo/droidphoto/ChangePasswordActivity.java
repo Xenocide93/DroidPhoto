@@ -46,8 +46,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         username.append(getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getString(getString(R.string.username), ""));
 //        changeButton.setOnClickListener(new View.OnClickListener() {

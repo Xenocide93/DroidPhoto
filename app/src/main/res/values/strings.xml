@@ -20,6 +20,9 @@
     <string name="title_activity_edit_profile">Edit profile</string>
     <string name="title_activity_open_source_licenses">Open Source Licenses</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_web_view">   </string>
+    <string name="title_activity_terms_of_service">Terms of Service</string>
+    <string name="title_activity_privacy_policy">Privacy Policy</string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>
@@ -88,8 +91,8 @@
     <string name="register_comfirmpassword">confirm password</string>
     <string name="register_email">email address</string>
     <string name="register_disp_name">profile name (can be changed later)</string>
-    <string name="register_accept_tos">By clicking Register, you agree to our  </string>
-    <string name="register_accept_tos_link">Terms of Services</string>
+    <string name="register_accept_tos">"By clicking Register, you agree to our "</string>
+    <string name="register_accept_tos_link">Terms of Service</string>
 
     <!--password change activity-->
     <string name="change_password_old">old password</string>
@@ -130,6 +133,7 @@
     <string name="fill_post_checkbox_error_location_notfound">error no location found</string>
     <string name="fill_post_checkbox_location_off">error: location service must be turned on</string>
     <string name="fill_post_checkbox_no_location_exif">error: no location data in exif :(</string>
+    <string name="fill_post_checkbox_gps_working">working .</string>
 
     <string name="snackbar_fill_post_accept_tos">Please accept our term of service</string>
 
@@ -197,5 +201,9 @@
     <string name="long_text_30">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
+
+    <string name="url_terms_of_service">http://droidshot.droidsans.com</string>
+    <string name="url_privacy_policy">http://droidshot.droidsans.com</string>
+
 
 </resources>

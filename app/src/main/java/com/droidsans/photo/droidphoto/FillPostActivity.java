@@ -384,8 +384,11 @@ public class FillPostActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 /*
     private void setVendorAndModel(){
@@ -606,7 +609,7 @@ public class FillPostActivity extends AppCompatActivity {
         loopCheckForValidGps = new Runnable() {
             @Override
             public void run() {
-                if(loopCount % 3 == 0) useLocation.setText("working .");
+                if(loopCount % 3 == 0) useLocation.setText(getString(R.string.fill_post_checkbox_gps_working));
                 else useLocation.append(".");
                 loopCount++;
                 if (loopCount < 60) {
@@ -636,7 +639,7 @@ public class FillPostActivity extends AppCompatActivity {
         protected String doInBackground(Double... params) {
             if(params[0] == null || params[1] == null) return "error getting location :(";
             Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.US);
-            List<Address> addressList = null;
+            List<Address> addressList;
             try {
                 addressList = geocoder.getFromLocation(params[0], params[1], 1);
             } catch (IOException e) {
@@ -673,8 +676,8 @@ public class FillPostActivity extends AppCompatActivity {
                     publishProgress();
 //                    Log.d("droidphoto", "locale : " + localized.toString());
                     geocoder = new Geocoder(getApplicationContext(), new Locale(lc, address.getCountryCode()));
-                    address = null;
-                    addressList = null;
+//                    address = null;
+//                    addressList = null;
                     try {
                         addressList = geocoder.getFromLocation(params[0], params[1], 1);
                     } catch (IOException e) {
@@ -941,19 +944,22 @@ public class FillPostActivity extends AppCompatActivity {
                         final long filesize = originalFile.length();
 
                         //create client
-                        OkHttpClient okHttpClient = new OkHttpClient();
+                        final OkHttpClient okHttpClient = new OkHttpClient();
                         okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
 
                         //create rest adapter
-                        RestAdapter restAdapter = new RestAdapter.Builder()
+                        final RestAdapter restAdapter = new RestAdapter.Builder()
                                 .setEndpoint(GlobalSocket.serverURL)
                                 .setClient(new OkClient(okHttpClient))
                                 .build();
-                        PostService postService = restAdapter.create(PostService.class);
+                        final PostService postService = restAdapter.create(PostService.class);
                         ProgressListener listener = new ProgressListener() {
                             @Override
                             public void transferred(long num) {
                                 FeedFragment.percentage = (int)((95 * num) / filesize);
+                                if(FeedFragment.isFailedToUpload) {
+                                    okHttpClient.cancel(restAdapter);
+                                }
                             }
                         };
                         postService.postPhoto(new CountingTypedFile("image/jpeg", originalFile, listener),

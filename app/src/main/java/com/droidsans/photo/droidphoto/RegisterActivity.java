@@ -60,11 +60,14 @@ public class RegisterActivity extends Activity {
 
     private void initHint() {
         tosLink.append(" ");
+        final Intent intent = new Intent(getApplicationContext(), PlaceholderActivity.class);
+        intent.putExtra("URL", getString(R.string.url_terms_of_service));
+        intent.putExtra("Title", getString(R.string.title_activity_terms_of_service));
         SpannableString linktext = new SpannableString(getString(R.string.register_accept_tos_link));
         linktext.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                widget.getContext().startActivity(new Intent(getApplicationContext(), PlaceholderActivity.class));
+                widget.getContext().startActivity(intent);
             }
         }, 0, getString(R.string.register_accept_tos_link).length(), 0);
         tosLink.append(linktext);
@@ -122,7 +125,7 @@ public class RegisterActivity extends Activity {
                                                 public void onClick(View v) {
                                                 }
                                             })
-                                            .show();;
+                                            .show();
                                 } else if(GlobalSocket.mSocket.hasListeners("login_respond")) {
                                     GlobalSocket.globalEmit("user.login", loginStuff); //this automatic finish() this activity
                                 } else {
@@ -169,7 +172,6 @@ public class RegisterActivity extends Activity {
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            return;
                         }
                     }
                 });

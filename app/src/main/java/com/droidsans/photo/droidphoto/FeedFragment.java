@@ -475,6 +475,13 @@ public class FeedFragment extends Fragment {
             }
         });
 
+        cancelUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isFailedToUpload = true;
+            }
+        });
+
     }
 
     private void resolveDeviceName() {

@@ -93,6 +93,10 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name=".WebViewActivity"
+            android:label="@string/title_activity_web_view" >
+        </activity>
     </application>
 
 </manifest>

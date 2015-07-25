@@ -170,7 +170,7 @@ public class EditProfileActivity extends AppCompatActivity {
 //                                        }
 //                                    }, 2500);
                                 }
-                                ;
+
                                 returnToPreviousActivity();
 //                                Snackbar.make(getView(), "Profile information has been updated", Snackbar.LENGTH_LONG).show();
                             } else {
@@ -229,8 +229,11 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         toolbar.setTitle(getString(R.string.title_activity_edit_profile));
     }
@@ -411,6 +414,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                         }
 
                                         if(!GlobalSocket.globalEmit("user.edit", emitData)) {
+                                            //TODO retry on fail
                                             //retry
                                         } else {
                                             //detect loss
@@ -448,6 +452,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
 
                     if(!GlobalSocket.globalEmit("user.edit", emitData)) {
+                        //TODO retry on fail
                         //retry
                     } else {
                         //detect loss
