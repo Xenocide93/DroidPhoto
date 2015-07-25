@@ -1008,7 +1008,7 @@ public class FillPostActivity extends AppCompatActivity {
                                                 photoDetailStuff.put("is_accept", isAccept.isChecked());
                                                 photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
 
-                                                FeedFragment.percentage = 98;
+                                                FeedFragment.percentage = 95;
                                                 if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
                                                     delayAction.postDelayed(new Runnable() {
                                                         @Override
@@ -1019,6 +1019,7 @@ public class FillPostActivity extends AppCompatActivity {
 //                                                                Toast.makeText(getApplicationContext(), "upload failed (on socket.io)", Toast.LENGTH_SHORT).show();
                                                             } else {
                                                                 if(!hasResolvedName) storeDeviceName();
+//                                                                FeedFragment.percentage += 2;
                                                             }
                                                         }
                                                     }, 2000);
@@ -1128,7 +1129,7 @@ public class FillPostActivity extends AppCompatActivity {
                             if(data.getBoolean("success")){
                                 Log.d("droidphoto", "upload success");
                                 if(hasResolvedName) FeedFragment.percentage = 100;
-                                else FeedFragment.percentage += 1;
+                                else FeedFragment.percentage += 3;
                             } else {
                                 FeedFragment.isFailedToUpload = true;
                                 Log.d("droidphoto", "upload error: " + data.getString("msg"));
@@ -1157,7 +1158,7 @@ public class FillPostActivity extends AppCompatActivity {
                         try {
                             if(data.getBoolean("success")){
                                 Log.d("droidphoto", "update success");
-                                FeedFragment.percentage += 1;
+                                FeedFragment.percentage += 2;
                             } else {
                                 FeedFragment.isFailedToUpload = true;
                                 Log.d("droidphoto", "update error: " + data.getString("msg"));

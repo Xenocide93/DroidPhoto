@@ -117,14 +117,40 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         };
 
-        if(!GlobalSocket.mSocket.hasListeners("onUpdateProfileRespond")){
-            GlobalSocket.mSocket.on("onUpdateProfileRespond", new Emitter.Listener() {
+        if (!GlobalSocket.mSocket.hasListeners("get_user_data")) {
+            GlobalSocket.mSocket.on("get_user_data", new Emitter.Listener() {
                 @Override
                 public void call(final Object... args) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            GlobalSocket.mSocket.off("onUpdateProfileRespond");
+                            GlobalSocket.mSocket.off("get_user_data");
+                            JSONObject data = (JSONObject) args[0];
+                            if(data.optBoolean("success")) {
+                                JSONObject userObj = data.optJSONObject("userObj");
+                                displayName.setText(userObj.optString("disp_name"));
+                                profileDescription.setText(userObj.optString("profile_desc"));
+//                                profilePic
+                                Glide.with(getApplicationContext())
+                                        .load(GlobalSocket.serverURL + ProfileFragment.baseURL + userObj.optString("avatar_url"))
+                                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                        .transform(new CircleTransform(getApplicationContext()))
+                                        .into(profilePic);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        if(!GlobalSocket.mSocket.hasListeners("update_respond")){
+            GlobalSocket.mSocket.on("update_respond", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalSocket.mSocket.off("update_respond");
                             JSONObject data = (JSONObject) args[0];
                             if (data.optBoolean("success")) {
                                 final JSONObject send = new JSONObject();
@@ -148,7 +174,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 returnToPreviousActivity();
 //                                Snackbar.make(getView(), "Profile information has been updated", Snackbar.LENGTH_LONG).show();
                             } else {
-                                Snackbar.make(displayName, "Error: "+data.optString("msg"), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(displayName, "Error: " + data.optString("msg"), Snackbar.LENGTH_LONG).show();
                                 //reactivate button
                             }
                         }
@@ -164,13 +190,24 @@ public class EditProfileActivity extends AppCompatActivity {
 //            Toast.makeText(getApplicationContext(), "from settings", Toast.LENGTH_SHORT).show();
 
             //TODO load data from server
-            JSONObject data = new JSONObject();
+            final JSONObject data = new JSONObject();
             try {
                 data.put("_event", "get_user_data");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             if(!GlobalSocket.globalEmit("user.getuserinfo", data)) {
+                delayAction.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!GlobalSocket.globalEmit("user.getuserinfo", data)) {
+                            //sad
+                            Snackbar.make(displayName, "cannot get user info from server", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            //fuck off
+                        }
+                    }
+                }, 800);
                 //retry
             } else {
                 //detect data loss
@@ -368,7 +405,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                         try {
                                             emitData.put("disp_name", displayName.getText().toString());
                                             emitData.put("profile_desc", profileDescription.getText().toString());
-                                            emitData.put("_event", "onUpdateProfileRespond");
+                                            emitData.put("_event", "update_respond");
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
@@ -405,7 +442,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     try {
                         emitData.put("disp_name", displayName.getText().toString());
                         emitData.put("profile_desc", profileDescription.getText().toString());
-                        emitData.put("_event", "onUpdateProfileRespond");
+                        emitData.put("_event", "update_respond");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -434,6 +471,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        GlobalSocket.mSocket.off("update_respond");
+        GlobalSocket.mSocket.off("get_user_data");
+
         super.onDestroy();
     }
 
@@ -463,3 +503,4 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
 }
+
