@@ -98,6 +98,10 @@ public class FillPostActivity extends AppCompatActivity {
     ExifIFD0Directory orientationDirectory;
     GpsDirectory gpsDirectory;
 
+    private String foundExpTime;
+    private String foundAperture;
+    private String foundISO;
+
 //    private boolean isResolvedVendor = false;
 //    private boolean isResolvedModel = false;
 //    private String outputVendor, outputModel;
@@ -467,15 +471,72 @@ public class FillPostActivity extends AppCompatActivity {
             return;
         }
 
-        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null ||
-                mExif.getAttribute(ExifInterface.TAG_APERTURE) == null ||
-                exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) == null) {
+        Log.d("droidphoto", "drew exp_time: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
+        Log.d("droidphoto", "drew aperture: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE));
+        Log.d("droidphoto", "drew iso equiv: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
+        Log.d("droidphoto", "android exp_time: " + mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
+        Log.d("droidphoto", "android aperture: " + mExif.getAttribute(ExifInterface.TAG_APERTURE));
+        Log.d("droidphoto", "android iso equiv: " + mExif.getAttribute(ExifInterface.TAG_ISO));
+        Log.d("droidphoto", "drew exp_time: " + orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME));
+        Log.d("droidphoto", "drew aperture: " + orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE));
+        Log.d("droidphoto", "drew iso equiv: " + orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT));
+
+        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) != null) {
+            foundExpTime = exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
+        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME) != null) {
+            foundExpTime = orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME);
+        } else if(mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME) != null) {
+            foundExpTime = mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME);
+        } else {
             Intent returnIntent = new Intent();
             returnIntent.putExtra("return code", "no required exif");
             setResult(RESULT_CANCELED, returnIntent);
             finish();
             return;
         }
+
+        if(mExif.getAttribute(ExifInterface.TAG_APERTURE) != null) {
+            foundAperture = mExif.getAttribute(ExifInterface.TAG_APERTURE);
+//        } else if(exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE) != null) {
+//            foundAperture = exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE);
+//        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE) != null) {
+//            foundAperture = orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE);
+        } else {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("return code", "no required exif");
+            setResult(RESULT_CANCELED, returnIntent);
+            finish();
+            return;
+        }
+
+        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) != null || !exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT).trim().equals("0")) {
+            Log.d("droidphoto", "found iso1");
+            foundISO = exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT);
+        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT) != null || !orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT).trim().equals("0")) {
+            Log.d("droidphoto", "found iso2");
+            foundISO = orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT);
+//        } else if(mExif.getAttribute(ExifInterface.TAG_ISO) != null) {
+//            foundISO = mExif.getAttribute(ExifInterface.TAG_ISO);
+        } else {
+            Log.d("droidphoto", "not found");
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("return code", "no required exif");
+            setResult(RESULT_CANCELED, returnIntent);
+            finish();
+            return;
+        }
+
+
+
+//        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null ||
+//                mExif.getAttribute(ExifInterface.TAG_APERTURE) == null ||
+//                exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) == null) {
+//            Intent returnIntent = new Intent();
+//            returnIntent.putExtra("return code", "no required exif");
+//            setResult(RESULT_CANCELED, returnIntent);
+//            finish();
+//            return;
+//        }
 
         if(mImageFrom.equals("Picture Picker")) {
 //            if(!orientationDirectory.hasTagName(ExifIFD0Directory.TAG_MAKE) || !orientationDirectory.hasTagName(ExifIFD0Directory.TAG_MODEL)) {
@@ -489,14 +550,19 @@ public class FillPostActivity extends AppCompatActivity {
             Log.d("droidphoto", "phone make: " + Build.MANUFACTURER);
             Log.d("droidphoto", "phone model: " + Build.MODEL);
 
-            if(!(Build.MANUFACTURER).toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim()) ||
-                    !Build.MODEL.toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim())) {
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("return code", "not your photo");
-                setResult(RESULT_CANCELED, returnIntent);
-                finish();
-                return;
-            }
+//            if(!Build.MANUFACTURER.toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim())) {
+//                if(!Build.MODEL.toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim())) {
+//                    if (!orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().contains((Build.MANUFACTURER).toLowerCase().trim())) {
+//                        if(!Build.MODEL.toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim())) {
+//                           Intent returnIntent = new Intent();
+//                           returnIntent.putExtra("return code", "not your photo");
+//                           setResult(RESULT_CANCELED, returnIntent);
+//                           finish();
+//                           return;
+//                        }
+//                    }
+//                }
+//            }
         }
 //        Log.d("droidphoto","subIFD make: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAKE));
 //        Log.d("droidphoto","subIFD model: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MODEL));
@@ -799,9 +865,9 @@ public class FillPostActivity extends AppCompatActivity {
                                 locationCriteria.setVerticalAccuracy(Criteria.ACCURACY_LOW);
                                 locationCriteria.setPowerRequirement(Criteria.POWER_LOW);
                                 Log.d("droidphoto", "provider: " + locationManager.getBestProvider(locationCriteria, true));
-                                locationManager.requestLocationUpdates(locationManager.getBestProvider(locationCriteria, true), 490, 0, locationListener);
-//                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 490, 0, locationListener);
-//                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 990, 0, locationListener);
+//                                locationManager.requestLocationUpdates(locationManager.getBestProvider(locationCriteria, true), 490, 0, locationListener);
+                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 490, 0, locationListener);
+                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 990, 0, locationListener);
                                 startLoopForGps();
                                 toastText += "get location from GPS";
                             } else {
@@ -1004,13 +1070,16 @@ public class FillPostActivity extends AppCompatActivity {
                                                     photoDetailStuff.put("vendor", vendorET.getText().toString());
                                                 }
                                                 photoDetailStuff.put("is_flash", exifDirectory.getString(ExifSubIFDDirectory.TAG_FLASH));
-                                                photoDetailStuff.put("exp_time", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
+//                                                photoDetailStuff.put("exp_time", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
+                                                photoDetailStuff.put("exp_time", foundExpTime);
                                                 photoDetailStuff.put("tag_date", exifDirectory.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL));
                                                 photoDetailStuff.put("width", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_WIDTH));
                                                 photoDetailStuff.put("height", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXIF_IMAGE_HEIGHT));
-                                                photoDetailStuff.put("iso", exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
+//                                                photoDetailStuff.put("iso", exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
+                                                photoDetailStuff.put("iso", foundISO);
 //                                           photoDetailStuff.put("aperture", exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE));
-                                                photoDetailStuff.put("aperture", mExif.getAttribute(ExifInterface.TAG_APERTURE)); //because drewnoakes' aperture sometimes missing
+//                                                photoDetailStuff.put("aperture", mExif.getAttribute(ExifInterface.TAG_APERTURE)); //because drewnoakes' aperture sometimes missing
+                                                photoDetailStuff.put("aperture", foundAperture);
 //                                            if(gpsDirectory != null) {
 //                                                photoDetailStuff.put("gps_lat", gpsDirectory.getString(GpsDirectory.TAG_LATITUDE));
 //                                                photoDetailStuff.put("gps_long", gpsDirectory.getString(GpsDirectory.TAG_LONGITUDE));

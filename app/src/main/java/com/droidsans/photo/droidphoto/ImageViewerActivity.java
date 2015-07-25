@@ -195,7 +195,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                     startActivity(fullscreenViewerIntent);
                 }
             });
-        }
+        } 
     }
 
     private void setupReloadButtonListener(){
