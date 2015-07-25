@@ -70,16 +70,19 @@
         </activity>
         <activity
             android:name=".PlaceholderActivity"
-            android:label="@string/title_activity_placeholder" >
+            android:label="@string/title_activity_placeholder"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChangePasswordActivity"
-            android:label="@string/title_activity_change_password" >
+            android:label="@string/title_activity_change_password"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"  >
         </activity>
         <activity
             android:name=".ImageViewerFullScreenActivity"
@@ -87,11 +90,12 @@
         </activity>
         <activity
             android:name=".OpenSourceLicensesActivity"
-            android:label="@string/title_activity_open_source_licenses" >
+            android:label="@string/title_activity_open_source_licenses">
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".WebViewActivity"
