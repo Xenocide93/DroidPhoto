@@ -599,6 +599,15 @@ public class FeedFragment extends Fragment {
                             }
                             recycleAdapter = new FeedRecycleViewAdapter(getActivity(), feedPicturePack);
                             feedRecycleView.setAdapter(recycleAdapter);
+
+                            if(feedRecycleView.getAlpha() < 1f) {
+                                feedRecycleView.animate()
+                                        .alpha(1f)
+                                        .setDuration(300)
+                                        .start();
+                                Log.d("droidphoto", "alpha:1");
+                            }
+
                             swipeRefreshLayout.setRefreshing(false);
 
                             checkFirstTimeLaunch();
@@ -1142,6 +1151,7 @@ public class FeedFragment extends Fragment {
 //                    FontTextView username = (FontTextView) uploadingView.findViewById(R.id.user);
 
                     isUploading = true;
+                    staticPhotoPath = data.getStringExtra("path");
                     setFamEnable(false);
                     showUploadProgress(true);
 
@@ -1480,6 +1490,11 @@ public class FeedFragment extends Fragment {
     }
 
     public void refreshFeed(){
+        feedRecycleView.animate()
+                .alpha(0f)
+                .setDuration(300)
+                .start();
+
         skipDate = null;
         isUpdate = false;
         JSONObject filter = new JSONObject();
