@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
@@ -28,6 +29,7 @@ public class AboutFragment extends Fragment {
         mainList = (ListView) rootView.findViewById(R.id.about_list);
 
         mainList.addHeaderView(((LayoutInflater)getActivity().getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.item_about_header, null, false));
+        mainList.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.item_text, getResources().getStringArray(R.array.about_list)));
 //        mainList.setAdapter();
 
         return rootView;

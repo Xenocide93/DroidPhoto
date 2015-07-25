@@ -3,14 +3,13 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="com.droidsans.photo.droidphoto.AboutFragment">
 
     <ListView
         android:id="@+id/about_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/about_list" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
