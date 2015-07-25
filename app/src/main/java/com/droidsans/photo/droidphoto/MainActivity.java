@@ -411,13 +411,13 @@ public class MainActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == ACTIVITY_SETTINGS) {
-            settingsMenuItem.setChecked(false);
-            if(previousMenuItem != null) previousMenuItem.setChecked(true);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if(requestCode == ACTIVITY_SETTINGS) {
+//            settingsMenuItem.setChecked(false);
+//            if(previousMenuItem != null) previousMenuItem.setChecked(true);
+//        }
+//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
