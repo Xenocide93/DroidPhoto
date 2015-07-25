@@ -64,11 +64,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.android.MainThreadExecutor;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
@@ -944,14 +948,21 @@ public class FillPostActivity extends AppCompatActivity {
                         //create file
                         final long filesize = originalFile.length();
 
-                        //create client
+                        //create executor
+                        final ExecutorService executors = Executors.newCachedThreadPool();
+
+                        //create http client
                         final OkHttpClient okHttpClient = new OkHttpClient();
                         okHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
+
+                        //create client
+                        final OkClient okClient = new OkClient(okHttpClient);
 
                         //create rest adapter
                         final RestAdapter restAdapter = new RestAdapter.Builder()
                                 .setEndpoint(GlobalSocket.serverURL)
-                                .setClient(new OkClient(okHttpClient))
+                                .setClient(okClient)
+                                .setExecutors(executors, new MainThreadExecutor())
                                 .build();
                         final PostService postService = restAdapter.create(PostService.class);
                         ProgressListener listener = new ProgressListener() {
@@ -959,7 +970,8 @@ public class FillPostActivity extends AppCompatActivity {
                             public void transferred(long num) {
                                 FeedFragment.percentage = (int)((95 * num) / filesize);
                                 if(FeedFragment.isCancelUpload) {
-                                    okHttpClient.cancel(restAdapter);
+//                                    okHttpClient.cancel(postService);
+                                    executors.shutdownNow();
                                 }
                             }
                         };
