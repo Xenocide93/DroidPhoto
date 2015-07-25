@@ -1,0 +1,22 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.droidsans.photo.droidphoto.SettingsActivity">
+
+    <include android:id="@+id/toolbar"
+        layout="@layout/item_toolbar" />
+
+    <View android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@id/toolbar"
+        android:background="@drawable/toolbar_dropshadow" />
+
+    <fragment android:name="com.droidsans.photo.droidphoto.PlaceholderFragment"
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/settings_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_settings" />
+
+</RelativeLayout>

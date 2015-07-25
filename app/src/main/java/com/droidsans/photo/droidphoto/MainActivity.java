@@ -39,6 +39,7 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int ACTIVITY_SETTINGS = 1024;
     public static Context mContext;
     public static int snackString;
 
@@ -278,52 +279,64 @@ public class MainActivity extends AppCompatActivity {
                 if(previousMenuItem != null) previousMenuItem.setChecked(false);
 //                menuItem.setChecked(true);
                 String selectedMenu = menuItem.getTitle().toString();
-                getSupportFragmentManager().popBackStack();
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
 //                fragmentTransaction.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
                 if (selectedMenu.equals(getString(R.string.drawer_feed))) {
 //                    GlobalSocket.reconnect();
                     feedMenuItem.setChecked(true);
+                    getSupportFragmentManager().popBackStack();
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
                     fragmentTransaction.commit();
-                    toolbar.setTitle("Feed");
+                    toolbar.setTitle(getString(R.string.drawer_feed));
                     previousMenuItem = feedMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_event))) {
 //                    GlobalSocket.reconnect();
                     eventMenuItem.setChecked(true);
+                    getSupportFragmentManager().popBackStack();
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new EventFragment());
                     fragmentTransaction.commit();
-                    toolbar.setTitle("Events");
+                    toolbar.setTitle(getString(R.string.drawer_event));
                     previousMenuItem = eventMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_help))) {
 //                GlobalSocket.reconnect();
                     helpMenuItem.setChecked(true);
+                    getSupportFragmentManager().popBackStack();
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
                     fragmentTransaction.commit();
-                    toolbar.setTitle("Help");
+                    toolbar.setTitle(getString(R.string.drawer_help));
                     previousMenuItem = helpMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_about))) {
                     aboutMenuItem.setChecked(true);
+                    getSupportFragmentManager().popBackStack();
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new AboutFragment());
                     fragmentTransaction.commit();
-                    toolbar.setTitle("About");
+                    toolbar.setTitle(getString(R.string.drawer_about));
                     previousMenuItem = aboutMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_settings))) {
                     settingsMenuItem.setChecked(true);
-                    fragmentTransaction.replace(R.id.main_fragment, new SettingsFragment());
-                    fragmentTransaction.commit();
-                    toolbar.setTitle("Settings");
-                    previousMenuItem = settingsMenuItem;
+//                    getSupportFragmentManager().popBackStack();
+//                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                    fragmentTransaction.replace(R.id.main_fragment, new SettingsFragment());
+//                    fragmentTransaction.commit();
+//                    toolbar.setTitle(getString(R.string.drawer_settings));
+                    startActivityForResult(new Intent(getApplicationContext(), SettingsActivity.class), ACTIVITY_SETTINGS);
+//                    previousMenuItem = settingsMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_evaluate))) {
                     evaluateMenuItem.setChecked(true);
+                    getSupportFragmentManager().popBackStack();
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
                     fragmentTransaction.commit();
-                    toolbar.setTitle("Evaluate");
+                    toolbar.setTitle(getString(R.string.drawer_evaluate));
                     previousMenuItem = evaluateMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_logout))) {
                     new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("Logout ?")
-                            .setMessage("are you sure ?")
+                            .setTitle(getString(R.string.drawer_logout) + " ?")
+                            .setMessage(getString(R.string.drawer_logout_confirm))
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -396,6 +409,14 @@ public class MainActivity extends AppCompatActivity {
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onPostCreate(savedInstanceState, persistentState);
         actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == ACTIVITY_SETTINGS) {
+            settingsMenuItem.setChecked(false);
+            if(previousMenuItem != null) previousMenuItem.setChecked(true);
+        }
     }
 
     @Override

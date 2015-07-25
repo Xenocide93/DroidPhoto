@@ -1,6 +1,7 @@
 package com.droidsans.photo.droidphoto;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,8 +28,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private FontTextView username;
     private EditText oldPassword, newPassword, confirmPassword;
-    private Button changeButton;
+//    private Button changeButton;
     private Emitter.Listener onPasswordChangeRespond;
+    private MenuItem done;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         oldPassword = (EditText) findViewById(R.id.change_password_old);
         newPassword = (EditText) findViewById(R.id.change_password_new);
         confirmPassword = (EditText) findViewById(R.id.change_password_confirm);
-        changeButton = (Button) findViewById(R.id.button_confirm);
+//        changeButton = (Button) findViewById(R.id.button_confirm);
 
         setSupportActionBar(toolbar);
 
@@ -48,57 +50,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         username.append(getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getString(getString(R.string.username), ""));
-        changeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(newPassword.getText().toString().length() < getResources().getInteger(R.integer.min_password_size)) {
-                    newPassword.setError(getString(R.string.snackbar_changepass_tooshort_shortver));
-                    newPassword.setSelected(true);
-                    Snackbar.make(newPassword, getString(R.string.snackbar_changepass_tooshort), Snackbar.LENGTH_LONG).show();
-                } else if(newPassword.getText().toString().equals(confirmPassword.getText().toString())) {
-                    changeButton.setClickable(false);
-                    changeButton.setTextColor(getResources().getColor(R.color.light_gray));
-
-                    JSONObject changePassObj = new JSONObject();
-                    String hexOldPassword = "";
-                    String hexNewPassword = "";
-
-                    try {
-                        MessageDigest md = MessageDigest.getInstance("SHA-256");
-                        md.update(oldPassword.getText().toString().getBytes());
-                        hexOldPassword = bytesToHex(md.digest());
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        MessageDigest md = MessageDigest.getInstance("SHA-256");
-                        md.update(newPassword.getText().toString().getBytes());
-                        hexNewPassword = bytesToHex(md.digest());
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        changePassObj.put("old_pass", hexOldPassword);
-                        changePassObj.put("new_pass", hexNewPassword);
-                        changePassObj.put("_event", "change_password");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-//                    Log.d(APP_LOG, hexPassword);
-                    if (!GlobalSocket.globalEmit("user.changepass", changePassObj)) {
-                        Snackbar.make(changeButton, getString(R.string.snackbar_login_cannot_connect), Snackbar.LENGTH_LONG).show();
-                        changeButton.setClickable(true);
-                        changeButton.setTextColor(getResources().getColor(R.color.black));
-                    }
-                } else {
-                    confirmPassword.setError(getString(R.string.snackbar_changepass_mismatch));
-                    confirmPassword.setSelected(true);
-                    Snackbar.make(confirmPassword, getString(R.string.snackbar_changepass_mismatch), Snackbar.LENGTH_LONG).show();
-                }
-            }
-        });
+//        changeButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                submitChangePass(null);
+//            }
+//        });
         onPasswordChangeRespond = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
@@ -114,7 +71,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                     .apply();
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), data.optString("msg"), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getApplicationContext(), data.optString("msg"), Toast.LENGTH_SHORT).show();
                             switch (data.optString("msg")) {
                                 case "undefined":
                                     break;
@@ -128,8 +85,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                 default:
                                     break;
                             }
-                            changeButton.setClickable(true);
-                            changeButton.setTextColor(getResources().getColor(R.color.black));
+                            if(done != null) done.setEnabled(true);
+//                            changeButton.setClickable(true);
+//                            changeButton.setTextColor(getResources().getColor(R.color.primary_color));
                         }
 
                     }
@@ -146,6 +104,62 @@ public class ChangePasswordActivity extends AppCompatActivity {
             builder.append(String.format("%02x", b));
         }
         return builder.toString();
+    }
+
+    private void submitChangePass(@Nullable MenuItem item) {
+        this.done = item;
+        if(newPassword.getText().toString().length() < getResources().getInteger(R.integer.min_password_size)) {
+            newPassword.setError(getString(R.string.snackbar_changepass_tooshort_shortver));
+            newPassword.setSelected(true);
+            Snackbar.make(newPassword, getString(R.string.snackbar_changepass_tooshort), Snackbar.LENGTH_LONG).show();
+        } else if(newPassword.getText().toString().equals(confirmPassword.getText().toString())) {
+//            changeButton.setClickable(false);
+//            changeButton.setTextColor(getResources().getColor(R.color.light_gray));
+            if(done != null) {
+                done.setEnabled(false);
+            }
+
+            JSONObject changePassObj = new JSONObject();
+            String hexOldPassword = "";
+            String hexNewPassword = "";
+
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(oldPassword.getText().toString().getBytes());
+                hexOldPassword = bytesToHex(md.digest());
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(newPassword.getText().toString().getBytes());
+                hexNewPassword = bytesToHex(md.digest());
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                changePassObj.put("old_pass", hexOldPassword);
+                changePassObj.put("new_pass", hexNewPassword);
+                changePassObj.put("_event", "change_password");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+//                    Log.d(APP_LOG, hexPassword);
+            if (!GlobalSocket.globalEmit("user.changepass", changePassObj)) {
+                Snackbar.make(newPassword, getString(R.string.snackbar_login_cannot_connect), Snackbar.LENGTH_LONG).show();
+                if(done != null) {
+                    done.setEnabled(true);
+                }
+//                changeButton.setClickable(true);
+//                changeButton.setTextColor(getResources().getColor(R.color.black));
+            }
+        } else {
+            confirmPassword.setError(getString(R.string.snackbar_changepass_mismatch));
+            confirmPassword.setSelected(true);
+            Snackbar.make(confirmPassword, getString(R.string.snackbar_changepass_mismatch), Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -168,7 +182,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_done:
-
+                Toast.makeText(getApplicationContext(), "action", Toast.LENGTH_SHORT).show();
+                submitChangePass(item);
                 return true;
             case android.R.id.home:
                 finish();
