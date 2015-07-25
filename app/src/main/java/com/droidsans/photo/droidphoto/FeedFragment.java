@@ -146,6 +146,7 @@ public class FeedFragment extends Fragment {
 
     public static int percentage = 0;
     public static boolean isFailedToUpload = false;
+    public static boolean isCancelUpload = false;
     public static boolean isUploading;
     private RelativeLayout uploadProgressLayout;
 
@@ -514,7 +515,7 @@ public class FeedFragment extends Fragment {
         cancelUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isFailedToUpload = true;
+                isCancelUpload = true;
             }
         });
 
@@ -1400,6 +1401,8 @@ public class FeedFragment extends Fragment {
                     hideUploadProgress();
                     refreshFeed();
                     Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_failed), Snackbar.LENGTH_LONG).show();
+                } else if(isCancelUpload) {
+                    Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_cancel), Snackbar.LENGTH_LONG).show();
                 } else {
                     if (percentage < 100) {//update upload progress
                         Log.d("droidphoto", "uploaded : " + percentage + "%");

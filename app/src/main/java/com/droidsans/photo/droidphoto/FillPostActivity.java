@@ -957,7 +957,7 @@ public class FillPostActivity extends AppCompatActivity {
                             @Override
                             public void transferred(long num) {
                                 FeedFragment.percentage = (int)((95 * num) / filesize);
-                                if(FeedFragment.isFailedToUpload) {
+                                if(FeedFragment.isCancelUpload) {
                                     okHttpClient.cancel(restAdapter);
                                 }
                             }

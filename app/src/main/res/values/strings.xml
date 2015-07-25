@@ -140,6 +140,7 @@
     <!--Tutorial-->
     <string name="tutorial_string_fam">Create new post</string>
     <string name="tutorial_string_filter">Choose smartphone model</string>
+    <string name="tutorial_touch_to_dismiss">Touch to dismiss</string>
 
     <!--Feed-->
     <string name="recent_tag">Most Recent</string>
@@ -153,6 +154,7 @@
     <string name="snackbar_feed_selected_vendor">"Vendor: "</string>
     <string name="snackbar_feed_selected_model">" Model: "</string>
     <string name="snackbar_feed_upload_failed">upload failed</string>
+    <string name="snackbar_feed_upload_cancel">upload cancelled</string>
     <string name="fab_label_picture_picker">Choose from gallery</string>
     <string name="fab_label_camera">Take new picture</string>
 
@@ -213,6 +215,5 @@
 
     <string name="url_terms_of_service">http://droidshot.droidsans.com</string>
     <string name="url_privacy_policy">http://droidshot.droidsans.com</string>
-    <string name="tutorial_touch_to_dismiss">Touch to dismiss</string>
 
 </resources>
