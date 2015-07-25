@@ -1,5 +1,6 @@
 package com.droidsans.photo.droidphoto;
 
+import android.app.Activity;
 import android.preference.PreferenceActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -24,7 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.settings_fragment, new SettingsFragment()).commit();
+        getFragmentManager().beginTransaction().replace(R.id.settings_fragment, new SettingsFragment()).commit();
     }
 
     @Override
