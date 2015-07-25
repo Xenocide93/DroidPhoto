@@ -87,33 +87,31 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     myHolder.deviceName.setText(pack.vendor + " " + pack.model);
                     myHolder.user.setText(pack.username + "");
 
-                    if(!myHolder.itemView.hasOnClickListeners()) {
-                        myHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (!isClickOnce) {
-                                    FeedRecycleViewAdapter.isClickOnce = true;
-                                    Intent imageViewerIntent = new Intent(context, ImageViewerActivity.class);
-                                    imageViewerIntent.putExtra("photoId", pack.photoId);
-                                    imageViewerIntent.putExtra("photoURL", pack.photoURL);
-                                    imageViewerIntent.putExtra("caption", pack.caption);
-                                    imageViewerIntent.putExtra("vendor", pack.vendor);
-                                    imageViewerIntent.putExtra("model", pack.model);
-                                    imageViewerIntent.putExtra("exposureTime", pack.shutterSpeed);
-                                    imageViewerIntent.putExtra("aperture", pack.aperture);
-                                    imageViewerIntent.putExtra("iso", pack.iso);
-                                    imageViewerIntent.putExtra("userId", pack.userId);
-                                    imageViewerIntent.putExtra("username", pack.username);
-                                    imageViewerIntent.putExtra("gpsLocation", pack.gpsLocation);
-                                    imageViewerIntent.putExtra("gpsLocalized", pack.gpsLocalizedLocation);
-                                    imageViewerIntent.putExtra("submitDate", pack.submitDate);
-                                    imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
+                    myHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!isClickOnce) {
+                                FeedRecycleViewAdapter.isClickOnce = true;
+                                Intent imageViewerIntent = new Intent(context, ImageViewerActivity.class);
+                                imageViewerIntent.putExtra("photoId", pack.photoId);
+                                imageViewerIntent.putExtra("photoURL", pack.photoURL);
+                                imageViewerIntent.putExtra("caption", pack.caption);
+                                imageViewerIntent.putExtra("vendor", pack.vendor);
+                                imageViewerIntent.putExtra("model", pack.model);
+                                imageViewerIntent.putExtra("exposureTime", pack.shutterSpeed);
+                                imageViewerIntent.putExtra("aperture", pack.aperture);
+                                imageViewerIntent.putExtra("iso", pack.iso);
+                                imageViewerIntent.putExtra("userId", pack.userId);
+                                imageViewerIntent.putExtra("username", pack.username);
+                                imageViewerIntent.putExtra("gpsLocation", pack.gpsLocation);
+                                imageViewerIntent.putExtra("gpsLocalized", pack.gpsLocalizedLocation);
+                                imageViewerIntent.putExtra("submitDate", pack.submitDate);
+                                imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
 
-                                    context.startActivity(imageViewerIntent);
-                                }
+                                context.startActivity(imageViewerIntent);
                             }
-                        });
-                    }
+                        }
+                    });
                 }
 
                 //TODO for test UI
