@@ -224,7 +224,7 @@ public class FeedFragment extends Fragment {
             tutorialHandler = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
                     .setToolTip(new ToolTip()
                         .setTitle(tutorialStringList.get(0))
-                        .setDescription("Touch to dismiss")
+                        .setDescription(getString(R.string.tutorial_touch_to_dismiss))
                         .setGravity(Gravity.LEFT|Gravity.TOP))
                     .setOverlay(new Overlay()
                         .setEnterAnimation(enterAnimation)
@@ -812,8 +812,8 @@ public class FeedFragment extends Fragment {
                                 feedPicturePack.add(footer);
                             }
                         } else {
-                            Snackbar.make(frameLayout, "cannot refresh feed", Snackbar.LENGTH_LONG)
-                                    .setAction("retry", new View.OnClickListener() {
+                            Snackbar.make(frameLayout, getString(R.string.snackbar_feed_cannot_refresh), Snackbar.LENGTH_LONG)
+                                    .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                         }
@@ -1059,7 +1059,7 @@ public class FeedFragment extends Fragment {
                 return true;
             case R.id.action_filter:
                 if(noData) {
-                    Snackbar.make(frameLayout, "fresh start !! upload first image now -->", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(frameLayout, "fresh start. upload first image now !!", Snackbar.LENGTH_LONG).show();
                     return true;
                 }
                 if(isFirstTime()){
@@ -1079,7 +1079,7 @@ public class FeedFragment extends Fragment {
                 case FILTER_FEED:
                     String vendorName = data.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
                     String modelName = data.getStringExtra(BrowseModelActivity.MODEL_NAME);
-                    Snackbar.make(frameLayout, "Vendor: " + vendorName + " Model: " + modelName, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(frameLayout, getString(R.string.snackbar_feed_selected_vendor) + vendorName + getString(R.string.snackbar_feed_selected_model) + modelName, Snackbar.LENGTH_SHORT).show();
                     if(!vendorName.equals("") && !modelName.equals("")){
                         //display existed filter tag
                         //if already existed, return
@@ -1359,7 +1359,7 @@ public class FeedFragment extends Fragment {
                     setFamEnable(true);
                     hideUploadProgress();
                     refreshFeed();
-                    Snackbar.make(frameLayout, "upload failed", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_failed), Snackbar.LENGTH_LONG).show();
                 } else {
                     if (percentage < 100) {//update upload progress
                         Log.d("droidphoto", "uploaded : " + percentage + "%");

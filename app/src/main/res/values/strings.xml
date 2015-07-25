@@ -149,6 +149,12 @@
     <string name="alert_not_from_camera_summary">Selected photo must have exif.</string>
     <string name="alert_no_required_exif_title">Incomplete Photo Data</string>
     <string name="alert_no_required_exif_summary">Selected photo must have every required exif.</string>
+    <string name="snackbar_feed_cannot_refresh">cannot refresh feed</string>
+    <string name="snackbar_feed_selected_vendor">"Vendor: "</string>
+    <string name="snackbar_feed_selected_model">" Model: "</string>
+    <string name="snackbar_feed_upload_failed">upload failed</string>
+    <string name="fab_label_picture_picker">Choose from gallery</string>
+    <string name="fab_label_camera">Take new picture</string>
 
     <string-array name="about_list">
         <item>Application Info</item>
@@ -158,6 +164,9 @@
         <item>Developer Team</item>
     </string-array>
 
+    <string name="snackbar_action_retry">retry</string>
+    <string name="snackbar_action_cancel">CANCEL</string>
+    <string name="snackbar_action_ok">OK</string>
 
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
@@ -204,6 +213,6 @@
 
     <string name="url_terms_of_service">http://droidshot.droidsans.com</string>
     <string name="url_privacy_policy">http://droidshot.droidsans.com</string>
-
+    <string name="tutorial_touch_to_dismiss">Touch to dismiss</string>
 
 </resources>

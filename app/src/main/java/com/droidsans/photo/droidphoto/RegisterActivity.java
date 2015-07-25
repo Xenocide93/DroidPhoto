@@ -198,7 +198,7 @@ public class RegisterActivity extends Activity {
                 registerBtn.setClickable(true);
                 registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
                 Snackbar.make(registerBtn, getString(R.string.snackbar_connection_timeout), Snackbar.LENGTH_LONG)
-                        .setAction("retry", new View.OnClickListener() {
+                        .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 emitregister();

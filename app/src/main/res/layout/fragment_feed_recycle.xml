@@ -23,7 +23,6 @@
         android:layout_height="match_parent"
         android:visibility="visible"
         android:background="@color/global_bg_white">
-        <!--android:layout_marginTop="?android:attr/actionBarSize"-->
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -111,7 +110,7 @@
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"
                     android:src="@drawable/ic_photo_library_accent_24dp"
                     fab:fab_colorNormal="@color/white"
-                    fab:fab_label="Choose from gallery"
+                    fab:fab_label="@string/fab_label_picture_picker"
                     fab:fab_colorPressed="@color/white_pressed"/>
 
                 <com.github.clans.fab.FloatingActionButton
@@ -121,7 +120,7 @@
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"
                     android:src="@drawable/ic_photo_camera_accent_24dp"
                     fab:fab_colorNormal="@color/white"
-                    fab:fab_label="Take new picture"
+                    fab:fab_label="@string/fab_label_camera"
                     fab:fab_colorPressed="@color/white_pressed"/>
 
             </com.github.clans.fab.FloatingActionMenu>
@@ -162,7 +161,7 @@
                 android:paddingRight="24dp"
                 android:layout_alignParentRight="true"
                 android:background="@color/transparent"
-                android:text="CANCEL"
+                android:text="@string/snackbar_action_cancel"
                 android:textColor="@color/accent_color" />
 
             <ProgressBar

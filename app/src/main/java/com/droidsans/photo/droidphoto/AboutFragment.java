@@ -40,8 +40,7 @@ public class AboutFragment extends Fragment {
         mainList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Snackbar.make(mainList, "position : " + position, Snackbar.LENGTH_SHORT).show();
-
+//                Snackbar.make(mainList, "position : " + position, Snackbar.LENGTH_SHORT).show();
                 Intent intent;
                 switch (position) {
                     case 1: //app info

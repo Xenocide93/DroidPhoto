@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 Snackbar.make(findViewById(R.id.main_fragment), "onCreateContextMenu", Snackbar.LENGTH_SHORT)
-                        .setAction("OK", new View.OnClickListener() {
+                        .setAction(getString(R.string.snackbar_action_ok), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                             }
