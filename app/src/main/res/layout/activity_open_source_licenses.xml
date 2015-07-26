@@ -1,15 +1,160 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.droidsans.photo.droidphoto.OpenSourceLicensesActivity">
-
-    <TextView android:text="Open Source Licenses"
-        android:layout_width="wrap_content"
-        android:layout_below="@id/toolbar"
-        android:layout_height="wrap_content" />
 
     <include android:id="@+id/toolbar"
         layout="@layout/item_toolbar" />
+
+    <ScrollView
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:text="@string/license_nkzawa_socket_io_android_title"
+                android:textColor="@color/holo_blue_dark"
+                app:customFont="Roboto-Medium.ttf"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/global_bg_white"
+                android:text="@string/license_nkzawa_socket_io_android_detail"/>
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:text="@string/license_bumptech_glide_title"
+                android:textColor="@color/holo_blue_dark"
+                app:customFont="Roboto-Medium.ttf"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/global_bg_white"
+                android:text="@string/license_bumptech_glide_detail"/>
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:text="@string/license_drewnoakes_metadata_extractor_title"
+                android:textColor="@color/holo_blue_dark"
+                app:customFont="Roboto-Medium.ttf"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/global_bg_white"
+                android:text="@string/license_drewnoakes_metadata_extractor_detail"/>
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:text="@string/license_subsampling_scale_image_view_title"
+                android:textColor="@color/holo_blue_dark"
+                app:customFont="Roboto-Medium.ttf"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/global_bg_white"
+                android:text="@string/license_subsampling_scale_image_view_detail"/>
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:text="@string/license_square_retrofit_title"
+                android:textColor="@color/holo_blue_dark"
+                app:customFont="Roboto-Medium.ttf"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/global_bg_white"
+                android:text="@string/license_square_retrofit_detail"/>
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:text="@string/license_clans_floatingactionbutton_title"
+                android:textColor="@color/holo_blue_dark"
+                app:customFont="Roboto-Medium.ttf"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/global_bg_white"
+                android:text="@string/license_clans_floatingactionbutton_detail"/>
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:text="@string/license_worker8_tourguide_title"
+                android:textColor="@color/holo_blue_dark"
+                app:customFont="Roboto-Medium.ttf"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/global_bg_white"
+                android:text="@string/license_worker8_tourguide_detail"/>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <View
         android:id="@+id/toolbar_shadow"
@@ -19,3 +164,4 @@
         android:background="@drawable/toolbar_dropshadow"/>
 
 </RelativeLayout>
+

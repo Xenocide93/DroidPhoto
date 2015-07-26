@@ -464,7 +464,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                     Log.d("droidphoto", "init cache task for " + photoURL);
 //                    String filename = photoURL.substring(0, photoURL.indexOf("."));
                     String filename = photoURL.split("\\.")[0];
-                    String cachetablename = "test.e";
+                    String cachetablename = getString(R.string.cache_table_name);
                     String loadedImagePath = getCacheDir() + "/" + filename;
 
                     /*  format
