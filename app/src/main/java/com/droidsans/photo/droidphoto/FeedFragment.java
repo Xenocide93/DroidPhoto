@@ -620,7 +620,7 @@ public class FeedFragment extends Fragment {
                                 picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
                                 picturePack.setSubmitDate(jsonPack.optString("submit_date"));
                                 picturePack.setAvatarURL(jsonPack.optString("avatar_url"));
-                                Log.d("droidphoto", jsonPack.optString("submit_date"));
+//                                Log.d("droidphoto", jsonPack.optString("submit_date"));
 
                                 skipDate = jsonPack.optString("submit_date");
 
@@ -1096,7 +1096,7 @@ public class FeedFragment extends Fragment {
                 return true;
             case R.id.action_filter:
                 if(noData) {
-                    Snackbar.make(frameLayout, "fresh start. upload first image now !!", Snackbar.LENGTH_LONG).show();
+//                    Snackbar.make(frameLayout, "fresh start. upload first image now !!", Snackbar.LENGTH_LONG).show();
                     return true;
                 }
                 if(isFirstTime()){
@@ -1114,6 +1114,7 @@ public class FeedFragment extends Fragment {
         if (resultCode == FragmentActivity.RESULT_OK)
             switch (requestCode) {
                 case FILTER_FEED:
+                    initializeVendorModelList();
                     String vendorName = data.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
                     String modelName = data.getStringExtra(BrowseModelActivity.MODEL_NAME);
                     Snackbar.make(frameLayout, getString(R.string.snackbar_feed_selected_vendor) + vendorName + getString(R.string.snackbar_feed_selected_model) + modelName, Snackbar.LENGTH_SHORT).show();
@@ -1136,14 +1137,33 @@ public class FeedFragment extends Fragment {
 
                 case SELECT_PHOTO:
                     String path = getImagePath(data.getData());
+                    File file = new File(path);
+                    if(file.length() > 0) {
 //                    Toast.makeText(getActivity(), path, Toast.LENGTH_LONG).show();
-                    Intent fillPostFromPicturePickerIntent = new Intent(getActivity(), FillPostActivity.class);
-                    fillPostFromPicturePickerIntent.putExtra("photoPath", path);
-                    fillPostFromPicturePickerIntent.putExtra("imageFrom", "Picture Picker");
-                    fillPostFromPicturePickerIntent.putExtra("vendor", resolvedVendor);
-                    fillPostFromPicturePickerIntent.putExtra("model", resolvedModel);
-                    startActivityForResult(fillPostFromPicturePickerIntent, FILL_POST);
-                    break;
+                        Intent fillPostFromPicturePickerIntent = new Intent(getActivity(), FillPostActivity.class);
+                        fillPostFromPicturePickerIntent.putExtra("photoPath", path);
+                        fillPostFromPicturePickerIntent.putExtra("imageFrom", "Picture Picker");
+                        fillPostFromPicturePickerIntent.putExtra("vendor", resolvedVendor);
+                        fillPostFromPicturePickerIntent.putExtra("model", resolvedModel);
+                        startActivityForResult(fillPostFromPicturePickerIntent, FILL_POST);
+                        hasImageInPhotoPath = false;
+                        staticPhotoPath = null;
+                        break;
+                    } else {
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(getString(R.string.alert_invalid_image))
+                                .setMessage(getString(R.string.alert_invalid_image_message))
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .show();
+                        //remove photo entry from mediastore or rescan | maybe it is impossible.. ?
+                        hasImageInPhotoPath = false;
+                        staticPhotoPath = null;
+                        break;
+                    }
 
                 case REQUEST_IMAGE_CAPTURE:
 //                    Toast.makeText(getActivity(), staticPhotoPath, Toast.LENGTH_LONG).show();
@@ -1157,6 +1177,8 @@ public class FeedFragment extends Fragment {
                         fillPostIntent.putExtra("vendor", resolvedVendor);
                         fillPostIntent.putExtra("model", resolvedModel);
                         startActivityForResult(fillPostIntent, FILL_POST);
+                        hasImageInPhotoPath = false;
+                        staticPhotoPath = null;
                         break;
                     } else {
                         new AlertDialog.Builder(getActivity())
@@ -1214,7 +1236,7 @@ public class FeedFragment extends Fragment {
                                     public void onClick(DialogInterface dalog, int which) {
                                     }
                                 })
-                                .setIcon(R.drawable.ic_error_outline_black_24dp)
+//                                .setIcon(R.drawable.ic_error_outline_black_24dp)
                                 .show();
                         break;
                     case "no exif":

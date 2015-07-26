@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                                         .centerCrop()
                                         .transform(new CircleTransform(getApplicationContext()))
                                         .into(profile);
-                                if (userObj.optInt("priviledge") == 2) {
+                                if (userObj.optInt("priviledge") > 1) {
 //                                    if(previousMenuItem != null) previousMenuItem.setChecked(false);
 //                                    navigationView.getMenu().clear();
 //                                    navigationView.inflateMenu(R.menu.menu_drawer_mod);
@@ -195,40 +195,42 @@ public class MainActivity extends AppCompatActivity {
 //        } else {
 //        }
 
-        switch (getUserdata().getInt(getString(R.string.user_priviledge), 1)) {
-            case 1:
+        findModMenuById();
+
+//        switch (getUserdata().getInt(getString(R.string.user_priviledge), 1)) {
+//            case 1:
+////                if(previousMenuItem != null) previousMenuItem.setChecked(false);
+////                navigationView.getMenu().clear();
+////                navigationView.inflateMenu(R.menu.menu_drawer);
+////                navigationView.requestLayout();
+////                findUserMenuById();
+//                findModMenuById();
+//                break;
+//            case 2:
 //                if(previousMenuItem != null) previousMenuItem.setChecked(false);
 //                navigationView.getMenu().clear();
-//                navigationView.inflateMenu(R.menu.menu_drawer);
+//                navigationView.inflateMenu(R.menu.menu_drawer_mod);
 //                navigationView.requestLayout();
-//                findUserMenuById();
-                findModMenuById();
-                break;
-            case 2:
-                if(previousMenuItem != null) previousMenuItem.setChecked(false);
-                navigationView.getMenu().clear();
-                navigationView.inflateMenu(R.menu.menu_drawer_mod);
-                navigationView.requestLayout();
-                findModMenuById();
-                break;
-        }
+//                findModMenuById();
+//                break;
+//        }
 
 
 
-        navigationHeader.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                Snackbar.make(findViewById(R.id.main_fragment), "onCreateContextMenu", Snackbar.LENGTH_SHORT)
-                        .setAction(getString(R.string.snackbar_action_ok), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                            }
-                        })
-                        .setActionTextColor(getResources().getColor(R.color.accent_color))
-                        .show();
-                Log.d("droidphoto", "oncreatecontextmenu");
-            }
-        });
+//        navigationHeader.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+//            @Override
+//            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//                Snackbar.make(findViewById(R.id.main_fragment), "onCreateContextMenu", Snackbar.LENGTH_SHORT)
+//                        .setAction(getString(android.R.string.ok), new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                            }
+//                        })
+//                        .setActionTextColor(getResources().getColor(R.color.accent_color))
+//                        .show();
+//                Log.d("droidphoto", "oncreatecontextmenu");
+//            }
+//        });
 
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override

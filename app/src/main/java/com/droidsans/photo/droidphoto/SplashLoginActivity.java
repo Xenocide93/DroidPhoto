@@ -133,7 +133,7 @@ public class SplashLoginActivity extends Activity {
                                 }
 //                                Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_SHORT).show();
                                 Snackbar.make(loginLayout, toastString, Snackbar.LENGTH_LONG)
-                                        .setAction(getString(R.string.snackbar_action_ok), new View.OnClickListener() {
+                                        .setAction(getString(android.R.string.ok), new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
                                             }
@@ -181,7 +181,7 @@ public class SplashLoginActivity extends Activity {
                 public void run() {
                     if(!GlobalSocket.globalEmit("user.login", loginStuff)) {
                         Snackbar.make(loginLayout, getString(R.string.snackbar_login_cannot_connect),Snackbar.LENGTH_LONG)
-                                .setAction(getString(R.string.snackbar_action_ok), new View.OnClickListener() {
+                                .setAction(getString(android.R.string.ok), new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                     }

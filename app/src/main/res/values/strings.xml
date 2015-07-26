@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DroidShot</string>
     <string name="app_desc">Shot on Android</string>
-    <string name="app_version">version 0.9.4 (alpha)</string>
+    <string name="app_version">version 0.9.5 (alpha-2)</string>
 
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
@@ -150,6 +150,8 @@
     <string name="alert_not_from_camera_summary">Selected photo must have exif.</string>
     <string name="alert_no_required_exif_title">Incomplete Photo Data</string>
     <string name="alert_no_required_exif_summary">Selected photo must have every required exif.</string>
+    <string name="alert_invalid_image">Invalid Image</string>
+    <string name="alert_invalid_image_message">Selected image has no data.\nPlease select other image.</string>
     <string name="snackbar_feed_cannot_refresh">cannot refresh feed</string>
     <string name="snackbar_feed_selected_vendor">"Vendor: "</string>
     <string name="snackbar_feed_selected_model">" Model: "</string>
@@ -168,13 +170,12 @@
 
     <string name="snackbar_action_retry">retry</string>
     <string name="snackbar_action_cancel">CANCEL</string>
-    <string name="snackbar_action_ok">OK</string>
 
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 
-    <!--unreadable for security reasons: adding obfuscation level-->
+    <!--userdata and friends-->
     <string name="userdata">ewEgfoEWoi84tu3wsZLghB</string>
     <string name="token">sdfgGRRAs23a7dfs9ghfvvfdsio</string>
     <string name="user_id">aewtkuy243htlyHeilRHbwyl368yt</string>
@@ -199,9 +200,9 @@
     </string-array>
 
     <!-- vendor model map version -->
-    <string name="cvsMapPref">vendor_model_map_version</string>
-    <string name="csvVersion">version</string>
-    <string name="csvFileName">csv_version</string>
+    <!--<string name="cvsMapPref">vendor_model_map_version</string>-->
+    <!--<string name="csvVersion">version</string>-->
+    <!--<string name="csvFileName">csv_version</string>-->
 
     <string name="test_140_char">111111111112222222222333333333344444444445555555555666666666677777777778888888888999999999900000000001111111111222222222233333333334444444444</string>
     <string name="test_90_char">1111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999</string>
@@ -213,7 +214,7 @@
     <string name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
 
-    <string name="url_terms_of_service">http://droidshot.droidsans.com</string>
-    <string name="url_privacy_policy">http://droidshot.droidsans.com</string>
+    <string name="url_terms_of_service">http://droidshot.droidsans.com/tos</string>
+    <string name="url_privacy_policy">http://droidshot.droidsans.com/pp</string>
 
 </resources>

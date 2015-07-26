@@ -90,7 +90,7 @@ public class FillPostActivity extends AppCompatActivity {
     private ExifInterface mExif;
     private String mCurrentPhotoPath;
     private String mImageFrom;
-    private static String postURL = "/photo";
+//    private static String postURL = "/photo";
     private static int MAX_THUMBNAIL_SIZE = 500;
 
     Metadata metadata;
@@ -298,43 +298,63 @@ public class FillPostActivity extends AppCompatActivity {
 
     private String getLocalManufacturer() {
         switch (Build.MANUFACTURER.toLowerCase().trim()) {
-            case "lge":
-                return "LG";
-            case "htc":
-                return "HTC";
-            case "oppo":
-                return "OPPO";
-            case "hp":
-                return "HP";
-            case "zte":
-                return "ZTE";
-            case "oneplus":
-                return "OnePlus";
-            case "sony ericsson":
-                return "Sony Ericsson";
-            case "viewsonic":
-                return "ViewSonic";
-            case "true":
-                return "True";
-            case "dtac":
-                return "dtac";
+            case "acer":
+                return "Acer";
             case "ais":
                 return "AIS";
-            case "lava":
-                return "LAVA";
-            case "i-mobile":
-                return "i-mobile";
-            case "samsung":
-                return "Samsung";
             case "asus":
                 return "Asus";
-            case "wiko":
-                return "Wiko";
+            case "dell":
+                return "Dell";
+            case "dtac":
+                return "dtac";
+            case "hp":
+                return "HP";
+            case "htc":
+                return "HTC";
             case "huawei":
                 return "Huawei";
+            case "i-mobile":
+                return "i-mobile";
+            case "intel":
+                return "Intel";
+            case "lava":
+                return "LAVA";
+            case "lenovo":
+                return "Lenovo";
+            case "lge":
+                return "LG";
+            case "motorola":
+                return "Motorola";
+            case "nikon":
+                return "Nikon";
+            case "oneplus":
+                return "OnePlus";
+            case "oppo":
+                return "OPPO";
+            case "panasonic":
+                return "Panasonic";
+            case "polaroid":
+                return "Polaroid";
+            case "samsung":
+                return "Samsung";
+            case "sony":
+                return "Sony";
+            case "sony ericsson":
+                return "Sony Ericsson";
+            case "true":
+                return "True";
+            case "viewsonic":
+                return "ViewSonic";
+            case "wiko":
+                return "Wiko";
+            case "xiaomi":
+                return "Xiaomi";
+            case "zte":
+                return "ZTE";
             default:
-//                return Build.MANUFACTURER.substring(0,1).toUpperCase() + Build.MANUFACTURER.substring(1, Build.MANUFACTURER.length()).toLowerCase();
-                return Build.MANUFACTURER;
+                return Build.MANUFACTURER.trim().substring(0,1).toUpperCase() + Build.MANUFACTURER.substring(1, Build.MANUFACTURER.length()).toLowerCase();
+//                return Build.MANUFACTURER;
         }
     }
 
@@ -525,6 +545,15 @@ public class FillPostActivity extends AppCompatActivity {
         }
 
 
+        Log.d("droidphoto", "drew camera_pos: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
+        Log.d("droidphoto", "drew focal_length (original): " + exifDirectory.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
+        Log.d("droidphoto", "drew focal_length (35mm equiv): " + exifDirectory.getString(ExifSubIFDDirectory.TAG_35MM_FILM_EQUIV_FOCAL_LENGTH));
+        Log.d("droidphoto", "android exp_time: " + mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
+        Log.d("droidphoto", "android aperture: " + mExif.getAttribute(ExifInterface.TAG_APERTURE));
+        Log.d("droidphoto", "android iso equiv: " + mExif.getAttribute(ExifInterface.TAG_ISO));
+        Log.d("droidphoto", "drew exp_time: " + orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME));
+        Log.d("droidphoto", "drew aperture: " + orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE));
+        Log.d("droidphoto", "drew iso equiv: " + orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT));
 
 //        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null ||
 //                mExif.getAttribute(ExifInterface.TAG_APERTURE) == null ||
