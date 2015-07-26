@@ -110,7 +110,7 @@ public class FeedFragment extends Fragment {
     private boolean isRemoveTagActive = false;
 
     private static String staticPhotoPath;
-    private boolean hasImageInPhotoPath;
+    private static boolean hasImageInPhotoPath;
 
     private int filterCount;
     private String skipDate;
@@ -1443,12 +1443,16 @@ public class FeedFragment extends Fragment {
             public void run() {
                 if(isFailedToUpload) { //show failed
                     isUploading = false;
+                    staticPhotoPath = null;
+                    hasImageInPhotoPath = false;
                     setFamEnable(true);
                     hideUploadProgress();
                     refreshFeed();
                     Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_failed), Snackbar.LENGTH_LONG).show();
                 } else if(isCancelUpload) {
                     isUploading = false;
+                    staticPhotoPath = null;
+                    hasImageInPhotoPath = false;
                     setFamEnable(true);
                     hideUploadProgress();
                     Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_cancel), Snackbar.LENGTH_LONG).show();
@@ -1464,6 +1468,8 @@ public class FeedFragment extends Fragment {
                         delayAction.postDelayed(loop, LOOP_DELAY);
                     } else { //upload done
                         isUploading = false;
+                        staticPhotoPath = null;
+                        hasImageInPhotoPath = false;
                         setFamEnable(true);
                         uploadProgressbar.setProgress(percentage);
                         if(getActivity() != null) getActivity().runOnUiThread(update);
