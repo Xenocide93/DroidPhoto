@@ -1072,6 +1072,8 @@ public class FillPostActivity extends AppCompatActivity {
 //                                                photoDetailStuff.put("photo_url", jsonObject.getString("filename"));
                                                 photoDetailStuff.put("photo_url", jsonObject.filename);
                                                 photoDetailStuff.put("caption", caption.getText().toString());
+                                                photoDetailStuff.put("build_device", Build.DEVICE);
+                                                photoDetailStuff.put("build_model", Build.MODEL);
                                                 if(hasResolvedName){
                                                     photoDetailStuff.put("model", modelTV.getText());
                                                     photoDetailStuff.put("vendor", vendorTV.getText());
@@ -1107,6 +1109,8 @@ public class FillPostActivity extends AppCompatActivity {
                                                 photoDetailStuff.put("_event", "photoupload_respond");
                                                 photoDetailStuff.put("is_accept", isAccept.isChecked());
                                                 photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
+                                                //TODO add camera_pos and focal_length
+
 
                                                 FeedFragment.percentage = 95;
                                                 if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
@@ -1260,8 +1264,18 @@ public class FillPostActivity extends AppCompatActivity {
                                 Log.d("droidphoto", "update success");
                                 FeedFragment.percentage += 2;
                             } else {
-                                FeedFragment.isFailedToUpload = true;
-                                Log.d("droidphoto", "update error: " + data.getString("msg"));
+                                switch (data.getString("msg")) {
+                                    case "already exist":
+                                    case "exist but mismatch":
+                                        Log.d("droidphoto", "update success with msg " + data.getString("msg"));
+                                        FeedFragment.percentage += 2;
+                                        break;
+                                    default:
+                                        FeedFragment.isFailedToUpload = true;
+                                        Log.d("droidphoto", "update error: " + data.getString("msg"));
+                                        break;
+                                }
+
                             }
                         } catch (JSONException e) {
                             FeedFragment.isFailedToUpload = true;
