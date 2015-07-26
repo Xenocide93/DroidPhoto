@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DroidShot</string>
     <string name="app_desc">Shot on Android</string>
-    <string name="app_version">version 0.9.5 (alpha-2)</string>
+    <string name="app_version">version 0.9.6 (alpha-2)</string>
 
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
@@ -218,5 +218,6 @@
 
     <string name="url_terms_of_service">http://droidshot.droidsans.com/termsofservice</string>
     <string name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
+    <string name="cache_table_name">test.e</string>
 
 </resources>
