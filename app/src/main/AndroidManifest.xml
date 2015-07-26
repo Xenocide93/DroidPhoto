@@ -82,7 +82,7 @@
             android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"  >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ImageViewerFullScreenActivity"
@@ -90,7 +90,7 @@
         </activity>
         <activity
             android:name=".OpenSourceLicensesActivity"
-            android:label="@string/title_activity_open_source_licenses">
+            android:label="@string/title_activity_open_source_licenses" >
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -100,6 +100,14 @@
         <activity
             android:name=".WebViewActivity"
             android:label="@string/title_activity_web_view" >
+        </activity>
+        <activity
+            android:name=".DeveloperTeamActivity"
+            android:label="@string/title_activity_developer_team" >
+        </activity>
+        <activity
+            android:name=".AppInfoActivity"
+            android:label="@string/title_activity_app_info" >
         </activity>
     </application>
 

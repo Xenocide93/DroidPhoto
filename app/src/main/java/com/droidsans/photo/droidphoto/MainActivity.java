@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                                     default:
                                         break;
                                 }
-                                Toast.makeText(getApplicationContext(), data.optString("msg"), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getApplicationContext(), data.optString("msg"), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

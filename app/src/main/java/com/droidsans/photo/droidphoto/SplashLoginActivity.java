@@ -100,7 +100,6 @@ public class SplashLoginActivity extends Activity {
                                 GlobalSocket.mSocket.off("login_respond");
                                 Log.d(APP_LOG, "Token: " + token);
 //                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-                                //TODO base64 encode username/disp_name
                                 getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).edit()
                                         .putString(getString(R.string.token), token)
                                         .putString(getString(R.string.user_id), userObject.optString("_id"))

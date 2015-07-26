@@ -46,7 +46,7 @@ public class AboutFragment extends Fragment {
                 Intent intent;
                 switch (position) {
                     case 1: //app info
-                        startActivity(new Intent(getActivity().getApplicationContext(), PlaceholderActivity.class));
+                        startActivity(new Intent(getActivity().getApplicationContext(), AppInfoActivity.class));
                         break;
                     case 2: //pp
                         intent = new Intent(getActivity().getApplicationContext(), WebViewActivity.class);
@@ -64,7 +64,7 @@ public class AboutFragment extends Fragment {
                         startActivity(new Intent(getActivity().getApplicationContext(), OpenSourceLicensesActivity.class));
                         break;
                     case 5: //team
-                        startActivity(new Intent(getActivity().getApplicationContext(), PlaceholderActivity.class));
+                        startActivity(new Intent(getActivity().getApplicationContext(), DeveloperTeamActivity.class));
                         break;
                 }
             }

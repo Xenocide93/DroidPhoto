@@ -106,7 +106,6 @@ public class ImageViewerActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //TODO check privilege
         if(getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getInt(getString(R.string.user_priviledge), 1) > 1) {
 //        if(true){
             getMenuInflater().inflate(R.menu.menu_image_viewer_mod, menu);
@@ -177,8 +176,6 @@ public class ImageViewerActivity extends AppCompatActivity {
                         })
 //                            .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-                //TODO check privilege again before send hide pic request
-                //TODO send hide pic request to server
                 return true;
         }
 

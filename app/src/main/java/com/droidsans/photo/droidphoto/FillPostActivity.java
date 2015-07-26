@@ -502,12 +502,16 @@ public class FillPostActivity extends AppCompatActivity {
 //        Log.d("droidphoto", "drew aperture: " + orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE));
 //        Log.d("droidphoto", "drew iso equiv: " + orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT));
 
-        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) != null) {
+        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) != null) { //drew subifd
             foundExpTime = exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
-        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME) != null) {
+        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME) != null) { //drew if0
             foundExpTime = orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME);
-        } else if(mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME) != null) {
+        } else if(mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME) != null) { //android exif
             foundExpTime = mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME);
+//        } else if(exifDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED) != null) { //drew subifd shutter speed
+//            foundExpTime = exifDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED);
+//        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME) != null) { //drew ifd0 shutter speed
+//            foundExpTime = orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME);
         } else {
             Intent returnIntent = new Intent();
             returnIntent.putExtra("return code", "no required exif");
@@ -518,10 +522,10 @@ public class FillPostActivity extends AppCompatActivity {
 
         if(mExif.getAttribute(ExifInterface.TAG_APERTURE) != null) {
             foundAperture = mExif.getAttribute(ExifInterface.TAG_APERTURE);
-//        } else if(exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE) != null) {
-//            foundAperture = exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE);
-//        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE) != null) {
-//            foundAperture = orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE);
+        } else if(exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE) != null) {
+            foundAperture = "" + Math.pow(1.4142, Double.parseDouble(exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE)));
+        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE) != null) {
+            foundAperture = "" + Math.pow(1.4142, Double.parseDouble(orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE)));
         } else {
             Intent returnIntent = new Intent();
             returnIntent.putExtra("return code", "no required exif");
@@ -545,15 +549,19 @@ public class FillPostActivity extends AppCompatActivity {
         }
 
 
-        Log.d("droidphoto", "drew camera_pos: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
+        Log.d("droidphoto", "drew makernote: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAKERNOTE));
         Log.d("droidphoto", "drew focal_length (original): " + exifDirectory.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
         Log.d("droidphoto", "drew focal_length (35mm equiv): " + exifDirectory.getString(ExifSubIFDDirectory.TAG_35MM_FILM_EQUIV_FOCAL_LENGTH));
-        Log.d("droidphoto", "android exp_time: " + mExif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
-        Log.d("droidphoto", "android aperture: " + mExif.getAttribute(ExifInterface.TAG_APERTURE));
-        Log.d("droidphoto", "android iso equiv: " + mExif.getAttribute(ExifInterface.TAG_ISO));
-        Log.d("droidphoto", "drew exp_time: " + orientationDirectory.getString(ExifIFD0Directory.TAG_EXPOSURE_TIME));
-        Log.d("droidphoto", "drew aperture: " + orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE));
-        Log.d("droidphoto", "drew iso equiv: " + orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT));
+        Log.d("droidphoto", "android focal_length (original): " + mExif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
+        Log.d("droidphoto", "drew makernote: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MAKERNOTE));
+        Log.d("droidphoto", "drew focal_length (original): " + orientationDirectory.getString(ExifIFD0Directory.TAG_FOCAL_LENGTH));
+        Log.d("droidphoto", "drew focal_length (35mm equiv): " + orientationDirectory.getString(ExifIFD0Directory.TAG_35MM_FILM_EQUIV_FOCAL_LENGTH));
+
+        Log.d("droidphoto", "drew shutter speed: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED));
+        Log.d("droidphoto", "drew brightness value: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_BRIGHTNESS_VALUE));
+        Log.d("droidphoto", "drew digital zoom: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_DIGITAL_ZOOM_RATIO));
+        Log.d("droidphoto", "drew digital zoom: " + orientationDirectory.getString(ExifSubIFDDirectory.TAG_DIGITAL_ZOOM_RATIO));
+        Log.d("droidphoto", "drew exposure value: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_BIAS));
 
 //        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null ||
 //                mExif.getAttribute(ExifInterface.TAG_APERTURE) == null ||
@@ -1127,6 +1135,8 @@ public class FillPostActivity extends AppCompatActivity {
 //                                                photoDetailStuff.put("gps_lat_ref", gpsDirectory.getString(GpsDirectory.TAG_LATITUDE_REF));
 //                                                photoDetailStuff.put("gps_long_ref", gpsDirectory.getString(GpsDirectory.TAG_LONGITUDE_REF));
 //                                            }
+                                                photoDetailStuff.put("focal_length", exifDirectory.getString(ExifSubIFDDirectory.TAG_35MM_FILM_EQUIV_FOCAL_LENGTH));
+                                                photoDetailStuff.put("exp_bias", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_BIAS));
                                                 if(resolvedLocation != null && useLocation.isChecked()) {
                                                     photoDetailStuff.put("gps_lat", gpsLat);
                                                     photoDetailStuff.put("gps_long", gpsLong);
@@ -1138,8 +1148,6 @@ public class FillPostActivity extends AppCompatActivity {
                                                 photoDetailStuff.put("_event", "photoupload_respond");
                                                 photoDetailStuff.put("is_accept", isAccept.isChecked());
                                                 photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
-                                                //TODO add camera_pos and focal_length
-
 
                                                 FeedFragment.percentage = 95;
                                                 if(!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {

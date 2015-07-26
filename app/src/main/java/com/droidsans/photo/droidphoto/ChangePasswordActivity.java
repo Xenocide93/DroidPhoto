@@ -184,7 +184,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_done:
-                Toast.makeText(getApplicationContext(), "action", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "action", Toast.LENGTH_SHORT).show();
                 submitChangePass(item);
                 return true;
             case android.R.id.home:

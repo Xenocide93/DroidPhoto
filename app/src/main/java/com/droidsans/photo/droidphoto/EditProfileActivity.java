@@ -189,7 +189,6 @@ public class EditProfileActivity extends AppCompatActivity {
         if(oldIntent == null || !oldIntent.hasExtra(ProfileFragment.AVATAR_URL)) {
 //            Toast.makeText(getApplicationContext(), "from settings", Toast.LENGTH_SHORT).show();
 
-            //TODO load data from server
             final JSONObject data = new JSONObject();
             try {
                 data.put("_event", "get_user_data");

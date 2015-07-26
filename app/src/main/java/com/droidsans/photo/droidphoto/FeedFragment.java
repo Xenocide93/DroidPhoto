@@ -1560,11 +1560,6 @@ public class FeedFragment extends Fragment {
         cancelUpload = (Button) uploadProgressLayout.findViewById(R.id.cancel_pic_fake_snackbar);
     }
 
-    public void runUploadingAnimation(){ //will be called when emit upload
-        //TODO get picture from path in parameter
-        //TODO create placeholder view of the uploading photo with upload animation
-    }
-
     public void refreshFeed(){
         feedRecycleView.animate()
                 .alpha(0f)

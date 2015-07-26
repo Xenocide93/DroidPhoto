@@ -23,6 +23,8 @@
     <string name="title_activity_web_view">   </string>
     <string name="title_activity_terms_of_service">Terms of Service</string>
     <string name="title_activity_privacy_policy">Privacy Policy</string>
+    <string name="title_activity_developer_team">Developer Team</string>
+    <string name="title_activity_app_info">Application Info</string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>
@@ -214,7 +216,7 @@
     <string name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
     <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
 
-    <string name="url_terms_of_service">http://droidshot.droidsans.com/tos</string>
-    <string name="url_privacy_policy">http://droidshot.droidsans.com/pp</string>
+    <string name="url_terms_of_service">http://droidshot.droidsans.com/termsofservice</string>
+    <string name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
 
 </resources>
