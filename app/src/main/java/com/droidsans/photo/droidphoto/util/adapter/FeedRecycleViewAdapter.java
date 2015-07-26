@@ -114,7 +114,7 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     });
                 }
 
-                //TODO for test UI
+                //for test UI
     //        if(position == 0){
     //            FeedRecycleViewAdapter.isClickOnce = true;
     //            Intent imageViewerIntent = new Intent(context, ImageViewerActivity.class);

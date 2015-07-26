@@ -106,7 +106,7 @@
     <string name="snackbar_changepass_mismatch">รหัสผ่านและการยืนยันไม่ตรงกัน</string>
     <string name="snackbar_changepass_tooshort">รหัสผ่านสั้นเกินไป ต้องมีความยาวอย่างน้อย 6 ตัวอักษร</string>
     <string name="snackbar_changepass_tooshort_shortver">รหัสผ่านสั้นเกินไป</string>
-    <string name="snackbar_changepass_wrongpass">รหัสผ่านเดิมผิด</string>
+    <string name="snackbar_changepass_wrongpass">รหัสผ่านเดิมไม่ถูกต้อง</string>
 
     <!--edit profile activity-->
     <string name="edit_profile_display_name">ชื่อโปรไฟล์</string>
