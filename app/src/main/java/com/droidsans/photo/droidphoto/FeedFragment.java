@@ -176,6 +176,7 @@ public class FeedFragment extends Fragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        tagViewArray = new ArrayList<>(); //setupTagViewArray
         initializeVendorModelList();
         updateTagView();
         initRequestFeed();
@@ -186,6 +187,7 @@ public class FeedFragment extends Fragment {
 
     private void initialize() {
         findAllById();
+
         setupRecycleView();
         if(!isFirstTime()){
             setupListener();
@@ -269,7 +271,7 @@ public class FeedFragment extends Fragment {
         tutorialHandler.cleanUp();
         tutorialHandler.setToolTip(new ToolTip()
                 .setTitle(tutorialStringList.get(nextTutorial))
-                .setDescription("Touch to dismiss")
+                .setDescription(getString(R.string.tutorial_touch_to_dismiss))
                 .setGravity(Gravity.LEFT | Gravity.BOTTOM))
                 .setOverlay(new Overlay()
                         .setEnterAnimation(enterAnimation)
@@ -318,7 +320,6 @@ public class FeedFragment extends Fragment {
     }
 
     private void initializeVendorModelList() {
-        tagViewArray = new ArrayList<>();
         final JSONObject requestStuff = new JSONObject();
         try {
             requestStuff.put("_event", "get_device_list");
@@ -399,7 +400,6 @@ public class FeedFragment extends Fragment {
                     removeTagBtn.setImageResource(R.drawable.remove_tag_normal);
                     removeTagBtn.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start();
                     if (removeTag()) {
-                        updateTagView();
                         refreshFeed();
                         initLoading();
                     }
@@ -1009,7 +1009,7 @@ public class FeedFragment extends Fragment {
     private void initReload() {
         loadingCircle.setVisibility(ProgressBar.GONE);
         reloadLayout.setVisibility(LinearLayout.VISIBLE);
-        reloadText.setText("Error loading feed :(");
+        reloadText.setText(R.string.load_feed_error);
         if(!reloadButton.hasOnClickListeners()) reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1115,7 +1115,7 @@ public class FeedFragment extends Fragment {
         if (resultCode == FragmentActivity.RESULT_OK)
             switch (requestCode) {
                 case FILTER_FEED:
-                    initializeVendorModelList();
+//                    initializeVendorModelList();
                     String vendorName = data.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
                     String modelName = data.getStringExtra(BrowseModelActivity.MODEL_NAME);
                     Snackbar.make(frameLayout, getString(R.string.snackbar_feed_selected_vendor) + vendorName + getString(R.string.snackbar_feed_selected_model) + modelName, Snackbar.LENGTH_SHORT).show();
@@ -1183,8 +1183,8 @@ public class FeedFragment extends Fragment {
                         break;
                     } else {
                         new AlertDialog.Builder(getActivity())
-                                .setTitle("Invalid Image")
-                                .setMessage("Selected image has no data.\nPlease select other image.")
+                                .setTitle(getString(R.string.alert_invalid_image))
+                                .setMessage(getString(R.string.alert_invalid_image_message))
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -1382,44 +1382,73 @@ public class FeedFragment extends Fragment {
     }
 
     private void setFamEnable(final Boolean enable){
-        final boolean[] hasSetFamPositionOnce = {false};
-        if(normalFamPositionX == 0f || normalFamPositionY == 0f){
-            for(int i = 0; i <= 1000; i+=10){
-                final int finalI = i;
-                delayAction.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(normalFamPositionX == 0f || normalFamPositionY == 0f){
-                            normalFamPositionX = fam.getX();
-                            normalFamPositionY = fam.getY();
-                        } else if(!hasSetFamPositionOnce[0]){
-                            Log.i("droidphoto","postDelay " + (finalI-10) + ": (" + normalFamPositionX + ", " + normalFamPositionY+")");
-                            if(enable){
-                                fam.animate()
-                                        .x(normalFamPositionX).y(normalFamPositionY)
-                                        .setDuration(300);
-                            } else {
-                                fam.animate()
-                                        .xBy(fam.getWidth()/2)
-                                        .setStartDelay(500)
-                                        .setDuration(400);
-                            }
-                            hasSetFamPositionOnce[0] = true;
-                        }
-                    }
-                }, finalI);
-            }
+//        final boolean[] hasSetFamPositionOnce = {false};
+//        if(normalFamPositionX == 0f || normalFamPositionY == 0f){
+//            for(int i = 0; i <= 1000; i+=10){
+//                final int finalI = i;
+//                delayAction.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if(normalFamPositionX == 0f || normalFamPositionY == 0f){
+//                            normalFamPositionX = fam.getX();
+//                            normalFamPositionY = fam.getY();
+//                        } else if(!hasSetFamPositionOnce[0]){
+//                            Log.i("droidphoto","postDelay " + (finalI-10) + ": (" + normalFamPositionX + ", " + normalFamPositionY+")");
+//                            if(enable){
+//                                fam.animate()
+//                                        .x(normalFamPositionX).y(normalFamPositionY)
+//                                        .setDuration(300);
+//                            } else {
+//                                fam.animate()
+//                                        .xBy(fam.getWidth()/2)
+//                                        .setStartDelay(500)
+//                                        .setDuration(400);
+//                            }
+//                            hasSetFamPositionOnce[0] = true;
+//                        } else {
+//                            Log.i("droidphoto","postDelay "+finalI+" already have, get now fam X,Y: (" + fam.getX() + ", " + fam.getY()+")");
+//                        }
+//                    }
+//                }, finalI);
+//            }
+//        } else {
+//            Log.i("droidphoto","already have X,Y: (" + normalFamPositionX + ", " + normalFamPositionY+")");
+//            if(enable){
+//                Log.i("droidphoto","show X,Y: (" + normalFamPositionX + ", " + normalFamPositionY+")");
+//                fam.animate()
+//                        .x(normalFamPositionX).y(normalFamPositionY)
+//                        .setDuration(300);
+//                delayAction.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Log.i("droidphoto","where are you, fam X,Y: (" + fam.getX() + ", " + fam.getY()+")");
+//                    }
+//                }, 500);
+//            } else {
+//                Log.i("droidphoto","hide X,Y: (" + normalFamPositionX + ", " + normalFamPositionY+")");
+//                fam.animate()
+//                        .xBy(fam.getWidth()/2)
+//                        .setStartDelay(500)
+//                        .setDuration(400);
+//            }
+//        }
+
+        if (enable) {
+            fam.setVisibility(View.VISIBLE);
+            fam.animate()
+                    .alpha(1f)
+                    .setDuration(200);
         } else {
-            if(enable){
-                fam.animate()
-                        .x(normalFamPositionX).y(normalFamPositionY)
-                        .setDuration(300);
-            } else {
-                fam.animate()
-                        .xBy(fam.getWidth()/2)
-                        .setStartDelay(500)
-                        .setDuration(400);
-            }
+            fam.animate()
+                    .alpha(0f)
+                    .setStartDelay(500)
+                    .setDuration(200);
+            delayAction.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    fam.setVisibility(View.GONE);
+                }
+            }, 900);
         }
     }
 

@@ -1,0 +1,189 @@
+<resources>
+    <string name="app_name">DroidShot</string>
+    <string name="app_desc">ถ่ายด้วย Android</string>
+    <string name="app_version">เวอร์ชัน 0.9.5 (alpha-2)</string>
+
+    <string name="action_search">ค้นหา</string>
+    <string name="action_settings">ตั้งค่า</string>
+    <string name="action_done">"  ยืนยัน  "</string>
+    <string name="menu_filter">ตัวกรอง</string>
+    <string name="action_cancel">"  ยกเลิก  "</string>
+    <string name="action_print">พิมพ์</string>
+
+
+    <string name="title_activity_browse">รายชื่อยี่ห้อ</string>
+    <string name="title_activity_browse_model">รายชื่อรุ่น</string>
+    <string name="title_activity_fill_post">อัพโหลดรูปภาพ</string>
+    <string name="title_activity_image_viewer">รูปภาพ</string>
+    <string name="title_activity_placeholder">""</string>
+    <string name="title_activity_change_password">เปลี่ยนรหัสผ่าน</string>
+    <string name="title_activity_full_screen_image_viewer">      </string>
+    <string name="title_activity_edit_profile">แก้ไข้ข้อมูลส่วนตัว</string>
+    <string name="title_activity_open_source_licenses">Open Source Licenses</string>
+    <string name="title_activity_settings">ตั้งค่า</string>
+    <string name="title_activity_web_view">   </string>
+    <string name="title_activity_terms_of_service">ข้อตกลงการใช้บริการ</string>
+    <string name="title_activity_privacy_policy">นโยบายความเป็นส่วนตัว</string>
+    <string name="title_activity_developer_team">ทีมผู้พัฒนาแอปพลิเคชัน</string>
+    <string name="title_activity_app_info">ข้อมูลแอปพลิเคชัน</string>
+
+    <string name="browser_vendor_title">เลือกยี่ห้อมือถือ</string>
+    <string name="browse_model_title">เลือกรุ่นมือถือ</string>
+
+    <!--drawer strings-->
+    <string name="drawer_feed">ฟีดรูปภาพ</string>
+    <string name="drawer_event">กิจกรรม</string>
+    <string name="drawer_help">ช่วยเหลือ</string>
+    <string name="drawer_about">เกี่ยวกับ</string>
+    <string name="drawer_submenu_label">ผู้ใช้</string>
+    <string name="drawer_settings">ตั้งค่า</string>
+    <string name="drawer_evaluate">ตรวจสอบชื่อรุ่น</string>
+    <string name="drawer_logout">ออกจากระบบ</string>
+    <string name="drawer_logout_confirm">ต้องการออกจากระบบหรือไม่ ?</string>
+
+    <!--drawer accessibility strings-->
+    <string name="drawer_open">เปิดแถบเมนู</string>
+    <string name="drawer_close">ปิดแถบเมนู</string>
+
+    <!--login-->
+    <string name="login_button_login">เข้าสู่ระบบ</string>
+    <string name="login_button_register">สร้างบัญชีใหม่</string>
+
+    <!--settings text-->
+    <string name="settings_submenu_account_title">บัญชีผู้ใช้</string>
+    <string name="settings_editprofile_title">แก้ไข้ข้อมูลส่วนตัว</string>
+    <string name="settings_editprofile_summary">เปลี่ยนรูป เปลี่ยนชื่อ หรือคำอธิบายโปรไฟล์</string>
+    <string name="settings_changepass_title">เปลี่ยนรหัสผ่าน</string>
+    <string name="settings_changepass_summary">อย่างน้อย 6 ตัวอักษร</string>
+    <string name="settings_submenu_display_title">การแสดงผล</string>
+    <string name="settings_display_eng_location_title">ชื่อสถานที่ภาษาอังกฤษ</string>
+    <string name="settings_display_eng_location_summary">แอพจะแสดงชื่อสถานที่เป็นภาษาอังกฤษ</string>
+    <string name="settings_display_local_location_title">ชื่อสถานที่ภาษาท้องถิ่น</string>
+    <string name="settings_display_local_location_summary">แอพจะแสดงชื่อสถานที่เป็นภาษาไทย</string>
+    <string name="settings_submenu_imageupload_title">การอัพโหลดรูปภาพ</string>
+    <string name="settings_uselocation_title">แนบตำแหน่งรูปภาพโดยอัตโนมัติ</string>
+    <string name="settings_uselocation_summary">แอพจะเก็บข้อมูลตำแหน่งในรูปแบบของชื่อเมือง โดยแนบไปกับรูปภาพโดยอัตโนมัติ</string>
+    <string name="settings_app_language_title">เลือกภาษาที่ใช้แสดง</string>
+    <string name="settings_app_language_summary">ภาษา : %s</string>
+
+    <!--login hint-->
+    <string name="login_username_hint">ชื่อผู้ใช้ หรือ อีเมล</string>
+    <string name="login_password_hint">รหัสผ่าน</string>
+
+    <!--login snackbar-->
+    <string name="snackbar_login_cannot_connect">ไม่สามารถเชื่อมต่อกับเเซิฟเวอร์ กรุณาตรวจสอบการเชื่องต่ออินเตอร์เน็ตของคุณ</string>
+    <string name="snackbar_login_success">คูณได้เข้าสู่ระบบแล้ว</string>
+    <string name="snackbar_login_authen_failed">ไม่สามารถเข้าสู่ระบบได้ กรุณาตรวจสอบชื่อผู้ใช้และรหัสผ่าน แล้วลองอีกครั้ง</string>
+    <string name="snackbar_login_db_error">เกิดความผิดพลาดบนฐานข้อมูล กรุณาลองใหม่ในภายหลัง</string>
+    <string name="snackbar_connection_timeout">ยกเลิกการเชื่อมต่อเนื่องจากใช้เวลาเชื่อมต่อนานเกินไป ต้องการลองใหม่อีกครั้งหรือไม่ ?</string>
+
+    <!--register snackbar-->
+    <string name="snackbar_register_null_required">กรุณากรอกข้อมูลให้ครบทุกช่อง</string>
+    <string name="snackbar_register_email_exist">อีเมลนี้ได้ถูกใช้ไปแล้ว</string>
+    <string name="snackbar_register_username_exist">ชื่อผู้ใช้นี้ได้ถูกใช้ไปแล้ว</string>
+    <string name="snackbar_register_db_error">เกิดความผิดพลาดบนฐานข้อมูล กรุณาลองใหม่ในภายหลัง</string>
+    <string name="snackbar_register_cannot_save">ไม่สามารถส่งข้อมูลไปยังฐานข้อมูลได้ กรุณาลองใหม่ในภายหลัง</string>
+    <string name="snackbar_register_success">ไม่สามารถบันทึกข้อมูลลงบนฐานข้อมูลได้ กรุณาลองใหม่ในภายหลัง</string>
+    <string name="snackbar_register_username_toolong">ชื่อผู้ใช้ยาวเกินไป :( (จำกัด 15 ตัวอักษร)</string>
+    <string name="snackbar_register_email_invalid">รูปแบบอีเมลไม่ถูกต้อง</string>
+    <string name="snackbar_register_profilename_toolong">ชื่อโปรไฟล์ยาวเกินไป :( (จำกัด 25 ตัวอักษร)</string>
+
+    <!--register hint-->
+    <string name="register_username">ชื่อผู้ใช้</string>
+    <string name="register_password">รหัสผ่าน</string>
+    <string name="register_comfirmpassword">ยืนยัน รหัสผ่าน</string>
+    <string name="register_email">อีเมล</string>
+    <string name="register_disp_name">ชื่อโปรไฟล์ (สามารถเปลี่ยนได้ในภายหลัง)</string>
+    <string name="register_accept_tos">"การกดสร้างบัญชีจะถือว่าคุณได้อ่านและยอมรับใน "</string>
+    <string name="register_accept_tos_link">ข้อตกลงการใช้บริการ</string>
+
+    <!--password change activity-->
+    <string name="change_password_old">รหัสผ่านเดิม</string>
+    <string name="change_password_new">รหัสผ่านใหม่</string>
+    <string name="change_password_confirm">ยืนยันรหัสผ่านใหม่</string>
+    <string name="change_password_button_confirm">ยืนยัน</string>
+    <string name="change_password_username_label">"ชื่อผู้ใช้ : "</string>
+    <string name="snackbar_changepass_mismatch">รหัสผ่านและการยืนยันไม่ตรงกัน</string>
+    <string name="snackbar_changepass_tooshort">รหัสผ่านสั้นเกินไป ต้องมีความยาวอย่างน้อย 6 ตัวอักษร</string>
+    <string name="snackbar_changepass_tooshort_shortver">รหัสผ่านสั้นเกินไป</string>
+    <string name="snackbar_changepass_wrongpass">รหัสผ่านเดิมผิด</string>
+
+    <!--edit profile activity-->
+    <string name="edit_profile_display_name">ชื่อโปรไฟล์</string>
+    <string name="edit_profile_description">คำอธิบายโปรไฟล์</string>
+    <string name="delete_user_pic_fake_snackbar">เลือกรูปภาพที่จะลบ</string>
+    <string name="snackbar_editprofile_profiledesc_toolong">คำอธิบายโปรไฟลยาวเกินไป (จำกัด 60 ตัวอักษร)</string>
+
+    <!--fill post activity-->
+    <string name="fill_post_caption_hint">คำบรรยายภาพ</string>
+    <string name="fill_post_vendor_hint">ยี่ห้อ</string>
+    <string name="fill_post_model_hint">รุ่น</string>
+    <string name="fill_post_vendor_hint_colon">ยี่ห้อ:</string>
+    <string name="fill_post_model_hint_colon">รุ่น:</string>
+    <string name="fill_post_checkbox_attach_location">บันทึกสถานที่ลงในภาพ</string>
+    <string name="fill_post_checkbox_accept_tos">ยอมรับข้อตกลงการใช้บริการ</string>
+    <string name="fill_post_checkbox_enhanced">รูปภาพมีการปรับแต่ง</string>
+    <string name="fill_post_button_upload">อัพโหลด</string>
+    <string name="fill_post_checkbox_use_exif">ใช้ข้อมูลสถานที่จากในรูปภาพ</string>
+    <string name="fill_post_checkbox_use_gps">ใช้ข้อมูลสถานที่จากในรูปภาพ</string>
+    <string name="fill_post_checkbox_location_prefix">"สถานที่ : "</string>
+    <string name="fill_post_checkbox_location_resolving">กำลังค้นหาชื่อสถานที่ ...</string>
+    <string name="fill_post_checkbox_error_gps_timeout">เกิดข้อผิดพลาด: GPS ใช้เวลาในการระบุตำแหน่งนานเกินไป</string>
+    <string name="fill_post_checkbox_location_retry"><![CDATA[\'>ลองอีกครั้ง ?</font>]]></string>
+    <string name="fill_post_checkbox_error_location_get">เกิดข้อผิดพลาด ไม่สามารถระบุตำแหน่งได้ :(</string>
+    <string name="fill_post_checkbox_error_location_resolve">เกิดข้อผิดพลาด ไม่สามารถระบุชื่อสภานที่ได้ :(</string>
+    <string name="fill_post_checkbox_error_localize_resolve">เกิดข้อผิดพลาด ไม่สามารถแปลชื่อสภานที่ได้ :(</string>
+    <string name="fill_post_checkbox_error_location_notfound">เกิดข้อผิดพลาด ไม่พบสถานที่</string>
+    <string name="fill_post_checkbox_location_off">เกิดข้อผิดพลาด: กรุณาเปิดระบบระบุตำแหน่ง</string>
+    <string name="fill_post_checkbox_no_location_exif">เกิดข้อผิดพลาด: ไม่มีข้อมูลพิกัดในรูปภาพ :(</string>
+    <string name="fill_post_checkbox_gps_working">กำลังค้นหาตำแหน่ง .</string>
+
+    <string name="snackbar_fill_post_accept_tos">กรุณายอมรับข้อตกลงการใช้บริการ</string>
+
+    <!--Tutorial-->
+    <string name="tutorial_string_fam">กดเพื่อโพสรูปใหม่</string>
+    <string name="tutorial_string_filter">เลือกรุ่นมือถือที่จะแสดง</string>
+    <string name="tutorial_touch_to_dismiss">แตะเพื่อปิด</string>
+
+    <!--Feed-->
+    <string name="recent_tag">ล่าสุด</string>
+    <string name="alert_not_your_photo_title">ไม่ใช่รูปจากมือถือเครื่องนี้</string>
+    <string name="alert_not_your_photo_message">กรุณาเลือกรูปที่ถ่ายจากกล้องของมือถือเครื่องนี้</string>
+    <string name="alert_not_from_camera_title">ไม่ใช่รูปถ่าย</string>
+    <string name="alert_not_from_camera_summary">รูปถ่ายที่เลือกไม่มีข้อมูล exif</string>
+    <string name="alert_no_required_exif_title">ข้อมูลของรูปถ่ายไม่สมบูรณ์</string>
+    <string name="alert_no_required_exif_summary">รูปที่เลือกมีข้อมูล exif ไม่ครบตามความต้องการของระบบ</string>
+    <string name="alert_invalid_image">รูปภาพไม่สมบูรณ์</string>
+    <string name="alert_invalid_image_message">ไม่มีข้อมูลรูปภาพที่เลือก กรุณาเลือกรูปอื่น</string>
+    <string name="snackbar_feed_cannot_refresh">ไม่สามารถโหลดฟีดใหม่ได้</string>
+    <string name="snackbar_feed_selected_vendor">"ยี่ห้อ: "</string>
+    <string name="snackbar_feed_selected_model">" รุ่น: "</string>
+    <string name="snackbar_feed_upload_failed">อัพโหลดรูปไม่สำเร็จ</string>
+    <string name="snackbar_feed_upload_cancel">ยกเลิกการอัพโหลดรูป</string>
+    <string name="fab_label_picture_picker">เลือกรูปจากคลังภาพ</string>
+    <string name="fab_label_camera">ถ่ายรูปใหม่</string>
+    <string name="load_feed_error">เกิดข้อผิดพลาด ไม่สามารถโหลดฟีดได้ :(</string>
+    <string name="reload_feed_button">โหลดใหม่</string>
+
+    <!--profile-->
+    <string name="action_delete_picture">ลบรูปภาพ</string>
+    <string name="fake_snackbar_delete_button">ลบ</string>
+    <string name="delete_pic_dialog_deleting">"กำลังจะลบ "</string>
+    <string name="delete_pic_dialog_picture_word_pural">" รูปภาพ"</string>
+    <string name="delete_pic_dialog_picture_word_single">" รูปภาพ"</string>
+    <string name="delete_pic_dialog_confirmation">"จะถูกลบ คุณแน่ใจหรือไม่ ?"</string>
+    <string name="delete_pic_dialog_positive_button">ลบ</string>
+    <string name="delete_pic_dialog_negative_button">ยกเลิก</string>
+    <string name="delete_pic_dialog_success_delete">Selected pictures are removed</string>
+
+    <string-array name="about_list">
+        <item>ข้อมูลแอฟพลิเคชัน</item>
+        <item>นโยบายความเป็นส่วนตัว</item>
+        <item>ข้อตกลงกาารใช้บริการ</item>
+        <item>Open Source Licenses</item>
+        <item>ทีมผู้พัฒนาแอปพลิเคชัน</item>
+    </string-array>
+
+    <string name="snackbar_action_retry">ลองอีกครั้ง</string>
+    <string name="snackbar_action_cancel">ยกเลิก</string>
+</resources>

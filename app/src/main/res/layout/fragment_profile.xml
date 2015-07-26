@@ -104,7 +104,7 @@
                 android:paddingRight="24dp"
                 android:layout_alignParentRight="true"
                 android:background="@color/transparent"
-                android:text="DELETE"
+                android:text="@string/fake_snackbar_delete_button"
                 android:textColor="@color/accent_color"
                 />
 

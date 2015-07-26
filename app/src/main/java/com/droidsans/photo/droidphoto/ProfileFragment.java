@@ -1,20 +1,16 @@
 package com.droidsans.photo.droidphoto;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -298,7 +294,7 @@ public class ProfileFragment extends Fragment {
                             GlobalSocket.mSocket.off("remove_pic");
                             JSONObject returnData = (JSONObject) args[0];
                             if (returnData.optBoolean("success")) {
-                                Snackbar.make(mainLayout, "Selected pictures are removed", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(mainLayout, getString(R.string.delete_pic_dialog_success_delete), Snackbar.LENGTH_SHORT).show();
                                 Log.d("droidphoto", "Selected pictures are removed");
                             } else {
                                 Snackbar.make(mainLayout, "Error: " + returnData.optString("msg"), Snackbar.LENGTH_SHORT).show();
@@ -436,10 +432,12 @@ public class ProfileFragment extends Fragment {
 
                 if (count > 0) {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                    String pictureWord = (count > 1) ? " pictures" : " picture";
-                    dialog.setTitle("Deleting " + count + pictureWord);
-                    dialog.setMessage(count + " " + pictureWord + " will be deleted. Are you sure ?");
-                    dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    String pictureWord = (count > 1) ?
+                            getString(R.string.delete_pic_dialog_picture_word_pural):
+                            getString(R.string.delete_pic_dialog_picture_word_single);
+                    dialog.setTitle(getString(R.string.delete_pic_dialog_deleting) + count + pictureWord);
+                    dialog.setMessage(count + " " + pictureWord + getString(R.string.delete_pic_dialog_confirmation));
+                    dialog.setPositiveButton(R.string.delete_pic_dialog_positive_button, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             final JSONArray removePicId = new JSONArray();
@@ -474,7 +472,7 @@ public class ProfileFragment extends Fragment {
                             adapter.notifyDataSetChanged();
                         }
                     });
-                    dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    dialog.setNegativeButton(R.string.delete_pic_dialog_negative_button, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
