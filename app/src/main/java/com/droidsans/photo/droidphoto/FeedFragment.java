@@ -180,18 +180,8 @@ public class FeedFragment extends Fragment {
         updateTagView();
         initRequestFeed();
         initLoading();
+        setupUploadProgress();
         super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.i("droidphoto","from onViewCreated");
-        Log.i("droidphoto", "x:" + normalFamPositionX + " y:" + normalFamPositionY);
-        Log.i("droidphoto", "getX:" + fam.getX() + " getY:" + fam.getY());
-        int[] loc = new int[2];
-        fam.getLocationInWindow(loc);
-        Log.i("droidphoto", "locX:" + loc[0] + " locY:" + loc[1]);
     }
 
     private void initialize() {
@@ -200,17 +190,16 @@ public class FeedFragment extends Fragment {
         if(!isFirstTime()){
             setupListener();
         }
-        setupUploadProgress();
         setupEmitterListener();
     }
 
     private void setupUploadProgress() {
         if(isUploading){
             showUploadProgress(false);
-//            setFamEnable(false);
+            setFamEnable(false);
         } else {
             hideUploadProgress();
-//            setFamEnable(true);
+            setFamEnable(true);
         }
     }
 
@@ -1231,7 +1220,7 @@ public class FeedFragment extends Fragment {
                     isUploading = true;
                     staticPhotoPath = data.getStringExtra("path");
                     hasImageInPhotoPath = true;
-//                    setFamEnable(false);
+                    setFamEnable(false);
                     showUploadProgress(true);
 
                     break;
@@ -1299,6 +1288,7 @@ public class FeedFragment extends Fragment {
             if (image.delete()) {
                 hasImageInPhotoPath = false;
 //                Toast.makeText(getActivity(), "temp file removed", Toast.LENGTH_LONG).show();
+                Snackbar.make(getView(), "temp file removed", Snackbar.LENGTH_LONG).show();
             } else {
 //                Toast.makeText(getActivity(), "cannot remove temp file", Toast.LENGTH_LONG).show();
             }
@@ -1348,10 +1338,6 @@ public class FeedFragment extends Fragment {
     public void onStart() {
 //        feedGridView.setClickable(true);
         FeedRecycleViewAdapter.isClickOnce = false;
-
-        Log.i("droidphoto","from onStart");
-        Log.i("droidphoto", "x:" + normalFamPositionX + " y:" + normalFamPositionY);
-        Log.i("droidphoto","getX:"+fam.getX() + " getY:" + fam.getY());
         super.onStart();
     }
 
@@ -1395,21 +1381,45 @@ public class FeedFragment extends Fragment {
         super.onDestroy();
     }
 
-    private void setFamEnable(Boolean enable){
-        if((normalFamPositionX == 0f || normalFamPositionY == 0f)){
-            normalFamPositionX = fam.getX();
-            normalFamPositionY = fam.getY();
-        }
-
-        if(enable){
-            fam.animate()
-                    .x(normalFamPositionX).y(normalFamPositionY)
-                    .setDuration(300);
+    private void setFamEnable(final Boolean enable){
+        final boolean[] hasSetFamPositionOnce = {false};
+        if(normalFamPositionX == 0f || normalFamPositionY == 0f){
+            for(int i = 0; i <= 1000; i+=10){
+                final int finalI = i;
+                delayAction.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(normalFamPositionX == 0f || normalFamPositionY == 0f){
+                            normalFamPositionX = fam.getX();
+                            normalFamPositionY = fam.getY();
+                        } else if(!hasSetFamPositionOnce[0]){
+                            Log.i("droidphoto","postDelay " + (finalI-10) + ": (" + normalFamPositionX + ", " + normalFamPositionY+")");
+                            if(enable){
+                                fam.animate()
+                                        .x(normalFamPositionX).y(normalFamPositionY)
+                                        .setDuration(300);
+                            } else {
+                                fam.animate()
+                                        .xBy(fam.getWidth()/2)
+                                        .setStartDelay(500)
+                                        .setDuration(400);
+                            }
+                            hasSetFamPositionOnce[0] = true;
+                        }
+                    }
+                }, finalI);
+            }
         } else {
-            fam.animate()
-                    .xBy(fam.getWidth()/2)
-                    .setStartDelay(500)
-            .setDuration(400);
+            if(enable){
+                fam.animate()
+                        .x(normalFamPositionX).y(normalFamPositionY)
+                        .setDuration(300);
+            } else {
+                fam.animate()
+                        .xBy(fam.getWidth()/2)
+                        .setStartDelay(500)
+                        .setDuration(400);
+            }
         }
     }
 
@@ -1433,13 +1443,13 @@ public class FeedFragment extends Fragment {
             public void run() {
                 if(isFailedToUpload) { //show failed
                     isUploading = false;
-//                    setFamEnable(true);
+                    setFamEnable(true);
                     hideUploadProgress();
                     refreshFeed();
                     Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_failed), Snackbar.LENGTH_LONG).show();
                 } else if(isCancelUpload) {
                     isUploading = false;
-//                    setFamEnable(true);
+                    setFamEnable(true);
                     hideUploadProgress();
                     Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_cancel), Snackbar.LENGTH_LONG).show();
                 } else {
@@ -1454,7 +1464,7 @@ public class FeedFragment extends Fragment {
                         delayAction.postDelayed(loop, LOOP_DELAY);
                     } else { //upload done
                         isUploading = false;
-//                        setFamEnable(true);
+                        setFamEnable(true);
                         uploadProgressbar.setProgress(percentage);
                         if(getActivity() != null) getActivity().runOnUiThread(update);
                         refreshFeed();
