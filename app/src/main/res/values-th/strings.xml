@@ -166,6 +166,7 @@
     <string name="fab_label_camera">ถ่ายรูปใหม่</string>
     <string name="load_feed_error">เกิดข้อผิดพลาด ไม่สามารถโหลดฟีดได้ :(</string>
     <string name="reload_feed_button">โหลดใหม่</string>
+    <string name="feed_filter_too_many_tag">คุณเพิ่มแท็กมากเกินไป กรุณาลบบางแท็กออกก่อน</string>
 
     <!--profile-->
     <string name="action_delete_picture">ลบรูปภาพ</string>

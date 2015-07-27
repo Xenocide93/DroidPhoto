@@ -31,12 +31,12 @@
             android:textColor="@color/primary_color"
             android:layout_marginRight="5dp"/>
 
-        <!--<ImageView-->
-            <!--android:id="@+id/delete_tag_button"-->
-            <!--android:layout_width="18dp"-->
-            <!--android:layout_height="18dp"-->
-            <!--android:src="@drawable/ic_cancel_primary_18dp"-->
-            <!--android:background="@null"-->
-            <!--android:visibility="gone"/>-->
+        <ImageView
+            android:id="@+id/delete_tag_button"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_cancel_primary_border_18px"
+            android:background="@null"
+            android:visibility="visible"/>
     </LinearLayout>
 </LinearLayout>
