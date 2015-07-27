@@ -1,6 +1,7 @@
 package com.droidsans.photo.droidphoto;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -50,15 +51,19 @@ public class AppInfoActivity extends AppCompatActivity {
             }
         }
 
+        int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
+
         String[] name = new String[]{
                 "Application Name",
                 "Version",
-                "Cache size"
+                "Image Cache Size",
+                "Launch Count"
         };
         String[] value = new String[]{
                 getString(R.string.app_name),
                 getString(R.string.app_version),
-                String.format("%.2f",(cacheSize / (1024.0*1024.0))) + " MB"
+                String.format("%.2f",(cacheSize / (1024.0*1024.0))) + " MB",
+                launchCount + ((launchCount > 1)? " times":" time")
         };
         int length = name.length;
 
@@ -74,7 +79,7 @@ public class AppInfoActivity extends AppCompatActivity {
             datum.put("value", value[i]);
             data.add(datum);
         }
-        SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), data, R.layout.item_info, new String[]{"name", "value"}, new int[]{android.R.id.text1, android.R.id.text2});
+        SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), data, android.R.layout.simple_list_item_2, new String[]{"name", "value"}, new int[]{android.R.id.text1, android.R.id.text2});
         mainList.setAdapter(adapter);
 
 
