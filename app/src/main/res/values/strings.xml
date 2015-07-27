@@ -53,7 +53,7 @@
     <string name="settings_editprofile_title">Edit Profile</string>
     <string name="settings_editprofile_summary">update avatar, change profile name/description</string>
     <string name="settings_changepass_title">Change Password</string>
-    <string name="settings_changepass_summary">at least 6 characters</string>
+    <string name="settings_changepass_summary">new password must be at least 6 characters</string>
     <string name="settings_submenu_display_title">Display</string>
     <string name="settings_display_eng_location_title">Display English Location</string>
     <string name="settings_display_eng_location_summary">Application will display English location</string>
@@ -62,8 +62,10 @@
     <string name="settings_submenu_imageupload_title">Image Upload</string>
     <string name="settings_uselocation_title">Use Location by Default</string>
     <string name="settings_uselocation_summary">Attach resolved location to uploaded image by default</string>
-    <string name="settings_app_language_title">Select Application Language</string>
-    <string name="settings_app_language_summary">Language : %s</string>
+    <!--<string name="settings_app_language_title">Select Application Language</string>-->
+    <!--<string name="settings_app_language_summary">Language : %s</string>-->
+    <string name="settings_app_language_title">Select System Language</string>
+    <string name="settings_app_language_summary">This will launch android settings for you to change</string>
 
     <!--login hint-->
     <string name="login_username_hint">username or email</string>
@@ -167,6 +169,7 @@
     <!--profile-->
     <string name="action_delete_picture">delete picture</string>
     <string name="fake_snackbar_delete_button">DELETE</string>
+    <string name="snackbar_delete_pic_success">Selected pictures are removed</string>
     <string name="delete_pic_dialog_deleting">"Deleting "</string>
     <string name="delete_pic_dialog_picture_word_pural">" pictures"</string>
     <string name="delete_pic_dialog_picture_word_single">" picture"</string>
@@ -232,6 +235,7 @@
     <string name="url_terms_of_service">http://droidshot.droidsans.com/termsofservice</string>
     <string name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
     <string name="cache_table_name">test.e</string>
-    <string name="delete_pic_dialog_success_delete">Selected pictures are removed</string>
+
+    <string name="launch_count">app_launch_counter</string>
 
 </resources>

@@ -109,8 +109,8 @@ public class FeedFragment extends Fragment {
     private ImageButton removeTagBtn;
     private boolean isRemoveTagActive = false;
 
-    private static String staticPhotoPath;
-    private static boolean hasImageInPhotoPath;
+    private static String staticPhotoPath = null;
+    private static boolean hasImageInPhotoPath = false;
 
     private int filterCount;
     private String skipDate;
@@ -1115,6 +1115,8 @@ public class FeedFragment extends Fragment {
         if (resultCode == FragmentActivity.RESULT_OK)
             switch (requestCode) {
                 case FILTER_FEED:
+                    hasImageInPhotoPath = false;
+                    staticPhotoPath = null;
 //                    initializeVendorModelList();
                     String vendorName = data.getStringExtra(BrowseVendorActivity.VENDOR_NAME);
                     String modelName = data.getStringExtra(BrowseModelActivity.MODEL_NAME);
@@ -1137,6 +1139,9 @@ public class FeedFragment extends Fragment {
                     break;
 
                 case SELECT_PHOTO:
+                    hasImageInPhotoPath = false;
+                    staticPhotoPath = null;
+
                     String path = getImagePath(data.getData());
                     File file = new File(path);
                     if(file.length() > 0) {
@@ -1147,8 +1152,6 @@ public class FeedFragment extends Fragment {
                         fillPostFromPicturePickerIntent.putExtra("vendor", resolvedVendor);
                         fillPostFromPicturePickerIntent.putExtra("model", resolvedModel);
                         startActivityForResult(fillPostFromPicturePickerIntent, FILL_POST);
-                        hasImageInPhotoPath = false;
-                        staticPhotoPath = null;
                         break;
                     } else {
                         new AlertDialog.Builder(getActivity())
@@ -1169,17 +1172,16 @@ public class FeedFragment extends Fragment {
                 case REQUEST_IMAGE_CAPTURE:
 //                    Toast.makeText(getActivity(), staticPhotoPath, Toast.LENGTH_LONG).show();
                     galleryAddPic();
-                    hasImageInPhotoPath = true;
                     File f = new File(staticPhotoPath);
+                    hasImageInPhotoPath = false;
+                    staticPhotoPath = null;
                     if(f.length() > 0) {
                         Intent fillPostIntent = new Intent(getActivity(), FillPostActivity.class);
-                        fillPostIntent.putExtra("photoPath", staticPhotoPath);
+                        fillPostIntent.putExtra("photoPath", f.getAbsolutePath());
                         fillPostIntent.putExtra("imageFrom", "Camera");
                         fillPostIntent.putExtra("vendor", resolvedVendor);
                         fillPostIntent.putExtra("model", resolvedModel);
                         startActivityForResult(fillPostIntent, FILL_POST);
-                        hasImageInPhotoPath = false;
-                        staticPhotoPath = null;
                         break;
                     } else {
                         new AlertDialog.Builder(getActivity())
@@ -1283,15 +1285,16 @@ public class FeedFragment extends Fragment {
     }
 
     private void removeTemp() {
-        if (!hasImageInPhotoPath && staticPhotoPath != null) {
+        if ((!hasImageInPhotoPath) && (staticPhotoPath != null)) {
             File image = new File(staticPhotoPath);
             if (image.delete()) {
-                hasImageInPhotoPath = false;
 //                Toast.makeText(getActivity(), "temp file removed", Toast.LENGTH_LONG).show();
                 Snackbar.make(getView(), "temp file removed", Snackbar.LENGTH_LONG).show();
             } else {
 //                Toast.makeText(getActivity(), "cannot remove temp file", Toast.LENGTH_LONG).show();
+                Snackbar.make(getView(), "cannot remove temp file", Snackbar.LENGTH_LONG).show();
             }
+            hasImageInPhotoPath = false;
             staticPhotoPath = null;
         }
     }

@@ -54,17 +54,19 @@
     <string name="settings_editprofile_title">แก้ไข้ข้อมูลส่วนตัว</string>
     <string name="settings_editprofile_summary">เปลี่ยนรูป เปลี่ยนชื่อ หรือคำอธิบายโปรไฟล์</string>
     <string name="settings_changepass_title">เปลี่ยนรหัสผ่าน</string>
-    <string name="settings_changepass_summary">อย่างน้อย 6 ตัวอักษร</string>
+    <string name="settings_changepass_summary">รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 6 ตัวอักษร</string>
     <string name="settings_submenu_display_title">การแสดงผล</string>
     <string name="settings_display_eng_location_title">ชื่อสถานที่ภาษาอังกฤษ</string>
-    <string name="settings_display_eng_location_summary">แอพจะแสดงชื่อสถานที่เป็นภาษาอังกฤษ</string>
+    <string name="settings_display_eng_location_summary">แอปจะแสดงชื่อสถานที่เป็นภาษาอังกฤษ</string>
     <string name="settings_display_local_location_title">ชื่อสถานที่ภาษาท้องถิ่น</string>
-    <string name="settings_display_local_location_summary">แอพจะแสดงชื่อสถานที่เป็นภาษาไทย</string>
+    <string name="settings_display_local_location_summary">แอปจะแสดงชื่อสถานที่เป็นภาษาไทย</string>
     <string name="settings_submenu_imageupload_title">การอัพโหลดรูปภาพ</string>
     <string name="settings_uselocation_title">แนบตำแหน่งรูปภาพโดยอัตโนมัติ</string>
-    <string name="settings_uselocation_summary">แอพจะเก็บข้อมูลตำแหน่งในรูปแบบของชื่อเมือง โดยแนบไปกับรูปภาพโดยอัตโนมัติ</string>
-    <string name="settings_app_language_title">เลือกภาษาที่ใช้แสดง</string>
-    <string name="settings_app_language_summary">ภาษา : %s</string>
+    <string name="settings_uselocation_summary">แอปจะเก็บข้อมูลตำแหน่งในรูปแบบของชื่อเมือง โดยแนบไปกับรูปภาพโดยอัตโนมัติ</string>
+    <!--<string name="settings_app_language_title">เลือกภาษาที่ใช้แสดง</string>-->
+    <!--<string name="settings_app_language_summary">ภาษา : %s</string>-->
+    <string name="settings_app_language_title">เลือกภาษาของระบบ (แอนดรอยด์)</string>
+    <string name="settings_app_language_summary">กดเพื่อเปิดหน้าตั้งค่าภาษาของแอนดรอยด์</string>
 
     <!--login hint-->
     <string name="login_username_hint">ชื่อผู้ใช้ หรือ อีเมล</string>
@@ -177,7 +179,7 @@
     <string name="delete_pic_dialog_success_delete">Selected pictures are removed</string>
 
     <string-array name="about_list">
-        <item>ข้อมูลแอฟพลิเคชัน</item>
+        <item>ข้อมูลแอปพลิเคชัน</item>
         <item>นโยบายความเป็นส่วนตัว</item>
         <item>ข้อตกลงกาารใช้บริการ</item>
         <item>Open Source Licenses</item>

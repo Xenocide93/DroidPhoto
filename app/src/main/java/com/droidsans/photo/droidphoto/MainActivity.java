@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -63,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
+        launchCount++;
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt(getString(R.string.launch_count), launchCount).apply();
         mContext = getApplicationContext();
 
         initialize();
@@ -411,6 +414,24 @@ public class MainActivity extends AppCompatActivity {
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onPostCreate(savedInstanceState, persistentState);
         actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    protected void onPause() {
+        if(!isFinishing()) {
+            int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
+            launchCount--;
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt(getString(R.string.launch_count), launchCount).apply();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
+        launchCount++;
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt(getString(R.string.launch_count), launchCount).apply();
+        super.onResume();
     }
 
     @Override

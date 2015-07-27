@@ -42,6 +42,17 @@
     <PreferenceCategory
         android:title="@string/settings_submenu_display_title">
 
+        <PreferenceScreen
+            android:title="@string/settings_app_language_title"
+            android:summary="@string/settings_app_language_summary">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.android.settings"
+                android:targetClass="com.android.settings.LanguageSettings" />
+
+        </PreferenceScreen>
+
         <!--<ListPreference-->
             <!--android:key="@string/settings_app_language"-->
             <!--android:title="@string/settings_app_language_title"-->
