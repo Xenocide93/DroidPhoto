@@ -286,16 +286,16 @@ public class ImageViewerActivity extends AppCompatActivity {
             String unit;
             if((diff/1000) < 60) {//seconds
                 diff = diff/1000;
-                unit = "s"; // วินาที
+                unit = getString(R.string.imageviewer_unit_second); // วินาที
             } else if(diff/(1000*60) < 60) { //minutes
                 diff = diff/(1000*60);
-                unit = "m"; // นาที
+                unit = getString(R.string.imageviewer_unit_minute); // นาที
             } else if(diff/(1000*60*60) < 24) { //hours
                 diff = diff/(1000*60*60);
-                unit = "h"; // ชม.
+                unit = getString(R.string.imageviewer_unit_hour); // ชม.
             } else {
                 diff = diff/(1000*60*60*24);
-                unit = "d"; // วัน
+                unit = getString(R.string.imageviewer_unit_day); // วัน
             }
             submit.setText(" " + diff + unit);
 //            Log.d("droidphoto", "diff : " + diff + unit);

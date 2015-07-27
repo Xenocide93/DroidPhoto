@@ -189,6 +189,12 @@
     <string name="snackbar_action_retry">retry</string>
     <string name="snackbar_action_cancel">CANCEL</string>
 
+    <!--imageviewer-->
+    <string name="imageviewer_unit_second">s</string>
+    <string name="imageviewer_unit_minute">m</string>
+    <string name="imageviewer_unit_hour">h</string>
+    <string name="imageviewer_unit_day">d</string>
+
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->

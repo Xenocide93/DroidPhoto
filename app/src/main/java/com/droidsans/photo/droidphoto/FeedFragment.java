@@ -681,11 +681,17 @@ public class FeedFragment extends Fragment {
                                 //set vendor list
                                 BrowseVendorActivity.vendorName = data.optJSONArray("vendorList").join(",").replaceAll("\"", "").split(",");
                                 JSONArray models = data.optJSONArray("modelList");
+                                JSONArray bDevices = data.optJSONArray("bDeviceList");
+                                JSONArray bModels = data.optJSONArray("bModelList");
 
                                 //set model list
                                 BrowseModelActivity.modelName = new String[models.length()][];
+                                BrowseModelActivity.buildDevice = new String[bDevices.length()][];
+                                BrowseModelActivity.buildModel = new String[bModels.length()][];
                                 for(int i = 0; i < models.length(); i++) {
                                     BrowseModelActivity.modelName[i] = ((JSONArray) models.get(i)).join(",").replaceAll("\"", "").split(",");
+                                    BrowseModelActivity.buildDevice[i] = ((JSONArray) bDevices.get(i)).join(",").replaceAll("\"", "").split(",");
+                                    BrowseModelActivity.buildModel[i] = ((JSONArray) bModels.get(i)).join(",").replaceAll("\"", "").split(",");
                                 }
 
                                 if(models.length() > 0) {

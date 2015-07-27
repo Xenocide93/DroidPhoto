@@ -26,6 +26,8 @@ public class BrowseModelActivity extends AppCompatActivity {
             {"Xperia P"},
             {"Galaxy S4", "Galaxy S5"}
     };
+    public static String[][] buildDevice;
+    public static String[][] buildModel;
 
     private int vendorNum;
     private String vendorName;
@@ -59,7 +61,7 @@ public class BrowseModelActivity extends AppCompatActivity {
     }
 
     private void setupModelListView() {
-        modelListAdapter = new ModelListAdapter(getApplicationContext(), R.layout.item_model, modelName[vendorNum]);
+        modelListAdapter = new ModelListAdapter(getApplicationContext(), R.layout.item_model, modelName[vendorNum], vendorName, vendorNum, BrowseModelActivity.this);
         modelListView.setAdapter(modelListAdapter);
         modelListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

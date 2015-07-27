@@ -188,4 +188,10 @@
 
     <string name="snackbar_action_retry">ลองอีกครั้ง</string>
     <string name="snackbar_action_cancel">ยกเลิก</string>
+
+    <!--imageviewer-->
+    <string name="imageviewer_unit_second">" วินาที"</string>
+    <string name="imageviewer_unit_minute">" นาที"</string>
+    <string name="imageviewer_unit_hour">" ชม."</string>
+    <string name="imageviewer_unit_day">" วัน"</string>
 </resources>

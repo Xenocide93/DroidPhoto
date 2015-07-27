@@ -1046,13 +1046,33 @@ public class FillPostActivity extends AppCompatActivity {
 //                                    matrix,
 //                                    true)
 //                                    .compress(Bitmap.CompressFormat.JPEG, 80, out);
-                            Bitmap.createScaledBitmap(Bitmap.createBitmap(
-                                    BitmapFactory.decodeStream(in, null, options),
-                                    (options.outWidth > options.outHeight) ? ((options.outWidth / 2) - (options.outHeight / 2)) : 0,
-                                    (options.outWidth > options.outHeight) ? 0 : (options.outHeight / 2 - options.outWidth / 2),
-                                    (options.outWidth > options.outHeight) ? options.outHeight : options.outWidth,
-                                    (options.outWidth > options.outHeight) ? options.outHeight : options.outWidth,
-                                    matrix, true), MAX_THUMBNAIL_SIZE, MAX_THUMBNAIL_SIZE, true).compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+//                            Bitmap.createScaledBitmap(Bitmap.createBitmap(
+//                                    BitmapFactory.decodeStream(in, null, options),
+//                                    (options.outWidth > options.outHeight) ? ((options.outWidth / 2) - (options.outHeight / 2)) : 0,
+//                                    (options.outWidth > options.outHeight) ? 0 : (options.outHeight / 2 - options.outWidth / 2),
+////                                    options.outWidth,
+////                                    options.outHeight,
+//                                    (options.outWidth > options.outHeight) ? options.outHeight : options.outWidth,
+//                                    (options.outWidth > options.outHeight) ? options.outHeight : options.outWidth,
+//                                    matrix, true), MAX_THUMBNAIL_SIZE, MAX_THUMBNAIL_SIZE, true).compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+                            Bitmap.createBitmap(Bitmap.createScaledBitmap(
+                                            BitmapFactory.decodeStream(in, null, options),
+                                            (options.outWidth > options.outHeight)? options.outWidth * MAX_THUMBNAIL_SIZE / options.outHeight:MAX_THUMBNAIL_SIZE,
+                                            (options.outWidth > options.outHeight)? MAX_THUMBNAIL_SIZE:options.outHeight * MAX_THUMBNAIL_SIZE / options.outWidth,
+                                            true),
+                                    (options.outWidth > options.outHeight) ? ((options.outWidth * MAX_THUMBNAIL_SIZE / options.outHeight) - MAX_THUMBNAIL_SIZE) / 2 : 0,
+                                    (options.outWidth > options.outHeight) ? 0 : ((options.outHeight * MAX_THUMBNAIL_SIZE / options.outWidth) - MAX_THUMBNAIL_SIZE) / 2,
+                                    MAX_THUMBNAIL_SIZE,
+                                    MAX_THUMBNAIL_SIZE,
+                                    matrix, true).compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+//                            Bitmap.createScaledBitmap(
+//                                    BitmapFactory.decodeStream(in, null, options),
+//                                    (options.outWidth > options.outHeight)? options.outWidth * MAX_THUMBNAIL_SIZE / options.outHeight:MAX_THUMBNAIL_SIZE,
+//                                    (options.outWidth > options.outHeight)? MAX_THUMBNAIL_SIZE:options.outHeight * MAX_THUMBNAIL_SIZE / options.outWidth,
+//                                    true).compress(Bitmap.CompressFormat.JPEG, 80, out);
                             if(out != null) {
                                 try {
                                     out.close();
