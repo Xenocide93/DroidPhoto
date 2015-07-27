@@ -48,6 +48,13 @@
                     android:textSize="30sp"
                     android:visibility="gone" />
 
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:clickable="false"/>
+
                 <include
                     android:id="@+id/reload_view"
                     layout="@layout/layout_reload" />
