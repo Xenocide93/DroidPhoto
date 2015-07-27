@@ -31,7 +31,6 @@ public class AppInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_info);
 
-
         double cacheSize = 0;
         File ccf = new File(getCacheDir(), getString(R.string.cache_table_name));
         if(ccf.exists()) {
@@ -75,7 +74,7 @@ public class AppInfoActivity extends AppCompatActivity {
             datum.put("value", value[i]);
             data.add(datum);
         }
-        SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), data, android.R.layout.simple_list_item_2, new String[]{"name", "value"}, new int[]{android.R.id.text1, android.R.id.text2});
+        SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), data, R.layout.item_info, new String[]{"name", "value"}, new int[]{android.R.id.text1, android.R.id.text2});
         mainList.setAdapter(adapter);
 
 
