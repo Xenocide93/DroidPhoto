@@ -130,11 +130,11 @@
     <string name="fill_post_checkbox_location_resolving">กำลังค้นหาชื่อสถานที่ ...</string>
     <string name="fill_post_checkbox_error_gps_timeout">เกิดข้อผิดพลาด: GPS ใช้เวลาในการระบุตำแหน่งนานเกินไป</string>
     <string name="fill_post_checkbox_location_retry"><![CDATA[\'>ลองอีกครั้ง ?</font>]]></string>
-    <string name="fill_post_checkbox_error_location_get">เกิดข้อผิดพลาด ไม่สามารถระบุตำแหน่งได้ :(</string>
-    <string name="fill_post_checkbox_error_location_resolve">เกิดข้อผิดพลาด ไม่สามารถระบุชื่อสภานที่ได้ :(</string>
-    <string name="fill_post_checkbox_error_localize_resolve">เกิดข้อผิดพลาด ไม่สามารถแปลชื่อสภานที่ได้ :(</string>
-    <string name="fill_post_checkbox_error_location_notfound">เกิดข้อผิดพลาด ไม่พบสถานที่</string>
-    <string name="fill_post_checkbox_location_off">เกิดข้อผิดพลาด: กรุณาเปิดระบบระบุตำแหน่ง</string>
+    <string name="fill_post_checkbox_error_location_get">ไม่สามารถระบุตำแหน่งได้ :(</string>
+    <string name="fill_post_checkbox_error_location_resolve">ไม่สามารถระบุชื่อสภานที่ได้ :(</string>
+    <string name="fill_post_checkbox_error_localize_resolve">ไม่สามารถแปลชื่อสภานที่เป็นภาษาท้องถิ่นได้ :(</string>
+    <string name="fill_post_checkbox_error_location_notfound">ไม่พบสถานที่</string>
+    <string name="fill_post_checkbox_location_off">เกิดข้อผิดพลาด: กรุณาเปิดระบบระบุตำแหน่งเพื่อใช้งานในส่วนนี้</string>
     <string name="fill_post_checkbox_no_location_exif">เกิดข้อผิดพลาด: ไม่มีข้อมูลพิกัดในรูปภาพ :(</string>
     <string name="fill_post_checkbox_gps_working">กำลังค้นหาตำแหน่ง .</string>
 
@@ -150,14 +150,14 @@
     <string name="alert_not_your_photo_title">ไม่ใช่รูปจากมือถือเครื่องนี้</string>
     <string name="alert_not_your_photo_message">กรุณาเลือกรูปที่ถ่ายจากกล้องของมือถือเครื่องนี้</string>
     <string name="alert_not_from_camera_title">ไม่ใช่รูปถ่าย</string>
-    <string name="alert_not_from_camera_summary">รูปถ่ายที่เลือกไม่มีข้อมูล exif</string>
+    <string name="alert_not_from_camera_summary">กรุณาเลือกรุปที่ถ่ายจากกล้อง</string>
     <string name="alert_no_required_exif_title">ข้อมูลของรูปถ่ายไม่สมบูรณ์</string>
-    <string name="alert_no_required_exif_summary">รูปที่เลือกมีข้อมูล exif ไม่ครบตามความต้องการของระบบ</string>
+    <string name="alert_no_required_exif_summary">รูปที่เลือกมีข้อมูลของรูปไม่ครบตามความต้องการของระบบ</string>
     <string name="alert_invalid_image">รูปภาพไม่สมบูรณ์</string>
-    <string name="alert_invalid_image_message">ไม่มีข้อมูลรูปภาพที่เลือก กรุณาเลือกรูปอื่น</string>
+    <string name="alert_invalid_image_message">ไม่มีข้อมูลรูปภาพที่เลือก\nกรุณาเลือกรูปอื่น</string>
     <string name="snackbar_feed_cannot_refresh">ไม่สามารถโหลดฟีดใหม่ได้</string>
-    <string name="snackbar_feed_selected_vendor">"ยี่ห้อ: "</string>
-    <string name="snackbar_feed_selected_model">" รุ่น: "</string>
+    <string name="snackbar_feed_selected_vendor">"ยี่ห้อ : "</string>
+    <string name="snackbar_feed_selected_model">" รุ่น : "</string>
     <string name="snackbar_feed_upload_failed">อัพโหลดรูปไม่สำเร็จ</string>
     <string name="snackbar_feed_upload_cancel">ยกเลิกการอัพโหลดรูป</string>
     <string name="fab_label_picture_picker">เลือกรูปจากคลังภาพ</string>

@@ -147,13 +147,13 @@
     <!--Feed-->
     <string name="recent_tag">Most Recent</string>
     <string name="alert_not_your_photo_title">Not Your Photo</string>
-    <string name="alert_not_your_photo_message">Please select a photo taken by this phone.</string>
+    <string name="alert_not_your_photo_message">Please select a photo taken by this phone</string>
     <string name="alert_not_from_camera_title">Not From Camera</string>
-    <string name="alert_not_from_camera_summary">Selected photo must have exif.</string>
+    <string name="alert_not_from_camera_summary">Please select a photo taken by camera</string>
     <string name="alert_no_required_exif_title">Incomplete Photo Data</string>
-    <string name="alert_no_required_exif_summary">Selected photo must have every required exif.</string>
+    <string name="alert_no_required_exif_summary">Selected photo must have every required data</string>
     <string name="alert_invalid_image">Invalid Image</string>
-    <string name="alert_invalid_image_message">Selected image has no data.\nPlease select other image.</string>
+    <string name="alert_invalid_image_message">Selected image has no data.\nPlease select other image</string>
     <string name="snackbar_feed_cannot_refresh">cannot refresh feed</string>
     <string name="snackbar_feed_selected_vendor">"Vendor: "</string>
     <string name="snackbar_feed_selected_model">" Model: "</string>

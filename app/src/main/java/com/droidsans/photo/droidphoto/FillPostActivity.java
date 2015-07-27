@@ -486,7 +486,11 @@ public class FillPostActivity extends AppCompatActivity {
 //            Toast.makeText(getApplicationContext(), "Error: selected image must have exif", Toast.LENGTH_LONG).show();
 //            Snackbar.make(null, "Error: selected image must have exif", Snackbar.LENGTH_LONG).show();
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("return code", "no exif");
+            if(mImageFrom.equals("Camera")) {
+                returnIntent.putExtra("return code", "no required exif");
+            } else {
+                returnIntent.putExtra("return code", "no exif");
+            }
             setResult(RESULT_CANCELED, returnIntent);
             finish();
             return;
