@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.droidsans.photo.droidphoto.BrowseModelActivity;
+import com.droidsans.photo.droidphoto.BrowseVendorActivity;
 import com.droidsans.photo.droidphoto.MainActivity;
 import com.droidsans.photo.droidphoto.R;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
@@ -26,14 +27,12 @@ public class ModelListAdapter extends ArrayAdapter<String> {
     private int resourceLayout;
     private LayoutInflater inflater;
     private AppCompatActivity activity;
-    private String vendorName;
     private int vendorNum;
 
-    public ModelListAdapter(Context context, int resource, String[] objects, String vendorName, int vendorNum, AppCompatActivity parentActivity) {
+    public ModelListAdapter(Context context, int resource, String[] objects, int vendorNum, AppCompatActivity parentActivity) {
         super(context, resource, objects);
         this.resourceLayout = resource;
         this.activity = parentActivity;
-        this.vendorName = vendorName;
         this.vendorNum = vendorNum;
     }
 
@@ -57,7 +56,7 @@ public class ModelListAdapter extends ArrayAdapter<String> {
         holder.showModelInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String message = "Vendor: " + vendorName + "\n";
+                String message = "Vendor: " + BrowseVendorActivity.vendorName[vendorNum] + "\n";
                 message += "Model: " + BrowseModelActivity.modelName[vendorNum][position] + "\n";
                 message += "DEVICE (OS): " + BrowseModelActivity.buildDevice[vendorNum][position] + "\n";
                 message += "MODEL (OS): " + BrowseModelActivity.buildModel[vendorNum][position] + "\n";
@@ -69,17 +68,16 @@ public class ModelListAdapter extends ArrayAdapter<String> {
                             public void onClick(DialogInterface dialog, int which) {
                                 JSONObject send = new JSONObject();
                                 try {
-                                    send.put("retail_vendor", vendorName);
-                                    send.put("retail_model", modelName);
-                                    send.put("build_device", "");
-                                    send.put("build_model", "");
+                                    send.put("retail_vendor", BrowseVendorActivity.vendorName[vendorNum]);
+                                    send.put("retail_model", BrowseModelActivity.modelName[vendorNum][position]);
+                                    send.put("build_device", BrowseModelActivity.buildDevice[vendorNum][position]);
+                                    send.put("build_model", BrowseModelActivity.buildModel[vendorNum][position]);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
 
                                 GlobalSocket.globalEmit("device.report", send);
-
-//                                Snackbar.make()
+//                                Snackbar.make(view);
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

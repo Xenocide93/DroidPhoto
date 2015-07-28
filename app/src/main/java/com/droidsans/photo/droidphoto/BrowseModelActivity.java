@@ -61,7 +61,7 @@ public class BrowseModelActivity extends AppCompatActivity {
     }
 
     private void setupModelListView() {
-        modelListAdapter = new ModelListAdapter(getApplicationContext(), R.layout.item_model, modelName[vendorNum], vendorName, vendorNum, BrowseModelActivity.this);
+        modelListAdapter = new ModelListAdapter(getApplicationContext(), R.layout.item_model, modelName[vendorNum], vendorNum, BrowseModelActivity.this);
         modelListView.setAdapter(modelListAdapter);
         modelListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
