@@ -303,7 +303,15 @@ public class ImageViewerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        String photoId = previousIntent.getStringExtra("photoId");
+        JSONObject send = new JSONObject();
+        try {
+            send.put("photo_id", send);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
+        GlobalSocket.globalEmit("photo.view", send);
 
         return true;
     }

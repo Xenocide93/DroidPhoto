@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -976,7 +977,7 @@ public class FillPostActivity extends AppCompatActivity {
                         FeedFragment.isCancelUpload = false;
 
                         //resize image save to cache
-                        final File tempFile = new File(getCacheDir() + "/" + "uploadtemp.jpg");
+                        final File tempFile = new File(getCacheDir() + "/" + "uploadtemp");
                         final File originalFile = new File(mCurrentPhotoPath);
                         FileOutputStream out = null;
                         Bitmap bmp = null;
@@ -993,7 +994,15 @@ public class FillPostActivity extends AppCompatActivity {
                                 // Choose the smallest ratio as inSampleSize value, this will guarantee
                                 // a final image with both dimensions larger than or equal to the
                                 // requested height and width.
-                                options.inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+                                int calcSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+                                for(int i = 1; i < 2048; i *= 2) {
+                                    if(i > calcSampleSize) {
+                                        calcSampleSize = i/2;
+                                        break;
+                                    }
+                                }
+//                                options.inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+                                options.inSampleSize = calcSampleSize;
                             }
                             Metadata metadata;
                             ExifIFD0Directory orientationDirectory = null;
@@ -1005,18 +1014,18 @@ public class FillPostActivity extends AppCompatActivity {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            android.graphics.Matrix matrix = new android.graphics.Matrix();
+                            Matrix matrix = new Matrix();
                             if(orientationDirectory != null && orientationDirectory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
 //                            Log.d("droidphoto", "rotating...");
                                 try {
                                     switch (orientationDirectory.getInt(ExifIFD0Directory.TAG_ORIENTATION)) {
                                         case 1:                                                             break; //ExifInterface.ORIENTATION_NORMAL
-//                                        case 2:                                 matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_FLIP_HORIZONTAL
+                                        case 2:                                 matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_FLIP_HORIZONTAL
                                         case 3:     matrix.postRotate(180);                                 break; //ExifInterface.ORIENTATION_ROTATE_180
-//                                        case 4:     matrix.postRotate(180);     matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_FLIP_VERTICAL
-//                                        case 5:     matrix.postRotate(90);      matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_TRANSPOSE
+                                        case 4:     matrix.postRotate(180);     matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_FLIP_VERTICAL
+                                        case 5:     matrix.postRotate(90);      matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_TRANSPOSE
                                         case 6:     matrix.postRotate(90);                                  break; //ExifInterface.ORIENTATION_ROTATE_90
-//                                        case 7:     matrix.postRotate(270);     matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_TRANSVERSE
+                                        case 7:     matrix.postRotate(270);     matrix.postScale(-1, 1);    break; //ExifInterface.ORIENTATION_TRANSVERSE
                                         case 8:     matrix.postRotate(270);                                 break; //ExifInterface.ORIENTATION_ROTATE_270
 
                                         default:
@@ -1027,6 +1036,15 @@ public class FillPostActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                             }
+                            Log.d("droidphoto", "insamplesize: " + options.inSampleSize);
+                            Log.d("droidphoto", "before scale: " + options.outWidth + " x " + options.outHeight);
+                            float scalef = (options.outWidth > options.outHeight)?
+                                    ((float)(MAX_THUMBNAIL_SIZE) / (options.outHeight / options.inSampleSize))
+                                    :((float)(MAX_THUMBNAIL_SIZE) / (options.outWidth / options.inSampleSize));
+                            Log.d("droidphoto", "scalef: " + scalef);
+//                            matrix.postScale((options.outWidth > options.outHeight)? (float)(MAX_THUMBNAIL_SIZE) / (options.outHeight/ options.inSampleSize): MAX_THUMBNAIL_SIZE,
+//                                    (options.outWidth > options.outHeight)? MAX_THUMBNAIL_SIZE: MAX_THUMBNAIL_SIZE * options.outHeight / (options.outWidth / options.inSampleSize));
+                            matrix.postScale(scalef, scalef);
 
                             try {
                                 in.close();
@@ -1037,15 +1055,14 @@ public class FillPostActivity extends AppCompatActivity {
                             }
                             options.inJustDecodeBounds = false;
 //                            Log.d("droidphoto", "has matrix");
-//                            Bitmap.createBitmap(
-//                                    BitmapFactory.decodeStream(in, null, options),
-//                                    (options.outWidth > options.outHeight) ? ((options.outWidth / 2) - (options.outHeight / 2)):0,
-//                                    (options.outWidth > options.outHeight) ? 0:(options.outHeight / 2 - options.outWidth / 2),
-//                                    (options.outWidth > options.outHeight) ? options.outHeight:options.outWidth,
-//                                    (options.outWidth > options.outHeight) ? options.outHeight:options.outWidth,
-//                                    matrix,
-//                                    true)
-//                                    .compress(Bitmap.CompressFormat.JPEG, 80, out);
+                            Bitmap.createBitmap(
+                                    BitmapFactory.decodeStream(in, null, options),
+                                    (options.outWidth > options.outHeight) ? ((options.outWidth / 2) - (options.outHeight / 2)):0,
+                                    (options.outWidth > options.outHeight) ? 0:(options.outHeight / 2 - options.outWidth / 2),
+                                    (options.outWidth > options.outHeight) ? options.outHeight:options.outWidth,
+                                    (options.outWidth > options.outHeight) ? options.outHeight:options.outWidth,
+                                    matrix, true)
+                                    .compress(Bitmap.CompressFormat.JPEG, 80, out);
 
 //                            Bitmap.createScaledBitmap(Bitmap.createBitmap(
 //                                    BitmapFactory.decodeStream(in, null, options),
@@ -1057,22 +1074,25 @@ public class FillPostActivity extends AppCompatActivity {
 //                                    (options.outWidth > options.outHeight) ? options.outHeight : options.outWidth,
 //                                    matrix, true), MAX_THUMBNAIL_SIZE, MAX_THUMBNAIL_SIZE, true).compress(Bitmap.CompressFormat.JPEG, 80, out);
 
-                            Bitmap.createBitmap(Bitmap.createScaledBitmap(
-                                            BitmapFactory.decodeStream(in, null, options),
-                                            (options.outWidth > options.outHeight)? options.outWidth * MAX_THUMBNAIL_SIZE / options.outHeight:MAX_THUMBNAIL_SIZE,
-                                            (options.outWidth > options.outHeight)? MAX_THUMBNAIL_SIZE:options.outHeight * MAX_THUMBNAIL_SIZE / options.outWidth,
-                                            true),
-                                    (options.outWidth > options.outHeight) ? ((options.outWidth * MAX_THUMBNAIL_SIZE / options.outHeight) - MAX_THUMBNAIL_SIZE) / 2 : 0,
-                                    (options.outWidth > options.outHeight) ? 0 : ((options.outHeight * MAX_THUMBNAIL_SIZE / options.outWidth) - MAX_THUMBNAIL_SIZE) / 2,
-                                    MAX_THUMBNAIL_SIZE,
-                                    MAX_THUMBNAIL_SIZE,
-                                    matrix, true).compress(Bitmap.CompressFormat.JPEG, 80, out);
+//                            Bitmap.createBitmap(Bitmap.createScaledBitmap(
+//                                            BitmapFactory.decodeStream(in, null, options),
+//                                            (options.outWidth > options.outHeight)? options.outWidth * MAX_THUMBNAIL_SIZE / options.outHeight:MAX_THUMBNAIL_SIZE,
+//                                            (options.outWidth > options.outHeight)? MAX_THUMBNAIL_SIZE:options.outHeight * MAX_THUMBNAIL_SIZE / options.outWidth,
+//                                            true),
+//                                    (options.outWidth > options.outHeight) ? ((options.outWidth * MAX_THUMBNAIL_SIZE / options.outHeight) - MAX_THUMBNAIL_SIZE) / 2 : 0,
+//                                    (options.outWidth > options.outHeight) ? 0 : ((options.outHeight * MAX_THUMBNAIL_SIZE / options.outWidth) - MAX_THUMBNAIL_SIZE) / 2,
+//                                    MAX_THUMBNAIL_SIZE,
+//                                    MAX_THUMBNAIL_SIZE,
+//                                    matrix, true).compress(Bitmap.CompressFormat.JPEG, 80, out);
 
 //                            Bitmap.createScaledBitmap(
 //                                    BitmapFactory.decodeStream(in, null, options),
 //                                    (options.outWidth > options.outHeight)? options.outWidth * MAX_THUMBNAIL_SIZE / options.outHeight:MAX_THUMBNAIL_SIZE,
 //                                    (options.outWidth > options.outHeight)? MAX_THUMBNAIL_SIZE:options.outHeight * MAX_THUMBNAIL_SIZE / options.outWidth,
 //                                    true).compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+                            Log.d("droidphoto", "compress size: " + options.outWidth + " x " + options.outHeight);
+                            Log.d("droidphoto", "upload size: " + options.outWidth * scalef + " x " + options.outHeight * scalef);
                             if(out != null) {
                                 try {
                                     out.close();

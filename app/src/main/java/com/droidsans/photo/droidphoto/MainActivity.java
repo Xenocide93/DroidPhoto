@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
                     evaluateMenuItem.setChecked(true);
                     getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
+                    fragmentTransaction.replace(R.id.main_fragment, new EvaluateFragment());
                     fragmentTransaction.commit();
                     toolbar.setTitle(getString(R.string.drawer_evaluate));
                     previousMenuItem = evaluateMenuItem;

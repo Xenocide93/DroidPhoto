@@ -243,6 +243,6 @@
     <string name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
     <string name="cache_table_name">test.e</string>
 
-    <string name="launch_count">app_launch_counter</string>
+    <string translatable="false" name="launch_count">app_launch_counter</string>
 
 </resources>

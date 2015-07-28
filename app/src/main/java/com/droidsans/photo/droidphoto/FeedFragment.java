@@ -1485,7 +1485,14 @@ public class FeedFragment extends Fragment {
         loop = new Runnable() {
             @Override
             public void run() {
-                if(isFailedToUpload) { //show failed
+                if(isCancelUpload) { //show cancel
+                    isUploading = false;
+                    staticPhotoPath = null;
+                    hasImageInPhotoPath = false;
+                    setFamEnable(true);
+                    hideUploadProgress();
+                    Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_cancel), Snackbar.LENGTH_LONG).show();
+                } else if(isFailedToUpload) { //show failed
                     isUploading = false;
                     staticPhotoPath = null;
                     hasImageInPhotoPath = false;
@@ -1493,13 +1500,6 @@ public class FeedFragment extends Fragment {
                     hideUploadProgress();
                     refreshFeed();
                     Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_failed), Snackbar.LENGTH_LONG).show();
-                } else if(isCancelUpload) {
-                    isUploading = false;
-                    staticPhotoPath = null;
-                    hasImageInPhotoPath = false;
-                    setFamEnable(true);
-                    hideUploadProgress();
-                    Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_cancel), Snackbar.LENGTH_LONG).show();
                 } else {
                     if (percentage < 100) {//update upload progress
                         Log.d("droidphoto", "uploaded : " + percentage + "%");
