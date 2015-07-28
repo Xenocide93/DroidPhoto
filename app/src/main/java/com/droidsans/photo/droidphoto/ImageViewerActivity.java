@@ -306,7 +306,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         String photoId = previousIntent.getStringExtra("photoId");
         JSONObject send = new JSONObject();
         try {
-            send.put("photo_id", send);
+            send.put("photo_id", photoId);
         } catch (JSONException e) {
             e.printStackTrace();
         }

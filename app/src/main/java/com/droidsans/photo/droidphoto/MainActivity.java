@@ -64,10 +64,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
-        launchCount++;
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt(getString(R.string.launch_count), launchCount).apply();
-        mContext = getApplicationContext();
+        if(!isChild()) {
+            int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
+            launchCount++;
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt(getString(R.string.launch_count), launchCount).apply();
+            mContext = getApplicationContext();
+        }
 
         initialize();
     }
@@ -417,21 +419,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    protected void onStart() {
+        super.onStart();
+        int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
+        launchCount++;
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt(getString(R.string.launch_count), launchCount).apply();
+    }
+
+    @Override
+    protected void onStop() {
         if(!isFinishing()) {
             int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
             launchCount--;
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt(getString(R.string.launch_count), launchCount).apply();
         }
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
-        launchCount++;
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt(getString(R.string.launch_count), launchCount).apply();
-        super.onResume();
+        super.onStop();
     }
 
     @Override
@@ -458,7 +460,12 @@ public class MainActivity extends AppCompatActivity {
         if(GlobalSocket.mSocket.hasListeners("get_user_info")) {
             GlobalSocket.mSocket.off("get_user_info");
         }
-        finish();
+//        finish();
+//        if(!isDestroyed()) {
+//            int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
+//            launchCount--;
+//            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt(getString(R.string.launch_count), launchCount).apply();
+//        }
         super.onDestroy();
     }
 

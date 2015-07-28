@@ -93,6 +93,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dispatchPicturePickerIntent();
+                //TODO upload now
 //                Toast.makeText(getApplicationContext(), "Launch Picture Picker Intent", Toast.LENGTH_SHORT).show();
             }
         });

@@ -1,6 +1,7 @@
 package com.droidsans.photo.droidphoto;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -9,8 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,19 +59,20 @@ public class AppInfoActivity extends AppCompatActivity {
 
         int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
 
-        String[] name = new String[]{
+        final String[] name = new String[]{
                 "Application Name",
                 "Version",
                 "Image Cache Size",
                 "Launch Count"
         };
-        String[] value = new String[]{
+        final String[] value = new String[]{
                 getString(R.string.app_name),
                 getString(R.string.app_version),
                 String.format("%.2f",(cacheSize / (1024.0*1024.0))) + " MB",
                 launchCount + ((launchCount > 1)? " times":" time")
         };
         int length = name.length;
+        final String[][] dataset = new String[][]{name, value};
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mainList = (ListView) findViewById(R.id.appinfo_list);
@@ -79,7 +86,27 @@ public class AppInfoActivity extends AppCompatActivity {
             datum.put("value", value[i]);
             data.add(datum);
         }
-        SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), data, android.R.layout.simple_list_item_2, new String[]{"name", "value"}, new int[]{android.R.id.text1, android.R.id.text2});
+//        SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), data, R.layout.item_info, new String[]{"name", "value"}, new int[]{R.id.text_1, R.id.text_2});
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.item_info, name){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View row;
+                if(convertView == null)
+                {
+                    row = getLayoutInflater().inflate(R.layout.item_info, null);
+                }
+                else
+                {
+                    row = convertView;
+                }
+                TextView v = (TextView) row.findViewById(R.id.text_1);
+                v.setText(name[position]);
+                v = (TextView) row.findViewById(R.id.text_2);
+                v.setText(value[position]);
+                return row;
+//                return super.getView(position, convertView, parent);
+            }
+        };
         mainList.setAdapter(adapter);
 
 

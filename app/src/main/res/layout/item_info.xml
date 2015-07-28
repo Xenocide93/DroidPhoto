@@ -4,23 +4,24 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:minHeight="?attr/listPreferredItemHeight"
-    android:padding="8dp"
+    android:padding="16dp"
     android:mode="twoLine">
 
     <com.droidsans.photo.droidphoto.util.view.FontTextView
-        android:id="@+id/text1"
+        android:id="@+id/text_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:textSize="16sp"
+        android:textColor="@color/global_text_black"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <com.droidsans.photo.droidphoto.util.view.FontTextView
-        android:id="@+id/text2"
+        android:id="@+id/text_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:layout_alignLeft="@id/text1"
+        android:textColor="@color/light_gray"
+        android:layout_alignLeft="@id/text_1"
         android:textAppearance="?attr/textAppearanceListItemSmall"/>
 
 </LinearLayout>

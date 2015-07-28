@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DroidShot</string>
     <string name="app_desc">ถ่ายด้วย Android</string>
-    <string name="app_version">เวอร์ชัน 0.9.6 (alpha-2)</string>
+    <string name="app_version">เวอร์ชัน 0.9.7 (alpha-2)</string>
 
     <string name="action_search">ค้นหา</string>
     <string name="action_settings">ตั้งค่า</string>
@@ -9,7 +9,6 @@
     <string name="menu_filter">ตัวกรอง</string>
     <string name="action_cancel">"  ยกเลิก  "</string>
     <string name="action_print">พิมพ์</string>
-
 
     <string name="title_activity_browse">รายชื่อยี่ห้อ</string>
     <string name="title_activity_browse_model">รายชื่อรุ่น</string>
