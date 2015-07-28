@@ -303,6 +303,8 @@ public class FillPostActivity extends AppCompatActivity {
                 return "Acer";
             case "ais":
                 return "AIS";
+            case "amazon":
+                return "Amazon";
             case "asus":
                 return "Asus";
             case "dell":
