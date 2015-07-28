@@ -707,6 +707,9 @@ public class FeedFragment extends Fragment {
                                         case "Acer":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_acer_300;
                                             break;
+                                        case "Amazon":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_amazon_300;
+                                            break;
                                         case "Asus":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_asus_300;
                                             break;
