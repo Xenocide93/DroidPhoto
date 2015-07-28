@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DroidShot</string>
     <string name="app_desc">Shot on Android</string>
-    <string name="app_version">version 0.9.7 (alpha-2)</string>
+    <string name="app_version">version 0.9.8 (alpha-3)</string>
 
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
@@ -201,6 +201,10 @@
     <string name="about_dev_team_by">This application has been developed by</string>
     <string name="about_dev_team_froztic">Thanakorn Yodthong (froztic)</string>
     <string name="about_dev_team_ong29673">Patinya Petcharit (Ong29673)</string>
+
+    <!--Maintenance-->
+    <string name="alert_maintenance_mode_title">Maintenance Mode</string>
+    <string name="alert_maintenance_mode_message">Currently our servers are going on maintenance. Please try again later. You might consider finding something to eat while waiting.</string>
 
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->

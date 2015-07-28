@@ -142,18 +142,26 @@ public class MainActivity extends AppCompatActivity {
         if(!GlobalSocket.mSocket.hasListeners("maintenance_mode")) {
             GlobalSocket.mSocket.on("maintenance_mode", new Emitter.Listener() {
                 @Override
-                public void call(Object... args) {
+                public void call(final Object... args) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            new AlertDialog.Builder(getApplicationContext())
-                                    .setTitle("Maintenance Mode")
-                                    .setMessage("Currently our servers are going on maintenance. Please try again later. You might consider finding something to eat while waiting.")
+                            GlobalSocket.mSocket.off("maintenance_mode");
+                            JSONObject data = (JSONObject) args[0];
+                            String message = getString(R.string.alert_maintenance_mode_message);
+                            if(data.optBoolean("success")) {
+                                message += "\n" + data.optString("msg");
+                            }
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle(getString(R.string.alert_maintenance_mode_title))
+                                    .setMessage(message)
                                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             System.exit(0);
-                                        };
+                                        }
+
+                                        ;
                                     })
                                     .show();
                         }
@@ -460,6 +468,8 @@ public class MainActivity extends AppCompatActivity {
         if(GlobalSocket.mSocket.hasListeners("get_user_info")) {
             GlobalSocket.mSocket.off("get_user_info");
         }
+        GlobalSocket.mSocket.off("maintenance_mode");
+
         super.onDestroy();
     }
 
