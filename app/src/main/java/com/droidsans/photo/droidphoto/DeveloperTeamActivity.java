@@ -17,7 +17,7 @@ public class DeveloperTeamActivity extends AppCompatActivity {
         setContentView(R.layout.activity_developer_team);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         if(getSupportActionBar() != null) {

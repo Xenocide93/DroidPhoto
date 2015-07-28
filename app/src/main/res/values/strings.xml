@@ -25,6 +25,7 @@
     <string name="title_activity_privacy_policy">Privacy Policy</string>
     <string name="title_activity_developer_team">Developer Team</string>
     <string name="title_activity_app_info">Application Info</string>
+    <string name="title_activity_help_image_view">   </string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>
@@ -196,16 +197,21 @@
     <string name="imageviewer_unit_hour">h</string>
     <string name="imageviewer_unit_day">d</string>
 
+    <!--Developer Team-->
+    <string name="about_dev_team_by">This application has been developed by</string>
+    <string name="about_dev_team_froztic">Thanakorn Yodthong (froztic)</string>
+    <string name="about_dev_team_ong29673">Patinya Petcharit (Ong29673)</string>
+
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 
     <!--userdata and friends-->
-    <string translatable="false" name="userdata">ewEgfoEWoi84tu3wsZLghB</string>
-    <string translatable="false" name="token">sdfgGRRAs23a7dfs9ghfvvfdsio</string>
-    <string translatable="false" name="user_id">aewtkuy243htlyHeilRHbwyl368yt</string>
-    <string translatable="false" name="username">wetYRI2JEW235Rsdf23sdg350SD</string>
-    <string translatable="false" name="user_priviledge">m48wk234k5Fkj4tAGFL4t3</string>
+    <string translatable="false" name="userdata">34tgeihe5ny45wuy4kj</string>
+    <string translatable="false" name="token">p954oiyjl43w5yhesr</string>
+    <string translatable="false" name="user_id">098o4ihtgaerdilkjn45</string>
+    <string translatable="false" name="username">o94ihgteriojk45ng</string>
+    <string translatable="false" name="user_priviledge">98i3hu4tgeioj45yghl</string>
     <string translatable="false" name="display_name">disp_name</string>
     <string translatable="false" name="avatar_url">avatar_url</string>
     <string translatable="false" name="create_date">create_at</string>
@@ -241,7 +247,7 @@
 
     <string translatable="false" name="url_terms_of_service">http://droidshot.droidsans.com/termsofservice</string>
     <string translatable="false" name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
-    <string translatable="false" name="cache_table_name">test.e</string>
+    <string translatable="false" name="cache_table_name">34tRKJI983245thwsweg36t</string>
 
     <string translatable="false" name="launch_count">app_launch_counter</string>
 

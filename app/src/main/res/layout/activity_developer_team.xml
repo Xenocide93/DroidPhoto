@@ -1,15 +1,62 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primary_color"
     tools:context="com.droidsans.photo.droidphoto.DeveloperTeamActivity">
 
     <include android:id="@+id/toolbar"
         layout="@layout/item_toolbar" />
 
-    <View android:id="@+id/toolbar_shadow"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:layout_below="@id/toolbar"
-        android:background="@drawable/toolbar_dropshadow" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/droidsans_logo"/>
+
+        <com.droidsans.photo.droidphoto.util.view.FontTextView
+            android:paddingTop="8dp"
+            android:text="@string/about_dev_team_by"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.droidsans.photo.droidphoto.util.view.FontTextView
+            android:paddingTop="@dimen/about_paragraph_spacing"
+            android:text="@string/about_dev_team_froztic"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <com.droidsans.photo.droidphoto.util.view.FontTextView
+            android:paddingTop="4dp"
+            android:text="@string/about_dev_team_ong29673"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <!--<com.droidsans.photo.droidphoto.util.view.FontTextView-->
+            <!--android:paddingTop="@dimen/about_paragraph_spacing"-->
+            <!--android:text="Special Thanks"-->
+            <!--android:textSize="16sp"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
+
+        <!--<com.droidsans.photo.droidphoto.util.view.FontTextView-->
+            <!--android:paddingTop="4dp"-->
+            <!--android:text="Droidsans"-->
+            <!--android:textSize="16sp"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -138,6 +138,29 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        if(!GlobalSocket.mSocket.hasListeners("maintenance_mode")) {
+            GlobalSocket.mSocket.on("maintenance_mode", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialog.Builder(getApplicationContext())
+                                    .setTitle("Maintenance Mode")
+                                    .setMessage("Currently our servers are going on maintenance. Please try again later. You might consider finding something to eat while waiting.")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            System.exit(0);
+                                        };
+                                    })
+                                    .show();
+                        }
+                    });
+                }
+            });
+        }
     }
 
     public void getUserInfo() {
@@ -514,14 +537,24 @@ public class MainActivity extends AppCompatActivity {
         logoutMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(1);
     }
 
+//    private void findModMenuById() {
+//        feedMenuItem = navigationView.getMenu().getItem(0);
+//        eventMenuItem = navigationView.getMenu().getItem(1);
+//        helpMenuItem = navigationView.getMenu().getItem(2);
+//        aboutMenuItem = navigationView.getMenu().getItem(3);
+//        settingsMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(0);
+//        evaluateMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(1);
+//        logoutMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(2);
+//    }
+
     private void findModMenuById() {
         feedMenuItem = navigationView.getMenu().getItem(0);
         eventMenuItem = navigationView.getMenu().getItem(1);
         helpMenuItem = navigationView.getMenu().getItem(2);
-        aboutMenuItem = navigationView.getMenu().getItem(3);
-        settingsMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(0);
-        evaluateMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(1);
-        logoutMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(2);
+        aboutMenuItem = navigationView.getMenu().getItem(2);
+        settingsMenuItem = navigationView.getMenu().getItem(3).getSubMenu().getItem(0);
+        evaluateMenuItem = navigationView.getMenu().getItem(3).getSubMenu().getItem(1);
+        logoutMenuItem = navigationView.getMenu().getItem(3).getSubMenu().getItem(2);
     }
 
     private SharedPreferences getUserdata() {

@@ -17,7 +17,7 @@
     <string name="title_activity_placeholder">""</string>
     <string name="title_activity_change_password">เปลี่ยนรหัสผ่าน</string>
     <string name="title_activity_full_screen_image_viewer">      </string>
-    <string name="title_activity_edit_profile">แก้ไข้ข้อมูลส่วนตัว</string>
+    <string name="title_activity_edit_profile">แก้ไขข้อมูลส่วนตัว</string>
     <string name="title_activity_open_source_licenses">Open Source Licenses</string>
     <string name="title_activity_settings">ตั้งค่า</string>
     <string name="title_activity_web_view">   </string>
@@ -25,6 +25,7 @@
     <string name="title_activity_privacy_policy">นโยบายความเป็นส่วนตัว</string>
     <string name="title_activity_developer_team">ทีมผู้พัฒนาแอปพลิเคชัน</string>
     <string name="title_activity_app_info">ข้อมูลแอปพลิเคชัน</string>
+    <string name="title_activity_help_image_view">   </string>
 
     <string name="browser_vendor_title">เลือกยี่ห้อมือถือ</string>
     <string name="browse_model_title">เลือกรุ่นมือถือ</string>
@@ -58,13 +59,13 @@
     <string name="settings_display_eng_location_title">ชื่อสถานที่ภาษาอังกฤษ</string>
     <string name="settings_display_eng_location_summary">แอปจะแสดงชื่อสถานที่เป็นภาษาอังกฤษ</string>
     <string name="settings_display_local_location_title">ชื่อสถานที่ภาษาท้องถิ่น</string>
-    <string name="settings_display_local_location_summary">แอปจะแสดงชื่อสถานที่เป็นภาษาไทย</string>
+    <string name="settings_display_local_location_summary">แอปจะแสดงชื่อสถานที่เป็นภาษาท้องถิ่นของถานที่นั้นๆ (ถ้ามี)</string>
     <string name="settings_submenu_imageupload_title">การอัพโหลดรูปภาพ</string>
     <string name="settings_uselocation_title">แนบตำแหน่งรูปภาพโดยอัตโนมัติ</string>
     <string name="settings_uselocation_summary">แอปจะเก็บข้อมูลตำแหน่งในรูปแบบของชื่อเมือง โดยแนบไปกับรูปภาพโดยอัตโนมัติ</string>
     <!--<string name="settings_app_language_title">เลือกภาษาที่ใช้แสดง</string>-->
     <!--<string name="settings_app_language_summary">ภาษา : %s</string>-->
-    <string name="settings_app_language_title">เลือกภาษาของระบบ (แอนดรอยด์)</string>
+    <string name="settings_app_language_title">ภาษาของระบบ (แอนดรอยด์)</string>
     <string name="settings_app_language_summary">กดเพื่อเปิดหน้าตั้งค่าภาษาของแอนดรอยด์</string>
 
     <!--login hint-->
@@ -182,7 +183,7 @@
         <item>ข้อมูลแอปพลิเคชัน</item>
         <item>นโยบายความเป็นส่วนตัว</item>
         <item>ข้อตกลงกาารใช้บริการ</item>
-        <item>Open Source Licenses</item>
+        <item>ใบอนุญาตโอเพนซอร์ส</item>
         <item>ทีมผู้พัฒนาแอปพลิเคชัน</item>
     </string-array>
 
@@ -194,4 +195,9 @@
     <string name="imageviewer_unit_minute">" นาที"</string>
     <string name="imageviewer_unit_hour">" ชม."</string>
     <string name="imageviewer_unit_day">" วัน"</string>
+
+    <string name="about_dev_team_by">แอปพลิเคชันนี้ถูกพัฒนาโดย</string>
+    <string name="about_dev_team_froztic">ธนกร ยอดธง</string>
+    <string name="about_dev_team_ong29673">ปฏิญญา เพชรฤทธิ์</string>
+
 </resources>

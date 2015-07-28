@@ -16,11 +16,12 @@
             android:title="@string/drawer_event"
             android:icon="@drawable/ic_event_note_black_24dp" />
 
-        <item
-            android:id="@+id/drawer_help"
-            android:checked="false"
-            android:title="@string/drawer_help"
-            android:icon="@drawable/ic_help_outline_black_24dp" />
+        <!--<item-->
+            <!--android:id="@+id/drawer_help"-->
+            <!--android:checked="false"-->
+            <!--android:title="@string/drawer_help"-->
+            <!--android:icon="@drawable/ic_help_outline_black_24dp" />-->
+
         <item
             android:id="@+id/drawer_about"
             android:checked="false"
