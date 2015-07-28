@@ -9,5 +9,4 @@
     <integer name="max_profilename_size">25</integer>
     <integer name="max_profiledesc_size">60</integer>
 
-
 </resources>

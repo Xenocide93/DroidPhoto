@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    
     <string name="license_nkzawa_socket_io_android_title">Socket.IO-client.java</string>
     <string name="license_nkzawa_socket_io_android_detail">"The MIT License (MIT)
 Copyright (c) 2013 Naoyuki Kanezawa
