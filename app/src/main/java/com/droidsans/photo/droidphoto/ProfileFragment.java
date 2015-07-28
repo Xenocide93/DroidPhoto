@@ -294,7 +294,7 @@ public class ProfileFragment extends Fragment {
                             GlobalSocket.mSocket.off("remove_pic");
                             JSONObject returnData = (JSONObject) args[0];
                             if (returnData.optBoolean("success")) {
-                                Snackbar.make(mainLayout, getString(R.string.delete_pic_dialog_success_delete), Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(mainLayout, getString(R.string.snackbar_delete_pic_success), Snackbar.LENGTH_SHORT).show();
                                 Log.d("droidphoto", "Selected pictures are removed");
                             } else {
                                 Snackbar.make(mainLayout, "Error: " + returnData.optString("msg"), Snackbar.LENGTH_SHORT).show();

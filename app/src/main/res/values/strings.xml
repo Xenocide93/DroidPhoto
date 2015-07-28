@@ -201,47 +201,47 @@
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 
     <!--userdata and friends-->
-    <string name="userdata">ewEgfoEWoi84tu3wsZLghB</string>
-    <string name="token">sdfgGRRAs23a7dfs9ghfvvfdsio</string>
-    <string name="user_id">aewtkuy243htlyHeilRHbwyl368yt</string>
-    <string name="username">wetYRI2JEW235Rsdf23sdg350SD</string>
-    <string name="user_priviledge">m48wk234k5Fkj4tAGFL4t3</string>
-    <string name="display_name">disp_name</string>
-    <string name="avatar_url">avatar_url</string>
-    <string name="create_date">create_at</string>
+    <string translatable="false" name="userdata">ewEgfoEWoi84tu3wsZLghB</string>
+    <string translatable="false" name="token">sdfgGRRAs23a7dfs9ghfvvfdsio</string>
+    <string translatable="false" name="user_id">aewtkuy243htlyHeilRHbwyl368yt</string>
+    <string translatable="false" name="username">wetYRI2JEW235Rsdf23sdg350SD</string>
+    <string translatable="false" name="user_priviledge">m48wk234k5Fkj4tAGFL4t3</string>
+    <string translatable="false" name="display_name">disp_name</string>
+    <string translatable="false" name="avatar_url">avatar_url</string>
+    <string translatable="false" name="create_date">create_at</string>
 
     <!--settings key-->
-    <string name="settings_eng_location">english_location_naming</string>
-    <string name="settings_local_location">localized_location_naming</string>
-    <string name="settings_use_location">use_location_by_default</string>
-    <string name="settings_app_language">use_app_language</string>
-    <string-array name="settings_app_language_entrylist">
+    <string translatable="false" name="settings_eng_location">english_location_naming</string>
+    <string translatable="false" name="settings_local_location">localized_location_naming</string>
+    <string translatable="false" name="settings_use_location">use_location_by_default</string>
+    <string translatable="false" name="settings_app_language">use_app_language</string>
+    <string-array translatable="false" name="settings_app_language_entrylist">
         <item>English (EN)</item>
         <item>ไทย (TH)</item>
     </string-array>
-    <string-array name="settings_app_language_entryvalue">
+    <string-array translatable="false" name="settings_app_language_entryvalue">
         <item>en</item>
         <item>th</item>
     </string-array>
 
     <!-- vendor model map version -->
-    <!--<string name="cvsMapPref">vendor_model_map_version</string>-->
-    <!--<string name="csvVersion">version</string>-->
-    <!--<string name="csvFileName">csv_version</string>-->
+    <!--<string translatable="false" name="cvsMapPref">vendor_model_map_version</string>-->
+    <!--<string translatable="false" name="csvVersion">version</string>-->
+    <!--<string translatable="false" name="csvFileName">csv_version</string>-->
 
-    <string name="test_140_char">111111111112222222222333333333344444444445555555555666666666677777777778888888888999999999900000000001111111111222222222233333333334444444444</string>
-    <string name="test_90_char">1111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999</string>
+    <string translatable="false" name="test_140_char">111111111112222222222333333333344444444445555555555666666666677777777778888888888999999999900000000001111111111222222222233333333334444444444</string>
+    <string translatable="false" name="test_90_char">1111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="long_text_10">\@@@@@@@@@@</string>
-    <string name="long_text_20">\@@@@@@@@@@@@@@@@@@@@</string>
-    <string name="long_text_30">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
-    <string name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
-    <string name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
+    <string translatable="false" name="hello_world">Hello world!</string>
+    <string translatable="false" name="long_text_10">\@@@@@@@@@@</string>
+    <string translatable="false" name="long_text_20">\@@@@@@@@@@@@@@@@@@@@</string>
+    <string translatable="false" name="long_text_30">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
+    <string translatable="false" name="long_text_40">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
+    <string translatable="false" name="long_text_50">\@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</string>
 
-    <string name="url_terms_of_service">http://droidshot.droidsans.com/termsofservice</string>
-    <string name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
-    <string name="cache_table_name">test.e</string>
+    <string translatable="false" name="url_terms_of_service">http://droidshot.droidsans.com/termsofservice</string>
+    <string translatable="false" name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
+    <string translatable="false" name="cache_table_name">test.e</string>
 
     <string translatable="false" name="launch_count">app_launch_counter</string>
 

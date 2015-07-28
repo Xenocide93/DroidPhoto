@@ -109,6 +109,7 @@
     <string name="snackbar_changepass_tooshort">รหัสผ่านสั้นเกินไป ต้องมีความยาวอย่างน้อย 6 ตัวอักษร</string>
     <string name="snackbar_changepass_tooshort_shortver">รหัสผ่านสั้นเกินไป</string>
     <string name="snackbar_changepass_wrongpass">รหัสผ่านเดิมไม่ถูกต้อง</string>
+    <string name="snackbar_delete_pic_success">ลบภาพที่เลือกเรียบร้อย</string>
 
     <!--edit profile activity-->
     <string name="edit_profile_display_name">ชื่อโปรไฟล์</string>
@@ -177,7 +178,6 @@
     <string name="delete_pic_dialog_confirmation">"จะถูกลบ คุณแน่ใจหรือไม่ ?"</string>
     <string name="delete_pic_dialog_positive_button">ลบ</string>
     <string name="delete_pic_dialog_negative_button">ยกเลิก</string>
-    <string name="delete_pic_dialog_success_delete">Selected pictures are removed</string>
 
     <string-array name="about_list">
         <item>ข้อมูลแอปพลิเคชัน</item>
