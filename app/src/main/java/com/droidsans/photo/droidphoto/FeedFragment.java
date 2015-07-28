@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -1104,13 +1105,18 @@ public class FeedFragment extends Fragment {
             case R.id.action_filter:
                 if(noData) {
 //                    Snackbar.make(frameLayout, "fresh start. upload first image now !!", Snackbar.LENGTH_LONG).show();
+
                     return true;
                 }
                 if(isFirstTime()){
                     showNextTutorial();
                     return true;
                 }
-                launchAddFilterPopup();
+                if(filterCount >= 4){
+                    Snackbar.make(getView(), getString(R.string.feed_filter_too_many_tag), Snackbar.LENGTH_LONG).show();
+                } else {
+                    launchAddFilterPopup();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -1721,6 +1727,7 @@ public class FeedFragment extends Fragment {
         private LayoutInflater inflater;
         private int tagIndex;
         private boolean selected = false;
+        private ImageView deleteTagButton;
 
         public TagView(FlowLayout tagLayout, String vendorName, String modelName) {
             this.vendorName = vendorName;
@@ -1734,6 +1741,7 @@ public class FeedFragment extends Fragment {
             vendorTV.setText(vendorName);
             modelTV = (TextView) tagView.findViewById(R.id.model_tag);
             modelTV.setText(modelName);
+            deleteTagButton = (ImageView) tagView.findViewById(R.id.delete_tag_button);
 
             setOnClickListener();
         }
@@ -1758,6 +1766,16 @@ public class FeedFragment extends Fragment {
                             modelTV.setTextColor(getResources().getColor(R.color.primary_color));
                         }
                     }
+                }
+            });
+
+            deleteTagButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selected = true;
+                    removeTag();
+                    refreshFeed();
+                    initLoading();
                 }
             });
         }
