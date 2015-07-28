@@ -327,6 +327,8 @@ public class FillPostActivity extends AppCompatActivity {
                 return "Lenovo";
             case "lge":
                 return "LG";
+            case "meizu":
+                return "Meizu";
             case "motorola":
                 return "Motorola";
             case "nikon":
