@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -31,7 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends AppCompatActivity {
     EditText username, password, passwordConfirm, email, displayName;
     TextView tosLink;
     Button registerBtn;
