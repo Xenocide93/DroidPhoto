@@ -57,19 +57,19 @@ public class AppInfoActivity extends AppCompatActivity {
             }
         }
 
-        int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
+//        int launchCount = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt(getString(R.string.launch_count), 0);
 
         final String[] name = new String[]{
                 "Application Name",
                 "Version",
                 "Image Cache Size",
-                "Launch Count"
+//                "Launch Count"
         };
         final String[] value = new String[]{
                 getString(R.string.app_name),
                 getString(R.string.app_version),
                 String.format("%.2f",(cacheSize / (1024.0*1024.0))) + " MB",
-                launchCount + ((launchCount > 1)? " times":" time")
+//                launchCount + ((launchCount > 1)? " times":" time")
         };
         int length = name.length;
         final String[][] dataset = new String[][]{name, value};
