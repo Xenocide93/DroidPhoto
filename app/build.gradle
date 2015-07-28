@@ -1,21 +1,31 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'CL3ubcQ6mXJZKLkaRp9EcA'
+            keyPassword 'Tiq1pPDkEZfObIi+FPsuLVI/lxI4SG5TRuvIMSrDdhM'
+            storeFile file('D:/droidshot_storekey.jks')
+            storePassword 'Tiq1pPDkEZfObIi+FPsuLVI/lxI4SG5TRuvIMSrDdhM'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId "com.droidsans.photo.droidphoto"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
