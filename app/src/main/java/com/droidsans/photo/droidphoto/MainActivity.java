@@ -475,7 +475,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(ProfileFragment.mProfileFragment!=null){
+        if(ProfileFragment.mProfileFragment!=null && ProfileFragment.mProfileFragment.adapter != null) {
             if(ProfileFragment.mProfileFragment.adapter.isInEditMode){
                 ProfileFragment.mProfileFragment.cancelEditMode();
                 return;
