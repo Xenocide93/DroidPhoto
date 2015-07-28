@@ -60,7 +60,7 @@ public class RegisterActivity extends Activity {
 
     private void initHint() {
         tosLink.append(" ");
-        final Intent intent = new Intent(getApplicationContext(), PlaceholderActivity.class);
+        final Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
         intent.putExtra("URL", getString(R.string.url_terms_of_service));
         intent.putExtra("Title", getString(R.string.title_activity_terms_of_service));
         SpannableString linktext = new SpannableString(getString(R.string.register_accept_tos_link));

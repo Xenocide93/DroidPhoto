@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.droidsans.photo.droidphoto"
-    >
+    package="com.droidsans.photo.droidphoto" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -109,6 +108,10 @@
         <activity
             android:name=".AppInfoActivity"
             android:label="@string/title_activity_app_info" >
+        </activity>
+        <activity
+            android:name=".HelpImageViewActivity"
+            android:label="@string/title_activity_help_image_view" >
         </activity>
     </application>
 

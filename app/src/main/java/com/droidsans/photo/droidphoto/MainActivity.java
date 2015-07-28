@@ -138,6 +138,37 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        if(!GlobalSocket.mSocket.hasListeners("maintenance_mode")) {
+            GlobalSocket.mSocket.on("maintenance_mode", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalSocket.mSocket.off("maintenance_mode");
+                            JSONObject data = (JSONObject) args[0];
+                            String message = getString(R.string.alert_maintenance_mode_message);
+                            if(data.optBoolean("success")) {
+                                message += "\n" + data.optString("msg");
+                            }
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle(getString(R.string.alert_maintenance_mode_title))
+                                    .setMessage(message)
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            System.exit(0);
+                                        }
+
+                                        ;
+                                    })
+                                    .show();
+                        }
+                    });
+                }
+            });
+        }
     }
 
     public void getUserInfo() {
@@ -437,6 +468,8 @@ public class MainActivity extends AppCompatActivity {
         if(GlobalSocket.mSocket.hasListeners("get_user_info")) {
             GlobalSocket.mSocket.off("get_user_info");
         }
+        GlobalSocket.mSocket.off("maintenance_mode");
+
         super.onDestroy();
     }
 
@@ -514,14 +547,24 @@ public class MainActivity extends AppCompatActivity {
         logoutMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(1);
     }
 
+//    private void findModMenuById() {
+//        feedMenuItem = navigationView.getMenu().getItem(0);
+//        eventMenuItem = navigationView.getMenu().getItem(1);
+//        helpMenuItem = navigationView.getMenu().getItem(2);
+//        aboutMenuItem = navigationView.getMenu().getItem(3);
+//        settingsMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(0);
+//        evaluateMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(1);
+//        logoutMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(2);
+//    }
+
     private void findModMenuById() {
         feedMenuItem = navigationView.getMenu().getItem(0);
         eventMenuItem = navigationView.getMenu().getItem(1);
         helpMenuItem = navigationView.getMenu().getItem(2);
-        aboutMenuItem = navigationView.getMenu().getItem(3);
-        settingsMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(0);
-        evaluateMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(1);
-        logoutMenuItem = navigationView.getMenu().getItem(4).getSubMenu().getItem(2);
+        aboutMenuItem = navigationView.getMenu().getItem(2);
+        settingsMenuItem = navigationView.getMenu().getItem(3).getSubMenu().getItem(0);
+        evaluateMenuItem = navigationView.getMenu().getItem(3).getSubMenu().getItem(1);
+        logoutMenuItem = navigationView.getMenu().getItem(3).getSubMenu().getItem(2);
     }
 
     private SharedPreferences getUserdata() {
