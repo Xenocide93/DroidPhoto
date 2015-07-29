@@ -52,9 +52,10 @@ public class ModelListAdapter extends ArrayAdapter<String> {
             holder = (ItemHolder) row.getTag();
         }
 
-        holder.showModelInfo.setVisibility(
-                activity.getSharedPreferences(activity.getString(R.string.userdata), Context.MODE_PRIVATE)
-                        .getInt(activity.getString(R.string.user_priviledge), 1) > 1? ImageView.VISIBLE: ImageView.GONE);
+//        holder.showModelInfo.setVisibility(
+//                activity.getSharedPreferences(activity.getString(R.string.userdata), Context.MODE_PRIVATE)
+//                        .getInt(activity.getString(R.string.user_priviledge), 1) > 1? ImageView.VISIBLE: ImageView.GONE);
+        holder.showModelInfo.setVisibility(ImageView.GONE);
 
         holder.showModelInfo.setOnClickListener(new View.OnClickListener() {
             @Override
