@@ -447,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == ACTIVITY_SETTINGS) {
-            settingsMenuItem.setChecked(false);
+            if(settingsMenuItem != null) settingsMenuItem.setChecked(false);
             if(previousMenuItem != null) previousMenuItem.setChecked(true);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
