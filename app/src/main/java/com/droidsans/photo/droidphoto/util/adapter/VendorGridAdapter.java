@@ -41,7 +41,7 @@ public class VendorGridAdapter extends ArrayAdapter<Integer> {
         Glide.with(getContext())
                 .load(getItem(position))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .placeholder(R.drawable.vendor_logo_default_300)
+                .placeholder(R.drawable.vendor_logo_default_300)
                 .into(holder.vendorPic);
         if(getItem(position) == R.drawable.vendor_logo_default_300) {
             holder.vendorText.setVisibility(FontTextView.VISIBLE);
