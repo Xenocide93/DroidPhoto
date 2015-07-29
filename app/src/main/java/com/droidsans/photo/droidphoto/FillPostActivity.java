@@ -608,10 +608,10 @@ public class FillPostActivity extends AppCompatActivity {
             Log.d("droidphoto", "phone make: " + Build.MANUFACTURER);
             Log.d("droidphoto", "phone model: " + Build.MODEL);
 
-            if(!Build.MANUFACTURER.toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim())) {
-                if(!Build.MODEL.toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim())) {
-                    if (!orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().contains((Build.MANUFACTURER).toLowerCase().trim())) {
-                        if(!Build.MODEL.toLowerCase().trim().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim())) {
+            if(!Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""))) {
+                if(!Build.MODEL.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""))) {
+                    if (!orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""))) {
+                        if(!Build.MODEL.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""))) {
                            Intent returnIntent = new Intent();
                            returnIntent.putExtra("return code", "not your photo");
                            setResult(RESULT_CANCELED, returnIntent);
