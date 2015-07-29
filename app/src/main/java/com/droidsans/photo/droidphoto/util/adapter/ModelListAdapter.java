@@ -52,10 +52,10 @@ public class ModelListAdapter extends ArrayAdapter<String> {
             holder = (ItemHolder) row.getTag();
         }
 
-//        holder.showModelInfo.setVisibility(
-//                activity.getSharedPreferences(activity.getString(R.string.userdata), Context.MODE_PRIVATE)
-//                        .getInt(activity.getString(R.string.user_priviledge), 1) > 1? ImageView.VISIBLE: ImageView.GONE);
-        holder.showModelInfo.setVisibility(ImageView.GONE);
+        holder.showModelInfo.setVisibility(
+                activity.getSharedPreferences(activity.getString(R.string.userdata), Context.MODE_PRIVATE)
+                        .getInt(activity.getString(R.string.user_priviledge), 1) > 1? ImageView.VISIBLE: ImageView.GONE);
+//        holder.showModelInfo.setVisibility(ImageView.GONE);
 
         holder.showModelInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,21 +70,22 @@ public class ModelListAdapter extends ArrayAdapter<String> {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                final JSONObject send = new JSONObject();
-                                try {
-                                    send.put("retail_vendor", BrowseVendorActivity.vendorName[vendorNum]);
-                                    send.put("retail_model", BrowseModelActivity.modelName[vendorNum][position]);
-                                    send.put("build_device", BrowseModelActivity.buildDevice[vendorNum][position]);
-                                    send.put("build_model", BrowseModelActivity.buildModel[vendorNum][position]);
-                                    send.put("_event", "report_respond");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                GlobalSocket.globalEmit("device.report", send);
-
-                                Snackbar.make(activity.findViewById(R.id.model_name),
-                                        "report: " + BrowseVendorActivity.vendorName[vendorNum] + " " +
-                                                BrowseModelActivity.modelName[vendorNum][position] + " submitted", Snackbar.LENGTH_SHORT).show();
+//                                final JSONObject send = new JSONObject();
+//                                try {
+//                                    send.put("retail_vendor", BrowseVendorActivity.vendorName[vendorNum]);
+//                                    send.put("retail_model", BrowseModelActivity.modelName[vendorNum][position]);
+//                                    send.put("build_device", BrowseModelActivity.buildDevice[vendorNum][position]);
+//                                    send.put("build_model", BrowseModelActivity.buildModel[vendorNum][position]);
+//                                    send.put("_event", "report_respond");
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//                                GlobalSocket.globalEmit("device.report", send);
+//
+//                                Snackbar.make(activity.findViewById(R.id.model_name),
+//                                        "report: " + BrowseVendorActivity.vendorName[vendorNum] + " " +
+//                                                BrowseModelActivity.modelName[vendorNum][position] + " submitted", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(activity.findViewById(R.id.model_name), "currently disabled due to severe displacement bug.", Snackbar.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
