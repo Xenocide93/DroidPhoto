@@ -803,7 +803,7 @@ public class FeedFragment extends Fragment {
                                         case "Sharp":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_fujitsu_300;
                                             break;
-                                        case "thl":
+                                        case "ThL":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_thl_300;
                                             break;
                                         case "vivo":

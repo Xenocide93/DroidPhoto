@@ -319,6 +319,8 @@ public class FillPostActivity extends AppCompatActivity {
                 return "Huawei";
             case "i-mobile":
                 return "i-mobile";
+            case "imobile":
+                return "i-mobile";
             case "intel":
                 return "Intel";
             case "lava":
@@ -368,11 +370,15 @@ public class FillPostActivity extends AppCompatActivity {
             case "sharp":
                 return "Sharp";
             case "thl":
-                return "thl";
+                return "ThL";
             case "vivo":
                 return "vivo";
             default:
-                return Build.MANUFACTURER.trim().substring(0,1).toUpperCase() + Build.MANUFACTURER.trim().substring(1, Build.MANUFACTURER.length()).toLowerCase();
+                if(Build.MODEL.toLowerCase().contains("vivo")) {
+                    return "vivo";
+                } else {
+                    return Build.MANUFACTURER.trim().substring(0, 1).toUpperCase() + Build.MANUFACTURER.trim().substring(1, Build.MANUFACTURER.length()).toLowerCase();
+                }
 //                return Build.MANUFACTURER;
         }
     }
