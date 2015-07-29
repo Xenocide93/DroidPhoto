@@ -11,7 +11,7 @@
     <string name="action_print">พิมพ์</string>
 
     <string name="title_activity_browse">รายชื่อยี่ห้อ</string>
-    <string name="title_activity_browse_model">รายชื่อรุ่น</string>
+    <string name="title_activity_browse_model">"รายชื่อรุ่นของ "</string>
     <string name="title_activity_fill_post">อัพโหลดรูปภาพ</string>
     <string name="title_activity_image_viewer">รูปภาพ</string>
     <string name="title_activity_placeholder">""</string>

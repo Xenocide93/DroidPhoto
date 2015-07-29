@@ -43,14 +43,18 @@ public class BrowseModelActivity extends AppCompatActivity {
 
     private void initialize() {
         findAllById();
-        setupToolbar();
         retrieveIntentData();
+        setupToolbar();
         setupModelListView();
     }
 
     private void setupToolbar() {
+        toolbar.setTitle(getString(R.string.title_activity_browse_model) + vendorName);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     private void retrieveIntentData() {

@@ -11,7 +11,7 @@
     <string name="action_print">Print</string>
 
     <string name="title_activity_browse">Vendor List</string>
-    <string name="title_activity_browse_model">Model List</string>
+    <string name="title_activity_browse_model">"Model List : "</string>
     <string name="title_activity_fill_post">Image Upload</string>
     <string name="title_activity_image_viewer">Photo</string>
     <string name="title_activity_placeholder">Placeholder</string>
