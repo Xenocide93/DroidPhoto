@@ -801,13 +801,16 @@ public class FeedFragment extends Fragment {
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_fujitsu_300;
                                             break;
                                         case "Sharp":
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_fujitsu_300;
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_sharp_300;
                                             break;
                                         case "ThL":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_thl_300;
                                             break;
                                         case "vivo":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_vivo_300;
+                                            break;
+                                        case "Nubia":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_nubia_300;
                                             break;
                                         default:
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_default_300;

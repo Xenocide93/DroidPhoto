@@ -373,6 +373,8 @@ public class FillPostActivity extends AppCompatActivity {
                 return "ThL";
             case "vivo":
                 return "vivo";
+            case "nubia":
+                return "Nubia";
             default:
                 if(Build.MODEL.toLowerCase().contains("vivo")) {
                     return "vivo";
