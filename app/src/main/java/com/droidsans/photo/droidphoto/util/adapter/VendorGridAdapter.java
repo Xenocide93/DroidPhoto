@@ -1,22 +1,23 @@
 package com.droidsans.photo.droidphoto.util.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.BrowseVendorActivity;
 import com.droidsans.photo.droidphoto.R;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
 
-public class VendorGridAdapter extends ArrayAdapter<Drawable> {
+public class VendorGridAdapter extends ArrayAdapter<Integer> {
     private int resourceLayout;
     private LayoutInflater inflater;
 
-    public VendorGridAdapter(Context context, int resource, Drawable[] objects) {
+    public VendorGridAdapter(Context context, int resource, Integer[] objects) {
         super(context, resource, objects);
         this.resourceLayout = resource;
     }
@@ -37,8 +38,12 @@ public class VendorGridAdapter extends ArrayAdapter<Drawable> {
             holder = (ItemHolder) row.getTag();
         }
 
-        holder.vendorPic.setImageDrawable(getItem(position));
-        if(getItem(position) == getContext().getDrawable(R.drawable.vendor_logo_default_300)) {
+        Glide.with(getContext())
+                .load(getItem(position))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .placeholder(R.drawable.vendor_logo_default_300)
+                .into(holder.vendorPic);
+        if(getItem(position) == R.drawable.vendor_logo_default_300) {
             holder.vendorText.setVisibility(FontTextView.VISIBLE);
             holder.vendorText.setText(BrowseVendorActivity.vendorName[position]);
         } else {

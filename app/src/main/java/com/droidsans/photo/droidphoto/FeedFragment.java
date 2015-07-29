@@ -810,6 +810,9 @@ public class FeedFragment extends Fragment {
                                         case "vivo":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_vivo_300;
                                             break;
+                                        case "Nubia":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_nubia_300;
+                                            break;
                                         default:
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_default_300;
                                             break;
