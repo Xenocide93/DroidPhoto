@@ -1,6 +1,7 @@
 package com.droidsans.photo.droidphoto.util.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -11,11 +12,11 @@ import com.droidsans.photo.droidphoto.BrowseVendorActivity;
 import com.droidsans.photo.droidphoto.R;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
 
-public class VendorGridAdapter extends ArrayAdapter<Integer> {
+public class VendorGridAdapter extends ArrayAdapter<Drawable> {
     private int resourceLayout;
     private LayoutInflater inflater;
 
-    public VendorGridAdapter(Context context, int resource, Integer[] objects) {
+    public VendorGridAdapter(Context context, int resource, Drawable[] objects) {
         super(context, resource, objects);
         this.resourceLayout = resource;
     }
@@ -36,8 +37,8 @@ public class VendorGridAdapter extends ArrayAdapter<Integer> {
             holder = (ItemHolder) row.getTag();
         }
 
-        holder.vendorPic.setImageResource(getItem(position));
-        if(getItem(position) == R.drawable.vendor_logo_default_300) {
+        holder.vendorPic.setImageDrawable(getItem(position));
+        if(getItem(position) == getContext().getDrawable(R.drawable.vendor_logo_default_300)) {
             holder.vendorText.setVisibility(FontTextView.VISIBLE);
             holder.vendorText.setText(BrowseVendorActivity.vendorName[position]);
         } else {

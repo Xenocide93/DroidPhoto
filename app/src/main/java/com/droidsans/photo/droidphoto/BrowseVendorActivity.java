@@ -1,7 +1,9 @@
 package com.droidsans.photo.droidphoto;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -21,6 +23,8 @@ public class BrowseVendorActivity extends AppCompatActivity {
     private GridView vendorGridView;
     private VendorGridAdapter vendorGridAdapter;
     public static Integer[] vendorPicResource = {
+    };
+    private Drawable[] vendorDrawable = {
     };
 
     public static String[] vendorName = {
@@ -45,7 +49,11 @@ public class BrowseVendorActivity extends AppCompatActivity {
     }
 
     private void setupVendorGridView() {
-        vendorGridAdapter = new VendorGridAdapter(getApplicationContext(), R.layout.vendor_item, vendorPicResource);
+        vendorDrawable = new Drawable[vendorPicResource.length];
+        for(int i = 0; i < vendorPicResource.length; i++){
+            vendorDrawable[i] = ContextCompat.getDrawable(this, vendorPicResource[i]);
+        }
+        vendorGridAdapter = new VendorGridAdapter(getApplicationContext(), R.layout.vendor_item, vendorDrawable);
         vendorGridView.setAdapter(vendorGridAdapter);
         vendorGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
