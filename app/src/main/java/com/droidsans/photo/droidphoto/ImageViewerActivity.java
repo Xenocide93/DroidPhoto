@@ -214,7 +214,9 @@ public class ImageViewerActivity extends AppCompatActivity {
         deviceName.setText(previousIntent.getStringExtra("vendor") + " " + previousIntent.getStringExtra("model"));
         if(!previousIntent.getStringExtra("exposureTime").equals("")) {
             Log.i("droidphoto", previousIntent.getStringExtra("exposureTime"));
-            if (!previousIntent.getStringExtra("exposureTime").contains("/") && !previousIntent.getStringExtra("exposureTime").substring(0,1).equals("0")) { // 4
+            if(previousIntent.getStringExtra("exposureTime").equals("0")) {
+                exposureTime.setText("---");
+            } else if (!previousIntent.getStringExtra("exposureTime").contains("/") && !previousIntent.getStringExtra("exposureTime").substring(0,1).equals("0")) { // 4
                 exposureTime.setText(previousIntent.getStringExtra("exposureTime") + " s");
             } else if (previousIntent.getStringExtra("exposureTime").substring(0, 2).contains("1/")) { // 1/3
                 exposureTime.setText(previousIntent.getStringExtra("exposureTime"));
@@ -390,7 +392,7 @@ public class ImageViewerActivity extends AppCompatActivity {
             ByteArrayOutputStream outputStream = null;
             try {
 //                URL url = new URL(params[0] + "?_token=" + getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getString(getString(R.string.token), ""));
-                URL url = new URL(GlobalSocket.serverURL + params[0] + params[1] + params[2]);
+                URL url = new URL(GlobalSocket.serverURL + params[0] + params[1].replace(" ", "%20") + params[2]);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("Accept-Encoding", "gzip");
