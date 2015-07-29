@@ -378,6 +378,7 @@ public class FeedFragment extends Fragment {
                         initReload();
                     } else {
                         GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+                        delayAction.postDelayed(timeout, 10000);
                     }
                 }
             }, 3000);
@@ -385,7 +386,7 @@ public class FeedFragment extends Fragment {
             //can emit: detect loss on the way
             GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
             //set timeout delay
-            delayAction.postDelayed(timeout, 6000);
+            delayAction.postDelayed(timeout, 10000);
         }
     }
 
@@ -801,7 +802,7 @@ public class FeedFragment extends Fragment {
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_fujitsu_300;
                                             break;
                                         case "Sharp":
-                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_fujitsu_300;
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_sharp_300;
                                             break;
                                         case "ThL":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_thl_300;

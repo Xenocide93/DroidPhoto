@@ -190,12 +190,12 @@ public class SplashLoginActivity extends AppCompatActivity {
                         loginBtn.setClickable(true);
                         loginBtn.setTextColor(getResources().getColor(R.color.primary_color));
                     } else {
-                        delayAction.postDelayed(timeout, 5000);
+                        delayAction.postDelayed(timeout, 10000);
                     }
                 }
             }, 2000);
         } else {
-            delayAction.postDelayed(timeout, 5000);
+            delayAction.postDelayed(timeout, 10000);
         }
     }
 

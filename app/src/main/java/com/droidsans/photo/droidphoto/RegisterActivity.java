@@ -272,12 +272,12 @@ public class RegisterActivity extends AppCompatActivity {
                             registerBtn.setClickable(true);
                             registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
                         } else {
-                            delayAction.postDelayed(timeout, 7000);
+                            delayAction.postDelayed(timeout, 10000);
                         }
                     }
                 }, 2000);
             } else {
-                delayAction.postDelayed(timeout, 7000);
+                delayAction.postDelayed(timeout, 10000);
             }
         }
     }
