@@ -357,8 +357,22 @@ public class FillPostActivity extends AppCompatActivity {
                 return "Xiaomi";
             case "zte":
                 return "ZTE";
+            case "alcatel":
+                return "Alcatel";
+            case "doogee":
+                return "Doogee";
+            case "elephone":
+                return "Elephone";
+            case "fujitsu":
+                return "Fujitsu";
+            case "sharp":
+                return "Sharp";
+            case "thl":
+                return "thl";
+            case "vivo":
+                return "vivo";
             default:
-                return Build.MANUFACTURER.trim().substring(0,1).toUpperCase() + Build.MANUFACTURER.substring(1, Build.MANUFACTURER.length()).toLowerCase();
+                return Build.MANUFACTURER.trim().substring(0,1).toUpperCase() + Build.MANUFACTURER.trim().substring(1, Build.MANUFACTURER.length()).toLowerCase();
 //                return Build.MANUFACTURER;
         }
     }

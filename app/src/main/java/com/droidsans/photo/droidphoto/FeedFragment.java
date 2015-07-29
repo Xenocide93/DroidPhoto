@@ -393,18 +393,24 @@ public class FeedFragment extends Fragment {
         removeTagBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isRemoveTagActive = !isRemoveTagActive;
-                if (isRemoveTagActive) {
-                    removeTagBtn.setImageResource(R.drawable.remove_tag_pressed);
-                    removeTagBtn.animate().scaleX(1.15f).scaleY(1.15f).setDuration(150).start();
-                } else {
-                    removeTagBtn.setImageResource(R.drawable.remove_tag_normal);
-                    removeTagBtn.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start();
-                    if (removeTag()) {
-                        refreshFeed();
-                        initLoading();
-                    }
+//                isRemoveTagActive = !isRemoveTagActive;
+//                if (isRemoveTagActive) {
+//                    removeTagBtn.setImageResource(R.drawable.remove_tag_pressed);
+//                    removeTagBtn.animate().scaleX(1.15f).scaleY(1.15f).setDuration(150).start();
+//                } else {
+//                    removeTagBtn.setImageResource(R.drawable.remove_tag_normal);
+//                    removeTagBtn.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start();
+//                    if (removeTag()) {
+//                        refreshFeed();
+//                        initLoading();
+//                    }
+//                }
+                for(int i = 0; i < tagViewArray.size(); i++){
+                    tagViewArray.get(i).selected = true;
                 }
+                removeTag();
+                refreshFeed();
+                initLoading();
             }
         });
 
@@ -781,6 +787,27 @@ public class FeedFragment extends Fragment {
                                             break;
                                         case "ZTE":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_zte_300;
+                                            break;
+                                        case "Alcatel":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_alcatel_300;
+                                            break;
+                                        case "Doogee":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_doogee_300;
+                                            break;
+                                        case "Elephone":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_elephone_300;
+                                            break;
+                                        case "Fujitsu":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_fujitsu_300;
+                                            break;
+                                        case "Sharp":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_fujitsu_300;
+                                            break;
+                                        case "thl":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_thl_300;
+                                            break;
+                                        case "vivo":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_vivo_300;
                                             break;
                                         default:
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_default_300;
