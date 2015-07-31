@@ -1193,8 +1193,39 @@ public class FeedFragment extends Fragment {
                 case SELECT_PHOTO:
                     hasImageInPhotoPath = false;
                     staticPhotoPath = null;
+                    Log.d("droidphoto", "uri : " + data.getData());
+                    Log.d("droidphoto", "path : " + data.getData().getPath());
 
-                    String path = getImagePath(data.getData());
+                    String path;
+                    if(data.getData().getAuthority().equals("com.google.android.apps.photos.contentprovider")) {
+                        //download or copy them
+                        path = getActivity().getCacheDir() + "/" + "googlephoto_upload_temp";
+                        File temp = new File(path);
+                        if(temp.exists()) {
+                            if(!temp.delete()) {
+                                //sad
+                                Log.d("droidphoto", "cannot delete: why ?");
+                            }
+                        }
+                        try {
+                            InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
+                            FileOutputStream out = new FileOutputStream(new File(path));
+                            byte buffer[] = new byte[4096];
+//                            int total = 0;
+                            int count;
+                            while((count = in.read(buffer)) != -1) {
+//                                total += count;
+                                out.write(buffer, 0, count);
+                            }
+                            in.close();
+                            out.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //normal operation
+                        path = getImagePath(data.getData());
+                    }
                     File file = new File(path);
                     if(file.length() > 0) {
 //                    Toast.makeText(getActivity(), path, Toast.LENGTH_LONG).show();
@@ -1343,7 +1374,7 @@ public class FeedFragment extends Fragment {
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(image));
                     String read = br.readLine();
-                    if(read.isEmpty()) {
+                    if(read == null || read.isEmpty()) {
                         image.delete();
 //                        if (image.delete()) {
 ////                Toast.makeText(getActivity(), "temp file removed", Toast.LENGTH_LONG).show();
