@@ -580,19 +580,19 @@ public class FillPostActivity extends AppCompatActivity {
         }
 
 
-        Log.d("droidphoto", "drew makernote: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAKERNOTE));
-        Log.d("droidphoto", "drew focal_length (original): " + exifDirectory.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
-        Log.d("droidphoto", "drew focal_length (35mm equiv): " + exifDirectory.getString(ExifSubIFDDirectory.TAG_35MM_FILM_EQUIV_FOCAL_LENGTH));
-        Log.d("droidphoto", "android focal_length (original): " + mExif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
-        Log.d("droidphoto", "drew makernote: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MAKERNOTE));
-        Log.d("droidphoto", "drew focal_length (original): " + orientationDirectory.getString(ExifIFD0Directory.TAG_FOCAL_LENGTH));
-        Log.d("droidphoto", "drew focal_length (35mm equiv): " + orientationDirectory.getString(ExifIFD0Directory.TAG_35MM_FILM_EQUIV_FOCAL_LENGTH));
-
-        Log.d("droidphoto", "drew shutter speed: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED));
-        Log.d("droidphoto", "drew brightness value: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_BRIGHTNESS_VALUE));
-        Log.d("droidphoto", "drew digital zoom: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_DIGITAL_ZOOM_RATIO));
-        Log.d("droidphoto", "drew digital zoom: " + orientationDirectory.getString(ExifSubIFDDirectory.TAG_DIGITAL_ZOOM_RATIO));
-        Log.d("droidphoto", "drew exposure value: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_BIAS));
+//        Log.d("droidphoto", "drew makernote: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAKERNOTE));
+//        Log.d("droidphoto", "drew focal_length (original): " + exifDirectory.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
+//        Log.d("droidphoto", "drew focal_length (35mm equiv): " + exifDirectory.getString(ExifSubIFDDirectory.TAG_35MM_FILM_EQUIV_FOCAL_LENGTH));
+//        Log.d("droidphoto", "android focal_length (original): " + mExif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
+//        Log.d("droidphoto", "drew makernote: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MAKERNOTE));
+//        Log.d("droidphoto", "drew focal_length (original): " + orientationDirectory.getString(ExifIFD0Directory.TAG_FOCAL_LENGTH));
+//        Log.d("droidphoto", "drew focal_length (35mm equiv): " + orientationDirectory.getString(ExifIFD0Directory.TAG_35MM_FILM_EQUIV_FOCAL_LENGTH));
+//
+//        Log.d("droidphoto", "drew shutter speed: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_SHUTTER_SPEED));
+//        Log.d("droidphoto", "drew brightness value: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_BRIGHTNESS_VALUE));
+//        Log.d("droidphoto", "drew digital zoom: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_DIGITAL_ZOOM_RATIO));
+//        Log.d("droidphoto", "drew digital zoom: " + orientationDirectory.getString(ExifSubIFDDirectory.TAG_DIGITAL_ZOOM_RATIO));
+//        Log.d("droidphoto", "drew exposure value: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_BIAS));
 
 //        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) == null ||
 //                mExif.getAttribute(ExifInterface.TAG_APERTURE) == null ||
@@ -630,19 +630,29 @@ public class FillPostActivity extends AppCompatActivity {
 //                }
 //            }
 
-            boolean makeExifInDevice = false;
-            boolean makeDeviceInExif = false;
-            boolean modelExifInDevice = false;
-            boolean modelDeviceInExif = false;
+            boolean makeExifInDevice;
+            boolean makeDeviceInExif;
+            boolean modelExifInDevice;
+            boolean modelDeviceInExif;
 
             if(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE) != null && orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL) != null) {
-                makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
-                makeDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
+                if(Build.MANUFACTURER.trim().replace(" ", "").equalsIgnoreCase("bbk")) {
+                    makeExifInDevice = "vivo".contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+                    makeDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains("vivo");
+                } else {
+                    makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+                    makeDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
+                }
                 modelExifInDevice = Build.MODEL.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
                 modelDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(Build.MODEL.toLowerCase().trim().replace(" ", ""));
             } else if(mExif.getAttribute(ExifInterface.TAG_MAKE) != null && mExif.getAttribute(ExifInterface.TAG_MODEL) != null) {
-                makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
-                makeDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
+                if(Build.MANUFACTURER.trim().replace(" ", "").equalsIgnoreCase("bbk")) {
+                    makeExifInDevice = "vivo".contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+                    makeDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains("vivo");
+                } else {
+                    makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+                    makeDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
+                }
                 modelExifInDevice = Build.MODEL.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
                 modelDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(Build.MODEL.toLowerCase().trim().replace(" ", ""));
             } else {
