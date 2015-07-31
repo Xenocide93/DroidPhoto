@@ -7,4 +7,8 @@
     android:id="@+id/placeholder_layout"
     tools:context="com.droidsans.photo.droidphoto.PlaceholderFragment">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>

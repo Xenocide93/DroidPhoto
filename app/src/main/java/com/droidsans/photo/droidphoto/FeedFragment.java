@@ -59,10 +59,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
@@ -1336,12 +1339,25 @@ public class FeedFragment extends Fragment {
     private void removeTemp() {
         if ((!hasImageInPhotoPath) && (staticPhotoPath != null)) {
             File image = new File(staticPhotoPath);
-            if (image.delete()) {
-//                Toast.makeText(getActivity(), "temp file removed", Toast.LENGTH_LONG).show();
-                Snackbar.make(getView(), "temp file removed", Snackbar.LENGTH_LONG).show();
-            } else {
-//                Toast.makeText(getActivity(), "cannot remove temp file", Toast.LENGTH_LONG).show();
-                Snackbar.make(getView(), "cannot remove temp file", Snackbar.LENGTH_LONG).show();
+            if(image.exists()) {
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(image));
+                    String read = br.readLine();
+                    if(read.isEmpty()) {
+                        image.delete();
+//                        if (image.delete()) {
+////                Toast.makeText(getActivity(), "temp file removed", Toast.LENGTH_LONG).show();
+//                            Snackbar.make(getView(), "temp file removed", Snackbar.LENGTH_LONG).show();
+//                        } else {
+////                Toast.makeText(getActivity(), "cannot remove temp file", Toast.LENGTH_LONG).show();
+//                            Snackbar.make(getView(), "cannot remove temp file", Snackbar.LENGTH_LONG).show();
+//                        }
+                    }
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
             hasImageInPhotoPath = false;
             staticPhotoPath = null;

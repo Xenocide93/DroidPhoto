@@ -630,12 +630,31 @@ public class FillPostActivity extends AppCompatActivity {
 //                }
 //            }
 
-            boolean makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
-            boolean makeDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
-            boolean modelExifInDevice = Build.MODEL.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
-            boolean modelDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(Build.MODEL.toLowerCase().trim().replace(" ", ""));
+            boolean makeExifInDevice = false;
+            boolean makeDeviceInExif = false;
+            boolean modelExifInDevice = false;
+            boolean modelDeviceInExif = false;
 
-            if((!makeExifInDevice && !makeDeviceInExif) || (!modelExifInDevice && !modelDeviceInExif)) {
+            if(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE) != null && orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL) != null) {
+                makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+                makeDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
+                modelExifInDevice = Build.MODEL.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
+                modelDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(Build.MODEL.toLowerCase().trim().replace(" ", ""));
+            } else if(mExif.getAttribute(ExifInterface.TAG_MAKE) != null && mExif.getAttribute(ExifInterface.TAG_MODEL) != null) {
+                makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+                makeDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
+                modelExifInDevice = Build.MODEL.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
+                modelDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(Build.MODEL.toLowerCase().trim().replace(" ", ""));
+            } else {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("return code", "no required exif");
+                setResult(RESULT_CANCELED, returnIntent);
+                finish();
+                return;
+            }
+
+
+            if ((!makeExifInDevice && !makeDeviceInExif) || (!modelExifInDevice && !modelDeviceInExif)) {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("return code", "not your photo");
                 setResult(RESULT_CANCELED, returnIntent);
@@ -1329,8 +1348,8 @@ public class FillPostActivity extends AppCompatActivity {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("caption", caption.getText().toString());
                 if(hasResolvedName){
-                    returnIntent.putExtra("vendor", vendorTV.getText());
-                    returnIntent.putExtra("model", modelTV.getText());
+                    returnIntent.putExtra("vendor", vendorTV.getText()).toString();
+                    returnIntent.putExtra("model", modelTV.getText()).toString();
                 } else {
                     returnIntent.putExtra("vendor", vendorET.getText().toString());
                     returnIntent.putExtra("model", modelET.getText().toString());
