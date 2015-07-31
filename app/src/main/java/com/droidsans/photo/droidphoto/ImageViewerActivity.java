@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -48,7 +50,7 @@ import java.util.TimeZone;
 
 
 public class ImageViewerActivity extends AppCompatActivity {
-    private static final int MAX_CACHE_SIZE = 1024*1024*50; //50MB
+    private static final int MAX_CACHE_SIZE = 1024*1024*75; //75MB
     public static final String CACHE_FILE_NAME = "cacheFileName";
 
     private ImageView picture, avatar;
@@ -84,7 +86,16 @@ public class ImageViewerActivity extends AppCompatActivity {
 //                    .load(GlobalSocket.serverURL + baseURL + photoURL)
 //                    .crossFade()
 //                    .into(picture);
-            File cachedFile = new File(getCacheDir(), photoURL.split("\\.")[0]);
+            String hash = photoURL.substring(0, photoURL.lastIndexOf("."));
+            try {
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                md.update(hash.getBytes());
+                hash = bytesToHex(md.digest());
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+//            File cachedFile = new File(getCacheDir(), photoURL.substring(0, photoURL.lastIndexOf(".")));
+            File cachedFile = new File(getCacheDir(), hash);
             if(cachedFile.exists()) {
                 //load image from cache
                 Glide.with(getApplicationContext())
@@ -330,6 +341,7 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         loader = new ImageLoader();
         loader.execute(baseURL, photoURL, "");
+
     }
 
     private void initReload() {
@@ -372,6 +384,36 @@ public class ImageViewerActivity extends AppCompatActivity {
         reloadBtn = (Button) findViewById(R.id.reload_button);
     }
 
+    private String bytesToHex(byte[] in) {
+        final StringBuilder builder = new StringBuilder();
+        for(byte b : in) {
+            builder.append(String.format("%02x", b));
+        }
+        return builder.toString();
+    }
+
+    private String escapeNonAscii(String str) {
+
+        StringBuilder retStr = new StringBuilder();
+        for(int i=0; i<str.length(); i++) {
+            int cp = Character.codePointAt(str, i);
+            int charCount = Character.charCount(cp);
+            if (charCount > 1) {
+                i += charCount - 1; // 2.
+                if (i >= str.length()) {
+                    throw new IllegalArgumentException("truncated unexpectedly");
+                }
+            }
+
+            if (cp < 128) {
+                retStr.appendCodePoint(cp);
+            } else {
+                retStr.append(String.format("\\u%x", cp));
+            }
+        }
+        return retStr.toString();
+    }
+
     /**<p>ImageLoader is a version3 of ImageLoader which use AyncTask (instead of Thread)</p>
      *
      * <p>params: string[] as follows
@@ -392,7 +434,7 @@ public class ImageViewerActivity extends AppCompatActivity {
             ByteArrayOutputStream outputStream = null;
             try {
 //                URL url = new URL(params[0] + "?_token=" + getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getString(getString(R.string.token), ""));
-                URL url = new URL(GlobalSocket.serverURL + params[0] + params[1].replace(" ", "%20") + params[2]);
+                URL url = new URL(escapeNonAscii(GlobalSocket.serverURL + params[0] + params[1].replace(" ", "%20") + params[2]));
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("Accept-Encoding", "gzip");
@@ -406,7 +448,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                 in = urlConnection.getInputStream();
                 outputStream = new ByteArrayOutputStream();
 
-                byte buffer[] = new byte[8192];
+                byte buffer[] = new byte[4096];
                 int total = 0;
                 int count;
                 while((count = in.read(buffer)) != -1) {
@@ -475,6 +517,15 @@ public class ImageViewerActivity extends AppCompatActivity {
                     String filename = photoURL.substring(0, photoURL.lastIndexOf("."));
 //                    String filename = photoURL.split("\\.")[0];
                     String cachetablename = getString(R.string.cache_table_name);
+                    //encoding to SHA1
+                    try {
+                        MessageDigest md = MessageDigest.getInstance("MD5");
+                        md.update(filename.getBytes());
+                        filename = bytesToHex(md.digest());
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+
                     String loadedImagePath = getCacheDir() + "/" + filename;
 
                     /*  format
