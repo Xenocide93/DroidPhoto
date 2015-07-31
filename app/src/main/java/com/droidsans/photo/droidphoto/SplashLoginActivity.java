@@ -21,6 +21,10 @@ import com.github.nkzawa.emitter.Emitter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -55,10 +59,43 @@ public class SplashLoginActivity extends AppCompatActivity {
 
     private void initialize() {
         findAllById();
+        removeOldTemp();
         setupSocket();
         autoLogin();
         setupSplashAnimation();
         setupListener();
+    }
+
+    private void removeOldTemp() {
+        File f = new File(getCacheDir(), "827ujgfvsiugkj34grv"); //old table name
+        if(f.exists()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(f));
+                String read = br.readLine();
+                if (read.isEmpty()) {
+                    br.close();
+                } else {
+//                    cacheSize = Integer.parseInt(read);
+                    while(true) {
+                        String line = br.readLine();
+                        if(line == null) {
+                            //no more to remove
+                            return;
+                        }
+                        String line2[] = line.split("\\|");
+                        File deleted = new File(getCacheDir(), line2[0]);
+                        if(!deleted.delete()) {
+                            Log.e("droidphoto", "error removing old cached image");
+                        }
+                    }
+                }
+                if(!f.delete()) {
+                    Log.e("droidphoto", "error remove old table");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void autoLogin() {

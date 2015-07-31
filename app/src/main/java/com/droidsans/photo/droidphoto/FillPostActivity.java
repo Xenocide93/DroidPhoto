@@ -689,6 +689,7 @@ public class FillPostActivity extends AppCompatActivity {
 
         Glide.with(getApplicationContext())
                 .load(mCurrentPhotoPath)
+                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(photo);
 
@@ -1044,7 +1045,7 @@ public class FillPostActivity extends AppCompatActivity {
                         FeedFragment.isCancelUpload = false;
 
                         //resize image save to cache
-                        final File tempFile = new File(getCacheDir() + "/" + "uploadtemp");
+                        final File tempFile = new File(getCacheDir(), "thumbnail_temp");
                         final File originalFile = new File(mCurrentPhotoPath);
                         FileOutputStream out = null;
                         Bitmap bmp = null;
