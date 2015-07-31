@@ -702,7 +702,7 @@ public class FeedFragment extends Fragment {
                                 for(int i = 0; i < models.length(); i++) {
                                     BrowseModelActivity.modelName[i] = ((JSONArray) models.get(i)).join(",").replaceAll("\"", "").split(",");
                                     BrowseModelActivity.buildDevice[i] = ((JSONArray) bDevices.get(i)).join(",").replaceAll("\"", "").split(",");
-                                    BrowseModelActivity.buildModel[i] = ((JSONArray) bModels.get(i)).join(",").replaceAll("\"", "").split(",");
+                                    BrowseModelActivity.buildModel[i] = ((JSONArray) bModels.get(i)).join(",").replaceAll("\"", "").replaceAll("\\\\/", "/").split(",");
                                 }
 
                                 if(models.length() > 0) {
