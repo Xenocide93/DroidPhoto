@@ -1193,8 +1193,8 @@ public class FeedFragment extends Fragment {
                 case SELECT_PHOTO:
                     hasImageInPhotoPath = false;
                     staticPhotoPath = null;
-                    Log.d("droidphoto", "uri : " + data.getData());
-                    Log.d("droidphoto", "path : " + data.getData().getPath());
+//                    Log.d("droidphoto", "uri : " + data.getData());
+//                    Log.d("droidphoto", "path : " + data.getData().getPath());
 
                     String path;
                     if(data.getData().getAuthority().equals("com.google.android.apps.photos.contentprovider")) {

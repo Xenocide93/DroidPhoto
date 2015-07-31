@@ -67,7 +67,7 @@ public class AppInfoActivity extends AppCompatActivity {
         };
         final String[] value = new String[]{
                 getString(R.string.app_name),
-                getString(R.string.app_version),
+                getString(R.string.app_version).replace("version ", ""),
                 String.format("%.2f",(cacheSize / (1024.0*1024.0))) + " MB",
 //                launchCount + ((launchCount > 1)? " times":" time")
         };

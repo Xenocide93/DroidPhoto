@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -105,6 +106,17 @@ public class ImageViewerActivity extends AppCompatActivity {
                         .into(picture);
 //                TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
                 setupPictureClickListener();
+
+                //photo view count
+                String photoId = previousIntent.getStringExtra("photoId");
+                JSONObject send = new JSONObject();
+                try {
+                    send.put("photo_id", photoId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                GlobalSocket.globalEmit("photo.view", send);
             } else {
                 //download image
                 setupReloadButtonListener();
@@ -316,16 +328,6 @@ public class ImageViewerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String photoId = previousIntent.getStringExtra("photoId");
-        JSONObject send = new JSONObject();
-        try {
-            send.put("photo_id", photoId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        GlobalSocket.globalEmit("photo.view", send);
-
         return true;
     }
 
@@ -392,28 +394,6 @@ public class ImageViewerActivity extends AppCompatActivity {
         return builder.toString();
     }
 
-    private String escapeNonAscii(String str) {
-
-        StringBuilder retStr = new StringBuilder();
-        for(int i=0; i<str.length(); i++) {
-            int cp = Character.codePointAt(str, i);
-            int charCount = Character.charCount(cp);
-            if (charCount > 1) {
-                i += charCount - 1; // 2.
-                if (i >= str.length()) {
-                    throw new IllegalArgumentException("truncated unexpectedly");
-                }
-            }
-
-            if (cp < 128) {
-                retStr.appendCodePoint(cp);
-            } else {
-                retStr.append(String.format("\\u%x", cp));
-            }
-        }
-        return retStr.toString();
-    }
-
     /**<p>ImageLoader is a version3 of ImageLoader which use AyncTask (instead of Thread)</p>
      *
      * <p>params: string[] as follows
@@ -434,7 +414,7 @@ public class ImageViewerActivity extends AppCompatActivity {
             ByteArrayOutputStream outputStream = null;
             try {
 //                URL url = new URL(params[0] + "?_token=" + getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE).getString(getString(R.string.token), ""));
-                URL url = new URL(escapeNonAscii(GlobalSocket.serverURL + params[0] + params[1].replace(" ", "%20") + params[2]));
+                URL url = new URL(GlobalSocket.serverURL + params[0] + URLEncoder.encode(params[1] + params[2], "utf-8").replace("+", "%20"));
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("Accept-Encoding", "gzip");
@@ -624,6 +604,17 @@ public class ImageViewerActivity extends AppCompatActivity {
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .crossFade()
                             .into(picture);
+
+                    //photo view count emit
+                    String photoId = previousIntent.getStringExtra("photoId");
+                    JSONObject send = new JSONObject();
+                    try {
+                        send.put("photo_id", photoId);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    GlobalSocket.globalEmit("photo.view", send);
 
 //                    TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
 

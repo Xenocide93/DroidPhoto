@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DroidShot</string>
     <string name="app_desc">ถ่ายด้วย Android</string>
-    <string name="app_version">เวอร์ชัน 1.0.2</string>
+    <string name="app_version">เวอร์ชัน 1.0.3</string>
 
     <string name="action_search">ค้นหา</string>
     <string name="action_settings">ตั้งค่า</string>
