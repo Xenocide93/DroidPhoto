@@ -44,7 +44,7 @@ public class AppInfoActivity extends AppCompatActivity {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(ccf));
                 String read = br.readLine();
-                if (read.isEmpty()) {
+                if (read == null || read.isEmpty()) {
                     cacheSize = 0;
                     br.close();
                 } else {

@@ -72,7 +72,7 @@ public class SplashLoginActivity extends AppCompatActivity {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(f));
                 String read = br.readLine();
-                if (read.isEmpty()) {
+                if (read == null || read.isEmpty()) {
                     br.close();
                 } else {
 //                    cacheSize = Integer.parseInt(read);

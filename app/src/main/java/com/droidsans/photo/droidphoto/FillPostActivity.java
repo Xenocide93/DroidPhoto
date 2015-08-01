@@ -938,6 +938,10 @@ public class FillPostActivity extends AppCompatActivity {
     }
 
     private void setupListener() {
+        //turn off old listener
+        GlobalSocket.mSocket.off("photoupload_respond");
+        GlobalSocket.mSocket.off("device_store_respond");
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
