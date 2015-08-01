@@ -457,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //outState.put(tag, data);
-        super.onSaveInstanceState(outState);
+//        super.onSaveInstanceState(outState);
     }
 
     @Override

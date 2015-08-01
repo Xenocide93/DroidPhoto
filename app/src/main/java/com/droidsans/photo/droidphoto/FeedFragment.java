@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -33,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -73,6 +75,8 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import tourguide.tourguide.Overlay;
 import tourguide.tourguide.ToolTip;
@@ -384,7 +388,7 @@ public class FeedFragment extends Fragment {
                         delayAction.postDelayed(timeout, 10000);
                     }
                 }
-            }, 3000);
+            }, 7000);
         } else {
             //can emit: detect loss on the way
             GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -409,7 +413,7 @@ public class FeedFragment extends Fragment {
 //                        initLoading();
 //                    }
 //                }
-                for(int i = 0; i < tagViewArray.size(); i++){
+                for (int i = 0; i < tagViewArray.size(); i++) {
                     tagViewArray.get(i).selected = true;
                 }
                 removeTag();
@@ -1119,7 +1123,7 @@ public class FeedFragment extends Fragment {
 
     private void dispatchPicturePickerIntent() {
         Intent picturePickerIntent = new Intent(Intent.ACTION_PICK);
-        picturePickerIntent.setType("image/*");
+        picturePickerIntent.setType("image/jpeg");
         startActivityForResult(picturePickerIntent, SELECT_PHOTO);
     }
 
@@ -1195,14 +1199,24 @@ public class FeedFragment extends Fragment {
                     staticPhotoPath = null;
 //                    Log.d("droidphoto", "uri : " + data.getData());
 //                    Log.d("droidphoto", "path : " + data.getData().getPath());
-
-                    String path;
+//                    Log.d("droidphoto", "type : " + getActivity().getApplicationContext().getContentResolver().getType(data.getData()));
+                    String path = "";
                     if(data.getData().getAuthority().equals("com.google.android.apps.photos.contentprovider")) {
+                        //clear old cache
+                        clearUploadCache();
+
                         //download or copy them
-                        path = getActivity().getCacheDir() + "/" + "googlephoto_upload_temp";
+                        Cursor cursor = getActivity().getContentResolver().query(data.getData(), null, null, null, null);
+                        int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        cursor.moveToFirst();
+//                        Log.d("droidphoto", "filename: " + cursor.getString(nameIndex));
+//                        path = getActivity().getCacheDir() + "/upload/" + "googlephoto_upload_temp";
+                        path = getActivity().getCacheDir() + "/upload/" + cursor.getString(nameIndex);
+                        cursor.close();
+
                         File temp = new File(path);
-                        if(temp.exists()) {
-                            if(!temp.delete()) {
+                        if (temp.exists()) {
+                            if (!temp.delete()) {
                                 //sad
                                 Log.d("droidphoto", "cannot delete: why ?");
                             }
@@ -1213,7 +1227,7 @@ public class FeedFragment extends Fragment {
                             byte buffer[] = new byte[4096];
 //                            int total = 0;
                             int count;
-                            while((count = in.read(buffer)) != -1) {
+                            while ((count = in.read(buffer)) != -1) {
 //                                total += count;
                                 out.write(buffer, 0, count);
                             }
@@ -1222,9 +1236,23 @@ public class FeedFragment extends Fragment {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+//                    } else if(data.getData().toString().indexOf("content://media") == 0) {
                     } else {
                         //normal operation
                         path = getImagePath(data.getData());
+                    }
+                    Log.d("droidphoto", "resolved path : " + path);
+                    if(path == null) {
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("Error !!")
+                                .setMessage("cannot resolve picture picker uri. please report us this bug.")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .show();
+                        break;
                     }
                     File file = new File(path);
                     if(file.length() > 0) {
@@ -1363,6 +1391,20 @@ public class FeedFragment extends Fragment {
                 }
             } else {
                 removeTemp();
+            }
+        }
+    }
+
+    private void clearUploadCache() {
+        Log.d("droidphoto", "deleting file in dir: " + getActivity().getCacheDir() + "/upload/");
+        File uploadCache = new File(getActivity().getCacheDir(), "upload");
+        uploadCache.mkdir();
+        if (!uploadCache.isDirectory()) {
+            String[] cacheList = uploadCache.list();
+            for (String cache : cacheList) {
+                if (!new File(uploadCache, cache).delete()) {
+                    Log.d("droidphoto", "what ??");
+                }
             }
         }
     }
@@ -1573,6 +1615,7 @@ public class FeedFragment extends Fragment {
                     isUploading = false;
                     staticPhotoPath = null;
                     hasImageInPhotoPath = false;
+                    clearUploadCache();
                     setFamEnable(true);
                     hideUploadProgress();
                     Snackbar.make(frameLayout, getString(R.string.snackbar_feed_upload_cancel), Snackbar.LENGTH_LONG).show();
@@ -1580,6 +1623,7 @@ public class FeedFragment extends Fragment {
                     isUploading = false;
                     staticPhotoPath = null;
                     hasImageInPhotoPath = false;
+                    clearUploadCache();
                     setFamEnable(true);
                     hideUploadProgress();
                     refreshFeed();
@@ -1598,6 +1642,7 @@ public class FeedFragment extends Fragment {
                         isUploading = false;
                         staticPhotoPath = null;
                         hasImageInPhotoPath = false;
+                        clearUploadCache();
                         setFamEnable(true);
                         uploadProgressbar.setProgress(percentage);
                         if(getActivity() != null) getActivity().runOnUiThread(update);
@@ -1643,18 +1688,45 @@ public class FeedFragment extends Fragment {
     }
 
     private String getImagePath(Uri uri) {
-        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        String document_id = cursor.getString(0);
-        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
-        cursor.close();
+        Cursor cursor = null;
+        try {
+            Uri newUri = handleImageUri(uri);
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = getActivity().getContentResolver().query(newUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } catch (Exception e){
+            return null;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+//        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+//        cursor.moveToFirst();
+//        String document_id = cursor.getString(0);
+//        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
+//        cursor.close();
+//
+//        cursor = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+//        cursor.moveToFirst();
+//        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+//        cursor.close();
+//
+//        return path;
+    }
 
-        cursor = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
-        cursor.moveToFirst();
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-        cursor.close();
-
-        return path;
+    public Uri handleImageUri(Uri uri) {
+        Pattern pattern = Pattern.compile("(content://media/.*\\d)");
+        if (uri.getPath().contains("content")) {
+            Matcher matcher = pattern.matcher(uri.getPath());
+            if (matcher.find())
+                return Uri.parse(matcher.group(1));
+            else
+                throw new IllegalArgumentException("Cannot handle this URI");
+        } else
+            return uri;
     }
 
     private void writeObjToInternalStorage(Object obj, String filename){

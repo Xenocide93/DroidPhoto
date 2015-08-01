@@ -211,7 +211,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent fullscreenViewerIntent = new Intent(getApplicationContext(), ImageViewerFullScreenActivity.class);
-                    fullscreenViewerIntent.putExtra(CACHE_FILE_NAME, photoURL.split("\\.")[0]);
+                    fullscreenViewerIntent.putExtra(CACHE_FILE_NAME, photoURL.substring(0, photoURL.lastIndexOf(".")));
                     startActivity(fullscreenViewerIntent);
                 }
             });

@@ -161,7 +161,7 @@
     <string name="snackbar_feed_selected_vendor">"Vendor: "</string>
     <string name="snackbar_feed_selected_model">" Model: "</string>
     <string name="snackbar_feed_upload_failed">upload failed</string>
-    <string name="snackbar_feed_upload_cancel">upload cancelled</string>
+    <string name="snackbar_feed_upload_cancel">upload canceled</string>
     <string name="fab_label_picture_picker">Choose from gallery</string>
     <string name="fab_label_camera">Take new picture</string>
     <string name="load_feed_error">Error loading feed :(</string>

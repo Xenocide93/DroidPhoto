@@ -150,7 +150,7 @@ public class FillPostActivity extends AppCompatActivity {
 
         applyUserSettings();
 //        setVendorAndModel();
-        getResolvedName();
+//        getResolvedName();
     }
 
     private void initStateHashMap() {
@@ -291,8 +291,15 @@ public class FillPostActivity extends AppCompatActivity {
             hasResolvedName = false;
             resolvedLayout.setVisibility(View.GONE);
             edittextLayout.setVisibility(View.VISIBLE);
+
             vendorET.setText(getLocalManufacturer());
-            modelET.setText(Build.MODEL);
+            if(Build.MODEL.toLowerCase().indexOf(getLocalManufacturer().toLowerCase()) == 0) {
+                modelET.setText(Build.MODEL.substring(getLocalManufacturer().length() + 1));
+            } else if(Build.MODEL.toLowerCase().indexOf(Build.MANUFACTURER.toLowerCase()) == 0) {
+                modelET.setText(Build.MODEL.substring(Build.MANUFACTURER.length() + 1));
+            } else {
+                modelET.setText(Build.MODEL);
+            }
             getResolvedName();
         }
     }

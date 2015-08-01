@@ -14,6 +14,8 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 import java.io.File;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class ImageViewerFullScreenActivity extends AppCompatActivity {
     private String cacheFileName;
@@ -40,7 +42,16 @@ public class ImageViewerFullScreenActivity extends AppCompatActivity {
         Intent oldIntent = getIntent();
         cacheFileName = oldIntent.getStringExtra(ImageViewerActivity.CACHE_FILE_NAME);
 
-        File cacheFile = new File(getCacheDir(), cacheFileName);
+        String hash = cacheFileName;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(hash.getBytes());
+            hash = bytesToHex(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        File cacheFile = new File(getCacheDir(), hash);
         if(cacheFile.exists()) {
             picture.setImage(ImageSource.uri(cacheFile.getAbsolutePath()));
             picture.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
@@ -78,6 +89,14 @@ public class ImageViewerFullScreenActivity extends AppCompatActivity {
 //        } else {
 //            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 //        }
+    }
+
+    private String bytesToHex(byte[] in) {
+        final StringBuilder builder = new StringBuilder();
+        for(byte b : in) {
+            builder.append(String.format("%02x", b));
+        }
+        return builder.toString();
     }
 
     @Override
