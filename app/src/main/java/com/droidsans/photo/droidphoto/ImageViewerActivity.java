@@ -3,6 +3,7 @@ package com.droidsans.photo.droidphoto;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -54,7 +55,8 @@ public class ImageViewerActivity extends AppCompatActivity {
     private static final int MAX_CACHE_SIZE = 1024*1024*75; //75MB
     public static final String CACHE_FILE_NAME = "cacheFileName";
 
-    private ImageView picture, avatar;
+    private ImageView picture, avatar, zoom;
+    private LinearLayout enhanced;
     private byte imageByte[];
     private FontTextView deviceName, exposureTime, aperture, iso, location, user, caption, submit;
     private LinearLayout locationLayout, captionLayout, reloadLayout;
@@ -212,6 +214,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent fullscreenViewerIntent = new Intent(getApplicationContext(), ImageViewerFullScreenActivity.class);
                     fullscreenViewerIntent.putExtra(CACHE_FILE_NAME, photoURL.substring(0, photoURL.lastIndexOf(".")));
+                    fullscreenViewerIntent.putExtra("username", getIntent().getStringExtra("username"));
                     startActivity(fullscreenViewerIntent);
                 }
             });
@@ -265,6 +268,12 @@ public class ImageViewerActivity extends AppCompatActivity {
             iso.setText(previousIntent.getStringExtra("iso"));
         } else {
             iso.setText("---");
+        }
+
+        if(previousIntent.getBooleanExtra("is_enhanced", false)){
+            enhanced.setVisibility(View.VISIBLE);
+        } else {
+            enhanced.setVisibility(View.GONE);
         }
 
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_eng_location), true)) {
@@ -384,6 +393,8 @@ public class ImageViewerActivity extends AppCompatActivity {
         reloadLayout = (LinearLayout) findViewById(R.id.reload_view);
         reloadText = (FontTextView) findViewById(R.id.reload_text);
         reloadBtn = (Button) findViewById(R.id.reload_button);
+        enhanced = (LinearLayout) findViewById(R.id.enhanced);
+        zoom = (ImageView) findViewById(R.id.zoom);
     }
 
     private String bytesToHex(byte[] in) {
@@ -620,6 +631,14 @@ public class ImageViewerActivity extends AppCompatActivity {
 
                     setupPictureClickListener();
                     picture.setVisibility(ImageView.VISIBLE);
+
+                    //show zoom button after 3 sec
+                    (new Handler()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            zoom.animate().alpha(0.5f).setDuration(300).start();
+                        }
+                    }, 3000);
 
                     break;
                 case "timeout":
