@@ -25,7 +25,8 @@
                     android:id="@+id/picture"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerInside"/>
+                    android:scaleType="centerInside"
+                    android:src="@drawable/droidsans_logo"/>
 
                 <ProgressBar
                     android:id="@+id/progress"
@@ -49,11 +50,15 @@
                     android:visibility="gone" />
 
                 <ImageView
+                    android:id="@+id/zoom"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentBottom="true"
-                    android:clickable="false"/>
+                    android:layout_centerInParent="true"
+                    android:alpha="0.0"
+                    android:clickable="false"
+                    android:src="@drawable/ic_zoom_white_48px"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin" />
 
                 <include
                     android:id="@+id/reload_view"
@@ -195,6 +200,28 @@
 
                 </RelativeLayout>
 
+                <LinearLayout
+                    android:id="@+id/enhanced"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:gravity="center_vertical|left"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/image_viewer_icon_size"
+                        android:layout_height="@dimen/image_viewer_icon_size"
+                        android:alpha="0.7"
+                        android:src="@drawable/ic_brush_black_48dp" />
+
+                    <com.droidsans.photo.droidphoto.util.view.FontTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/imageviwer_enhanced_photo"
+                        android:textSize="@dimen/pic_viewer_font_size" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/location_layout"

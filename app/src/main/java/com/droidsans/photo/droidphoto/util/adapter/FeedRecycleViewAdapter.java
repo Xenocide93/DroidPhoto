@@ -107,6 +107,7 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                 imageViewerIntent.putExtra("gpsLocalized", pack.gpsLocalizedLocation);
                                 imageViewerIntent.putExtra("submitDate", pack.submitDate);
                                 imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
+                                imageViewerIntent.putExtra("is_enhanced", pack.isEnhanced);
 
                                 context.startActivity(imageViewerIntent);
                             }

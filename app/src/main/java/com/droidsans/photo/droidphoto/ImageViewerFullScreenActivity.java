@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.droidsans.photo.droidphoto.util.view.FontTextView;
 
 import java.io.File;
 import java.security.MessageDigest;
@@ -49,6 +50,9 @@ public class ImageViewerFullScreenActivity extends AppCompatActivity {
 
         Intent oldIntent = getIntent();
         cacheFileName = oldIntent.getStringExtra(ImageViewerActivity.CACHE_FILE_NAME);
+
+        FontTextView credit = (FontTextView) findViewById(R.id.credit);
+        credit.setText(getString(R.string.fullscreen_imageviewer_credit) + getIntent().getStringExtra("username"));
 
         String hash = cacheFileName;
         try {

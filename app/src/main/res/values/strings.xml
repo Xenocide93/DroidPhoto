@@ -196,6 +196,10 @@
     <string name="imageviewer_unit_minute">m</string>
     <string name="imageviewer_unit_hour">h</string>
     <string name="imageviewer_unit_day">d</string>
+    <string name="imageviwer_enhanced_photo">Photo is enhanced</string>
+
+    <!--fullscreen imageviewer-->
+    <string name="fullscreen_imageviewer_credit">Photo by @</string>
 
     <!--Developer Team-->
     <string name="about_dev_team_by">This application has been developed by</string>
@@ -254,5 +258,6 @@
     <string translatable="false" name="cache_table_name">ertil4u5y893yjkrg</string>
 
     <string translatable="false" name="launch_count">app_launch_counter</string>
+
 
 </resources>

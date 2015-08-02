@@ -195,6 +195,10 @@
     <string name="imageviewer_unit_minute">" นาที"</string>
     <string name="imageviewer_unit_hour">" ชม."</string>
     <string name="imageviewer_unit_day">" วัน"</string>
+    <string name="imageviwer_enhanced_photo">รูปภาพผ่านการตกแต่ง</string>
+
+    <!--fullscreen imageviewer-->
+    <string name="fullscreen_imageviewer_credit">ถ่ายโดย @</string>
 
     <string name="about_dev_team_by">แอปพลิเคชันนี้ถูกพัฒนาโดย</string>
     <string name="about_dev_team_froztic">ธนกร ยอดธง</string>
