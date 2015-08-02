@@ -125,6 +125,8 @@ public class FeedFragment extends Fragment {
     private boolean isUpdate = false;
     private boolean noData = true;
 
+    private boolean disconnected = false;
+
     private String resolvedVendor;
     private String resolvedModel;
 
@@ -585,14 +587,16 @@ public class FeedFragment extends Fragment {
         onDisconnect = new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.e("droidphoto", "FeedFragment: disconnected");
-                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
-                        initReload();
-                    }
-                });
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.e("droidphoto", "FeedFragment: disconnected");
+                            GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
+                            initReload();
+                        }
+                    });
+                }
             }
         };
 
@@ -1494,10 +1498,18 @@ public class FeedFragment extends Fragment {
         super.onDetach();
     }
 
+
+
+    @Override
+    public void onDestroyView() {
+        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
+        super.onDestroyView();
+    }
+
     @Override
     public void onDestroy() {
 //        if(GlobalSocket.mSocket.hasListeners("get_feed")) {
-        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
+//        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
             GlobalSocket.mSocket.off("get_feed");
 //        }
 //        if(GlobalSocket.mSocket.hasListeners("get_device_list")) {

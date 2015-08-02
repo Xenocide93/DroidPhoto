@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -63,14 +64,14 @@ public class ImageViewerActivity extends AppCompatActivity {
     private String photoURL;
     private final String baseURL = "/data/photo/original/";
     private ImageLoader loader;
-    private ProgressBar progressBar;
+    private ProgressBar progressBar, loadingProgressBar;
     private FontTextView progressText;
     private FontTextView reloadText;
     private Button reloadBtn;
     private Intent previousIntent;
 
     private Toolbar toolbar;
-    private int percentage = 0;
+    private int percentage = -1;
 
     HttpURLConnection urlConnection = null;
 
@@ -109,16 +110,7 @@ public class ImageViewerActivity extends AppCompatActivity {
 //                TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
                 setupPictureClickListener();
 
-                //photo view count
-                String photoId = previousIntent.getStringExtra("photoId");
-                JSONObject send = new JSONObject();
-                try {
-                    send.put("photo_id", photoId);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                GlobalSocket.globalEmit("photo.view", send);
+                postImageLoaded();
             } else {
                 //download image
                 setupReloadButtonListener();
@@ -205,6 +197,27 @@ public class ImageViewerActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void postImageLoaded() {
+        //photo view count
+        String photoId = previousIntent.getStringExtra("photoId");
+        JSONObject send = new JSONObject();
+        try {
+            send.put("photo_id", photoId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        GlobalSocket.globalEmit("photo.view", send);
+
+        //show zoom button after 3 sec
+        (new Handler()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                zoom.animate().alpha(0.5f).setDuration(300).start();
+            }
+        }, 3000);
     }
 
     private void setupPictureClickListener() { //called nly when picture is finish downloaded
@@ -341,8 +354,9 @@ public class ImageViewerActivity extends AppCompatActivity {
     }
 
     private void initImageLoader() {
-        progressText.setText("connecting...");
+        progressText.setText(getString(R.string.imageviewer_progressbar_text_connecting));
         progressBar.setProgress(0);
+        loadingProgressBar.setVisibility(ProgressBar.VISIBLE);
         reloadBtn.setClickable(false);
 
         reloadLayout.setVisibility(LinearLayout.GONE);
@@ -358,7 +372,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     private void initReload() {
         reloadText.setText("connection error :(");
         reloadBtn.setClickable(true);
-
+        loadingProgressBar.setVisibility(ProgressBar.GONE);
         progressBar.setVisibility(ProgressBar.GONE);
         progressText.setVisibility(FontTextView.GONE);
         picture.setVisibility(ImageView.GONE);
@@ -387,6 +401,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         submit = (FontTextView) findViewById(R.id.submit_date);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        loadingProgressBar = (ProgressBar) findViewById(R.id.progress_loading);
         progressBar = (ProgressBar) findViewById(R.id.progress);
         progressText = (FontTextView) findViewById(R.id.progress_text);
 
@@ -429,15 +444,20 @@ public class ImageViewerActivity extends AppCompatActivity {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("Accept-Encoding", "gzip");
-                urlConnection.connect();
+                try {
+                    urlConnection.connect();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                    return "no connection";
+                }
                 if(urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     return urlConnection.getResponseCode() + "";
                 }
-
                 fileLength = urlConnection.getContentLength();
 
                 in = urlConnection.getInputStream();
                 outputStream = new ByteArrayOutputStream();
+                publishProgress(-1);
 
                 byte buffer[] = new byte[4096];
                 int total = 0;
@@ -468,6 +488,10 @@ public class ImageViewerActivity extends AppCompatActivity {
                 e.printStackTrace();
                 if(e.toString().contains("ETIMEDOUT")) {
                     return "timeout";
+                } else if(e.toString().contains("ECONNRESET")) {
+                    return "connection reset";
+                } else {
+                    return "unknown error";
                 }
             } finally {
                 if(in != null) {
@@ -492,7 +516,9 @@ public class ImageViewerActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
-            if(percentage < progress[0]) {
+            if(progress[0] == -1) {
+                loadingProgressBar.setVisibility(ProgressBar.GONE);
+            } else if(percentage < progress[0]) {
                 percentage = progress[0];
                 progressBar.setProgress(percentage);
                 progressText.setText(percentage + " %");
@@ -579,8 +605,6 @@ public class ImageViewerActivity extends AppCompatActivity {
                             fos.write((cacheSize + "").getBytes());
                             fos.close();
                         }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -603,8 +627,6 @@ public class ImageViewerActivity extends AppCompatActivity {
                         }
                         fw.write("\n" + filename + "|" + fileLength);
                         fw.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -616,32 +638,25 @@ public class ImageViewerActivity extends AppCompatActivity {
                             .crossFade()
                             .into(picture);
 
-                    //photo view count emit
-                    String photoId = previousIntent.getStringExtra("photoId");
-                    JSONObject send = new JSONObject();
-                    try {
-                        send.put("photo_id", photoId);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    GlobalSocket.globalEmit("photo.view", send);
-
 //                    TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
 
                     setupPictureClickListener();
                     picture.setVisibility(ImageView.VISIBLE);
 
-                    //show zoom button after 3 sec
-                    (new Handler()).postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            zoom.animate().alpha(0.5f).setDuration(300).start();
-                        }
-                    }, 3000);
+                    postImageLoaded();
 
                     break;
                 case "timeout":
+                    initReload();
+                    break;
+                case "no connection":
+                    initReload();
+                    break;
+                case "connection reset":
+                    initReload();
+                    break;
+                case "unknown error":
+                    Log.e("droidphoto", "unknown error: see printstacktrace above");
                     initReload();
                     break;
                 case "abort":

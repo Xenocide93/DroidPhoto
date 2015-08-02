@@ -196,7 +196,8 @@
     <string name="imageviewer_unit_minute">m</string>
     <string name="imageviewer_unit_hour">h</string>
     <string name="imageviewer_unit_day">d</string>
-    <string name="imageviwer_enhanced_photo">Photo is enhanced</string>
+    <string name="imageviewer_enhanced_photo">Photo is enhanced</string>
+    <string name="imageviewer_progressbar_text_connecting">connecting...</string>
 
     <!--fullscreen imageviewer-->
     <string name="fullscreen_imageviewer_credit">Photo by @</string>

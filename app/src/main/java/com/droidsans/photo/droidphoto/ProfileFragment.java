@@ -273,14 +273,16 @@ public class ProfileFragment extends Fragment {
         onDisconnect = new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.e("droidphoto", "ProfileFragment: disconnected");
-                        GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
-                        initReload();
-                    }
-                });
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.e("droidphoto", "ProfileFragment: disconnected");
+                            GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
+                            initReload();
+                        }
+                    });
+                }
             }
         };
 

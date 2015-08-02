@@ -195,7 +195,8 @@
     <string name="imageviewer_unit_minute">" นาที"</string>
     <string name="imageviewer_unit_hour">" ชม."</string>
     <string name="imageviewer_unit_day">" วัน"</string>
-    <string name="imageviwer_enhanced_photo">รูปภาพผ่านการตกแต่ง</string>
+    <string name="imageviewer_enhanced_photo">รูปภาพผ่านการตกแต่ง</string>
+    <string name="imageviewer_progressbar_text_connecting">กำลังเชื่อมต่อ...</string>
 
     <!--fullscreen imageviewer-->
     <string name="fullscreen_imageviewer_credit">ถ่ายโดย @</string>
