@@ -26,6 +26,7 @@
     <string name="title_activity_developer_team">Developer Team</string>
     <string name="title_activity_app_info">Application Info</string>
     <string name="title_activity_help_image_view">   </string>
+    <string name="title_activity_device_camera_calibration">Camera Calibration (Application)</string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>
@@ -211,9 +212,9 @@
     <string name="alert_maintenance_mode_title">Maintenance Mode</string>
     <string name="alert_maintenance_mode_message">Currently our servers are going on maintenance. Please try again later. You might consider finding something to eat while waiting.</string>
 
-    <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
-    <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
-    <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
+    <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
+    <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
+    <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 
     <!--userdata and friends-->
     <string translatable="false" name="userdata">87uy3jg4wefiugjthrytjh34fdfg</string>
@@ -224,6 +225,16 @@
     <string translatable="false" name="display_name">disp_name</string>
     <string translatable="false" name="avatar_url">avatar_url</string>
     <string translatable="false" name="create_date">create_at</string>
+
+    <!--devicedata and friends-->
+    <string translatable="false" name="device_data">device_dat</string>
+    <string translatable="false" name="camera_make">camera_make</string>
+    <string translatable="false" name="camera_model">camera_model</string>
+    <string translatable="false" name="launch_count">app_launch_counter</string>
+
+    <!--tutorialdata and friends-->
+    <string name="tutorial_data">tutorial_data</string>
+    <string translatable="false" name="first_time_feed_fragment">first_time_feed_fragment</string>
 
     <!--settings key-->
     <string translatable="false" name="settings_eng_location">english_location_naming</string>
@@ -257,8 +268,6 @@
     <string translatable="false" name="url_terms_of_service">http://droidshot.droidsans.com/termsofservice</string>
     <string translatable="false" name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
     <string translatable="false" name="cache_table_name">ertil4u5y893yjkrg</string>
-
-    <string translatable="false" name="launch_count">app_launch_counter</string>
 
 
 </resources>

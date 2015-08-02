@@ -8,10 +8,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,7 +70,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private Intent oldIntent;
 
     private boolean isUpdateProfilePic = false;
-    private String profilePicPath;
+//    private String profilePicPath;
     private Uri avatarURI;
 
     private Emitter.Listener onGetUserDataRespond;
@@ -263,11 +265,12 @@ public class EditProfileActivity extends AppCompatActivity {
         if(resultCode == AppCompatActivity.RESULT_OK) {
             switch (requestCode) {
                 case SELECT_AVATAR:
-                    profilePicPath = getImagePath(data.getData());
+
                     avatarURI = data.getData();
 //                    Toast.makeText(getApplicationContext(), profilePicPath, Toast.LENGTH_LONG).show();
                     Glide.with(getApplicationContext())
-                            .load(profilePicPath)
+                            .load(data.getData())
+//                            .load(profilePicPath)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
 //                            .override(300,300)
                             .fitCenter()
@@ -478,6 +481,7 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onDestroy() {
         GlobalSocket.mSocket.off("update_respond");
         GlobalSocket.mSocket.off("get_user_data");
+
 
         super.onDestroy();
     }

@@ -25,7 +25,7 @@
         <View
             android:id="@+id/toolbar_shadow"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="@dimen/toolbar_shadow_height"
             android:background="@drawable/toolbar_dropshadow"
             android:layout_below="@+id/toolbar"/>
 

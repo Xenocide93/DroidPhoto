@@ -4,6 +4,7 @@ package com.droidsans.photo.droidphoto;
 import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -264,8 +265,10 @@ public class FeedFragment extends Fragment {
         }
 
         if(nextTutorial>=tutorialViewList.size()){
-            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-                    .putBoolean(FIRST_TIME_FEED_FRAGMENT, false).apply();
+//            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+//                    .putBoolean(FIRST_TIME_FEED_FRAGMENT, false).apply();p
+            getActivity().getSharedPreferences(getString(R.string.tutorial_data), Context.MODE_PRIVATE).edit()
+                    .putBoolean(getString(R.string.first_time_feed_fragment), false).apply();
             tutorialHandler.cleanUp();
             return;
         }
@@ -1767,7 +1770,8 @@ public class FeedFragment extends Fragment {
     private boolean isFirstTime(){
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= Build.VERSION_CODES.JELLY_BEAN){
-            return PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(FIRST_TIME_FEED_FRAGMENT, true);
+            return getActivity().getSharedPreferences(getString(R.string.tutorial_data), Context.MODE_PRIVATE).getBoolean(getString(R.string.first_time_feed_fragment), true);
+//            return PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(FIRST_TIME_FEED_FRAGMENT, true);
         } else {
             return false;
         }

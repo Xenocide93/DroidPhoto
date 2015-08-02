@@ -50,7 +50,6 @@ public class SplashLoginActivity extends AppCompatActivity {
         mContext = getApplicationContext();
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-
         initialize();
 
         //startActivity(new Intent(this, FillPostActivity.class));
@@ -60,8 +59,8 @@ public class SplashLoginActivity extends AppCompatActivity {
     private void initialize() {
         findAllById();
         removeOldTemp();
-        setupSocket();
         autoLogin();
+        setupSocket();
         setupSplashAnimation();
         setupListener();
     }
@@ -100,8 +99,8 @@ public class SplashLoginActivity extends AppCompatActivity {
 
     private void autoLogin() {
         String token = getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE).getString(getString(R.string.token), "");
-        if(!token.equals("")) {
-            Log.d("droidphoto", "Token: " + token);
+        if(token != null && !token.equals("")) {
+//            Log.d("droidphoto", "Token: " + token);
 //        if(GlobalSocket.getToken()!=""){
 //            Log.d("droidphoto", "Token: "+GlobalSocket.getToken());
             Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);

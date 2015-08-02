@@ -168,7 +168,7 @@
                             android:layout_width="@dimen/image_viewer_icon_size"
                             android:layout_height="@dimen/image_viewer_icon_size"
                             android:alpha="0.7"
-                            android:src="@drawable/ic_camera_2_black_48dp" />
+                            android:src="@drawable/ic_aperture_black_48dp" />
 
                         <com.droidsans.photo.droidphoto.util.view.FontTextView
                             android:id="@+id/aperture"
@@ -194,7 +194,7 @@
                             android:layout_width="@dimen/image_viewer_icon_size"
                             android:layout_height="@dimen/image_viewer_icon_size"
                             android:alpha="0.7"
-                            android:src="@drawable/ic_camera_black_48dp" />
+                            android:src="@drawable/ic_iso_black_48dp" />
 
                         <com.droidsans.photo.droidphoto.util.view.FontTextView
                             android:id="@+id/iso"

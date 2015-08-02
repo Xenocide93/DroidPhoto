@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     tools:context="com.droidsans.photo.droidphoto.PlaceholderActivity">
 
-    <TextView android:text="PlaceholderActivity"
+    <TextView android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar" />
@@ -15,7 +15,7 @@
     <View
         android:id="@+id/toolbar_shadow"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="@dimen/toolbar_shadow_height"
         android:background="@drawable/toolbar_dropshadow"
         android:layout_below="@+id/toolbar"/>
 

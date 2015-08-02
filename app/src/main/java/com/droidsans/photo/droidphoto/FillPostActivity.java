@@ -273,6 +273,7 @@ public class FillPostActivity extends AppCompatActivity {
 
     private void applyUserSettings() {
         useLocation.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_use_location), true));
+//        isAccept.setChecked(true);
     }
 
     private void getStringExtra() {
@@ -572,9 +573,9 @@ public class FillPostActivity extends AppCompatActivity {
             return;
         }
 
-        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) != null || !exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT).trim().equals("0")) {
+        if(exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) != null && !exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT).trim().equals("0")) {
             foundISO = exifDirectory.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT);
-        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT) != null || !orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT).trim().equals("0")) {
+        } else if(orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT) != null && !orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT).trim().equals("0")) {
             foundISO = orientationDirectory.getString(ExifIFD0Directory.TAG_ISO_EQUIVALENT);
 //        } else if(mExif.getAttribute(ExifInterface.TAG_ISO) != null) {
 //            foundISO = mExif.getAttribute(ExifInterface.TAG_ISO);
@@ -612,87 +613,88 @@ public class FillPostActivity extends AppCompatActivity {
 //        }
 
         if(mImageFrom.equals("Picture Picker")) {
-//            if(!orientationDirectory.hasTagName(ExifIFD0Directory.TAG_MAKE) || !orientationDirectory.hasTagName(ExifIFD0Directory.TAG_MODEL)) {
-//                Intent returnIntent = new Intent();
-//                returnIntent.putExtra("return code", "cannot detect photo owner");
-//                setResult(RESULT_CANCELED, returnIntent);
-//                finish();
-//            }
+
             Log.d("droidphoto", "IFD0 make: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE));
             Log.d("droidphoto", "IFD0 model: " + orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL));
             Log.d("droidphoto", "phone make: " + Build.MANUFACTURER);
             Log.d("droidphoto", "phone model: " + Build.MODEL);
 
-//            if(!Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""))) { //check manu
-//                if(!Build.MODEL.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""))) { //check model
-//                    if (!orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""))) { //check manu
-//                        if(!Build.MODEL.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""))) { //check model
-//                            Intent returnIntent = new Intent();
-//                            returnIntent.putExtra("return code", "not your photo");
-//                            setResult(RESULT_CANCELED, returnIntent);
-//                            finish();
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
-
-            boolean makeExifInDevice;
-            boolean makeDeviceInExif;
-            boolean modelExifInDevice;
-            boolean modelDeviceInExif;
-
-            if(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE) != null && orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL) != null) {
-                if(Build.MANUFACTURER.trim().replace(" ", "").equalsIgnoreCase("bbk")) {
-                    makeExifInDevice = ("vivo".contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "")) || Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "")));
-                    makeDeviceInExif = (orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains("vivo") || orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", "")));
-                } else {
-                    makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
-                    makeDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
-                }
-                modelExifInDevice = Build.MODEL.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
-                modelDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(Build.MODEL.toLowerCase().trim().replace(" ", ""));
-            } else if(mExif.getAttribute(ExifInterface.TAG_MAKE) != null && mExif.getAttribute(ExifInterface.TAG_MODEL) != null) {
-                if(Build.MANUFACTURER.trim().replace(" ", "").equalsIgnoreCase("bbk")) {
-                    makeExifInDevice = ("vivo".contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "")) | Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "")));
-                    makeDeviceInExif = (mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains("vivo") || mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", "")));
-                } else {
-                    makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
-                    makeDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
-                }
-                modelExifInDevice = Build.MODEL.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
-                modelDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(Build.MODEL.toLowerCase().trim().replace(" ", ""));
-            } else {
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("return code", "no required exif");
-                setResult(RESULT_CANCELED, returnIntent);
-                finish();
-                return;
-            }
-
-
-            if ((!makeExifInDevice && !makeDeviceInExif) || (!modelExifInDevice && !modelDeviceInExif)) {
+            if(!mExif.getAttribute(ExifInterface.TAG_MAKE).trim().replaceAll("[ -]", "")
+                    .equalsIgnoreCase(getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_make), "")) ||
+                    !mExif.getAttribute(ExifInterface.TAG_MODEL).trim().replaceAll("[ -]", "")
+                    .equalsIgnoreCase(getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_model), ""))) {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("return code", "not your photo");
                 setResult(RESULT_CANCELED, returnIntent);
                 finish();
                 return;
             }
-//            if(gpsDirectory == null) {
-//                Log.d("droidphoto", "not found ??");
-//            } else {
+
+//            boolean makeExifInDevice, makeDeviceInExif, makeExifInResolvedName, makeResolvedNameInExif, modelExifInDevice, modelDeviceInExif, modelExifInResolvedName, modelResolvedNameInExif;
 //
+//            if(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE) != null && orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL) != null) {
+//                if(Build.MANUFACTURER.trim().replace(" ", "").equalsIgnoreCase("bbk")) {
+//                    makeExifInDevice = ("vivo".contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "")) || Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "")));
+//                    makeDeviceInExif = (orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains("vivo") || orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", "")));
+//                } else {
+//                    makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+//                    makeDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
+//                }
+//
+//                modelExifInDevice = Build.MODEL.toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
+//                modelDeviceInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(Build.MODEL.toLowerCase().trim().replace(" ", ""));
+//
+//                if(hasResolvedName) {
+//                    makeExifInResolvedName = vendorTV.getText().toString().toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+//                    makeResolvedNameInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains(vendorTV.getText().toString().toLowerCase().trim().replace(" ", ""));
+//                    modelExifInResolvedName = modelTV.getText().toString().toLowerCase().trim().replace(" ", "").contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
+//                    modelResolvedNameInExif = orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(modelTV.getText().toString().toLowerCase().trim().replace(" ", ""));
+//                } else {
+//                    modelExifInResolvedName = false;
+//                    modelResolvedNameInExif = false;
+//                    makeExifInResolvedName = false;
+//                    makeResolvedNameInExif = false;
+//                }
+//
+//            } else if(mExif.getAttribute(ExifInterface.TAG_MAKE) != null && mExif.getAttribute(ExifInterface.TAG_MODEL) != null) {
+//                if(Build.MANUFACTURER.trim().replace(" ", "").equalsIgnoreCase("bbk")) {
+//                    makeExifInDevice = ("vivo".contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "")) | Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "")));
+//                    makeDeviceInExif = (mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains("vivo") || mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", "")));
+//                } else {
+//                    makeExifInDevice = Build.MANUFACTURER.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+//                    makeDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains((Build.MANUFACTURER).toLowerCase().trim().replace(" ", ""));
+//                }
+//
+//                modelExifInDevice = Build.MODEL.toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
+//                modelDeviceInExif = mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(Build.MODEL.toLowerCase().trim().replace(" ", ""));
+//
+//                if(hasResolvedName) {
+//                    makeExifInResolvedName = vendorTV.getText().toString().toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", ""));
+//                    makeResolvedNameInExif = mExif.getAttribute(ExifInterface.TAG_MAKE).toLowerCase().trim().replace(" ", "").contains(vendorTV.getText().toString().toLowerCase().trim().replace(" ", ""));
+//                    modelExifInResolvedName = modelTV.getText().toString().toLowerCase().trim().replace(" ", "").contains(mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", ""));
+//                    modelResolvedNameInExif = mExif.getAttribute(ExifInterface.TAG_MODEL).toLowerCase().trim().replace(" ", "").contains(modelTV.getText().toString().toLowerCase().trim().replace(" ", ""));
+//                } else {
+//                    modelExifInResolvedName = false;
+//                    modelResolvedNameInExif = false;
+//                    makeExifInResolvedName = false;
+//                    makeResolvedNameInExif = false;
+//                }
+//            } else {
+//                Intent returnIntent = new Intent();
+//                returnIntent.putExtra("return code", "no required exif");
+//                setResult(RESULT_CANCELED, returnIntent);
+//                finish();
+//                return;
 //            }
-//            Log.d("droidphoto", "drew gps geolocation: " + gpsDirectory.getGeoLocation().toString());
-//            Log.d("droidphoto", "drew gps lat: " + gpsDirectory.getString(GpsDirectory.TAG_LATITUDE));
-//            Log.d("droidphoto", "drew gps long: " + gpsDirectory.getString(GpsDirectory.TAG_LONGITUDE));
-//            Log.d("droidphoto", "android gps lat: " + mExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE));
-//            Log.d("droidphoto", "android gps long: " + mExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+//
+//            if (((!makeExifInDevice && !makeDeviceInExif) || (!modelExifInDevice && !modelDeviceInExif)) && ((!makeExifInResolvedName && !makeResolvedNameInExif) || (!modelExifInResolvedName && !modelResolvedNameInExif))) {
+//                Intent returnIntent = new Intent();
+//                returnIntent.putExtra("return code", "not your photo");
+//                setResult(RESULT_CANCELED, returnIntent);
+//                finish();
+//                return;
+//            }
         }
-//        Log.d("droidphoto","subIFD make: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAKE));
-//        Log.d("droidphoto","subIFD model: " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MODEL));
-//        Log.d("droidphoto", "aperture (drewnoakes) :" + exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE) + " | max : " + exifDirectory.getString(ExifSubIFDDirectory.TAG_MAX_APERTURE));
-//        Log.d("droidphoto", "aperture (exifint.) :" + mExif.getAttribute(ExifInterface.TAG_APERTURE));
 
         Glide.with(getApplicationContext())
                 .load(mCurrentPhotoPath)

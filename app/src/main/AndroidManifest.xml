@@ -107,11 +107,18 @@
         </activity>
         <activity
             android:name=".AppInfoActivity"
-            android:label="@string/title_activity_app_info" >
+            android:label="@string/title_activity_app_info"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".HelpImageViewActivity"
-            android:label="@string/title_activity_help_image_view" >
+            android:label="@string/title_activity_help_image_view"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".DeviceCameraCalibrationActivity"
+            android:label="@string/title_activity_device_camera_calibration"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

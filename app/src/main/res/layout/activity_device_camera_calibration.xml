@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.droidsans.photo.droidphoto.DeviceCameraCalibrationActivity">
+
+    <include android:id="@+id/toolbar"
+        layout="@layout/item_toolbar" />
+
+    <LinearLayout
+        android:id="@+id/calibration_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/calibrate_icon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="@dimen/about_paragraph_spacing"
+            android:src="@drawable/ic_camera_alt_black_48dp"/>
+
+        <ProgressBar
+            android:id="@+id/calibrate_working"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:indeterminate="true"
+            android:layout_marginBottom="@dimen/about_paragraph_spacing"
+            android:visibility="gone"/>
+
+        <com.droidsans.photo.droidphoto.util.view.FontTextView
+            android:id="@+id/calibrate_title"
+            android:layout_marginBottom="@dimen/about_paragraph_spacing"
+            android:gravity="center"
+            android:text="Welcome !"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.droidsans.photo.droidphoto.util.view.FontTextView
+            android:id="@+id/calibrate_description"
+            android:gravity="center"
+            android:paddingRight="@dimen/about_paragraph_spacing"
+            android:paddingLeft="@dimen/about_paragraph_spacing"
+            android:text="@string/test_140_char"
+            android:layout_width="wrap_content"
+            android:layout_height="180dp" />
+
+        <Button
+            android:id="@+id/button_camera_launch"
+            android:layout_marginTop="@dimen/about_paragraph_spacing"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:text="Start"
+            android:background="@drawable/button_selector" />
+
+        <Button
+            android:id="@+id/button_done"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/about_paragraph_spacing"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:text="Done"
+            android:background="@drawable/button_selector" />
+
+    </LinearLayout>
+
+    <View android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_shadow_height"
+        android:layout_below="@id/toolbar"
+        android:background="@drawable/toolbar_dropshadow" />
+
+</RelativeLayout>

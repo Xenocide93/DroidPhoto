@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initialize() {
         GlobalSocket.initializeSocket();
+        cameraCalibrate();
         findAllById();
         setupUIFrame();
         attachFragment();
@@ -78,6 +79,14 @@ public class MainActivity extends AppCompatActivity {
         getUserInfo();
         printDeviceInfo();
         makeSnack();
+    }
+
+    private void cameraCalibrate() {
+        if(getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_make), null) == null ||
+                getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_model), null) == null) {
+            startActivity(new Intent(getApplicationContext(), DeviceCameraCalibrationActivity.class));
+            finish();
+        }
     }
 
     public void makeSnack() {
