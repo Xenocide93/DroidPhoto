@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupUIFrame() {
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 //        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 //            @Override
 //            public boolean onMenuItemClick(MenuItem item) {
@@ -295,20 +295,20 @@ public class MainActivity extends AppCompatActivity {
 //
 //        });
 
-        getSupportFragmentManager().addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-                    actionBarDrawerToggle.syncState();
-                } else {
-                    actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
-                    actionBarDrawerToggle.syncState();
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                }
-            }
-        });
+//        getSupportFragmentManager().addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
+//            @Override
+//            public void onBackStackChanged() {
+//                if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+//                    actionBarDrawerToggle.syncState();
+//                } else {
+//                    actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+//                    actionBarDrawerToggle.syncState();
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                }
+//            }
+//        });
 
 //        previousMenuItem = feedMenuItem;
 //        evaluateMenuItem.setVisible(true);
@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
                 if (selectedMenu.equals(getString(R.string.drawer_feed))) {
 //                    GlobalSocket.reconnect();
                     feedMenuItem.setChecked(true);
-                    getSupportFragmentManager().popBackStack();
+                   // getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new FeedFragment());
                     fragmentTransaction.commit();
@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (selectedMenu.equals(getString(R.string.drawer_event))) {
 //                    GlobalSocket.reconnect();
                     eventMenuItem.setChecked(true);
-                    getSupportFragmentManager().popBackStack();
+                    //getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new EventFragment());
                     fragmentTransaction.commit();
@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (selectedMenu.equals(getString(R.string.drawer_help))) {
 //                GlobalSocket.reconnect();
                     helpMenuItem.setChecked(true);
-                    getSupportFragmentManager().popBackStack();
+                    //getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
                     fragmentTransaction.commit();
@@ -350,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
                     previousMenuItem = helpMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_about))) {
                     aboutMenuItem.setChecked(true);
-                    getSupportFragmentManager().popBackStack();
+                    //getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new AboutFragment());
                     fragmentTransaction.commit();
@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
 //                    previousMenuItem = settingsMenuItem;
                 } else if (selectedMenu.equals(getString(R.string.drawer_evaluate))) {
                     evaluateMenuItem.setChecked(true);
-                    getSupportFragmentManager().popBackStack();
+                 //   getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new EvaluateFragment());
                     fragmentTransaction.commit();

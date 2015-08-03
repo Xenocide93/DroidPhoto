@@ -115,7 +115,6 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 //                                imageViewerIntent.putExtra("is_enhanced", pack.isEnhanced);
 //
 //                                context.startActivity(imageViewerIntent);
-                                Fragment imageViewerFragment = new ImageViewerFragment();
 
                                 Bundle args = new Bundle();
                                 args.putString("photoId", pack.photoId);
@@ -131,7 +130,7 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                 args.putString("gpsLocation", pack.gpsLocation);
                                 args.putString("gpsLocalized", pack.gpsLocalizedLocation);
 
-                                imageViewerFragment.setArguments(args);
+                                Fragment imageViewerFragment = ImageViewerFragment.newInstance(args);
 
                                 FragmentTransaction transaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
                                 transaction.replace(R.id.main_fragment, imageViewerFragment, "IMAGE_VIEWER");
