@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.droidsans.photo.droidphoto" >
+    package="com.droidsans.photo.droidphoto">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -12,35 +12,34 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/droidshot_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon" >
+        tools:replace="android:icon">
         <activity
             android:name=".MainActivity"
             android:configChanges="screenSize|orientation"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".BrowseVendorActivity"
             android:label="@string/title_activity_browse"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".BrowseModelActivity"
             android:label="@string/title_activity_browse_model"
             android:parentActivityName=".BrowseVendorActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SplashLoginActivity"
             android:configChanges="keyboard|keyboardHidden"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,20 +49,18 @@
         <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".SplashLoginActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".FillPostActivity"
             android:configChanges="keyboard|keyboardHidden"
             android:label="@string/title_activity_fill_post"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ImageViewerActivity"
             android:label="@string/title_activity_image_viewer"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.droidsans.photo.droidphoto.MainActivity" />
@@ -71,55 +68,50 @@
         <activity
             android:name=".PlaceholderActivity"
             android:label="@string/title_activity_placeholder"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ChangePasswordActivity"
             android:label="@string/title_activity_change_password"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ImageViewerFullScreenActivity"
-            android:label="@string/title_activity_full_screen_image_viewer" >
-        </activity>
+            android:label="@string/title_activity_full_screen_image_viewer" />
         <activity
             android:name=".OpenSourceLicensesActivity"
-            android:label="@string/title_activity_open_source_licenses" >
-        </activity>
+            android:label="@string/title_activity_open_source_licenses" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".WebViewActivity"
-            android:label="@string/title_activity_web_view" >
-        </activity>
+            android:label="@string/title_activity_web_view" />
         <activity
             android:name=".DeveloperTeamActivity"
-            android:label="@string/title_activity_developer_team" >
-        </activity>
+            android:label="@string/title_activity_developer_team" />
         <activity
             android:name=".AppInfoActivity"
             android:label="@string/title_activity_app_info"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".HelpImageViewActivity"
             android:label="@string/title_activity_help_image_view"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".DeviceCameraCalibrationActivity"
             android:label="@string/title_activity_device_camera_calibration"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"
+            tools:replace="android:value" />
+
     </application>
 
 </manifest>

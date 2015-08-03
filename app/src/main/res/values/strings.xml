@@ -26,7 +26,7 @@
     <string name="title_activity_developer_team">Developer Team</string>
     <string name="title_activity_app_info">Application Info</string>
     <string name="title_activity_help_image_view">   </string>
-    <string name="title_activity_device_camera_calibration">Camera Calibration (Application)</string>
+    <string name="title_activity_device_camera_calibration">Camera Calibration</string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>
@@ -255,8 +255,8 @@
     <!--<string translatable="false" name="csvVersion">version</string>-->
     <!--<string translatable="false" name="csvFileName">csv_version</string>-->
 
-    <string translatable="false" name="test_140_char">111111111112222222222333333333344444444445555555555666666666677777777778888888888999999999900000000001111111111222222222233333333334444444444</string>
-    <string translatable="false" name="test_90_char">1111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999</string>
+    <string translatable="false" name="test_140_char">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id interdum nisl. Mauris faucibus condimentum justo id rhoncus. Aenean eget justo dictum, efficitur dui non, venenatis augue. Nulla facilisi. Donec placerat ex in mi laoreet, pharetra ultricies felis rhoncus.</string>
+    <string translatable="false" name="test_90_char">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id interdum nisl.</string>
 
     <string translatable="false" name="hello_world">Hello world!</string>
     <string translatable="false" name="long_text_10">\@@@@@@@@@@</string>

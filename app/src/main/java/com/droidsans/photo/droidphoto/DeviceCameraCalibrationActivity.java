@@ -1,30 +1,28 @@
 package com.droidsans.photo.droidphoto;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Handler;
-import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.droidsans.photo.droidphoto.util.StringUtil;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 
 public class DeviceCameraCalibrationActivity extends AppCompatActivity {
@@ -32,6 +30,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
+    private SurfaceView surfaceCamera;
     private LinearLayout initCalibrateLayout;
     private Button startCalibrate, doneCalibrate;
     private ImageView topIcon;
@@ -39,6 +38,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
     private FontTextView title, description;
 
     private File calibrateFile;
+    private Camera mCamera;
 
     private Handler delayAction = new Handler();
     private Runnable changeState;
@@ -56,47 +56,47 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
     }
 
     private void showInit() {
-        doneCalibrate.setVisibility(Button.GONE);
-        startCalibrate.setVisibility(Button.VISIBLE);
+        doneCalibrate.setVisibility(View.GONE);
+        startCalibrate.setVisibility(View.VISIBLE);
         startCalibrate.setClickable(true);
-        working.setVisibility(ProgressBar.GONE);
+        working.setVisibility(View.GONE);
         topIcon.setImageResource(R.drawable.ic_camera_alt_black_48dp);
-        topIcon.setColorFilter(getResources().getColor(R.color.light_gray));
-        topIcon.setVisibility(ImageView.VISIBLE);
+        topIcon.setVisibility(View.VISIBLE);
         title.setText("Welcome !");
         description.setText("Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon't worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn't even matter,\njust launch a camera and take a shot !");
     }
 
     private void showRetry() {
-        doneCalibrate.setVisibility(Button.GONE);
+        doneCalibrate.setVisibility(View.GONE);
         startCalibrate.setText("Retry");
-        startCalibrate.setVisibility(Button.VISIBLE);
+        startCalibrate.setVisibility(View.VISIBLE);
         startCalibrate.setClickable(true);
-        working.setVisibility(ProgressBar.GONE);
+        working.setVisibility(View.GONE);
         topIcon.setImageResource(R.drawable.ic_cancel_black_48dp);
         topIcon.setColorFilter(getResources().getColor(R.color.primary_dark_color));
-        topIcon.setVisibility(ImageView.VISIBLE);
+        topIcon.setVisibility(View.VISIBLE);
         title.setText("Oops !");
         description.setText("");
     }
 
     private void showWorking() {
-        doneCalibrate.setVisibility(Button.GONE);
-        startCalibrate.setVisibility(Button.INVISIBLE);
+        doneCalibrate.setVisibility(View.GONE);
+        startCalibrate.setVisibility(View.VISIBLE);
         startCalibrate.setClickable(false);
-        topIcon.setVisibility(ImageView.GONE);
-        working.setVisibility(ProgressBar.VISIBLE);
+        topIcon.setVisibility(View.GONE);
+        working.setVisibility(View.VISIBLE);
         title.setText("Working ...");
         description.setText("\nPlease wait just a second.\nWe are working on configuring our application.");
     }
 
     private void showSuccess() {
-        startCalibrate.setVisibility(Button.GONE);
-        doneCalibrate.setVisibility(Button.VISIBLE);
-        working.setVisibility(ProgressBar.GONE);
+        surfaceCamera.setVisibility(View.GONE);
+        startCalibrate.setVisibility(View.GONE);
+        doneCalibrate.setVisibility(View.VISIBLE);
+        working.setVisibility(View.GONE);
         topIcon.setImageResource(R.drawable.ic_check_circle_white_48dp);
         topIcon.setColorFilter(getResources().getColor(R.color.accent_color));
-        topIcon.setVisibility(ImageView.VISIBLE);
+        topIcon.setVisibility(View.VISIBLE);
         title.setText("Completed");
         description.setText("We have successfully calibrated our application to match your device camera configuration.\nThe taken photo is also removed just now.\nPlease enjoy !");
     }
@@ -105,19 +105,54 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         startCalibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calibrateFile = new File(getExternalCacheDir(), "calibrate.tmp");
-                removeTemp();
-                try {
-                    if(calibrateFile.createNewFile()) {
-                        Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        camera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(calibrateFile));
-                        startActivityForResult(camera, REQUEST_CAMERA);
-                    } else {
-                        Snackbar.make(startCalibrate, "cannot create temp file.", Snackbar.LENGTH_LONG).show();
+
+                mCamera.takePicture(null, null, new Camera.PictureCallback() {
+                    @Override
+                    public void onPictureTaken(byte[] data, Camera camera) {
+                        OutputStream os;
+                        File file = new File(getFilesDir(), "calibrate.tmp");
+                        Uri uri = Uri.fromFile(file);
+                        try {
+                            os = getContentResolver().openOutputStream(uri);
+                            os.write(data);
+                            os.flush();
+                            os.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            ExifInterface mExif = new ExifInterface(file.getAbsolutePath());
+                            String make = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MAKE)).replaceAll("[ -]", "");
+                            String model = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MODEL)).replaceAll("[ -]", "");
+
+                            Log.d("droidphoto", "calibrate make: " + make);
+                            Log.d("droidphoto", "calibrate model: " + model);
+
+                            getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).edit()
+                                    .putString(getString(R.string.camera_make), make)
+                                    .putString(getString(R.string.camera_model), model)
+                                    .apply();
+
+                            removeTemp(file);
+                            delayAction.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showSuccess();
+                                }
+                            }, 1000);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            delayAction.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showRetry();
+                                }
+                            }, 1000);
+
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                });
             }
         });
 
@@ -128,61 +163,46 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        surfaceCamera.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        surfaceCamera.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                try {
+                    mCamera.setPreviewDisplay(surfaceCamera.getHolder());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                try {
+                    mCamera.setPreviewDisplay(surfaceCamera.getHolder());
+                    mCamera.startPreview();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) { }
+        });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_CAMERA:
-                    showWorking();
-                    getExifData();
-                    break;
-                default:
-                    showRetry();
-                    break;
-            }
-        } else {
-            Snackbar.make(startCalibrate, "cancel.", Snackbar.LENGTH_SHORT).show();
-            removeTemp();
-        }
-//        super.onActivityResult(requestCode, resultCode, data);
+    protected void onResume() {
+        super.onResume();
+        mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
     }
 
-    private void getExifData() {
-        try {
-            ExifInterface mExif = new ExifInterface(calibrateFile.getAbsolutePath());
-            String make = mExif.getAttribute(ExifInterface.TAG_MAKE).trim().replaceAll("[ -]", "");
-            String model = mExif.getAttribute(ExifInterface.TAG_MODEL).trim().replaceAll("[ -]", "");
-
-            Log.d("droidphoto", "calibrate make: " + make);
-            Log.d("droidphoto", "calibrate model: " + model);
-
-            getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).edit()
-                    .putString(getString(R.string.camera_make), make)
-                    .putString(getString(R.string.camera_model), model)
-                    .apply();
-
-            removeTemp();
-            delayAction.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showSuccess();
-                }
-            }, 1000);
-        } catch (IOException e) {
-            e.printStackTrace();
-            delayAction.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showRetry();
-                }
-            }, 1000);
-
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mCamera.release();
     }
 
-    private void removeTemp() {
+    private void removeTemp(File file) {
         if(calibrateFile != null && calibrateFile.exists()) {
             if(!calibrateFile.delete()) {
                 Log.d("droidphoto", "cannot delete calibrate file ??");
@@ -193,6 +213,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
     private void findAllById() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        surfaceCamera = (SurfaceView) findViewById(R.id.surface_camera);
         initCalibrateLayout = (LinearLayout) findViewById(R.id.calibration_layout);
         startCalibrate = (Button) findViewById(R.id.button_camera_launch);
         doneCalibrate = (Button) findViewById(R.id.button_done);
@@ -204,29 +225,6 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        removeTemp();
         super.onDestroy();
-    }
-
-    //    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_device_camera_calibration, menu);
-//        return true;
-//    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
