@@ -2,6 +2,7 @@ package com.droidsans.photo.droidphoto;
 
 
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,6 +30,12 @@ public class ImageViewerFragment extends Fragment {
     private final String baseURL = "data/photo/original/";
 
     private int percentage = 0;
+
+    public static ImageViewerFragment newInstance(Bundle bundle) {
+        ImageViewerFragment fragment = new ImageViewerFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
