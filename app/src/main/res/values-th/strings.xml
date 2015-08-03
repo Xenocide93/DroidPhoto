@@ -130,6 +130,7 @@
     <string name="fill_post_button_upload">อัพโหลด</string>
     <string name="fill_post_checkbox_use_exif">ใช้ข้อมูลสถานที่จากในรูปภาพ</string>
     <string name="fill_post_checkbox_use_gps">ใช้ข้อมูลสถานที่จากในรูปภาพ</string>
+    <string name="fill_post_checkbox_use_location">"ใช้ข้อมูลสถานที่ "</string>
     <string name="fill_post_checkbox_location_prefix">"สถานที่ : "</string>
     <string name="fill_post_checkbox_location_resolving">กำลังค้นหาชื่อสถานที่ ...</string>
     <string name="fill_post_checkbox_error_gps_timeout">เกิดข้อผิดพลาด: GPS ใช้เวลาในการระบุตำแหน่งนานเกินไป</string>

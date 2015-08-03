@@ -127,8 +127,9 @@
     <string name="fill_post_checkbox_accept_tos">Accept terms of service</string>
     <string name="fill_post_checkbox_enhanced">Enhanced photo</string>
     <string name="fill_post_button_upload">Upload</string>
-    <string name="fill_post_checkbox_use_exif">use location (from exif)</string>
-    <string name="fill_post_checkbox_use_gps">use location (from location services)</string>
+    <string name="fill_post_checkbox_use_exif">Use location (from exif)</string>
+    <string name="fill_post_checkbox_use_gps">Use location (from location services)</string>
+    <string name="fill_post_checkbox_use_location">"Use location "</string>
     <string name="fill_post_checkbox_location_prefix">"Location : "</string>
     <string name="fill_post_checkbox_location_resolving">resolving ...</string>
     <string name="fill_post_checkbox_error_gps_timeout">error: gps is taking too long to respond</string>
