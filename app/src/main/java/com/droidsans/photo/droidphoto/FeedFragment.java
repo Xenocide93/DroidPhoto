@@ -710,10 +710,18 @@ public class FeedFragment extends Fragment {
                                 BrowseModelActivity.modelName = new String[models.length()][];
                                 BrowseModelActivity.buildDevice = new String[bDevices.length()][];
                                 BrowseModelActivity.buildModel = new String[bModels.length()][];
+//                                String a[][][] = new String[bModels.length()][][];
+                                //test: [[{build_device:asdf}, {build_device:asdf}],[{build_device:asdf}, {build_device:asdf}]]
                                 for(int i = 0; i < models.length(); i++) {
+                                    Log.d("droidphoto", "modelName[" + i + "] : " + ((JSONArray) models.get(i)).toString());
+                                    Log.d("droidphoto", "buildDevice[" + i + "] : " + ((JSONArray) bDevices.get(i)).toString());
+                                    Log.d("droidphoto", "buildModel[" + i + "] : " + ((JSONArray) bModels.get(i)).toString());
                                     BrowseModelActivity.modelName[i] = ((JSONArray) models.get(i)).join(",").replaceAll("\"", "").replaceAll("\\\\", "").split(",");
                                     BrowseModelActivity.buildDevice[i] = ((JSONArray) bDevices.get(i)).join(",").replaceAll("\"", "").split(",");
                                     BrowseModelActivity.buildModel[i] = ((JSONArray) bModels.get(i)).join(",").replaceAll("\"", "").split(",");
+                                    Log.d("droidphoto", "modelName[" + i + "] : " + ((JSONArray) models.get(i)).join(",").replaceAll("\"", "").replaceAll("\\\\", ""));
+                                    Log.d("droidphoto", "buildDevice[" + i + "] parse: " + ((JSONArray) bDevices.get(i)).join(",").replaceAll("\"", "").replaceAll("build_device:", ""));
+                                    Log.d("droidphoto", "buildModel[" + i + "] parse: " + ((JSONArray) bModels.get(i)).join(",").replaceAll("\"", "").replaceAll("build_model:", ""));
                                 }
 
                                 if(models.length() > 0) {

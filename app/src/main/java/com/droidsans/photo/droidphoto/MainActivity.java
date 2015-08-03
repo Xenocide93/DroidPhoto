@@ -286,31 +286,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        getSupportFragmentManager().addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
+//            @Override
+//            public void onBackStackChanged() {
+//                boolean canback = getSupportFragmentManager().getBackStackEntryCount() > 0;
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
+//            }
+//
+//        });
+
         getSupportFragmentManager().addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                boolean canback = getSupportFragmentManager().getBackStackEntryCount() > 0;
-//                getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
+                if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+                    actionBarDrawerToggle.syncState();
+                } else {
+                    actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+                    actionBarDrawerToggle.syncState();
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
             }
-
-
-
         });
-
-//        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-//            @Override
-//            public void onBackStackChanged() {
-//                if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//                    actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-//                    actionBarDrawerToggle.syncState();
-//                } else {
-//                    actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
-//                    actionBarDrawerToggle.syncState();
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                }
-//            }
-//        });
 
 //        previousMenuItem = feedMenuItem;
 //        evaluateMenuItem.setVisible(true);
@@ -534,6 +532,17 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //        return super.onOptionsItemSelected(item);
 //    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void findAllById() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);

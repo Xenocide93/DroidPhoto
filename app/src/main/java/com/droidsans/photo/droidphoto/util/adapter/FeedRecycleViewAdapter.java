@@ -2,6 +2,10 @@ package com.droidsans.photo.droidphoto.util.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.FeedFragment;
 import com.droidsans.photo.droidphoto.ImageViewerActivity;
+import com.droidsans.photo.droidphoto.ImageViewerFragment;
 import com.droidsans.photo.droidphoto.R;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
@@ -92,24 +97,48 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         public void onClick(View v) {
                             if (!isClickOnce) {
                                 FeedRecycleViewAdapter.isClickOnce = true;
-                                Intent imageViewerIntent = new Intent(context, ImageViewerActivity.class);
-                                imageViewerIntent.putExtra("photoId", pack.photoId);
-                                imageViewerIntent.putExtra("photoURL", pack.photoURL);
-                                imageViewerIntent.putExtra("caption", pack.caption);
-                                imageViewerIntent.putExtra("vendor", pack.vendor);
-                                imageViewerIntent.putExtra("model", pack.model);
-                                imageViewerIntent.putExtra("exposureTime", pack.shutterSpeed);
-                                imageViewerIntent.putExtra("aperture", pack.aperture);
-                                imageViewerIntent.putExtra("iso", pack.iso);
-                                imageViewerIntent.putExtra("userId", pack.userId);
-                                imageViewerIntent.putExtra("username", pack.username);
-                                imageViewerIntent.putExtra("gpsLocation", pack.gpsLocation);
-                                imageViewerIntent.putExtra("gpsLocalized", pack.gpsLocalizedLocation);
-                                imageViewerIntent.putExtra("submitDate", pack.submitDate);
-                                imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
-                                imageViewerIntent.putExtra("is_enhanced", pack.isEnhanced);
+//                                Intent imageViewerIntent = new Intent(context, ImageViewerActivity.class);
+//                                imageViewerIntent.putExtra("photoId", pack.photoId);
+//                                imageViewerIntent.putExtra("photoURL", pack.photoURL);
+//                                imageViewerIntent.putExtra("caption", pack.caption);
+//                                imageViewerIntent.putExtra("vendor", pack.vendor);
+//                                imageViewerIntent.putExtra("model", pack.model);
+//                                imageViewerIntent.putExtra("exposureTime", pack.shutterSpeed);
+//                                imageViewerIntent.putExtra("aperture", pack.aperture);
+//                                imageViewerIntent.putExtra("iso", pack.iso);
+//                                imageViewerIntent.putExtra("userId", pack.userId);
+//                                imageViewerIntent.putExtra("username", pack.username);
+//                                imageViewerIntent.putExtra("gpsLocation", pack.gpsLocation);
+//                                imageViewerIntent.putExtra("gpsLocalized", pack.gpsLocalizedLocation);
+//                                imageViewerIntent.putExtra("submitDate", pack.submitDate);
+//                                imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
+//                                imageViewerIntent.putExtra("is_enhanced", pack.isEnhanced);
+//
+//                                context.startActivity(imageViewerIntent);
+                                Fragment imageViewerFragment = new ImageViewerFragment();
 
-                                context.startActivity(imageViewerIntent);
+                                Bundle args = new Bundle();
+                                args.putString("photoId", pack.photoId);
+                                args.putString("photoURL", pack.photoURL);
+                                args.putString("caption", pack.caption);
+                                args.putString("vendor", pack.vendor);
+                                args.putString("model", pack.model);
+                                args.putString("exposureTime", pack.shutterSpeed);
+                                args.putString("aperture", pack.aperture);
+                                args.putString("iso", pack.iso);
+                                args.putString("userId", pack.userId);
+                                args.putString("username", pack.username);
+                                args.putString("gpsLocation", pack.gpsLocation);
+                                args.putString("gpsLocalized", pack.gpsLocalizedLocation);
+
+                                imageViewerFragment.setArguments(args);
+
+                                FragmentTransaction transaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
+                                transaction.replace(R.id.main_fragment, imageViewerFragment, "IMAGE_VIEWER");
+                                transaction.addToBackStack(null);
+                                transaction.commit();
+
+
                             }
                         }
                     });
