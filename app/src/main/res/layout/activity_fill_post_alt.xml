@@ -1,10 +1,9 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context="com.droidsans.photo.droidphoto.FillPostActivity" >
+    tools:context="com.droidsans.photo.droidphoto.FillPostActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,9 +17,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/white"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:background="@color/white"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
@@ -30,7 +29,7 @@
                     android:id="@+id/photo"
                     android:layout_width="match_parent"
                     android:layout_height="204dp"
-                    android:scaleType="fitCenter"/>
+                    android:scaleType="fitCenter" />
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -41,8 +40,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/fill_post_caption_hint"
-                        android:singleLine="true"
-                        android:maxLength="140"/>
+                        android:maxLength="140"
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -62,8 +61,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/fill_post_vendor_hint"
-                            android:singleLine="true"
-                            android:maxLength="20"/>
+                            android:maxLength="20"
+                            android:singleLine="true" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -76,8 +75,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/fill_post_model_hint"
-                            android:singleLine="true"
-                            android:maxLength="30"/>
+                            android:maxLength="30"
+                            android:singleLine="true" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -87,117 +86,106 @@
                     android:id="@+id/resolved_vendor_model_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/small_padding"
-                        android:layout_marginLeft="@dimen/small_padding">
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_marginTop="@dimen/small_padding">
+
                         <TextView
                             android:id="@+id/vendor_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:text="@string/fill_post_vendor_hint_colon"/>
+                            android:text="@string/fill_post_vendor_hint_colon"
+                            android:textSize="16sp" />
 
                         <com.droidsans.photo.droidphoto.util.view.FontTextView
                             android:id="@+id/resolved_vendor"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/small_padding"
-                            android:textSize="18sp"
                             android:background="@drawable/curve_blue"
-                            android:textColor="@color/white"
-                            android:paddingTop="5dp"
                             android:paddingBottom="5dp"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
-                            android:text="Samsung"/>
+                            android:paddingTop="5dp"
+                            android:text="Samsung"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/small_padding"
                         android:layout_marginBottom="@dimen/small_padding"
-                        android:layout_marginLeft="@dimen/small_padding">
+                        android:layout_marginLeft="@dimen/small_padding"
+                        android:layout_marginTop="@dimen/small_padding">
 
                         <TextView
                             android:id="@+id/model_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:text="@string/fill_post_model_hint_colon"/>
+                            android:text="@string/fill_post_model_hint_colon"
+                            android:textSize="16sp" />
 
                         <com.droidsans.photo.droidphoto.util.view.FontTextView
                             android:id="@+id/resolved_model"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/small_padding"
-                            android:textSize="18sp"
                             android:background="@drawable/curve_blue"
-                            android:textColor="@color/white"
-                            android:paddingTop="5dp"
                             android:paddingBottom="5dp"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
-                            android:text="Nexus 5"/>
+                            android:paddingTop="5dp"
+                            android:text="Nexus 5"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
                     </LinearLayout>
-
-
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:orientation="horizontal">
+                    android:gravity="left"
+                    android:orientation="vertical">
 
                     <CheckBox
                         android:id="@+id/use_current_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingRight="@dimen/small_padding"
                         android:text="@string/fill_post_checkbox_attach_location"
-                        android:paddingRight="@dimen/small_padding"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="7">
-
-                    <CheckBox
-                        android:id="@+id/is_accept"
-                        android:layout_width="0dp"
-                        android:layout_weight="4"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fill_post_checkbox_accept_tos"/>
+                        android:textColor="@color/global_text_black" />
 
                     <CheckBox
                         android:id="@+id/is_enhanced"
-                        android:layout_width="0dp"
-                        android:layout_weight="3"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/fill_post_checkbox_enhanced"/>
+                        android:text="@string/fill_post_checkbox_enhanced"
+                        android:textColor="@color/global_text_black" />
+
+                    <CheckBox
+                        android:id="@+id/is_accept"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fill_post_checkbox_accept_tos" />
 
                 </LinearLayout>
-
-
 
                 <Button
                     android:id="@+id/upload_btn"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/fill_post_button_upload"
-                    android:textSize="18sp"
-                    android:background="@drawable/curve_primary_border"
                     android:layout_margin="@dimen/small_padding"
-                    android:textColor="@color/primary_color"/>
+                    android:background="@drawable/curve_primary_border"
+                    android:text="@string/fill_post_button_upload"
+                    android:textColor="@color/primary_color"
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -209,8 +197,8 @@
         android:id="@+id/toolbar_shadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_shadow_height"
-        android:background="@drawable/toolbar_dropshadow"
-        android:layout_below="@+id/toolbar"/>
+        android:layout_below="@+id/toolbar"
+        android:background="@drawable/toolbar_dropshadow" />
 
     <include
         android:id="@+id/toolbar"
