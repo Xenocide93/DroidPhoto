@@ -210,12 +210,12 @@ public class SplashLoginActivity extends AppCompatActivity {
         }
 //                    Log.d(APP_LOG, hexPassword);
 
-        if(!GlobalSocket.globalEmit(SplashLoginActivity.this, "user.login", loginStuff)) {
+        if(!GlobalSocket.globalEmit("user.login", loginStuff)) {
 //                        Toast.makeText(getApplicationContext(), "cannot connect to server", Toast.LENGTH_SHORT).show();
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(!GlobalSocket.globalEmit(SplashLoginActivity.this, "user.login", loginStuff)) {
+                    if(!GlobalSocket.globalEmit("user.login", loginStuff)) {
                         Snackbar.make(loginLayout, getString(R.string.snackbar_login_cannot_connect),Snackbar.LENGTH_LONG)
                                 .setAction(getString(android.R.string.ok), new View.OnClickListener() {
                                     @Override

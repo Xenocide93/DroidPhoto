@@ -423,11 +423,11 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (!GlobalSocket.globalEmit(FillPostActivity.this, "device.resolve", data)) {
+        if (!GlobalSocket.globalEmit("device.resolve", data)) {
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    GlobalSocket.globalEmit(FillPostActivity.this, "device.resolve", data);
+                    GlobalSocket.globalEmit("device.resolve", data);
                 }
             }, 850);
         }
@@ -556,16 +556,16 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
     }
 
     private void callLocationUpdate() {
-        if(SmartLocation.with(this).location().state().isAnyProviderAvailable()) {
-            SmartLocation.with(this).location()
+        if(SmartLocation.with(FillPostActivity.this).location().state().isAnyProviderAvailable()) {
+            SmartLocation.with(FillPostActivity.this).location()
                     .oneFix()
                     .provider(new LocationManagerProvider())
                     .start(FillPostActivity.this);
         } else {
             useLocation.setText(getString(R.string.fill_post_checkbox_location_off));
-//            useLocation.setTextColor(getResources().getColor(R.color.light_gray));
-//            useLocation.setChecked(false);
-//            useLocation.setEnabled(false);
+            useLocation.setTextColor(getResources().getColor(R.color.light_gray));
+            useLocation.setChecked(false);
+            useLocation.setEnabled(false);
         }
     }
 
@@ -675,9 +675,8 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                     } else if (gpsDirectory != null && (gpsDirectory.getGeoLocation() != null)) {
 //                    if(gpsDirectory != null) {
 //                    if(false) { //debug
-                        useLocation.setEnabled(false);
-                        useLocation.setText(getString(R.string.fill_post_checkbox_location_resolving));
                         getAddressFromPhoto();
+                        toastText += "get location from exif";
 //                    } else {
                     } else if (mImageFrom.equals("Camera")) {
                         useLocation.setEnabled(false);
@@ -829,8 +828,8 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                                     matrix, true)
                                     .compress(Bitmap.CompressFormat.JPEG, 80, out);
 
-//                            Log.d("droidphoto", "compress size: " + options.outWidth + " x " + options.outHeight);
-//                            Log.d("droidphoto", "upload size: " + options.outWidth * scalef + " x " + options.outHeight * scalef);
+                            Log.d("droidphoto", "compress size: " + options.outWidth + " x " + options.outHeight);
+                            Log.d("droidphoto", "upload size: " + options.outWidth * scalef + " x " + options.outHeight * scalef);
                             if (out != null) {
                                 try {
                                     out.close();
@@ -932,11 +931,11 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                                                 photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
 
                                                 FeedFragment.percentage = 95;
-                                                if (!GlobalSocket.globalEmit(FillPostActivity.this, "photo.upload", photoDetailStuff)) {
+                                                if (!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
                                                     delayAction.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            if (!GlobalSocket.globalEmit(FillPostActivity.this, "photo.upload", photoDetailStuff)) {
+                                                            if (!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
                                                                 //???
                                                                 FeedFragment.isFailedToUpload = true;
 //                                                                Toast.makeText(getApplicationContext(), "upload failed (on socket.io)", Toast.LENGTH_SHORT).show();
@@ -1065,7 +1064,7 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        GlobalSocket.globalEmit(FillPostActivity.this, "device.store", send);
+        GlobalSocket.globalEmit("device.store", send);
     }
 
     @Override

@@ -340,11 +340,11 @@ public class FeedFragment extends Fragment {
             e.printStackTrace();
         }
 
-        if(!GlobalSocket.globalEmit(getActivity(), "db.getdevicelist", requestStuff)) {
+        if(!GlobalSocket.globalEmit("db.getdevicelist", requestStuff)) {
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(!GlobalSocket.globalEmit(getActivity(), "db.getdevicelist", requestStuff)) {
+                    if(!GlobalSocket.globalEmit("db.getdevicelist", requestStuff)) {
                         // :(
                     }
                 }
@@ -381,12 +381,12 @@ public class FeedFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(!GlobalSocket.globalEmit(getActivity(), "photo.getfeed", filter)) { //wait 4 sec and try globalemit again
+        if(!GlobalSocket.globalEmit("photo.getfeed", filter)) { //wait 4 sec and try globalemit again
             final JSONObject delayedfilter = filter;
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!GlobalSocket.globalEmit(getActivity(), "photo.getfeed", delayedfilter)) { //if fail twice
+                    if (!GlobalSocket.globalEmit("photo.getfeed", delayedfilter)) { //if fail twice
                         initReload();
                     } else {
                         GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -552,11 +552,11 @@ public class FeedFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(!GlobalSocket.globalEmit(getActivity(), "device.resolve", data)) {
+        if(!GlobalSocket.globalEmit("device.resolve", data)) {
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    GlobalSocket.globalEmit(getActivity(), "device.resolve", data);
+                    GlobalSocket.globalEmit("device.resolve", data);
                 }
             }, 850);
         }
@@ -570,11 +570,11 @@ public class FeedFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(!GlobalSocket.globalEmit(getActivity(), "csv.get", data)){
+        if(!GlobalSocket.globalEmit("csv.get", data)){
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    GlobalSocket.globalEmit(getActivity(), "csv.get", data);
+                    GlobalSocket.globalEmit("csv.get", data);
                 }
             }, 3000);
         }

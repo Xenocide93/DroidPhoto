@@ -163,7 +163,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
-                                if (!GlobalSocket.globalEmit(EditProfileActivity.this, "user.getuserinfo", send)) {
+                                if (!GlobalSocket.globalEmit("user.getuserinfo", send)) {
 //                                    delayAction.postDelayed(new Runnable() {
 //                                        @Override
 //                                        public void run() {
@@ -198,11 +198,11 @@ public class EditProfileActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if(!GlobalSocket.globalEmit(EditProfileActivity.this, "user.getuserinfo", data)) {
+            if(!GlobalSocket.globalEmit("user.getuserinfo", data)) {
                 delayAction.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (!GlobalSocket.globalEmit(EditProfileActivity.this, "user.getuserinfo", data)) {
+                        if (!GlobalSocket.globalEmit("user.getuserinfo", data)) {
                             //sad
                             Snackbar.make(displayName, "cannot get user info from server", Snackbar.LENGTH_LONG).show();
                         } else {
@@ -416,7 +416,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                             e.printStackTrace();
                                         }
 
-                                        if(!GlobalSocket.globalEmit(EditProfileActivity.this, "user.edit", emitData)) {
+                                        if(!GlobalSocket.globalEmit("user.edit", emitData)) {
                                             //TODO retry on fail
                                             //retry
                                         } else {
@@ -454,7 +454,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    if(!GlobalSocket.globalEmit(EditProfileActivity.this, "user.edit", emitData)) {
+                    if(!GlobalSocket.globalEmit("user.edit", emitData)) {
                         //TODO retry on fail
                         //retry
                     } else {

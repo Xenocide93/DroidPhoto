@@ -321,13 +321,13 @@ public class ProfileFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(!GlobalSocket.globalEmit(getActivity(), "user.getuserinfo", data)) {
+        if(!GlobalSocket.globalEmit("user.getuserinfo", data)) {
             //retry in 2 sec
             final JSONObject finalData = data;
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!GlobalSocket.globalEmit(getActivity(), "user.getuserinfo", finalData)) {
+                    if (!GlobalSocket.globalEmit("user.getuserinfo", finalData)) {
                         //reload
                         initReload();
                     }
@@ -345,12 +345,12 @@ public class ProfileFragment extends Fragment {
             data.put("_event", "get_user_feed");
         } catch (JSONException e){e.printStackTrace();}
 
-        if(!GlobalSocket.globalEmit(getActivity(), "photo.getuserphoto", data)) {
+        if(!GlobalSocket.globalEmit("photo.getuserphoto", data)) {
             final JSONObject delayedData = data;
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!GlobalSocket.globalEmit(getActivity(), "photo.getuserphoto", delayedData)) {
+                    if (!GlobalSocket.globalEmit("photo.getuserphoto", delayedData)) {
                         initReload(); //if fail twice
                     } else {
                         GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -462,7 +462,7 @@ public class ProfileFragment extends Fragment {
                                 e.printStackTrace();
                             }
 
-                            GlobalSocket.globalEmit(getActivity(), "photo.remove", removePicData);
+                            GlobalSocket.globalEmit("photo.remove", removePicData);
                             deletePicFakeSnackbar.animate()
                                     .yBy(2 * getResources().getDimension(R.dimen.snackbar_height))
                                     .setDuration(getResources().getInteger(R.integer.fake_snackbar_animation_speed))
