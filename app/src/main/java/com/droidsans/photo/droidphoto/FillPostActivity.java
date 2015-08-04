@@ -556,10 +556,17 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
     }
 
     private void callLocationUpdate() {
-        SmartLocation.with(FillPostActivity.this).location()
-                .oneFix()
-                .provider(new LocationManagerProvider())
-                .start(FillPostActivity.this);
+        if(SmartLocation.with(this).location().state().isAnyProviderAvailable()) {
+            SmartLocation.with(this).location()
+                    .oneFix()
+                    .provider(new LocationManagerProvider())
+                    .start(FillPostActivity.this);
+        } else {
+            useLocation.setText(getString(R.string.fill_post_checkbox_location_off));
+//            useLocation.setTextColor(getResources().getColor(R.color.light_gray));
+//            useLocation.setChecked(false);
+//            useLocation.setEnabled(false);
+        }
     }
 
     @Override
@@ -662,8 +669,9 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                     if (gpsDirectory != null && (gpsDirectory.getGeoLocation() != null)) {
 //                    if(gpsDirectory != null) {
 //                    if(false) { //debug
+                        useLocation.setEnabled(false);
+                        useLocation.setText(getString(R.string.fill_post_checkbox_location_resolving));
                         getAddressFromPhoto();
-                        toastText += "get location from exif";
 //                    } else {
                     } else if (mImageFrom.equals("Camera")) {
                         useLocation.setEnabled(false);
@@ -815,8 +823,8 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                                     matrix, true)
                                     .compress(Bitmap.CompressFormat.JPEG, 80, out);
 
-                            Log.d("droidphoto", "compress size: " + options.outWidth + " x " + options.outHeight);
-                            Log.d("droidphoto", "upload size: " + options.outWidth * scalef + " x " + options.outHeight * scalef);
+//                            Log.d("droidphoto", "compress size: " + options.outWidth + " x " + options.outHeight);
+//                            Log.d("droidphoto", "upload size: " + options.outWidth * scalef + " x " + options.outHeight * scalef);
                             if (out != null) {
                                 try {
                                     out.close();
