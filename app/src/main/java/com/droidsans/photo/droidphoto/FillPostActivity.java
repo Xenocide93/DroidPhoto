@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -275,12 +276,6 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         mCurrentPhotoPath = previousIntent.getStringExtra("photoPath");
         mImageFrom = previousIntent.getStringExtra("imageFrom");
 
-        if(mImageFrom.equals("Camera")) {
-            callLocationUpdate();
-            useLocation.setEnabled(false);
-            useLocation.setText(getString(R.string.fill_post_checkbox_location_resolving));
-        }
-
         if (previousIntent.getStringExtra("vendor") != null) {
             vendorTV.setText(previousIntent.getStringExtra("vendor"));
         }
@@ -438,16 +433,16 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         }
     }
 
-//    private void setDefaultUseLocationText() {
-//        switch (mImageFrom) {
-//            case "Picture Picker":
-//                useLocation.setText(getString(R.string.fill_post_checkbox_use_exif));
-//                break;
-//            case "Camera":
-//                useLocation.setText(getString(R.string.fill_post_checkbox_use_gps));
-//                break;
-//        }
-//    }
+    private void setDefaultUseLocationText() {
+        switch (mImageFrom) {
+            case "Picture Picker":
+                useLocation.setText(getString(R.string.fill_post_checkbox_use_exif));
+                break;
+            case "Camera":
+                useLocation.setText(getString(R.string.fill_post_checkbox_use_gps));
+                break;
+        }
+    }
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);
@@ -538,8 +533,6 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(photo);
-
-        getAddressFromPhoto();
     }
 
     private void photoChosenError(String message) {
@@ -550,28 +543,16 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
     }
 
     private void getAddressFromPhoto() {
-        if(mImageFrom.equals("Picture Picker")) {
-            //try read location from exif first
-            if (gpsDirectory != null && (gpsDirectory.getGeoLocation() != null)) {
-                Log.d("droidphoto", "location from exif:" + gpsDirectory.getGeoLocation().toString());
-                useLocation.setText("reading location from exif ...");
-                gpsLat = gpsDirectory.getGeoLocation().getLatitude();
-                gpsLong = gpsDirectory.getGeoLocation().getLongitude();
+        Log.d("droidphoto", "location from exif:" + gpsDirectory.getGeoLocation().toString());
+        gpsLat = gpsDirectory.getGeoLocation().getLatitude();
+        gpsLong = gpsDirectory.getGeoLocation().getLongitude();
 
 
-                Location location = new Location("");
-                location.setLatitude(gpsLat);
-                location.setLongitude(gpsLong);
+        Location location = new Location("");
+        location.setLatitude(gpsLat);
+        location.setLongitude(gpsLong);
 
-                getDefaultAddress(location);
-            } else {
-                useLocation.setText(getString(R.string.fill_post_checkbox_no_location_exif));
-                useLocation.setTextColor(getResources().getColor(R.color.light_gray));
-                useLocation.setChecked(false);
-                useLocation.setEnabled(false);
-            }
-
-        }
+        getDefaultAddress(location);
     }
 
     private void callLocationUpdate() {
@@ -583,6 +564,9 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
 
     @Override
     public void onLocationUpdated(Location location) {
+        gpsLat = location.getLatitude();
+        gpsLong = location.getLongitude();
+
         getDefaultAddress(location);
     }
 
@@ -599,16 +583,13 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                             final String strLocalityEn = address.getLocality();
                             final String strAdminAreaEn = address.getAdminArea();
                             final String strCountryCode = address.getCountryCode();
-                            final String strDefaultAddress = getString(R.string.fill_post_checkbox_use_location)
-                                    + ((strLocalityEn == null) ? "" : strLocalityEn + ", ")
+
+                            resolvedLocation = ((strLocalityEn == null) ? "" : strLocalityEn + ", ")
                                     + ((strAdminAreaEn == null) ? "" : strAdminAreaEn + ", ")
                                     + strCountryCode;
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    getLocalAddress(location, strDefaultAddress, strCountryCode);
-                                }
-                            }, 1000);
+                            final String strDefaultAddress = getString(R.string.fill_post_checkbox_use_location) + resolvedLocation;
+
+                            getLocalAddress(location, strDefaultAddress, strCountryCode);
                         }
                     }
                 });
@@ -628,10 +609,11 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                             String strAdminAreaLocal = address.getAdminArea();
                             String strCountryNameLocal = address.getCountryName();
 
-                            String strAddress = strDefaultAddress + " (" +
-                                    ((strLocalityLocal == null) ? "" : strLocalityLocal + ", ") +
+                            resolvedLocalizedLocation =  ((strLocalityLocal == null) ? "" : strLocalityLocal + ", ") +
                                     ((strAdminAreaLocal == null) ? "" : strAdminAreaLocal + ", ") +
-                                    strCountryNameLocal + ")";
+                                    strCountryNameLocal;
+
+                            String strAddress = strDefaultAddress + " (" + resolvedLocalizedLocation + ")";
 
                             useLocation.setText(strAddress);
                             useLocation.setEnabled(true);
@@ -646,39 +628,39 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         GlobalSocket.mSocket.off("device_store_respond");
 
         //TODO
-//        useLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    //debug
-////                    reGeocode(Double.parseDouble(vendor.getText().toString()),Double.parseDouble(model.getText().toString()));
-//                    //real
-//
-//                    String toastText = "location checked | ";
-//                    //try read location from exif first
-//                    if (gpsDirectory != null && (gpsDirectory.getGeoLocation() != null)) {
-////                    if(gpsDirectory != null) {
-////                    if(false) { //debug
-//                        Log.d("droidphoto", "location from exif:" + gpsDirectory.getGeoLocation().toString());
-//                        useLocation.setText("reading location from exif ...");
-//                        gpsLat = gpsDirectory.getGeoLocation().getLatitude();
-//                        gpsLong = gpsDirectory.getGeoLocation().getLongitude();
-//                        reGeocode(gpsLat, gpsLong);
-//                        toastText += "get location from exif";
-////                    } else {
+        useLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    //debug
+//                    reGeocode(Double.parseDouble(vendor.getText().toString()),Double.parseDouble(model.getText().toString()));
+                    //real
+
+                    String toastText = "location checked | ";
+                    //try read location from exif first
+                    if (gpsDirectory != null && (gpsDirectory.getGeoLocation() != null)) {
+//                    if(gpsDirectory != null) {
+//                    if(false) { //debug
+                        getAddressFromPhoto();
+                        toastText += "get location from exif";
 //                    } else {
-//                        useLocation.setText(getString(R.string.fill_post_checkbox_no_location_exif));
-//                        useLocation.setTextColor(getResources().getColor(R.color.light_gray));
-//                        useLocation.setChecked(false);
-//                        useLocation.setEnabled(false);
-//                    }
-//
-////                    Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
-//                } else {
-//                    setDefaultUseLocationText();
-//                }
-//            }
-//        });
+                    } else if(mImageFrom.equals("Camera")) {
+                        useLocation.setEnabled(false);
+                        useLocation.setText(getString(R.string.fill_post_checkbox_location_resolving));
+                        callLocationUpdate();
+                    } else {
+                        useLocation.setText(getString(R.string.fill_post_checkbox_no_location_exif));
+                        useLocation.setTextColor(getResources().getColor(R.color.light_gray));
+                        useLocation.setChecked(false);
+                        useLocation.setEnabled(false);
+                    }
+
+//                    Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
+                } else {
+                    setDefaultUseLocationText();
+                }
+            }
+        });
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
