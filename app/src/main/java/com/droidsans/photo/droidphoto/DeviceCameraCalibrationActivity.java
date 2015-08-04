@@ -62,8 +62,11 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         working.setVisibility(View.GONE);
         topIcon.setImageResource(R.drawable.ic_camera_alt_black_48dp);
         topIcon.setVisibility(View.VISIBLE);
+        surfaceCamera.setVisibility(View.VISIBLE);
         title.setText("Welcome !");
         description.setText("Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon't worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn't even matter,\njust launch a camera and take a shot !");
+
+        removeTemp();
     }
 
     private void showRetry() {
@@ -72,17 +75,21 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         startCalibrate.setVisibility(View.VISIBLE);
         startCalibrate.setClickable(true);
         working.setVisibility(View.GONE);
+        surfaceCamera.setVisibility(View.GONE);
         topIcon.setImageResource(R.drawable.ic_cancel_black_48dp);
         topIcon.setColorFilter(getResources().getColor(R.color.primary_dark_color));
         topIcon.setVisibility(View.VISIBLE);
         title.setText("Oops !");
         description.setText("");
+
+        removeTemp();
     }
 
     private void showWorking() {
         doneCalibrate.setVisibility(View.GONE);
         startCalibrate.setVisibility(View.VISIBLE);
         startCalibrate.setClickable(false);
+        surfaceCamera.setVisibility(View.GONE);
         topIcon.setVisibility(View.GONE);
         working.setVisibility(View.VISIBLE);
         title.setText("Working ...");
@@ -94,11 +101,14 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         startCalibrate.setVisibility(View.GONE);
         doneCalibrate.setVisibility(View.VISIBLE);
         working.setVisibility(View.GONE);
+        surfaceCamera.setVisibility(View.GONE);
         topIcon.setImageResource(R.drawable.ic_check_circle_white_48dp);
         topIcon.setColorFilter(getResources().getColor(R.color.accent_color));
         topIcon.setVisibility(View.VISIBLE);
         title.setText("Completed");
         description.setText("We have successfully calibrated our application to match your device camera configuration.\nThe taken photo is also removed just now.\nPlease enjoy !");
+
+        removeTemp();
     }
 
     private void setupListener() {
@@ -110,8 +120,8 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                     @Override
                     public void onPictureTaken(byte[] data, Camera camera) {
                         OutputStream os;
-                        File file = new File(getFilesDir(), "calibrate.tmp");
-                        Uri uri = Uri.fromFile(file);
+                        calibrateFile = new File(getCacheDir(), "calibrate.tmp");
+                        Uri uri = Uri.fromFile(calibrateFile);
                         try {
                             os = getContentResolver().openOutputStream(uri);
                             os.write(data);
@@ -122,7 +132,11 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                         }
 
                         try {
-                            ExifInterface mExif = new ExifInterface(file.getAbsolutePath());
+                            ExifInterface mExif = new ExifInterface(calibrateFile.getAbsolutePath());
+                            if (mExif.getAttribute(ExifInterface.TAG_MAKE) == null || mExif.getAttribute(ExifInterface.TAG_MODEL) == null) {
+                                showRetry();
+                                return;
+                            }
                             String make = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MAKE)).replaceAll("[ -]", "");
                             String model = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MODEL)).replaceAll("[ -]", "");
 
@@ -134,7 +148,6 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                                     .putString(getString(R.string.camera_model), model)
                                     .apply();
 
-                            removeTemp(file);
                             delayAction.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -202,7 +215,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         mCamera.release();
     }
 
-    private void removeTemp(File file) {
+    private void removeTemp() {
         if(calibrateFile != null && calibrateFile.exists()) {
             if(!calibrateFile.delete()) {
                 Log.d("droidphoto", "cannot delete calibrate file ??");
