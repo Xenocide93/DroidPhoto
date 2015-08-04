@@ -423,11 +423,11 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (!GlobalSocket.globalEmit(FillPostActivity.this, "device.resolve", data)) {
+        if (!GlobalSocket.globalEmit("device.resolve", data)) {
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    GlobalSocket.globalEmit(FillPostActivity.this, "device.resolve", data);
+                    GlobalSocket.globalEmit("device.resolve", data);
                 }
             }, 850);
         }
@@ -925,11 +925,11 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                                                 photoDetailStuff.put("is_enhanced", isEnhanced.isChecked());
 
                                                 FeedFragment.percentage = 95;
-                                                if (!GlobalSocket.globalEmit(FillPostActivity.this, "photo.upload", photoDetailStuff)) {
+                                                if (!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
                                                     delayAction.postDelayed(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            if (!GlobalSocket.globalEmit(FillPostActivity.this, "photo.upload", photoDetailStuff)) {
+                                                            if (!GlobalSocket.globalEmit("photo.upload", photoDetailStuff)) {
                                                                 //???
                                                                 FeedFragment.isFailedToUpload = true;
 //                                                                Toast.makeText(getApplicationContext(), "upload failed (on socket.io)", Toast.LENGTH_SHORT).show();
@@ -1058,7 +1058,7 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        GlobalSocket.globalEmit(FillPostActivity.this, "device.store", send);
+        GlobalSocket.globalEmit("device.store", send);
     }
 
     @Override

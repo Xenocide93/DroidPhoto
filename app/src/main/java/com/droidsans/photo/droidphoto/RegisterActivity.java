@@ -128,7 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             })
                                             .show();
                                 } else if(GlobalSocket.mSocket.hasListeners("login_respond")) {
-                                    GlobalSocket.globalEmit(RegisterActivity.this, "user.login", loginStuff); //this automatic finish() this activity
+                                    GlobalSocket.globalEmit("user.login", loginStuff); //this automatic finish() this activity
                                 } else {
 //                                    Toast.makeText(getApplicationContext(), "no login respond listener", Toast.LENGTH_SHORT).show();
                                 }
@@ -264,11 +264,11 @@ public class RegisterActivity extends AppCompatActivity {
             } catch (JSONException e) {
             }
 
-            if (!GlobalSocket.globalEmit(RegisterActivity.this, "user.register", registerStuff)) {
+            if (!GlobalSocket.globalEmit("user.register", registerStuff)) {
                 delayAction.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (!GlobalSocket.globalEmit(RegisterActivity.this, "user.register", registerStuff)) {
+                        if (!GlobalSocket.globalEmit("user.register", registerStuff)) {
                             registerBtn.setClickable(true);
                             registerBtn.setTextColor(getResources().getColor(R.color.primary_color));
                         } else {

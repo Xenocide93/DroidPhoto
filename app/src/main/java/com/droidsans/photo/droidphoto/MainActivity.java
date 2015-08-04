@@ -188,11 +188,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if(!GlobalSocket.globalEmit(MainActivity.this, "user.getuserinfo", data)) {
+        if(!GlobalSocket.globalEmit("user.getuserinfo", data)) {
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!GlobalSocket.globalEmit(MainActivity.this, "user.getuserinfo", data)) {
+                    if (!GlobalSocket.globalEmit("user.getuserinfo", data)) {
                         //sad
                     }
                 }

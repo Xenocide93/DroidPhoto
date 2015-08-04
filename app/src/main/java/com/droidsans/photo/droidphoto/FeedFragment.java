@@ -131,8 +131,6 @@ public class FeedFragment extends Fragment {
     private String resolvedVendor;
     private String resolvedModel;
 
-    private Activity rootActivity;
-
 //    private NotifyAdapter packreload[];
 
 //    private int firstAtPause;
@@ -199,7 +197,6 @@ public class FeedFragment extends Fragment {
     }
 
     private void initialize() {
-        rootActivity = rootActivity;
         findAllById();
 
         setupRecycleView();
@@ -235,11 +232,11 @@ public class FeedFragment extends Fragment {
             tutorialStringList = new ArrayList<>();
             tutorialViewList.add(fam.getMenuIconView());
             tutorialStringList.add(getResources().getString(R.string.tutorial_string_fam));
-            tutorialViewList.add(rootActivity.getWindow().getDecorView().findViewById(R.id.action_filter));
+            tutorialViewList.add(getActivity().getWindow().getDecorView().findViewById(R.id.action_filter));
             tutorialStringList.add(getResources().getString(R.string.tutorial_string_filter));
 
             //launch first tooltip (auto launch the rest)
-            tutorialHandler = TourGuide.init(rootActivity).with(TourGuide.Technique.Click)
+            tutorialHandler = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
                     .setToolTip(new ToolTip()
                         .setTitle(tutorialStringList.get(0))
                         .setDescription(getString(R.string.tutorial_touch_to_dismiss))
@@ -264,13 +261,13 @@ public class FeedFragment extends Fragment {
 
     private void showNextTutorial(){
         if(tutorialHandler==null){
-            tutorialHandler = TourGuide.init(rootActivity).with(TourGuide.Technique.Click);
+            tutorialHandler = TourGuide.init(getActivity()).with(TourGuide.Technique.Click);
         }
 
         if(nextTutorial>=tutorialViewList.size()){
-//            PreferenceManager.getDefaultSharedPreferences(rootActivity).edit()
+//            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
 //                    .putBoolean(FIRST_TIME_FEED_FRAGMENT, false).apply();p
-            rootActivity.getSharedPreferences(getString(R.string.tutorial_data), Context.MODE_PRIVATE).edit()
+            getActivity().getSharedPreferences(getString(R.string.tutorial_data), Context.MODE_PRIVATE).edit()
                     .putBoolean(getString(R.string.first_time_feed_fragment), false).apply();
             tutorialHandler.cleanUp();
             return;
@@ -310,12 +307,12 @@ public class FeedFragment extends Fragment {
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.accent_color), getResources().getColor(R.color.primary_color));
 
         feedRecycleView.addItemDecoration(new SpacesItemDecoration(
-                rootActivity,
+                getActivity(),
                 getResources().getInteger(R.integer.main_feed_col_num),
                 (int) getResources().getDimension(R.dimen.feed_recycleview_item_space),
                 false, false, false, false
         ));
-        GridLayoutManager layoutManager = new GridLayoutManager(rootActivity, getResources().getInteger(R.integer.main_feed_col_num));
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_feed_col_num));
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -331,7 +328,7 @@ public class FeedFragment extends Fragment {
 //                return 0;
             }
         });
-//        feedRecycleView.setLayoutManager(new GridLayoutManager(rootActivity, getResources().getInteger(R.integer.main_feed_col_num)));
+//        feedRecycleView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_feed_col_num)));
         feedRecycleView.setLayoutManager(layoutManager);
     }
 
@@ -343,11 +340,11 @@ public class FeedFragment extends Fragment {
             e.printStackTrace();
         }
 
-        if(!GlobalSocket.globalEmit(rootActivity, "db.getdevicelist", requestStuff)) {
+        if(!GlobalSocket.globalEmit("db.getdevicelist", requestStuff)) {
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(!GlobalSocket.globalEmit(rootActivity, "db.getdevicelist", requestStuff)) {
+                    if(!GlobalSocket.globalEmit("db.getdevicelist", requestStuff)) {
                         // :(
                     }
                 }
@@ -384,12 +381,12 @@ public class FeedFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(!GlobalSocket.globalEmit(rootActivity, "photo.getfeed", filter)) { //wait 4 sec and try globalemit again
+        if(!GlobalSocket.globalEmit("photo.getfeed", filter)) { //wait 4 sec and try globalemit again
             final JSONObject delayedfilter = filter;
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!GlobalSocket.globalEmit(rootActivity, "photo.getfeed", delayedfilter)) { //if fail twice
+                    if (!GlobalSocket.globalEmit("photo.getfeed", delayedfilter)) { //if fail twice
                         initReload();
                     } else {
                         GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -555,11 +552,11 @@ public class FeedFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(!GlobalSocket.globalEmit(rootActivity, "device.resolve", data)) {
+        if(!GlobalSocket.globalEmit("device.resolve", data)) {
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    GlobalSocket.globalEmit(rootActivity, "device.resolve", data);
+                    GlobalSocket.globalEmit("device.resolve", data);
                 }
             }, 850);
         }
@@ -573,11 +570,11 @@ public class FeedFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(!GlobalSocket.globalEmit(rootActivity, "csv.get", data)){
+        if(!GlobalSocket.globalEmit("csv.get", data)){
             delayAction.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    GlobalSocket.globalEmit(rootActivity, "csv.get", data);
+                    GlobalSocket.globalEmit("csv.get", data);
                 }
             }, 3000);
         }
@@ -593,8 +590,8 @@ public class FeedFragment extends Fragment {
         onDisconnect = new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                if(rootActivity != null) {
-                    rootActivity.runOnUiThread(new Runnable() {
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Log.e("droidphoto", "FeedFragment: disconnected");
@@ -609,7 +606,7 @@ public class FeedFragment extends Fragment {
         onGetFeedRespond = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
-                rootActivity.runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         GlobalSocket.mSocket.off(Socket.EVENT_DISCONNECT);
@@ -659,7 +656,7 @@ public class FeedFragment extends Fragment {
                             }
 
                             //setup tranditional recycle view adapter
-//                            adapter = new PictureGridAdapter(rootActivity, R.layout.item_feed_pic, feedPicturePack);
+//                            adapter = new PictureGridAdapter(getActivity(), R.layout.item_feed_pic, feedPicturePack);
 //                            feedGridView.setAdapter(adapter);
 
                             //setup new recycle view adapter
@@ -667,7 +664,7 @@ public class FeedFragment extends Fragment {
                                 PicturePack footer = new PicturePack();
                                 feedPicturePack.add(footer);
                             }
-                            recycleAdapter = new FeedRecycleViewAdapter(rootActivity, feedPicturePack);
+                            recycleAdapter = new FeedRecycleViewAdapter(getActivity(), feedPicturePack);
                             feedRecycleView.setAdapter(recycleAdapter);
 
                             if(feedRecycleView.getAlpha() < 1f) {
@@ -697,7 +694,7 @@ public class FeedFragment extends Fragment {
         onGetDeviceListRespond = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
-                rootActivity.runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         JSONObject data = (JSONObject) args[0];
@@ -864,7 +861,7 @@ public class FeedFragment extends Fragment {
         onUpdateFeedRespond = new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
-                rootActivity.runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         GlobalSocket.mSocket.off("update_feed");
@@ -1001,13 +998,13 @@ public class FeedFragment extends Fragment {
 //
 //                imageViewerFragment.setArguments(args);
 //
-//                FragmentTransaction transaction = rootActivity.getSupportFragmentManager().beginTransaction();
+//                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 //                transaction.replace(R.id.main_fragment, imageViewerFragment, "IMAGE_VIEWER");
 //                transaction.addToBackStack(null);
 //                transaction.commit();
 //
 
-//                Intent imageViewerIntent = new Intent(rootActivity, ImageViewerActivity.class);
+//                Intent imageViewerIntent = new Intent(getActivity(), ImageViewerActivity.class);
 //                PicturePack currentPack = adapter.getItem(position);
 //                imageViewerIntent.putExtra("photoId", currentPack.photoId);
 //                imageViewerIntent.putExtra("photoURL", currentPack.photoURL);
@@ -1025,8 +1022,8 @@ public class FeedFragment extends Fragment {
 //                startActivity(imageViewerIntent);
 
 //                String transitionName = getString(R.string.transition_image_view);
-//                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(rootActivity, feedGridView, transitionName);
-//                ActivityCompat.startActivity(rootActivity,imageViewerIntent, options.toBundle());
+//                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), feedGridView, transitionName);
+//                ActivityCompat.startActivity(getActivity(),imageViewerIntent, options.toBundle());
 //            }
 //        });
 
@@ -1034,7 +1031,7 @@ public class FeedFragment extends Fragment {
 //            GlobalSocket.mSocket.on("get_csv", new Emitter.Listener() {
 //                @Override
 //                public void call(final Object... args) {
-//                    rootActivity.runOnUiThread(new Runnable() {
+//                    getActivity().runOnUiThread(new Runnable() {
 //                        @Override
 //                        public void run() {
 //                            GlobalSocket.mSocket.off("get_csv");
@@ -1107,12 +1104,12 @@ public class FeedFragment extends Fragment {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(rootActivity.getPackageManager()) != null) {
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             File photoFile = null;
             try {
                 photoFile = createFile();
             } catch (IOException e) {
-                new AlertDialog.Builder(rootActivity)
+                new AlertDialog.Builder(getActivity())
                         .setTitle("Cannot Launch Camera")
                         .setMessage("Please insert SD Card and then try again.")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -1141,7 +1138,7 @@ public class FeedFragment extends Fragment {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         Uri contentUri = Uri.fromFile(new File(staticPhotoPath));
         mediaScanIntent.setData(contentUri);
-        rootActivity.sendBroadcast(mediaScanIntent);
+        getActivity().sendBroadcast(mediaScanIntent);
     }
 
     @Override
@@ -1154,7 +1151,7 @@ public class FeedFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_search:
-//                Toast.makeText(rootActivity, "search", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "search", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_filter:
                 if(noData) {
@@ -1209,19 +1206,19 @@ public class FeedFragment extends Fragment {
                     staticPhotoPath = null;
 //                    Log.d("droidphoto", "uri : " + data.getData());
 //                    Log.d("droidphoto", "path : " + data.getData().getPath());
-//                    Log.d("droidphoto", "type : " + rootActivity.getApplicationContext().getContentResolver().getType(data.getData()));
+//                    Log.d("droidphoto", "type : " + getActivity().getApplicationContext().getContentResolver().getType(data.getData()));
                     String path = "";
                     if(data.getData().getAuthority().equals("com.google.android.apps.photos.contentprovider")) {
                         //clear old cache
                         clearUploadCache();
 
                         //download or copy them
-                        Cursor cursor = rootActivity.getContentResolver().query(data.getData(), null, null, null, null);
+                        Cursor cursor = getActivity().getContentResolver().query(data.getData(), null, null, null, null);
                         int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                         cursor.moveToFirst();
 //                        Log.d("droidphoto", "filename: " + cursor.getString(nameIndex));
-//                        path = rootActivity.getCacheDir() + "/upload/" + "googlephoto_upload_temp";
-                        path = rootActivity.getCacheDir() + "/upload/" + cursor.getString(nameIndex);
+//                        path = getActivity().getCacheDir() + "/upload/" + "googlephoto_upload_temp";
+                        path = getActivity().getCacheDir() + "/upload/" + cursor.getString(nameIndex);
                         cursor.close();
 
                         File temp = new File(path);
@@ -1232,7 +1229,7 @@ public class FeedFragment extends Fragment {
                             }
                         }
                         try {
-                            InputStream in = rootActivity.getContentResolver().openInputStream(data.getData());
+                            InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
                             FileOutputStream out = new FileOutputStream(new File(path));
                             byte buffer[] = new byte[4096];
 //                            int total = 0;
@@ -1253,7 +1250,7 @@ public class FeedFragment extends Fragment {
                     }
                     Log.d("droidphoto", "resolved path : " + path);
                     if(path == null) {
-                        new AlertDialog.Builder(rootActivity)
+                        new AlertDialog.Builder(getActivity())
                                 .setTitle("Error !!")
                                 .setMessage("cannot resolve picture picker uri. please report us this bug.")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -1266,8 +1263,8 @@ public class FeedFragment extends Fragment {
                     }
                     File file = new File(path);
                     if(file.length() > 0) {
-//                    Toast.makeText(rootActivity, path, Toast.LENGTH_LONG).show();
-                        Intent fillPostFromPicturePickerIntent = new Intent(rootActivity, FillPostActivity.class);
+//                    Toast.makeText(getActivity(), path, Toast.LENGTH_LONG).show();
+                        Intent fillPostFromPicturePickerIntent = new Intent(getActivity(), FillPostActivity.class);
                         fillPostFromPicturePickerIntent.putExtra("photoPath", path);
                         fillPostFromPicturePickerIntent.putExtra("imageFrom", "Picture Picker");
                         fillPostFromPicturePickerIntent.putExtra("vendor", resolvedVendor);
@@ -1275,7 +1272,7 @@ public class FeedFragment extends Fragment {
                         startActivityForResult(fillPostFromPicturePickerIntent, FILL_POST);
                         break;
                     } else {
-                        new AlertDialog.Builder(rootActivity)
+                        new AlertDialog.Builder(getActivity())
                                 .setTitle(getString(R.string.alert_invalid_image))
                                 .setMessage(getString(R.string.alert_invalid_image_message))
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -1291,13 +1288,13 @@ public class FeedFragment extends Fragment {
                     }
 
                 case REQUEST_IMAGE_CAPTURE:
-//                    Toast.makeText(rootActivity, staticPhotoPath, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getActivity(), staticPhotoPath, Toast.LENGTH_LONG).show();
                     galleryAddPic();
                     File f = new File(staticPhotoPath);
                     hasImageInPhotoPath = false;
                     staticPhotoPath = null;
                     if(f.length() > 0) {
-                        Intent fillPostIntent = new Intent(rootActivity, FillPostActivity.class);
+                        Intent fillPostIntent = new Intent(getActivity(), FillPostActivity.class);
                         fillPostIntent.putExtra("photoPath", f.getAbsolutePath());
                         fillPostIntent.putExtra("imageFrom", "Camera");
                         fillPostIntent.putExtra("vendor", resolvedVendor);
@@ -1305,7 +1302,7 @@ public class FeedFragment extends Fragment {
                         startActivityForResult(fillPostIntent, FILL_POST);
                         break;
                     } else {
-                        new AlertDialog.Builder(rootActivity)
+                        new AlertDialog.Builder(getActivity())
                                 .setTitle(getString(R.string.alert_invalid_image))
                                 .setMessage(getString(R.string.alert_invalid_image_message))
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -1322,7 +1319,7 @@ public class FeedFragment extends Fragment {
 
                 case FILL_POST:
 //                    PicturePack uploadingPicturePack = new PicturePack(
-//                            rootActivity.getApplicationContext().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE)
+//                            getActivity().getApplicationContext().getSharedPreferences(getString(R.string.userdata), Context.MODE_PRIVATE)
 //                                    .getString(getString(R.string.username), ""),
 //                            data.getStringExtra("vendor"),
 //                            data.getStringExtra("model"),
@@ -1352,7 +1349,7 @@ public class FeedFragment extends Fragment {
             if(data != null && data.hasExtra("return code")) {
                 switch (data.getStringExtra("return code")) {
                     case "not your photo":
-                        new AlertDialog.Builder(rootActivity)
+                        new AlertDialog.Builder(getActivity())
                                 .setTitle(getString(R.string.alert_not_your_photo_title))
                                 .setMessage(getString(R.string.alert_not_your_photo_message))
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -1364,7 +1361,7 @@ public class FeedFragment extends Fragment {
                                 .show();
                         break;
                     case "no exif":
-                        new AlertDialog.Builder(rootActivity)
+                        new AlertDialog.Builder(getActivity())
                                 .setTitle(getString(R.string.alert_not_from_camera_title))
                                 .setMessage(getString(R.string.alert_not_from_camera_summary))
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -1375,7 +1372,7 @@ public class FeedFragment extends Fragment {
                                 .show();
                         break;
                     case "no required exif":
-                        new AlertDialog.Builder(rootActivity)
+                        new AlertDialog.Builder(getActivity())
                                 .setTitle(getString(R.string.alert_no_required_exif_title))
                                 .setMessage(getString(R.string.alert_no_required_exif_summary))
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -1386,7 +1383,7 @@ public class FeedFragment extends Fragment {
                                 .show();
                         break;
                     case "cannot detect photo owner":
-                        new AlertDialog.Builder(rootActivity)
+                        new AlertDialog.Builder(getActivity())
                                 .setTitle("Error")
                                 .setMessage("Cannot detect photo owner (bug ??).")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -1406,8 +1403,8 @@ public class FeedFragment extends Fragment {
     }
 
     private void clearUploadCache() {
-        Log.d("droidphoto", "deleting file in dir: " + rootActivity.getCacheDir() + "/upload/");
-        File uploadCache = new File(rootActivity.getCacheDir(), "upload");
+        Log.d("droidphoto", "deleting file in dir: " + getActivity().getCacheDir() + "/upload/");
+        File uploadCache = new File(getActivity().getCacheDir(), "upload");
         uploadCache.mkdir();
         if (!uploadCache.isDirectory()) {
             String[] cacheList = uploadCache.list();
@@ -1429,10 +1426,10 @@ public class FeedFragment extends Fragment {
                     if(read == null || read.isEmpty()) {
                         image.delete();
 //                        if (image.delete()) {
-////                Toast.makeText(rootActivity, "temp file removed", Toast.LENGTH_LONG).show();
+////                Toast.makeText(getActivity(), "temp file removed", Toast.LENGTH_LONG).show();
 //                            Snackbar.make(getView(), "temp file removed", Snackbar.LENGTH_LONG).show();
 //                        } else {
-////                Toast.makeText(rootActivity, "cannot remove temp file", Toast.LENGTH_LONG).show();
+////                Toast.makeText(getActivity(), "cannot remove temp file", Toast.LENGTH_LONG).show();
 //                            Snackbar.make(getView(), "cannot remove temp file", Snackbar.LENGTH_LONG).show();
 //                        }
                     }
@@ -1612,7 +1609,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void showUploadProgress(boolean animate){
-        Glide.with(rootActivity.getApplicationContext())
+        Glide.with(getActivity().getApplicationContext())
                 .load(staticPhotoPath)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .centerCrop()
@@ -1653,7 +1650,7 @@ public class FeedFragment extends Fragment {
                             loopcount++;
                         }
                         uploadProgressbar.setProgress(percentage);
-                        if(rootActivity != null) rootActivity.runOnUiThread(update);
+                        if(getActivity() != null) getActivity().runOnUiThread(update);
                         if(loopcount > 60) isFailedToUpload = true;
                         delayAction.postDelayed(loop, LOOP_DELAY);
                     } else { //upload done
@@ -1663,7 +1660,7 @@ public class FeedFragment extends Fragment {
                         clearUploadCache();
                         setFamEnable(true);
                         uploadProgressbar.setProgress(percentage);
-                        if(rootActivity != null) rootActivity.runOnUiThread(update);
+                        if(getActivity() != null) getActivity().runOnUiThread(update);
                         refreshFeed();
                         initializeVendorModelList();
 
@@ -1710,7 +1707,7 @@ public class FeedFragment extends Fragment {
         try {
             Uri newUri = handleImageUri(uri);
             String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = rootActivity.getContentResolver().query(newUri,  proj, null, null, null);
+            cursor = getActivity().getContentResolver().query(newUri,  proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
@@ -1721,13 +1718,13 @@ public class FeedFragment extends Fragment {
                 cursor.close();
             }
         }
-//        Cursor cursor = rootActivity.getContentResolver().query(uri, null, null, null, null);
+//        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
 //        cursor.moveToFirst();
 //        String document_id = cursor.getString(0);
 //        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
 //        cursor.close();
 //
-//        cursor = rootActivity.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+//        cursor = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
 //        cursor.moveToFirst();
 //        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
 //        cursor.close();
@@ -1748,7 +1745,7 @@ public class FeedFragment extends Fragment {
     }
 
     private void writeObjToInternalStorage(Object obj, String filename){
-        File file = new File(rootActivity.getApplicationContext().getExternalFilesDir(null), filename);
+        File file = new File(getActivity().getApplicationContext().getExternalFilesDir(null), filename);
 
         try {
             InputStream is = new ByteArrayInputStream(serialize(obj));
@@ -1773,8 +1770,8 @@ public class FeedFragment extends Fragment {
     private boolean isFirstTime(){
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= Build.VERSION_CODES.JELLY_BEAN){
-            return rootActivity.getSharedPreferences(getString(R.string.tutorial_data), Context.MODE_PRIVATE).getBoolean(getString(R.string.first_time_feed_fragment), true);
-//            return PreferenceManager.getDefaultSharedPreferences(rootActivity).getBoolean(FIRST_TIME_FEED_FRAGMENT, true);
+            return getActivity().getSharedPreferences(getString(R.string.tutorial_data), Context.MODE_PRIVATE).getBoolean(getString(R.string.first_time_feed_fragment), true);
+//            return PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(FIRST_TIME_FEED_FRAGMENT, true);
         } else {
             return false;
         }
@@ -1858,7 +1855,7 @@ public class FeedFragment extends Fragment {
     }
 
     public void launchAddFilterPopup(){
-        Intent browseIntent = new Intent(rootActivity, BrowseVendorActivity.class);
+        Intent browseIntent = new Intent(getActivity(), BrowseVendorActivity.class);
         startActivityForResult(browseIntent, FILTER_FEED);
     }
 
@@ -1868,7 +1865,7 @@ public class FeedFragment extends Fragment {
             tagLayout.addView(view.getTagView());
         }
         if(filterCount==0){
-            View recentTag = LayoutInflater.from(rootActivity).inflate(R.layout.recent_tag, null, false);
+            View recentTag = LayoutInflater.from(getActivity()).inflate(R.layout.recent_tag, null, false);
             tagLayout.addView(recentTag);
         }
     }
@@ -1908,7 +1905,7 @@ public class FeedFragment extends Fragment {
             this.vendorName = vendorName;
             this.modelName = modelName;
 
-            if(inflater==null){inflater = LayoutInflater.from(rootActivity);}
+            if(inflater==null){inflater = LayoutInflater.from(getActivity());}
             tagView = inflater.inflate(R.layout.filter_tag, null, false);
 
             tagWrapper = (LinearLayout) tagView.findViewById(R.id.tag_wrapper);
