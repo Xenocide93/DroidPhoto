@@ -563,9 +563,9 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                     .start(FillPostActivity.this);
         } else {
             useLocation.setText(getString(R.string.fill_post_checkbox_location_off));
-            useLocation.setTextColor(getResources().getColor(R.color.light_gray));
+//            useLocation.setTextColor(getResources().getColor(R.color.light_gray));
             useLocation.setChecked(false);
-            useLocation.setEnabled(false);
+//            useLocation.setEnabled(false);
         }
     }
 
@@ -608,7 +608,7 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                                 resolvedLocation = ((strLocalityEn == null) ? "" : strLocalityEn + ", ")
                                         + ((strAdminAreaEn == null) ? "" : strAdminAreaEn + ", ")
                                         + strCountryCode;
-                                final String strDefaultAddress = getString(R.string.fill_post_checkbox_use_location) + resolvedLocation;
+                                final String strDefaultAddress = getString(R.string.fill_post_checkbox_location_prefix) + resolvedLocation;
 
                                 getLocalAddress(location, strDefaultAddress, strCountryCode);
                             }
@@ -667,7 +667,7 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                     String toastText = "location checked | ";
                     //try read location from exif first
                     if(resolvedLocation != null) {
-                        useLocation.setText(resolvedLocation);
+                        useLocation.setText(getString(R.string.fill_post_checkbox_location_prefix) + resolvedLocation);
                         if(resolvedLocalizedLocation != null) {
                             useLocation.append(" (" + resolvedLocalizedLocation + ")");
                         }
