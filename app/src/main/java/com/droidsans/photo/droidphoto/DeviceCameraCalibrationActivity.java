@@ -23,6 +23,7 @@ import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 
 public class DeviceCameraCalibrationActivity extends AppCompatActivity {
@@ -60,11 +61,11 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         startCalibrate.setVisibility(View.VISIBLE);
         startCalibrate.setClickable(true);
         working.setVisibility(View.GONE);
+        surfaceCamera.setVisibility(View.VISIBLE);
         topIcon.setImageResource(R.drawable.ic_camera_alt_black_48dp);
         topIcon.setVisibility(View.VISIBLE);
-        surfaceCamera.setVisibility(View.VISIBLE);
-        title.setText("Welcome !");
-        description.setText("Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon't worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn't even matter,\njust launch a camera and take a shot !");
+        title.setText(getString(R.string.calibrate_text_title_welcome));
+        description.setText(getString(R.string.calibrate_text_desc_welcome));
 
         removeTemp();
     }
@@ -79,21 +80,21 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         topIcon.setImageResource(R.drawable.ic_cancel_black_48dp);
         topIcon.setColorFilter(getResources().getColor(R.color.primary_dark_color));
         topIcon.setVisibility(View.VISIBLE);
-        title.setText("Oops !");
-        description.setText("");
+        title.setText(getString(R.string.calibrate_text_title_error));
+        description.setText(getString(R.string.calibrate_text_desc_error));
 
         removeTemp();
     }
 
     private void showWorking() {
         doneCalibrate.setVisibility(View.GONE);
-        startCalibrate.setVisibility(View.VISIBLE);
+        startCalibrate.setVisibility(View.INVISIBLE);
         startCalibrate.setClickable(false);
         surfaceCamera.setVisibility(View.GONE);
         topIcon.setVisibility(View.GONE);
         working.setVisibility(View.VISIBLE);
-        title.setText("Working ...");
-        description.setText("\nPlease wait just a second.\nWe are working on configuring our application.");
+        title.setText(getString(R.string.calibrate_text_title_working));
+        description.setText(getString(R.string.calibrate_text_desc_working));
     }
 
     private void showSuccess() {
@@ -105,8 +106,8 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         topIcon.setImageResource(R.drawable.ic_check_circle_white_48dp);
         topIcon.setColorFilter(getResources().getColor(R.color.accent_color));
         topIcon.setVisibility(View.VISIBLE);
-        title.setText("Completed");
-        description.setText("We have successfully calibrated our application to match your device camera configuration.\nThe taken photo is also removed just now.\nPlease enjoy !");
+        title.setText(getString(R.string.calibrate_text_title_done));
+        description.setText(getString(R.string.calibrate_text_desc_done));
 
         removeTemp();
     }
@@ -115,10 +116,10 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         startCalibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mCamera.takePicture(null, null, new Camera.PictureCallback() {
                     @Override
                     public void onPictureTaken(byte[] data, Camera camera) {
+                        showWorking();
                         OutputStream os;
                         calibrateFile = new File(getCacheDir(), "calibrate.tmp");
                         Uri uri = Uri.fromFile(calibrateFile);
@@ -153,7 +154,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                                 public void run() {
                                     showSuccess();
                                 }
-                            }, 1000);
+                            }, 2000);
                         } catch (IOException e) {
                             e.printStackTrace();
                             delayAction.postDelayed(new Runnable() {
@@ -161,7 +162,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                                 public void run() {
                                     showRetry();
                                 }
-                            }, 1000);
+                            }, 2000);
 
                         }
                     }
@@ -190,6 +191,11 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+//                Camera.Parameters params = mCamera.getParameters();
+//                List<Camera.Size> previewSize = params.getSupportedPreviewSizes();
+//                List<Camera.Size> pictureSize = params.getSupportedPictureSizes();
+//                params.setJpegQuality(2);
+//                mCamera.setParameters(params);
                 try {
                     mCamera.setPreviewDisplay(surfaceCamera.getHolder());
                     mCamera.startPreview();
@@ -199,8 +205,11 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) { }
+            public void surfaceDestroyed(SurfaceHolder holder) {
+            }
         });
+
+
     }
 
     @Override
@@ -239,6 +248,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         removeTemp();
+        surfaceCamera.destroyDrawingCache();
         super.onDestroy();
     }
 }

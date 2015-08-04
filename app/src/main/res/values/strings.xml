@@ -213,6 +213,18 @@
     <string name="alert_maintenance_mode_title">Maintenance Mode</string>
     <string name="alert_maintenance_mode_message">Currently our servers are going on maintenance. Please try again later. You might consider finding something to eat while waiting.</string>
 
+    <!--calibrate screen-->
+    <string name="calibrate_text_title_welcome">Welcome !</string>
+    <string name="calibrate_text_desc_welcome">Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon\'t worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn\'t even matter,\njust launch a camera and take a shot !</string>
+    <string name="calibrate_text_title_error">Oops !</string>
+    <string name="calibrate_text_desc_error">Something went wrong.\nMaybe we don\'t get what we want,\nor some error occur.\nYou might want to try different orientation.</string>
+    <string name="calibrate_text_title_working">Working ...</string>
+    <string name="calibrate_text_desc_working">\nPlease wait just a second.\nWe are working on configuring our application.</string>
+    <string name="calibrate_text_title_done">Completed</string>
+    <string name="calibrate_text_desc_done">We have successfully calibrated our application to match your device camera configuration.\nThe taken photo is also removed just now.\nPlease enjoy !</string>
+    <string name="calibrate_button_start">Start</string>
+    <string name="calibrate_button_done">Done</string>
+
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
@@ -269,6 +281,5 @@
     <string translatable="false" name="url_terms_of_service">http://droidshot.droidsans.com/termsofservice</string>
     <string translatable="false" name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
     <string translatable="false" name="cache_table_name">ertil4u5y893yjkrg</string>
-
 
 </resources>
