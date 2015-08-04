@@ -579,11 +579,11 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
 
     private void getDefaultAddress(final Location location) {
         if(resolvedLocation != null) {
-            useLocation.setText(resolvedLocation);
-            if(resolvedLocalizedLocation != null) {
-                useLocation.append(" (" + resolvedLocalizedLocation + ")");
-            }
-            useLocation.setEnabled(true);
+//            useLocation.setText(resolvedLocation);
+//            if(resolvedLocalizedLocation != null) {
+//                useLocation.append(" (" + resolvedLocalizedLocation + ")");
+//            }
+//            useLocation.setEnabled(true);
         } else {
             SmartLocation.with(this)
                     .geocoding()
@@ -666,7 +666,13 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
 
                     String toastText = "location checked | ";
                     //try read location from exif first
-                    if (gpsDirectory != null && (gpsDirectory.getGeoLocation() != null)) {
+                    if(resolvedLocation != null) {
+                        useLocation.setText(resolvedLocation);
+                        if(resolvedLocalizedLocation != null) {
+                            useLocation.append(" (" + resolvedLocalizedLocation + ")");
+                        }
+//                        useLocation.setEnabled(true);
+                    } else if (gpsDirectory != null && (gpsDirectory.getGeoLocation() != null)) {
 //                    if(gpsDirectory != null) {
 //                    if(false) { //debug
                         getAddressFromPhoto();
