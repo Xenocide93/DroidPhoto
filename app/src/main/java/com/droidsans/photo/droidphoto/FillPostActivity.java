@@ -575,10 +575,17 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
     }
 
     private void callLocationUpdate() {
-        SmartLocation.with(FillPostActivity.this).location()
-                .oneFix()
-                .provider(new LocationManagerProvider())
-                .start(FillPostActivity.this);
+        if(SmartLocation.with(this).location().state().isAnyProviderAvailable()) {
+            SmartLocation.with(this).location()
+                    .oneFix()
+                    .provider(new LocationManagerProvider())
+                    .start(FillPostActivity.this);
+        } else {
+            useLocation.setText(getString(R.string.fill_post_checkbox_location_off));
+            useLocation.setTextColor(getResources().getColor(R.color.light_gray));
+            useLocation.setChecked(false);
+            useLocation.setEnabled(false);
+        }
     }
 
     @Override
@@ -644,41 +651,6 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         //turn off old listener
         GlobalSocket.mSocket.off("photoupload_respond");
         GlobalSocket.mSocket.off("device_store_respond");
-
-        //TODO
-//        useLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    //debug
-////                    reGeocode(Double.parseDouble(vendor.getText().toString()),Double.parseDouble(model.getText().toString()));
-//                    //real
-//
-//                    String toastText = "location checked | ";
-//                    //try read location from exif first
-//                    if (gpsDirectory != null && (gpsDirectory.getGeoLocation() != null)) {
-////                    if(gpsDirectory != null) {
-////                    if(false) { //debug
-//                        Log.d("droidphoto", "location from exif:" + gpsDirectory.getGeoLocation().toString());
-//                        useLocation.setText("reading location from exif ...");
-//                        gpsLat = gpsDirectory.getGeoLocation().getLatitude();
-//                        gpsLong = gpsDirectory.getGeoLocation().getLongitude();
-//                        reGeocode(gpsLat, gpsLong);
-//                        toastText += "get location from exif";
-////                    } else {
-//                    } else {
-//                        useLocation.setText(getString(R.string.fill_post_checkbox_no_location_exif));
-//                        useLocation.setTextColor(getResources().getColor(R.color.light_gray));
-//                        useLocation.setChecked(false);
-//                        useLocation.setEnabled(false);
-//                    }
-//
-////                    Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
-//                } else {
-//                    setDefaultUseLocationText();
-//                }
-//            }
-//        });
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
