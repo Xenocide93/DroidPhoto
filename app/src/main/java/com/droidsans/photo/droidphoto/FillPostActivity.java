@@ -140,7 +140,7 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         getStringExtra();
         setupToolbar();
         setupListener();
-        //setDefaultUseLocationText()
+        setDefaultUseLocationText();
         setThumbnailImage();
 
         applyUserSettings();
@@ -571,55 +571,76 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
     }
 
     private void getDefaultAddress(final Location location) {
-        SmartLocation.with(this)
-                .geocoding()
-                .provider(new AndroidGeocodingProvider(Locale.US))
-                .reverse(location, new OnReverseGeocodingListener() {
-                    @Override
-                    public void onAddressResolved(final Location location, List<Address> list) {
-                        SmartLocation.with(FillPostActivity.this).geocoding().stop();
-                        if (list.size() > 0) {
-                            Address address = list.get(0);
-                            final String strLocalityEn = address.getLocality();
-                            final String strAdminAreaEn = address.getAdminArea();
-                            final String strCountryCode = address.getCountryCode();
+        if(resolvedLocation != null) {
+            useLocation.setText(resolvedLocation);
+            if(resolvedLocalizedLocation != null) {
+                useLocation.append(" (" + resolvedLocalizedLocation + ")");
+            }
+            useLocation.setEnabled(true);
+        } else {
+            SmartLocation.with(this)
+                    .geocoding()
+                    .provider(new AndroidGeocodingProvider(Locale.US))
+                    .reverse(location, new OnReverseGeocodingListener() {
+                        @Override
+                        public void onAddressResolved(final Location location, List<Address> list) {
+                            SmartLocation.with(FillPostActivity.this).geocoding().stop();
+                            if (list.size() > 0) {
+                                Address address = list.get(0);
+                                final String strLocalityEn = address.getLocality();
+                                String strAdminAreaEn;
+                                if (address.getCountryCode().equals("US") || address.getCountryCode().equals("CA")) {
+                                    strAdminAreaEn = states.get(address.getAdminArea());
+                                } else if (address.getCountryCode().equals("JP") && address.getAdminArea().contains("Prefecture")) {
+                                    strAdminAreaEn = address.getAdminArea().substring(0, address.getAdminArea().indexOf("Prefecture") - 1);
+                                } else {
+                                    strAdminAreaEn = address.getAdminArea();
+                                }
+                                final String strCountryCode = address.getCountryCode();
 
-                            resolvedLocation = ((strLocalityEn == null) ? "" : strLocalityEn + ", ")
-                                    + ((strAdminAreaEn == null) ? "" : strAdminAreaEn + ", ")
-                                    + strCountryCode;
-                            final String strDefaultAddress = getString(R.string.fill_post_checkbox_use_location) + resolvedLocation;
+                                resolvedLocation = ((strLocalityEn == null) ? "" : strLocalityEn + ", ")
+                                        + ((strAdminAreaEn == null) ? "" : strAdminAreaEn + ", ")
+                                        + strCountryCode;
+                                final String strDefaultAddress = getString(R.string.fill_post_checkbox_use_location) + resolvedLocation;
 
-                            getLocalAddress(location, strDefaultAddress, strCountryCode);
+                                getLocalAddress(location, strDefaultAddress, strCountryCode);
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     private void getLocalAddress(Location location, final String strDefaultAddress, String strCountryCode) {
-        SmartLocation.with(FillPostActivity.this)
-                .geocoding()
-                .provider(new AndroidGeocodingProvider(new Locale(strCountryCode)))
-                .reverse(location, new OnReverseGeocodingListener() {
-                    @Override
-                    public void onAddressResolved(Location location, List<Address> list) {
-                        SmartLocation.with(FillPostActivity.this).geocoding().stop();
-                        if (list.size() > 0) {
-                            Address address = list.get(0);
-                            String strLocalityLocal = address.getLocality();
-                            String strAdminAreaLocal = address.getAdminArea();
-                            String strCountryNameLocal = address.getCountryName();
+        String lc = mapLocale.get(strCountryCode);
+        if(lc != null) {
+            SmartLocation.with(FillPostActivity.this)
+                    .geocoding()
+                    .provider(new AndroidGeocodingProvider(new Locale(lc)))
+                    .reverse(location, new OnReverseGeocodingListener() {
+                        @Override
+                        public void onAddressResolved(Location location, List<Address> list) {
+                            SmartLocation.with(FillPostActivity.this).geocoding().stop();
+                            if (list.size() > 0) {
+                                Address address = list.get(0);
+                                String strLocalityLocal = address.getLocality();
+                                String strAdminAreaLocal = address.getAdminArea();
+                                String strCountryNameLocal = address.getCountryName();
 
-                            resolvedLocalizedLocation =  ((strLocalityLocal == null) ? "" : strLocalityLocal + ", ") +
-                                    ((strAdminAreaLocal == null) ? "" : strAdminAreaLocal + ", ") +
-                                    strCountryNameLocal;
+                                resolvedLocalizedLocation = ((strLocalityLocal == null) ? "" : strLocalityLocal + ", ") +
+                                        ((strAdminAreaLocal == null) ? "" : strAdminAreaLocal + ", ") +
+                                        strCountryNameLocal;
 
-                            String strAddress = strDefaultAddress + " (" + resolvedLocalizedLocation + ")";
+                                String strAddress = strDefaultAddress + " (" + resolvedLocalizedLocation + ")";
 
-                            useLocation.setText(strAddress);
-                            useLocation.setEnabled(true);
+                                useLocation.setText(strAddress);
+                                useLocation.setEnabled(true);
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            useLocation.setText(strDefaultAddress);
+            useLocation.setEnabled(true);
+        }
     }
 
     private void setupListener() {
@@ -644,7 +665,7 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                         getAddressFromPhoto();
                         toastText += "get location from exif";
 //                    } else {
-                    } else if(mImageFrom.equals("Camera")) {
+                    } else if (mImageFrom.equals("Camera")) {
                         useLocation.setEnabled(false);
                         useLocation.setText(getString(R.string.fill_post_checkbox_location_resolving));
                         callLocationUpdate();
@@ -654,8 +675,6 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                         useLocation.setChecked(false);
                         useLocation.setEnabled(false);
                     }
-
-//                    Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
                 } else {
                     setDefaultUseLocationText();
                 }

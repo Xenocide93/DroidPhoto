@@ -238,6 +238,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        removeTemp();
         super.onDestroy();
     }
 }
