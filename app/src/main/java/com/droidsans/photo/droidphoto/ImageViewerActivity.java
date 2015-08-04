@@ -182,7 +182,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                GlobalSocket.globalEmit("photo.hide", send);
+                                GlobalSocket.globalEmit(ImageViewerActivity.this, "photo.hide", send);
 //                                finish();
                             }
                         })
@@ -209,7 +209,7 @@ public class ImageViewerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        GlobalSocket.globalEmit("photo.view", send);
+        GlobalSocket.globalEmit(ImageViewerActivity.this, "photo.view", send);
 
         //show zoom button after 3 sec
         (new Handler()).postDelayed(new Runnable() {

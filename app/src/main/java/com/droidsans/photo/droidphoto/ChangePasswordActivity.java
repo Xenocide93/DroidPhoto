@@ -149,7 +149,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 //                    Log.d(APP_LOG, hexPassword);
-            if (!GlobalSocket.globalEmit("user.changepass", changePassObj)) {
+            if (!GlobalSocket.globalEmit(ChangePasswordActivity.this, "user.changepass", changePassObj)) {
                 Snackbar.make(newPassword, getString(R.string.snackbar_login_cannot_connect), Snackbar.LENGTH_LONG).show();
                 if(done != null) {
                     done.setEnabled(true);

@@ -128,7 +128,7 @@ public class GlobalSocket {
         return true;
     }
 
-    public static boolean globalEmit(String event, JSONObject obj){
+    public static boolean globalEmit(Context context, String event, JSONObject obj){
         initializeSocket(); //try initialize it
         if(!mSocket.connected()){
             mSocket.connect();
@@ -141,7 +141,7 @@ public class GlobalSocket {
         try {
             if(!event.equals("user.register") && !event.equals("user.login")) {
                 Log.d("droidphoto", "set _token");
-                obj.put("_token", MainActivity.mContext.getSharedPreferences(MainActivity.mContext.getString(R.string.userdata), Context.MODE_PRIVATE).getString(MainActivity.mContext.getString(R.string.token), ""));
+                obj.put("_token", context.getSharedPreferences(MainActivity.mContext.getString(R.string.userdata), Context.MODE_PRIVATE).getString(context.getString(R.string.token), ""));
             }
 //            if(!event.equals("user.register") && !event.equals("user.login")) obj.put("_token", mToken==null? getToken(): mToken);
 //            opts.query = "_token=" + ((mToken==null)? getToken(): mToken);
