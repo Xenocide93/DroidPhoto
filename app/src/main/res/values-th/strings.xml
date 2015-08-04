@@ -203,11 +203,25 @@
     <!--fullscreen imageviewer-->
     <string name="fullscreen_imageviewer_credit">ถ่ายโดย @</string>
 
+    <!--Developer Team-->
     <string name="about_dev_team_by">แอปพลิเคชันนี้ถูกพัฒนาโดย</string>
     <string name="about_dev_team_froztic">ธนกร ยอดธง</string>
     <string name="about_dev_team_ong29673">ปฏิญญา เพ็ชร์ฤทธิ์</string>
 
+    <!--Maintenance-->
     <string name="alert_maintenance_mode_title">อยู่ระหว่างการปรับปรุง</string>
     <string name="alert_maintenance_mode_message">ขณะนี้เซิฟเวอร์อยู่ในระหว่างการปรับปรุง กรุณาลองเข้าใช้ใหม่ในภายหลัง</string>
+
+    <!--calibrate screen-->
+    <string name="calibrate_text_title_welcome">ยินดีต้อนรับ</string>
+    <string name="calibrate_text_desc_welcome">Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon\'t worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn\'t even matter,\njust launch a camera and take a shot !</string>
+    <string name="calibrate_text_title_error">ขออภัย !</string>
+    <string name="calibrate_text_desc_error">Something went wrong.\nMaybe we don\'t get what we want,\nor some error occur.\nYou might want to try different orientation.</string>
+    <string name="calibrate_text_title_working">กำลังดำเนินการ ...</string>
+    <string name="calibrate_text_desc_working">\nกรุณารอสักครู่\nระบบกำลังตั้งค่าแอปพลิเคชัน</string>
+    <string name="calibrate_text_title_done">สำเร็จ</string>
+    <string name="calibrate_text_desc_done">We have successfully calibrated our application to match your device camera configuration.\nThe taken photo is also removed just now.\nPlease enjoy !</string>
+    <string name="calibrate_button_start">เริ่ม</string>
+    <string name="calibrate_button_done">เข้าสู่หน้าหลัก</string>
 
 </resources>

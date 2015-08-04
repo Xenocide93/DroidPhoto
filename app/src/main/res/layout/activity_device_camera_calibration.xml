@@ -18,8 +18,8 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_marginBottom="@dimen/about_paragraph_spacing">
 
             <SurfaceView
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/about_paragraph_spacing"
             android:gravity="center"
-            android:text="Welcome !"
+            android:text="@string/calibrate_text_title_welcome"
             android:textSize="20sp" />
 
         <com.droidsans.photo.droidphoto.util.view.FontTextView
@@ -67,7 +67,8 @@
             android:layout_height="50dp"
             android:layout_marginTop="@dimen/about_paragraph_spacing"
             android:background="@drawable/button_selector"
-            android:text="Start" />
+            android:text="@string/calibrate_button_start"
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/button_done"
@@ -75,7 +76,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="@dimen/about_paragraph_spacing"
             android:background="@drawable/button_selector"
-            android:text="Done"
+            android:text="@string/calibrate_button_done"
             android:visibility="gone" />
 
     </LinearLayout>
