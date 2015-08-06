@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DroidShot</string>
     <string name="app_desc">Shot on Android</string>
-    <string name="app_version">version 1.0.4</string>
+    <string name="app_version">version 1.0.5</string>
 
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
@@ -68,6 +68,8 @@
     <!--<string name="settings_app_language_summary">Language : %s</string>-->
     <string name="settings_app_language_title">Select System Language</string>
     <string name="settings_app_language_summary">This will launch android settings for you to change</string>
+    <string name="settings_camera_config_title">Add Camera Configuration</string>
+    <string name="settings_camera_config_summary">If you got a new camera application you might want to add them here</string>
 
     <!--login hint-->
     <string name="login_username_hint">username or email</string>
@@ -215,15 +217,20 @@
 
     <!--calibrate screen-->
     <string name="calibrate_text_title_welcome">Welcome !</string>
-    <string name="calibrate_text_desc_welcome">Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon\'t worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn\'t even matter,\njust launch a camera and take a shot !</string>
+    <string name="calibrate_text_desc_welcome">Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon\'t worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn\'t even matter,\njust launch a default camera and take a shot !</string>
     <string name="calibrate_text_title_error">Oops !</string>
     <string name="calibrate_text_desc_error">Something went wrong.\nMaybe we don\'t get what we want,\nor some error occur.\nYou might want to try different orientation.</string>
     <string name="calibrate_text_title_working">Working ...</string>
     <string name="calibrate_text_desc_working">\nPlease wait just a second.\nWe are working on configuring our application.</string>
     <string name="calibrate_text_title_done">Completed</string>
-    <string name="calibrate_text_desc_done">We have successfully calibrated our application to match your device camera configuration.\nThe taken photo is also removed just now.\nPlease enjoy !</string>
+    <string name="calibrate_text_desc_done">We have successfully calibrated our application to match your device camera configuration.\nThe taken photo is also removed just now.\nPlease enjoy !\n\nin case you want to get back here,\njust head to setttings.</string>
+    <string name="calibrate_text_desc_add">If you have more than one camera application other than the default one coming with your device,\nWe recommend you to add them here by taking the same step you had done before.</string>
+    <string name="calibrate_text_desc_added">We have successfully configured our app to support more camera.\nYou can now safely go back by hitting back button at the top-left.\n\nIf you want to add more now, you can start by selecting button below.</string>
     <string name="calibrate_button_start">Start</string>
     <string name="calibrate_button_done">Done</string>
+    <string name="calibrate_button_add">Add</string>
+    <string name="calibrate_button_retry">Retry</string>
+    <string name="calibrate_button_addmore">Add More</string>
 
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
@@ -240,7 +247,8 @@
     <string translatable="false" name="create_date">create_at</string>
 
     <!--devicedata and friends-->
-    <string translatable="false" name="device_data">device_dat</string>
+    <string translatable="false" name="device_data">device_data</string>
+    <string translatable="false" name="camera_app_name">camera_name</string>
     <string translatable="false" name="camera_make">camera_make</string>
     <string translatable="false" name="camera_model">camera_model</string>
     <string translatable="false" name="launch_count">app_launch_counter</string>

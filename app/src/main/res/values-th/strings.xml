@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DroidShot</string>
     <string name="app_desc">ถ่ายด้วย Android</string>
-    <string name="app_version">เวอร์ชัน 1.0.4</string>
+    <string name="app_version">เวอร์ชัน 1.0.5</string>
 
     <string name="action_search">ค้นหา</string>
     <string name="action_settings">ตั้งค่า</string>
@@ -68,6 +68,8 @@
     <!--<string name="settings_app_language_summary">ภาษา : %s</string>-->
     <string name="settings_app_language_title">ภาษาของระบบ (แอนดรอยด์)</string>
     <string name="settings_app_language_summary">กดเพื่อเปิดหน้าตั้งค่าภาษาของแอนดรอยด์</string>
+    <string name="settings_camera_config_title">ตั้งค่าฟังก์ชันกล้องของแอป</string>
+    <string name="settings_camera_config_summary">หากคุณมีแอปถ่ายรูปใหม่ เราขอแนะนำให้คุณเพิ่มมันผ่านหน้านี้</string>
 
     <!--login hint-->
     <string name="login_username_hint">ชื่อผู้ใช้ หรือ อีเมล</string>
@@ -214,14 +216,19 @@
 
     <!--calibrate screen-->
     <string name="calibrate_text_title_welcome">ยินดีต้อนรับ</string>
-    <string name="calibrate_text_desc_welcome">กรุณาตั้งค่าแอปก่อนการใช้งาน\nด้วยการถ่ายรูปเพียงรูปเดียวเท่านั้น\nปอปพลิเคชันของเราจะจัดการส่วนที่เหลือให้\n\nไม่ต้องกังวลไป\nรูปขอบคุณจะถูกลบทันทีที่เราตั้งค่าเสร็จ\nหากคุณพร้อมแล้ว กดเริ่มได้เลย</string>
+    <string name="calibrate_text_desc_welcome">กรุณาตั้งค่าแอปก่อนการใช้งาน\nด้วยการถ่ายรูปเพียงรูปเดียวเท่านั้น\nปอปพลิเคชันของเราจะจัดการส่วนที่เหลือให้\n\nไม่ต้องกังวลไป รูปขอบคุณจะถูกลบทันทีที่เราตั้งค่าเสร็จ\nเพื่อความแม่นยำ เราขอแนะนำให้คุณเลือกแอปกล้องที่มากับเครื่องของคุณในขั้นตอนนี้</string>
     <string name="calibrate_text_title_error">ขออภัย !</string>
     <string name="calibrate_text_desc_error">มีบางอย่างผิดพลาด\nข้อมูลที่เราต้องการอาจจะได้ไม่ครบ\nกรุณาลองอีกครั้ง\nเราขอแนะนำให้ลองเปลี่ยนด้านในการถ่าย</string>
     <string name="calibrate_text_title_working">กำลังดำเนินการ ...</string>
     <string name="calibrate_text_desc_working">\nกรุณารอสักครู่\nระบบกำลังตั้งค่าแอปพลิเคชัน</string>
     <string name="calibrate_text_title_done">สำเร็จ</string>
-    <string name="calibrate_text_desc_done">เราได้ตั้งค่าแอปพลิเคชันเป็นที่เรียบร้อยแล้ว\nรูปที่ถ่ายเมื่อสักครู่ก็ถูกลบแล้วเช่นกัน\nคุณสามารถไปหน้าต่อไปได้โดยกดปุ่มด้านล่างนี้</string>
+    <string name="calibrate_text_desc_done">เราได้ตั้งค่าแอปพลิเคชันเป็นที่เรียบร้อยแล้ว\nรูปที่ถ่ายเมื่อสักครู่ก็ถูกลบแล้วเช่นกัน\n\nคุณสามารถกลับมายังหน้านี้ได้อีกครั้ง ผ่านหน้าตั้งค่า</string>
+    <string name="calibrate_text_desc_add">หากเครื่องของคุณมีแอปกล้องมากกว่าหนึ่งตัว\nเราขอแนะนำให้คุณเพิ่มมันโดยการกดปุ่มด้านล่างนี้</string>
+    <string name="calibrate_text_desc_added">เราได้ตั้งค่าแอปเพื่อให้ทำงานกับรูปถ่าย\nจากกล้องที่คุณเลือกแล้ว\nคุณสามารถกลับไปยังหน้าก่อนหน้าได้\nด้วยการกดปุ่มทางซ้ายบน\n\nหากคุณต้องการเพิ่มแอปอื่นๆ\nสามารถกดปุ่มเพิ่มได้ด้านล่างเช่นกัน</string>
     <string name="calibrate_button_start">เริ่ม</string>
-    <string name="calibrate_button_done">เข้าสู่หน้าหลัก</string>
+    <string name="calibrate_button_done">เข้าสู่แอป</string>
+    <string name="calibrate_button_add">เพิ่ม</string>
+    <string name="calibrate_button_retry">ลองอีกครั้ง</string>
+    <string name="calibrate_button_addmore">เพิ่ม</string>
 
 </resources>

@@ -78,6 +78,17 @@
     <PreferenceCategory
         android:title="@string/settings_submenu_imageupload_title">
 
+        <PreferenceScreen
+            android:title="@string/settings_camera_config_title"
+            android:summary="@string/settings_camera_config_summary">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.droidsans.photo.droidphoto"
+                android:targetClass="com.droidsans.photo.droidphoto.DeviceCameraCalibrationActivity" />
+
+        </PreferenceScreen>
+
         <CheckBoxPreference
             android:key="@string/settings_use_location"
             android:title="@string/settings_uselocation_title"

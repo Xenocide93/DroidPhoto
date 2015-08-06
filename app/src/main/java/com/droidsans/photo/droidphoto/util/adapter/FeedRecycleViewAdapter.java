@@ -136,6 +136,7 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     //        }
                 break;
             case TYPE_FOOTER:
+//                LoadMoreHolder loadHolder = (LoadMoreHolder) holder;
                 FeedFragment.mFeedFragment.updateFeed();
                 GlobalSocket.mSocket.on("update_feed", FeedFragment.mFeedFragment.onUpdateFeedRespond);
                 break;

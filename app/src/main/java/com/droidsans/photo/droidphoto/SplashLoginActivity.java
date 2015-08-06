@@ -95,6 +95,9 @@ public class SplashLoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
+        //TODO remove on 1.0.7 or higher
+        getSharedPreferences("device_dat", MODE_PRIVATE).edit().clear().apply();
     }
 
     private void autoLogin() {
