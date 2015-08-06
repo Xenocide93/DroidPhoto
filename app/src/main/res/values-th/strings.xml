@@ -60,7 +60,7 @@
     <string name="settings_display_eng_location_title">ชื่อสถานที่ภาษาอังกฤษ</string>
     <string name="settings_display_eng_location_summary">แอปจะแสดงชื่อสถานที่เป็นภาษาอังกฤษ</string>
     <string name="settings_display_local_location_title">ชื่อสถานที่ภาษาท้องถิ่น</string>
-    <string name="settings_display_local_location_summary">แอปจะแสดงชื่อสถานที่เป็นภาษาท้องถิ่นของถานที่นั้นๆ (ถ้ามี)</string>
+    <string name="settings_display_local_location_summary">แอปจะแสดงชื่อสถานที่เป็นภาษาท้องถิ่นของสถานที่นั้นๆ (ถ้ามี)</string>
     <string name="settings_submenu_imageupload_title">การอัพโหลดรูปภาพ</string>
     <string name="settings_uselocation_title">แนบตำแหน่งรูปภาพโดยอัตโนมัติ</string>
     <string name="settings_uselocation_summary">แอปจะเก็บข้อมูลตำแหน่งในรูปแบบของชื่อเมือง โดยแนบไปกับรูปภาพโดยอัตโนมัติ</string>
