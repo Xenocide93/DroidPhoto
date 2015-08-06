@@ -271,6 +271,8 @@ public class ImageViewerActivity extends AppCompatActivity {
         if(!previousIntent.getStringExtra("aperture").equals("")) {
             if (previousIntent.getStringExtra("aperture").contains("f/")) {
                 aperture.setText(previousIntent.getStringExtra("aperture"));
+            } else if(previousIntent.getStringExtra("aperture").length() == 1) {
+                aperture.setText("f/" + previousIntent.getStringExtra("aperture") + ".0");
             } else {
                 aperture.setText("f/" + previousIntent.getStringExtra("aperture"));
             }

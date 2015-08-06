@@ -52,6 +52,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -492,9 +495,13 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
         if (mExif.getAttribute(ExifInterface.TAG_APERTURE) != null) {
             foundAperture = mExif.getAttribute(ExifInterface.TAG_APERTURE);
         } else if (exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE) != null) {
-            foundAperture = "" + Math.pow(1.4142, Double.parseDouble(exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE)));
+            DecimalFormat df = new DecimalFormat("#.##");
+            df.setRoundingMode(RoundingMode.HALF_UP);
+            foundAperture = "" + df.format(Math.pow(1.4142, Double.parseDouble(exifDirectory.getString(ExifSubIFDDirectory.TAG_APERTURE))));
         } else if (orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE) != null) {
-            foundAperture = "" + Math.pow(1.4142, Double.parseDouble(orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE)));
+            DecimalFormat df = new DecimalFormat("#.##");
+            df.setRoundingMode(RoundingMode.HALF_UP);
+            foundAperture = "" + df.format(Math.pow(1.4142, Double.parseDouble(orientationDirectory.getString(ExifIFD0Directory.TAG_APERTURE))));
         } else {
             photoChosenError("no required exif");
             return;
@@ -666,9 +673,9 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
 
                     String toastText = "location checked | ";
                     //try read location from exif first
-                    if(resolvedLocation != null) {
+                    if (resolvedLocation != null) {
                         useLocation.setText(getString(R.string.fill_post_checkbox_location_prefix) + resolvedLocation);
-                        if(resolvedLocalizedLocation != null) {
+                        if (resolvedLocalizedLocation != null) {
                             useLocation.append(" (" + resolvedLocalizedLocation + ")");
                         }
 //                        useLocation.setEnabled(true);
