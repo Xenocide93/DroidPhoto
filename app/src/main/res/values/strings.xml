@@ -127,7 +127,7 @@
     <string name="fill_post_model_hint_colon">Model:</string>
     <string name="fill_post_checkbox_attach_location">attach current location</string>
     <string name="fill_post_checkbox_accept_tos">Accept terms of service</string>
-    <string name="fill_post_checkbox_enhanced">Enhanced photo</string>
+    <string name="fill_post_checkbox_enhanced">Edited from other app</string>
     <string name="fill_post_button_upload">Upload</string>
     <string name="fill_post_checkbox_use_exif">Use location (from exif)</string>
     <string name="fill_post_checkbox_use_gps">Use location (from location services)</string>
@@ -254,7 +254,7 @@
     <string translatable="false" name="launch_count">app_launch_counter</string>
 
     <!--tutorialdata and friends-->
-    <string name="tutorial_data">tutorial_data</string>
+    <string translatable="false" name="tutorial_data">tutorial_data</string>
     <string translatable="false" name="first_time_feed_fragment">first_time_feed_fragment</string>
 
     <!--settings key-->

@@ -12,7 +12,9 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText username, password, passwordConfirm, email, displayName;
     TextView tosLink;
     Button registerBtn;
+    View backgroungVIew;
 
     public static Activity mRegisterActivity;
 
@@ -187,6 +190,7 @@ public class RegisterActivity extends AppCompatActivity {
             registerBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    hideSoftKeyboard(RegisterActivity.this);
                     emitregister();
                 }
             });
@@ -208,6 +212,14 @@ public class RegisterActivity extends AppCompatActivity {
                         .show();
             }
         };
+
+        backgroungVIew.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideSoftKeyboard(RegisterActivity.this);
+                return false;
+            }
+        });
     }
 
     private void emitregister() {
@@ -297,6 +309,11 @@ public class RegisterActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
     private void findAllById() {
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
@@ -306,6 +323,7 @@ public class RegisterActivity extends AppCompatActivity {
         tosLink = (TextView) findViewById(R.id.tos_link);
 
         registerBtn = (Button) findViewById(R.id.register_btn);
+        backgroungVIew = findViewById(R.id.background_view);
     }
 
     public static String bytesToHex(byte[] in) {

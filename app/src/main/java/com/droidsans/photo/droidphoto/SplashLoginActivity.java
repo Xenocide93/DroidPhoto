@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -243,6 +244,7 @@ public class SplashLoginActivity extends AppCompatActivity {
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    hideSoftKeyboard(SplashLoginActivity.this);
                     loginBtn.setClickable(false);
                     loginBtn.setTextColor(getResources().getColor(R.color.light_gray));
                     emitlogin();
@@ -345,6 +347,11 @@ public class SplashLoginActivity extends AppCompatActivity {
         registerBtn = (Button) findViewById(R.id.register_btn);
         bypassLoginBtn = (Button) findViewById(R.id.bypass_login);
         description = (FontTextView) findViewById(R.id.app_desc);
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
     private String bytesToHex(byte[] in) {
