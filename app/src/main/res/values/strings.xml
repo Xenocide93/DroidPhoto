@@ -246,7 +246,7 @@
     <string translatable="false" name="launch_count">app_launch_counter</string>
 
     <!--tutorialdata and friends-->
-    <string name="tutorial_data">tutorial_data</string>
+    <string translatable="false" name="tutorial_data">tutorial_data</string>
     <string translatable="false" name="first_time_feed_fragment">first_time_feed_fragment</string>
 
     <!--settings key-->
