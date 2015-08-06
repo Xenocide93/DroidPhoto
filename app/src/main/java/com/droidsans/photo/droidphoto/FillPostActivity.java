@@ -961,8 +961,8 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                                                     photoDetailStuff.put("model", modelTV.getText());
                                                     photoDetailStuff.put("vendor", vendorTV.getText());
                                                 } else {
-                                                    photoDetailStuff.put("model", modelET.getText().toString());
-                                                    photoDetailStuff.put("vendor", vendorET.getText().toString());
+                                                    photoDetailStuff.put("model", modelET.getText().toString().trim());
+                                                    photoDetailStuff.put("vendor", vendorET.getText().toString().trim());
                                                 }
                                                 photoDetailStuff.put("is_flash", exifDirectory.getString(ExifSubIFDDirectory.TAG_FLASH));
 //                                                photoDetailStuff.put("exp_time", exifDirectory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
@@ -1039,8 +1039,8 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                     returnIntent.putExtra("vendor", vendorTV.getText()).toString();
                     returnIntent.putExtra("model", modelTV.getText()).toString();
                 } else {
-                    returnIntent.putExtra("vendor", vendorET.getText().toString());
-                    returnIntent.putExtra("model", modelET.getText().toString());
+                    returnIntent.putExtra("vendor", vendorET.getText().toString().trim());
+                    returnIntent.putExtra("model", modelET.getText().toString().trim());
                 }
                 returnIntent.putExtra("path", mCurrentPhotoPath);
                 setResult(RESULT_OK, returnIntent);
@@ -1121,8 +1121,8 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
     private void storeDeviceName() { //only called when !hasResolvedName
         JSONObject send = new JSONObject();
         try {
-            send.put("retail_vendor", vendorET.getText().toString());
-            send.put("retail_model", modelET.getText().toString());
+            send.put("retail_vendor", vendorET.getText().toString().trim());
+            send.put("retail_model", modelET.getText().toString().trim());
             send.put("build_device", Build.DEVICE);
             send.put("build_model", Build.MODEL);
             send.put("_event", "device_store_respond");
