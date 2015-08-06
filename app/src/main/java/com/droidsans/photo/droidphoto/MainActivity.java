@@ -172,6 +172,39 @@ public class MainActivity extends AppCompatActivity {
 
                                         ;
                                     })
+                                    .setCancelable(false)
+                                    .show();
+                        }
+                    });
+                }
+            });
+        }
+
+        if(!GlobalSocket.mSocket.hasListeners("old_version")) {
+            GlobalSocket.mSocket.on("old_version", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalSocket.mSocket.off("old_version");
+                            JSONObject data = (JSONObject) args[0];
+                            String message = getString(R.string.alert_old_version_message_front) + getString(R.string.app_version) + getString(R.string.alert_old_version_message_back);
+                            if(data.optBoolean("success")) {
+                                message += getString(R.string.alert_old_version_message_server_version) + data.optString("msg");
+                            }
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle(getString(R.string.alert_old_version_title))
+                                    .setMessage(message)
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            System.exit(0);
+                                        }
+
+                                        ;
+                                    })
+                                    .setCancelable(false)
                                     .show();
                         }
                     });
@@ -478,6 +511,7 @@ public class MainActivity extends AppCompatActivity {
             GlobalSocket.mSocket.off("get_user_info");
         }
         GlobalSocket.mSocket.off("maintenance_mode");
+        GlobalSocket.mSocket.off("old_version");
 
         super.onDestroy();
     }

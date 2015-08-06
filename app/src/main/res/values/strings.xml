@@ -215,6 +215,12 @@
     <string name="alert_maintenance_mode_title">Maintenance Mode</string>
     <string name="alert_maintenance_mode_message">Currently our servers are going on maintenance. Please try again later. You might consider finding something to eat while waiting.</string>
 
+    <!--Old Version-->
+    <string name="alert_old_version_title">Outdated Version</string>
+    <string name="alert_old_version_message_front">Your current version is too old.\n(</string>
+    <string name="alert_old_version_message_back">)\nPlease update from Play Store.\n</string>
+    <string name="alert_old_version_message_server_version">"\nLatest version: "</string>
+
     <!--calibrate screen-->
     <string name="calibrate_text_title_welcome">Welcome !</string>
     <string name="calibrate_text_desc_welcome">Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon\'t worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn\'t even matter,\njust launch a default camera and take a shot !</string>

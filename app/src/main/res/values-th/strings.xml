@@ -214,6 +214,12 @@
     <string name="alert_maintenance_mode_title">อยู่ระหว่างการปรับปรุง</string>
     <string name="alert_maintenance_mode_message">ขณะนี้เซิฟเวอร์อยู่ในระหว่างการปรับปรุง กรุณาลองเข้าใช้ใหม่ในภายหลัง</string>
 
+    <!--Old Version-->
+    <string name="alert_old_version_title">แอปเก่าเกิน</string>
+    <string name="alert_old_version_message_front">เวอร์ชันที่คุณใช้เก่าเกินไป\n(</string>
+    <string name="alert_old_version_message_back">)\nกรุณาอัพเดทผ่าน Play สโตร์\n</string>
+    <string name="alert_old_version_message_server_version">"\เวอร์ชันล่าสุด: "</string>
+
     <!--calibrate screen-->
     <string name="calibrate_text_title_welcome">ยินดีต้อนรับ</string>
     <string name="calibrate_text_desc_welcome">กรุณาตั้งค่าแอปก่อนการใช้งาน\nด้วยการถ่ายรูปเพียงรูปเดียวเท่านั้น\nปอปพลิเคชันของเราจะจัดการส่วนที่เหลือให้\n\nไม่ต้องกังวลไป รูปขอบคุณจะถูกลบทันทีที่เราตั้งค่าเสร็จ\nเพื่อความแม่นยำ เราขอแนะนำให้คุณเลือกแอปกล้องที่มากับเครื่องของคุณในขั้นตอนนี้</string>

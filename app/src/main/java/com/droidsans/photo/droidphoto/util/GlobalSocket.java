@@ -1,6 +1,7 @@
 package com.droidsans.photo.droidphoto.util;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
@@ -83,6 +84,13 @@ public class GlobalSocket {
             opts.timeout = 5000;
 //            opts.upgrade = true;
             opts.transports = new String[]{"websocket"};
+
+            try {
+                opts.query = "app_version=" + BaseApplication.context.getPackageManager().getPackageInfo(BaseApplication.context.getPackageName(), 0).versionCode;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
             try {
                 mSocket = IO.socket(serverURL, opts);
             } catch (URISyntaxException e) {
