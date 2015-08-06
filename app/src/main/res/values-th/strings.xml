@@ -214,13 +214,13 @@
 
     <!--calibrate screen-->
     <string name="calibrate_text_title_welcome">ยินดีต้อนรับ</string>
-    <string name="calibrate_text_desc_welcome">Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon\'t worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn\'t even matter,\njust launch a camera and take a shot !</string>
+    <string name="calibrate_text_desc_welcome">กรุณาตั้งค่าแอปก่อนการใช้งาน\nด้วยการถ่ายรูปเพียงรูปเดียวเท่านั้น\nปอปพลิเคชันของเราจะจัดการส่วนที่เหลือให้\n\nไม่ต้องกังวลไป\nรูปขอบคุณจะถูกลบทันทีที่เราตั้งค่าเสร็จ\nหากคุณพร้อมแล้ว กดเริ่มได้เลย</string>
     <string name="calibrate_text_title_error">ขออภัย !</string>
-    <string name="calibrate_text_desc_error">Something went wrong.\nMaybe we don\'t get what we want,\nor some error occur.\nYou might want to try different orientation.</string>
+    <string name="calibrate_text_desc_error">มีบางอย่างผิดพลาด\nข้อมูลที่เราต้องการอาจจะได้ไม่ครบ\nกรุณาลองอีกครั้ง\nเราขอแนะนำให้ลองเปลี่ยนด้านในการถ่าย</string>
     <string name="calibrate_text_title_working">กำลังดำเนินการ ...</string>
     <string name="calibrate_text_desc_working">\nกรุณารอสักครู่\nระบบกำลังตั้งค่าแอปพลิเคชัน</string>
     <string name="calibrate_text_title_done">สำเร็จ</string>
-    <string name="calibrate_text_desc_done">We have successfully calibrated our application to match your device camera configuration.\nThe taken photo is also removed just now.\nPlease enjoy !</string>
+    <string name="calibrate_text_desc_done">เราได้ตั้งค่าแอปพลิเคชันเป็นที่เรียบร้อยแล้ว\nรูปที่ถ่ายเมื่อสักครู่ก็ถูกลบแล้วเช่นกัน\nคุณสามารถไปหน้าต่อไปได้โดยกดปุ่มด้านล่างนี้</string>
     <string name="calibrate_button_start">เริ่ม</string>
     <string name="calibrate_button_done">เข้าสู่หน้าหลัก</string>
 
