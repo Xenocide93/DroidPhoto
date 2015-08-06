@@ -125,7 +125,7 @@
     <string name="fill_post_model_hint_colon">Model:</string>
     <string name="fill_post_checkbox_attach_location">attach current location</string>
     <string name="fill_post_checkbox_accept_tos">Accept terms of service</string>
-    <string name="fill_post_checkbox_enhanced">Enhanced photo</string>
+    <string name="fill_post_checkbox_enhanced">Edited from other app</string>
     <string name="fill_post_button_upload">Upload</string>
     <string name="fill_post_checkbox_use_exif">Use location (from exif)</string>
     <string name="fill_post_checkbox_use_gps">Use location (from location services)</string>
