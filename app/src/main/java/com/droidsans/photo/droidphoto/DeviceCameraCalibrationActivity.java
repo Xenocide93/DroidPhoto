@@ -316,7 +316,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
 
             if (mExif.getAttribute(ExifInterface.TAG_MAKE) == null || mExif.getAttribute(ExifInterface.TAG_MODEL) == null) {
                 showRetry();
-                Toast.makeText(getApplicationContext(), "retry at null", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "retry at null", Toast.LENGTH_SHORT).show();
                 return;
             }
 //            String name = "app name";
@@ -381,8 +381,8 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                 }
             }
 
-            Toast.makeText(getApplicationContext(), "prefmake : " + prefMake, Toast.LENGTH_SHORT).show();
-            Toast.makeText(getApplicationContext(), "prefmodel : " + prefModel, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "prefmake : " + prefMake, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "prefmodel : " + prefModel, Toast.LENGTH_SHORT).show();
 
             getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).edit()
 //                                .putString(getString(R.string.camera_app_name), prefAppName)
@@ -393,7 +393,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
             showRetry();
-            Toast.makeText(getApplicationContext(), "retry at catch", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "retry at catch", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -405,13 +405,13 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
 
             if(mainDirectory == null) {
                 showRetry();
-                Toast.makeText(getApplicationContext(), "retry at no exif", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "retry at no exif", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (mExif.getAttribute(ExifInterface.TAG_MAKE) == null || mExif.getAttribute(ExifInterface.TAG_MODEL) == null) {
                 if(mainDirectory.getString(ExifIFD0Directory.TAG_MAKE) == null || mainDirectory.getString(ExifIFD0Directory.TAG_MODEL) == null) {
                     showRetry();
-                    Toast.makeText(getApplicationContext(), "retry at null", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "retry at null", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -452,7 +452,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                     prefMake = exifIFD0make;
                 } else {
                     showRetry();
-                    Toast.makeText(getApplicationContext(), "retry at empty make", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "retry at empty make", Toast.LENGTH_SHORT).show();
                     return;
                 }
             } else {
@@ -490,7 +490,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                     prefModel = exifIFD0model;
                 } else {
                     showRetry();
-                    Toast.makeText(getApplicationContext(), "retry at empty model", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "retry at empty model", Toast.LENGTH_SHORT).show();
                     return;
                 }
             } else {
@@ -518,19 +518,19 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                 }
             }
 
-            Toast.makeText(getApplicationContext(), "prefmake : " + prefMake, Toast.LENGTH_SHORT).show();
-            Toast.makeText(getApplicationContext(), "prefmodel : " + prefModel, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "prefmake : " + prefMake, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "prefmodel : " + prefModel, Toast.LENGTH_SHORT).show();
 
             getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).edit()
 //                                .putString(getString(R.string.camera_app_name), prefAppName)
                     .putString(getString(R.string.camera_make), prefMake)
                     .putString(getString(R.string.camera_model), prefModel)
                     .apply();
-            delayAction.postDelayed(delaySuccess, 1123);
+            delayAction.postDelayed(delaySuccess, 1084);
         } catch (ImageProcessingException | IOException e) {
             e.printStackTrace();
             showRetry();
-            Toast.makeText(getApplicationContext(), "retry at catch", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "retry at catch", Toast.LENGTH_SHORT).show();
         }
     }
 
