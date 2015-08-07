@@ -415,6 +415,9 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                             }
                         }
 
+                        Toast.makeText(getApplicationContext(), "prefmake : " + prefMake, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "prefmodel : " + prefModel, Toast.LENGTH_SHORT).show();
+
                         getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).edit()
 //                                .putString(getString(R.string.camera_app_name), prefAppName)
                                 .putString(getString(R.string.camera_make), prefMake)
