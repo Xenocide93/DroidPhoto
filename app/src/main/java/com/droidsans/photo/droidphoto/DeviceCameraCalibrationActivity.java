@@ -166,6 +166,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                 calibrateFile = new File(getExternalCacheDir(), "calibrate.tmp");
                 Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 camera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(calibrateFile));
+                startActivityForResult(camera, REQUEST_CAMERA);
 //                startActivityForResult(camera, REQUEST_CAMERA);
 
 //                List<Intent> intentList = new ArrayList<Intent>();
@@ -181,9 +182,9 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
 //                    intentList.add(intent);
 //                }
 
-                final Intent chooserIntent = Intent.createChooser(camera, "Select Camera");
+//                final Intent chooserIntent = Intent.createChooser(camera, "Select Camera");
 
-                startActivityForResult(chooserIntent, REQUEST_CAMERA);
+//                startActivityForResult(chooserIntent, REQUEST_CAMERA);
 
 //                mCamera.takePicture(null, null, new Camera.PictureCallback() {
 //                    @Override
@@ -295,7 +296,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
                     showWorking();
 //                    packageName = data.getStringExtra("name");
 //                    Toast.makeText(getApplicationContext(), packageName, Toast.LENGTH_LONG).show();
-                    calibrateFile = new File(getExternalCacheDir(), "calibrate.tmp");
+//                    calibrateFile = new File(getExternalCacheDir(), "calibrate.tmp");
                     try {
                         ExifInterface mExif = new ExifInterface(calibrateFile.getAbsolutePath());
                         if (mExif.getAttribute(ExifInterface.TAG_MAKE) == null || mExif.getAttribute(ExifInterface.TAG_MODEL) == null) {
