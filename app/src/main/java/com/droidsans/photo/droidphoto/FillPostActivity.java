@@ -474,6 +474,7 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
             } else {
                 photoChosenError("no exif");
             }
+//            photoChosenError("no exif");
             return;
         }
 

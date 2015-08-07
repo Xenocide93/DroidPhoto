@@ -44,7 +44,6 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     //private SurfaceView surfaceCamera;
-    private LinearLayout initCalibrateLayout;
     private Button startCalibrate, doneCalibrate;
     private ImageView topIcon;
     private ProgressBar working;
@@ -297,138 +296,11 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
             switch (requestCode) {
                 case REQUEST_CAMERA:
                     showWorking();
-//                    packageName = data.getStringExtra("name");
-//                    Toast.makeText(getApplicationContext(), packageName, Toast.LENGTH_LONG).show();
-//                    calibrateFile = new File(getExternalCacheDir(), "calibrate.tmp");
-                    try {
-                        ExifInterface mExif = new ExifInterface(calibrateFile.getAbsolutePath());
-                        Metadata metadata = ImageMetadataReader.readMetadata(calibrateFile);
-                        ExifIFD0Directory mainDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+                    calibrateFile = new File(getExternalCacheDir(), "calibrate.tmp");
 
-                        if (mExif.getAttribute(ExifInterface.TAG_MAKE) == null || mExif.getAttribute(ExifInterface.TAG_MODEL) == null) {
-                            if(mainDirectory.getString(ExifIFD0Directory.TAG_MAKE) == null || mainDirectory.getString(ExifIFD0Directory.TAG_MODEL) == null) {
-                                showRetry();
-                                Toast.makeText(getApplicationContext(), "retry at null", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        }
-//                        String name = "app name";
-                        String exifMake = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MAKE)).replaceAll("[ -]", "");
-                        String exifModel = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MODEL)).replaceAll("[ -]", "");
+//                    checkDrewnoakesExif();
+                    checkExif();
 
-                        String exifIFD0make = StringUtil.wrapBlank(mainDirectory.getString(ExifIFD0Directory.TAG_MAKE)).replaceAll("[ -]", "");
-                        String exifIFD0model = StringUtil.wrapBlank(mainDirectory.getString(ExifIFD0Directory.TAG_MODEL)).replaceAll("[ -]", "");
-
-                        Log.d("droidphoto", "calibrate android make: " + exifMake);
-                        Log.d("droidphoto", "calibrate android model: " + exifModel);
-                        Log.d("droidphoto", "calibrate drew make: " + exifIFD0make);
-                        Log.d("droidphoto", "calibrate drew model: " + exifIFD0model);
-
-//                        String prefAppName = getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_app_name), null);
-//                        if (prefAppName == null) {
-//                            prefAppName = name;
-//                        } else {
-//                            String appnames[] = prefAppName.split(",");
-//                            for (String prefname : appnames) {
-//                                if(prefname.equals(name)) {
-//                                    showHasData();
-//                                    return;
-//                                }
-//                            }
-//
-//                            prefAppName += "," + name;
-//                        }
-                        String prefMake = getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_app_name), null);
-                        if (prefMake == null) {
-                            if (!exifMake.equals("")) { //if exifmake not empty
-                                prefMake = exifMake;
-                                if (!exifMake.equalsIgnoreCase(exifIFD0make)) {
-                                    prefMake += "," + exifIFD0make;
-                                }
-                            } else if (!exifIFD0make.equals("")) { //if exifIFD0make not empty
-                                prefMake = exifIFD0make;
-                            } else {
-                                showRetry();
-                                Toast.makeText(getApplicationContext(), "retry at empty make", Toast.LENGTH_SHORT).show();
-                                break;
-                            }
-                        } else {
-                            boolean hasData = false;
-                            boolean hasIFD0Data = false;
-                            String lists[] = prefMake.split(",");
-                            for (String eachmake : lists) {
-                                if(eachmake.equals(exifMake)) {
-//                                    showHasData();
-//                                    return;
-                                    hasData = true;
-                                }
-                                if(eachmake.equals(exifIFD0make)) {
-                                    hasIFD0Data = true;
-                                }
-                                if(hasData && hasIFD0Data) {
-                                    break;
-                                }
-                            }
-                            if(!hasData && !exifMake.equals("")) {
-                                prefMake += "," + exifMake;
-                            }
-                            if(!hasIFD0Data && !exifIFD0make.equals("")) {
-                                prefMake += "," + exifIFD0make;
-                            }
-                        }
-                        String prefModel = getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_app_name), null);
-                        if (prefModel == null) {
-                            if(!exifModel.equals("")) { //if exifmake not empty
-                                prefModel = exifModel;
-                                if(!exifModel.equalsIgnoreCase(exifIFD0model)) {
-                                    prefModel += "," + exifIFD0model;
-                                }
-                            } else if(!exifIFD0model.equals("")) { //if exifIFD0make not empty
-                                prefModel = exifIFD0model;
-                            } else {
-                                showRetry();
-                                Toast.makeText(getApplicationContext(), "retry at empty model", Toast.LENGTH_SHORT).show();
-                                break;
-                            }
-                        } else {
-                            boolean hasData = false;
-                            boolean hasIFD0Data = false;
-                            String lists[] = prefModel.split(",");
-                            for (String eachmodel : lists) {
-                                if(eachmodel.equals(exifModel)) {
-//                                    showHasData();
-//                                    return;
-                                    hasData = true;
-                                }
-                                if(eachmodel.equals(exifIFD0model)) {
-                                    hasIFD0Data = true;
-                                }
-                                if(hasData && hasIFD0Data) {
-                                    break;
-                                }
-                            }
-                            if(!hasData && !exifModel.equals("")) {
-                                prefModel += "," + exifModel;
-                            }
-                            if(!hasIFD0Data && !exifIFD0model.equals("")) {
-                                prefModel += "," + exifIFD0model;
-                            }
-                        }
-
-                        Toast.makeText(getApplicationContext(), "prefmake : " + prefMake, Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getApplicationContext(), "prefmodel : " + prefModel, Toast.LENGTH_SHORT).show();
-
-                        getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).edit()
-//                                .putString(getString(R.string.camera_app_name), prefAppName)
-                                .putString(getString(R.string.camera_make), prefMake)
-                                .putString(getString(R.string.camera_model), prefModel)
-                                .apply();
-                        delayAction.postDelayed(delaySuccess, 1123);
-                    } catch (ImageProcessingException | IOException e) {
-                        e.printStackTrace();
-                        showRetry();
-                        Toast.makeText(getApplicationContext(), "retry at catch", Toast.LENGTH_SHORT).show();
-                    }
                     break;
                 default:
                     break;
@@ -436,6 +308,230 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         }
         removeTemp();
 //        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void checkExif() {
+        try {
+            ExifInterface mExif = new ExifInterface(calibrateFile.getAbsolutePath());
+
+            if (mExif.getAttribute(ExifInterface.TAG_MAKE) == null || mExif.getAttribute(ExifInterface.TAG_MODEL) == null) {
+                showRetry();
+                Toast.makeText(getApplicationContext(), "retry at null", Toast.LENGTH_SHORT).show();
+                return;
+            }
+//            String name = "app name";
+            String exifMake = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MAKE)).replaceAll("[ -]", "");
+            String exifModel = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MODEL)).replaceAll("[ -]", "");
+
+            Log.d("droidphoto", "calibrate android make: " + exifMake);
+            Log.d("droidphoto", "calibrate android model: " + exifModel);
+
+//            String prefAppName = getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_app_name), null);
+//            if (prefAppName == null) {
+//                prefAppName = name;
+//            } else {
+//                String appnames[] = prefAppName.split(",");
+//                for (String prefname : appnames) {
+//                    if(prefname.equals(name)) {
+//                        showHasData();
+//                        return;
+//                    }
+//                }
+//
+//                prefAppName += "," + name;
+//            }
+            String prefMake = getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_app_name), null);
+            if (prefMake == null) {
+                if(!exifMake.equals("")) {
+                    prefMake = exifMake;
+                }
+            } else {
+                boolean hasData = false;
+                String lists[] = prefMake.split(",");
+                for (String eachmake : lists) {
+                    if(eachmake.equals(exifMake)) {
+//                        showHasData();
+//                        return;
+                        hasData = true;
+                        break;
+                    }
+                }
+                if(!hasData && !exifMake.equals("")) {
+                    prefMake += "," + exifMake;
+                }
+            }
+            String prefModel = getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_app_name), null);
+            if (prefModel == null) {
+                if(!exifModel.equals("")) { //if exifmake not empty
+                    prefModel = exifModel;
+                }
+            } else {
+                boolean hasData = false;
+                String lists[] = prefModel.split(",");
+                for (String eachmodel : lists) {
+                    if(eachmodel.equals(exifModel)) {
+//                                    showHasData();
+//                                    return;
+                        hasData = true;
+                        break;
+                    }
+                }
+                if(!hasData && !exifModel.equals("")) {
+                    prefModel += "," + exifModel;
+                }
+            }
+
+            Toast.makeText(getApplicationContext(), "prefmake : " + prefMake, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "prefmodel : " + prefModel, Toast.LENGTH_SHORT).show();
+
+            getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).edit()
+//                                .putString(getString(R.string.camera_app_name), prefAppName)
+                    .putString(getString(R.string.camera_make), prefMake)
+                    .putString(getString(R.string.camera_model), prefModel)
+                    .apply();
+            delayAction.postDelayed(delaySuccess, 1123);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showRetry();
+            Toast.makeText(getApplicationContext(), "retry at catch", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void checkDrewnoakesExif() {
+        try {
+            ExifInterface mExif = new ExifInterface(calibrateFile.getAbsolutePath());
+            Metadata metadata = ImageMetadataReader.readMetadata(calibrateFile);
+            ExifIFD0Directory mainDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+
+            if(mainDirectory == null) {
+                showRetry();
+                Toast.makeText(getApplicationContext(), "retry at no exif", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (mExif.getAttribute(ExifInterface.TAG_MAKE) == null || mExif.getAttribute(ExifInterface.TAG_MODEL) == null) {
+                if(mainDirectory.getString(ExifIFD0Directory.TAG_MAKE) == null || mainDirectory.getString(ExifIFD0Directory.TAG_MODEL) == null) {
+                    showRetry();
+                    Toast.makeText(getApplicationContext(), "retry at null", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+//            String name = "app name";
+            String exifMake = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MAKE)).replaceAll("[ -]", "");
+            String exifModel = StringUtil.wrapBlank(mExif.getAttribute(ExifInterface.TAG_MODEL)).replaceAll("[ -]", "");
+
+            String exifIFD0make = StringUtil.wrapBlank(mainDirectory.getString(ExifIFD0Directory.TAG_MAKE)).replaceAll("[ -]", "");
+            String exifIFD0model = StringUtil.wrapBlank(mainDirectory.getString(ExifIFD0Directory.TAG_MODEL)).replaceAll("[ -]", "");
+
+            Log.d("droidphoto", "calibrate android make: " + exifMake);
+            Log.d("droidphoto", "calibrate android model: " + exifModel);
+            Log.d("droidphoto", "calibrate drew make: " + exifIFD0make);
+            Log.d("droidphoto", "calibrate drew model: " + exifIFD0model);
+
+//            String prefAppName = getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_app_name), null);
+//            if (prefAppName == null) {
+//                prefAppName = name;
+//            } else {
+//                String appnames[] = prefAppName.split(",");
+//                for (String prefname : appnames) {
+//                    if(prefname.equals(name)) {
+//                        showHasData();
+//                        return;
+//                    }
+//                }
+//
+//                prefAppName += "," + name;
+//            }
+            String prefMake = getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_app_name), null);
+            if (prefMake == null) {
+                if (!exifMake.equals("")) { //if exifmake not empty
+                    prefMake = exifMake;
+                    if (!exifMake.equalsIgnoreCase(exifIFD0make)) {
+                        prefMake += "," + exifIFD0make;
+                    }
+                } else if (!exifIFD0make.equals("")) { //if exifIFD0make not empty
+                    prefMake = exifIFD0make;
+                } else {
+                    showRetry();
+                    Toast.makeText(getApplicationContext(), "retry at empty make", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                boolean hasData = false;
+                boolean hasIFD0Data = false;
+                String lists[] = prefMake.split(",");
+                for (String eachmake : lists) {
+                    if(eachmake.equals(exifMake)) {
+//                                    showHasData();
+//                                    return;
+                        hasData = true;
+                    }
+                    if(eachmake.equals(exifIFD0make)) {
+                        hasIFD0Data = true;
+                    }
+                    if(hasData && hasIFD0Data) {
+                        break;
+                    }
+                }
+                if(!hasData && !exifMake.equals("")) {
+                    prefMake += "," + exifMake;
+                }
+                if(!hasIFD0Data && !exifIFD0make.equals("")) {
+                    prefMake += "," + exifIFD0make;
+                }
+            }
+            String prefModel = getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_app_name), null);
+            if (prefModel == null) {
+                if(!exifModel.equals("")) { //if exifmake not empty
+                    prefModel = exifModel;
+                    if(!exifModel.equalsIgnoreCase(exifIFD0model)) {
+                        prefModel += "," + exifIFD0model;
+                    }
+                } else if(!exifIFD0model.equals("")) { //if exifIFD0make not empty
+                    prefModel = exifIFD0model;
+                } else {
+                    showRetry();
+                    Toast.makeText(getApplicationContext(), "retry at empty model", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                boolean hasData = false;
+                boolean hasIFD0Data = false;
+                String lists[] = prefModel.split(",");
+                for (String eachmodel : lists) {
+                    if(eachmodel.equals(exifModel)) {
+//                                    showHasData();
+//                                    return;
+                        hasData = true;
+                    }
+                    if(eachmodel.equals(exifIFD0model)) {
+                        hasIFD0Data = true;
+                    }
+                    if(hasData && hasIFD0Data) {
+                        break;
+                    }
+                }
+                if(!hasData && !exifModel.equals("")) {
+                    prefModel += "," + exifModel;
+                }
+                if(!hasIFD0Data && !exifIFD0model.equals("")) {
+                    prefModel += "," + exifIFD0model;
+                }
+            }
+
+            Toast.makeText(getApplicationContext(), "prefmake : " + prefMake, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "prefmodel : " + prefModel, Toast.LENGTH_SHORT).show();
+
+            getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).edit()
+//                                .putString(getString(R.string.camera_app_name), prefAppName)
+                    .putString(getString(R.string.camera_make), prefMake)
+                    .putString(getString(R.string.camera_model), prefModel)
+                    .apply();
+            delayAction.postDelayed(delaySuccess, 1123);
+        } catch (ImageProcessingException | IOException e) {
+            e.printStackTrace();
+            showRetry();
+            Toast.makeText(getApplicationContext(), "retry at catch", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -462,7 +558,6 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
 //        surfaceCamera = (SurfaceView) findViewById(R.id.surface_camera);
-        initCalibrateLayout = (LinearLayout) findViewById(R.id.calibration_layout);
         startCalibrate = (Button) findViewById(R.id.button_camera_launch);
         doneCalibrate = (Button) findViewById(R.id.button_done);
         topIcon = (ImageView) findViewById(R.id.calibrate_icon);
