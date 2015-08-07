@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/report_device_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/small_padding"
+        android:paddingBottom="@dimen/small_padding">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:id="@+id/build_device"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:text="LG Electronic"
+                android:gravity="center"/>
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:id="@+id/build_model"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/build_device"
+                android:layout_alignParentLeft="true"
+                android:text="SM-6587416"
+                android:layout_marginTop="@dimen/small_padding"
+                android:gravity="center"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=">>>"/>
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=">>>"
+                android:layout_marginTop="@dimen/small_padding"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:id="@+id/retail_vendor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:text="LG"
+                android:gravity="center"/>
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:id="@+id/retail_model"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/retail_vendor"
+                android:layout_alignParentLeft="true"
+                android:text="G4"
+                android:layout_marginTop="@dimen/small_padding"
+                android:gravity="center"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray"
+        android:alpha="0.3"
+        android:layout_below="@id/report_device_main"/>
+
+    <View
+        android:layout_width="5dp"
+        android:layout_height="match_parent"
+        android:background="@color/primary_color"
+        android:layout_alignParentLeft="true"
+        android:layout_alignBottom="@id/report_device_main"/>
+
+</RelativeLayout>
