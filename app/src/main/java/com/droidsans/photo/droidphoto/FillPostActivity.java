@@ -526,14 +526,25 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
             Log.d("droidphoto", "phone make: " + Build.MANUFACTURER);
             Log.d("droidphoto", "phone model: " + Build.MODEL);
 
-            if (mExif.getAttribute(ExifInterface.TAG_MAKE) == null || mExif.getAttribute(ExifInterface.TAG_MODEL) == null ||
-                    !getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_make), "").toLowerCase().contains(mExif.getAttribute(ExifInterface.TAG_MAKE).trim().replaceAll("[ -]", "").toLowerCase()) ||
+
+            if(mExif.getAttribute(ExifInterface.TAG_MAKE) == null || mExif.getAttribute(ExifInterface.TAG_MODEL) == null ||
+                    mExif.getAttribute(ExifInterface.TAG_MAKE).trim().replaceAll("[ -]", "").equals("") || mExif.getAttribute(ExifInterface.TAG_MODEL).trim().replaceAll("[ -]", "").equals("")) {
+                //empty or fraud space make / model (android)
+                photoChosenError("no required exif");
+                return;
+            }
+
+            if (!getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_make), "").toLowerCase().contains(mExif.getAttribute(ExifInterface.TAG_MAKE).trim().replaceAll("[ -]", "").toLowerCase()) ||
                     !getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_model), "").toLowerCase().contains(mExif.getAttribute(ExifInterface.TAG_MODEL).trim().replaceAll("[ -]", "").toLowerCase())) {
                 //fail on sharedpref check with mexif
-                if(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE) == null || orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL) == null) {
+
+                if(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE) == null || orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL) == null ||
+                        orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).trim().replaceAll("[ -]", "").equals("") || orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).trim().replaceAll("[ -]", "").equals("")) {
+                    //empty or fraud space make / model (drewnoakes)
                     photoChosenError("no required exif");
                     return;
                 }
+
                 if (!getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_make), "").toLowerCase().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MAKE).trim().replaceAll("[ -]", "").toLowerCase()) ||
                         !getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).getString(getString(R.string.camera_model), "").toLowerCase().contains(orientationDirectory.getString(ExifIFD0Directory.TAG_MODEL).trim().replaceAll("[ -]", "").toLowerCase())) {
 
