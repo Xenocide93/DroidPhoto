@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.ReportPack;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
+import com.droidsans.photo.droidphoto.util.adapter.ReportAdapter;
 import com.github.nkzawa.emitter.Emitter;
 
 import org.json.JSONArray;
@@ -81,6 +82,8 @@ public class EvaluateFragment extends Fragment {
             e.printStackTrace();
         }
         GlobalSocket.globalEmit("device.getreportlist", data);
+
+        //setup emitter  listener
         if(!GlobalSocket.mSocket.hasListeners("onGetEvaluateListRespond")){
             GlobalSocket.mSocket.on("onGetEvaluateListRespond", new Emitter.Listener() {
                 @Override
@@ -119,9 +122,9 @@ public class EvaluateFragment extends Fragment {
                                     );
                                     break;
                             }
-
-
                         }
+                        ReportAdapter adapter = new ReportAdapter(getActivity(), reportList);
+                        evalulateRecyclerview.setAdapter(adapter);
                     } else {
                         Snackbar.make(getView(), "Error: "+data.optString("msg"), Snackbar.LENGTH_SHORT ).show();
                     }

@@ -19,12 +19,12 @@ import java.util.ArrayList;
 public class ReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private LayoutInflater inflater;
     private Context context;
-    private ArrayList<ReportPack> packs;
+    private ReportPack[] packs;
     public static final int TYPE_DEVICE_REPORT = 1;
     public static final int TYPE_PHOTO_REPORT = 2;
     public static final int TYPE_USER_REPORT = 3;
 
-    public ReportAdapter (Context context, ArrayList<ReportPack> packs){
+    public ReportAdapter (Context context, ReportPack[] packs){
         this.context = context;
         this.packs = packs;
     }
@@ -54,7 +54,7 @@ public class ReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ReportPack pack = packs.get(position);
+        ReportPack pack = packs[position];
 
         switch (holder.getItemViewType()){
             case TYPE_DEVICE_REPORT:
@@ -84,12 +84,12 @@ public class ReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return packs.size();
+        return packs.length;
     }
 
     @Override
     public int getItemViewType(int position) {
-        switch (packs.get(position).type){
+        switch (packs[position].type){
             case "device": return TYPE_DEVICE_REPORT;
             case "photo": return TYPE_PHOTO_REPORT;
             case "user": return TYPE_USER_REPORT;
