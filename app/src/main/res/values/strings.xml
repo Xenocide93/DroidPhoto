@@ -225,7 +225,7 @@
     <string name="calibrate_text_title_welcome">Welcome !</string>
     <string name="calibrate_text_desc_welcome">Please calibrate before using our app.\nYou just have to take a photo and\nour application will do the rest.\n\nDon\'t worry, the taken photo will be automatically deleted about seconds after.\nThe image quality isn\'t even matter,\njust launch a default camera and take a shot !</string>
     <string name="calibrate_text_title_error">Oops !</string>
-    <string name="calibrate_text_desc_error">Something went wrong.\nMaybe we don\'t get what we want,\nor some error occur.\nYou might want to try different orientation.</string>
+    <string name="calibrate_text_desc_error">Something went wrong.\nMaybe we don\'t get what we want,\nor some error occur.\nYou might want to try different orientation.\nOr try closing some camera feature.\ne.g. HDR, Image Stabilizer</string>
     <string name="calibrate_text_title_working">Working ...</string>
     <string name="calibrate_text_desc_working">\nPlease wait just a second.\nWe are working on configuring our application.</string>
     <string name="calibrate_text_title_done">Completed</string>

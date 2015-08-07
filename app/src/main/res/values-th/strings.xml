@@ -224,7 +224,7 @@
     <string name="calibrate_text_title_welcome">ยินดีต้อนรับ</string>
     <string name="calibrate_text_desc_welcome">กรุณาตั้งค่าแอปก่อนการใช้งาน\nด้วยการถ่ายรูปเพียงรูปเดียวเท่านั้น\nปอปพลิเคชันของเราจะจัดการส่วนที่เหลือให้\n\nไม่ต้องกังวลไป รูปขอบคุณจะถูกลบทันทีที่เราตั้งค่าเสร็จ\nเพื่อความแม่นยำ เราขอแนะนำให้คุณเลือกแอปกล้องที่มากับเครื่องของคุณในขั้นตอนนี้</string>
     <string name="calibrate_text_title_error">ขออภัย !</string>
-    <string name="calibrate_text_desc_error">มีบางอย่างผิดพลาด\nข้อมูลที่เราต้องการอาจจะได้ไม่ครบ\nกรุณาลองอีกครั้ง\nเราขอแนะนำให้ลองเปลี่ยนด้านในการถ่าย</string>
+    <string name="calibrate_text_desc_error">มีบางอย่างผิดพลาด\nข้อมูลที่เราต้องการอาจจะได้ไม่ครบ\nกรุณาลองอีกครั้ง\nเราขอแนะนำให้ลองเปลี่ยนด้านในการถ่าย\nหรือลองปิดฟีเวอร์ต่างๆของกล้อง\nเช่น HDR, Image Stabilizer</string>
     <string name="calibrate_text_title_working">กำลังดำเนินการ ...</string>
     <string name="calibrate_text_desc_working">\nกรุณารอสักครู่\nระบบกำลังตั้งค่าแอปพลิเคชัน</string>
     <string name="calibrate_text_title_done">สำเร็จ</string>
