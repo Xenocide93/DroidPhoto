@@ -1,14 +1,17 @@
 package com.droidsans.photo.droidphoto.util.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.R;
+import com.droidsans.photo.droidphoto.UpdateDeviceRetailNameActivity;
 import com.droidsans.photo.droidphoto.util.ReportPack;
 
 import java.util.ArrayList;
@@ -37,7 +40,17 @@ public class ReportAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         switch (viewType){
             case TYPE_DEVICE_REPORT:
                 view = inflater.inflate(R.layout.item_report_device, null);
-                holder = new ReportDeviceHolder(view);
+                holder = new ReportDeviceHolder(view, new ReportDeviceHolder.DeviceReportClickListener() {
+                    @Override
+                    public void onItemClick(View caller) {
+                        Intent deviceIntent = new Intent(context, UpdateDeviceRetailNameActivity.class);
+                        deviceIntent.putExtra("build_manufacture", ((TextView) caller.findViewById(R.id.build_device)).getText());
+                        deviceIntent.putExtra("build_model", ((TextView) caller.findViewById(R.id.build_model)).getText());
+                        deviceIntent.putExtra("retail_vendor", ((TextView) caller.findViewById(R.id.retail_vendor)).getText());
+                        deviceIntent.putExtra("retail_model", ((TextView) caller.findViewById(R.id.retail_model)).getText());
+                        context.startActivity(deviceIntent);
+                    }
+                });
                 return holder;
             case TYPE_PHOTO_REPORT:
                 view = inflater.inflate(R.layout.item_report_photo, null);

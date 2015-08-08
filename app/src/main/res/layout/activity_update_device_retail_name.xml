@@ -1,0 +1,159 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.droidsans.photo.droidphoto.UpdateDeviceRetailNameActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/item_toolbar"/>
+
+    <TextView
+        android:id="@+id/header1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="RAW Manufacture and model"
+        android:layout_below="@id/toolbar"
+        android:textSize="20sp"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"/>
+
+    <LinearLayout
+        android:id="@+id/raw_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/small_padding"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/raw_manufacture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/curve_primary_border"
+            android:padding="@dimen/small_padding"
+            android:text="Samsung"
+            android:textColor="@color/primary_color" />
+
+        <TextView
+            android:id="@+id/raw_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:background="@drawable/curve_primary_border"
+            android:padding="@dimen/small_padding"
+            android:text="Galaxy S6 edge"
+            android:textColor="@color/primary_color" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/search"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_alignLeft="@id/raw_data"
+        android:layout_alignRight="@id/raw_data"
+        android:layout_below="@id/raw_data"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/small_padding"
+        android:background="@drawable/curve_primary"
+        android:text="search"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/header2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:text="Input correct vendor and model"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:id="@+id/correct_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_padding"
+        android:layout_below="@id/header2"
+
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/correct_vendor"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:hint="vendor"
+            android:padding="@dimen/small_padding"
+            android:textColor="@color/holo_blue_dark" />
+
+        <EditText
+            android:id="@+id/correct_model"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/correct_vendor"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:hint="model"
+            android:padding="@dimen/small_padding"
+            android:textColor="@color/holo_blue_dark" />
+
+        <Button
+            android:id="@+id/paste_vendor"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_toRightOf="@id/correct_vendor"
+            android:background="@drawable/curve_blue"
+            android:text="paste"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/paste_model"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignBottom="@id/correct_model"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:layout_toRightOf="@id/correct_model"
+            android:background="@drawable/curve_blue"
+            android:text="paste"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:layout_below="@id/correct_data"
+        android:layout_marginTop="36dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin">
+
+        <Button
+            android:id="@+id/dismiss"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="35"
+            android:text="Dismiss"
+            android:textColor="@color/primary_color"
+            android:background="@drawable/curve_primary_border"/>
+
+        <Button
+            android:id="@+id/update"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="65"
+            android:layout_marginLeft="@dimen/small_padding"
+            android:textColor="@color/white"
+            android:background="@drawable/curve_blue"
+            android:text="Update"/>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

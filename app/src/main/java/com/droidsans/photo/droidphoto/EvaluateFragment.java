@@ -31,6 +31,7 @@ public class EvaluateFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private Handler delayAction = new Handler();
     private ReportPack[] reportList;
+    private Emitter.Listener onGetReportListRespond;
 
 
     public EvaluateFragment() {
@@ -66,8 +67,8 @@ public class EvaluateFragment extends Fragment {
         evalulateRecyclerview.addItemDecoration(new SpacesItemDecoration(
                 getActivity(),
                 1,
-                (int) getResources().getDimension(R.dimen.feed_recycleview_item_space),
-                true, true, true, true
+                0,
+                false, false, false, false
         ));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -85,61 +86,86 @@ public class EvaluateFragment extends Fragment {
 
         //setup emitter  listener
         if(!GlobalSocket.mSocket.hasListeners("onGetEvaluateListRespond")){
-            GlobalSocket.mSocket.on("onGetEvaluateListRespond", new Emitter.Listener() {
+            GlobalSocket.mSocket.on("onGetEvaluateListRespond", onGetReportListRespond = new Emitter.Listener() {
                 @Override
-                public void call(Object... args) {
-                    GlobalSocket.mSocket.off("onGetEvaluateListRespond");
-                    JSONObject data = (JSONObject) args[0];
-                    if(data.optBoolean("success")){
-                        JSONArray reportArray = data.optJSONArray("reportList");
-                        reportList = new ReportPack[reportArray.length()];
-                        for(int i = 0; i < reportArray.length(); i++){
-                            JSONObject reportItem = reportArray.optJSONObject(i);
-                            switch (reportItem.optString("type")){
-                                case "device":
-                                    reportList[i] = new ReportPack(
-                                            reportItem.optString("build_device"),
-                                            reportItem.optString("build_model"),
-                                            reportItem.optString("retail_vendor"),
-                                            reportItem.optString("retail_model"),
-                                            reportItem.optString("report_date"),
-                                            reportItem.optInt("report_by")
-                                    );
-                                    break;
-                                case "photo":
-                                    reportList[i] = new ReportPack(
-                                            reportItem.optInt("photo_id"),
-                                            reportItem.optString("reason"),
-                                            reportItem.optString("report_date"),
-                                            reportItem.optBoolean("is_severe")
-                                    );
-                                    break;
-                                case "user":
-                                    reportList[i] = new ReportPack(
-                                            reportItem.optInt("user_id"),
-                                            reportItem.optString("reason"),
-                                            reportItem.optString("report_date")
-                                    );
-                                    break;
+                public void call(final Object... args) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlobalSocket.mSocket.off("onGetEvaluateListRespond");
+                            JSONObject data = (JSONObject) args[0];
+                            if(data.optBoolean("success")){
+                                JSONArray reportArray = data.optJSONArray("reportList");
+                                reportList = new ReportPack[reportArray.length()];
+                                for(int i = 0; i < reportArray.length(); i++){
+                                    JSONObject reportItem = reportArray.optJSONObject(i);
+                                    switch (reportItem.optString("type")){
+                                        case "device":
+                                            reportList[i] = new ReportPack(
+                                                    reportItem.optString("build_device"),
+                                                    reportItem.optString("build_model"),
+                                                    reportItem.optString("retail_vendor"),
+                                                    reportItem.optString("retail_model"),
+                                                    reportItem.optString("report_date"),
+                                                    reportItem.optInt("report_by")
+                                            );
+                                            break;
+                                        case "photo":
+                                            reportList[i] = new ReportPack(
+                                                    reportItem.optInt("photo_id"),
+                                                    reportItem.optString("reason"),
+                                                    reportItem.optString("report_date"),
+                                                    reportItem.optBoolean("is_severe")
+                                            );
+                                            break;
+                                        case "user":
+                                            reportList[i] = new ReportPack(
+                                                    reportItem.optInt("user_id"),
+                                                    reportItem.optString("reason"),
+                                                    reportItem.optString("report_date")
+                                            );
+                                            break;
+                                    }
+                                }
+                                ReportAdapter adapter = new ReportAdapter(getActivity(), reportList);
+                                evalulateRecyclerview.setAdapter(adapter);
+
+                                if(swipeRefreshLayout.isRefreshing()){
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+                                evalulateRecyclerview.animate().alpha(1.0f).setDuration(300).start();
+                            } else {
+                                if(swipeRefreshLayout.isRefreshing()){
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+                                Snackbar.make(getView(), "Error: "+data.optString("msg"), Snackbar.LENGTH_SHORT ).show();
                             }
                         }
-                        ReportAdapter adapter = new ReportAdapter(getActivity(), reportList);
-                        evalulateRecyclerview.setAdapter(adapter);
-                    } else {
-                        Snackbar.make(getView(), "Error: "+data.optString("msg"), Snackbar.LENGTH_SHORT ).show();
-                    }
+                    });
                 }
             });
         }
     }
 
     private void refreshEvaluate(){
-        delayAction.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }, 3000);
+        evalulateRecyclerview.animate().alpha(0.0f).setDuration(300).start();
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put("_event", "onGetEvaluateListRespond");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(!GlobalSocket.mSocket.hasListeners("onGetEvaluateListRespond")){
+            GlobalSocket.mSocket.on("onGetEvaluateListRespond", onGetReportListRespond);
+        }
+        GlobalSocket.globalEmit("device.getreportlist", data);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        refreshEvaluate();
     }
 
     private void findAllById(View view){
