@@ -27,6 +27,7 @@
     <string name="title_activity_app_info">Application Info</string>
     <string name="title_activity_help_image_view">   </string>
     <string name="title_activity_device_camera_calibration">Camera Calibration</string>
+    <string name="title_activity_update_device_retail_name">Device Update</string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>
@@ -295,6 +296,6 @@
     <string translatable="false" name="url_terms_of_service">http://droidshot.droidsans.com/termsofservice</string>
     <string translatable="false" name="url_privacy_policy">http://droidshot.droidsans.com/privacypolicy</string>
     <string translatable="false" name="cache_table_name">ertil4u5y893yjkrg</string>
-    <string name="title_activity_update_device_retail_name">UpdateDeviceRetailNameActivity</string>
+
 
 </resources>
