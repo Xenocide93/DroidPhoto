@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="500dp"
+    android:background="@color/white"
+    android:padding="16dp"
+    tools:context="com.droidsans.photo.droidphoto.ModelViewerActivity">
+
+        <ProgressBar
+            android:id="@+id/loading_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
+        <include android:id="@+id/reload_view"
+            layout="@layout/layout_reload" />
+
+        <Button
+            android:id="@+id/button_dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:text="Dismiss"
+            android:textColor="@color/accent_color"
+            android:background="@color/transparent" />
+
+        <LinearLayout
+            android:id="@+id/model_list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_above="@id/button_dismiss"
+            android:padding="16dp"
+            android:visibility="visible">
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:id="@+id/dialog_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/long_text_20"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:paddingBottom="@dimen/about_text_spacing"/>
+
+            <ListView
+                android:id="@+id/model_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+</RelativeLayout>

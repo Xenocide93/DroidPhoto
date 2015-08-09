@@ -27,6 +27,7 @@
     <string name="title_activity_app_info">Application Info</string>
     <string name="title_activity_help_image_view">   </string>
     <string name="title_activity_device_camera_calibration">Camera Calibration</string>
+    <string name="title_activity_model_viewer">   </string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>

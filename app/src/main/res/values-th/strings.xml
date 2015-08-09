@@ -27,6 +27,7 @@
     <string name="title_activity_app_info">ข้อมูลแอปพลิเคชัน</string>
     <string name="title_activity_help_image_view">   </string>
     <string name="title_activity_device_camera_calibration">ตั้งค่าฟังก์ชันกล้องของแอป</string>
+    <string name="title_activity_model_viewer">   </string>
 
     <string name="browser_vendor_title">เลือกยี่ห้อมือถือ</string>
     <string name="browse_model_title">เลือกรุ่นมือถือ</string>

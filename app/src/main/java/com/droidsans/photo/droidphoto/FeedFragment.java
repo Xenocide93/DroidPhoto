@@ -75,6 +75,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -714,6 +716,13 @@ public class FeedFragment extends Fragment {
                                     BrowseModelActivity.modelName[i] = ((JSONArray) models.get(i)).join(",").replaceAll("\"", "").replaceAll("\\\\", "").split(",");
                                     BrowseModelActivity.buildDevice[i] = ((JSONArray) bDevices.get(i)).join(",").replaceAll("\"", "").split(",");
                                     BrowseModelActivity.buildModel[i] = ((JSONArray) bModels.get(i)).join(",").replaceAll("\"", "").split(",");
+
+                                    Arrays.sort(BrowseModelActivity.modelName[i], new Comparator<String>() {
+                                        @Override
+                                        public int compare(String s1, String s2) {
+                                            return s1.compareToIgnoreCase(s2);
+                                        }
+                                    });
                                 }
 
                                 if(models.length() > 0) {

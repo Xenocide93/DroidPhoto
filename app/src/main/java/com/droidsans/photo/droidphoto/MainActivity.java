@@ -62,9 +62,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+//        super.onCreate(null);
+        if(BaseApplication.isPassingSavedInstance) {
+            super.onCreate(savedInstanceState);
+        } else {
+            super.onCreate(null);
+        }
         setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
+        BaseApplication.isPassingSavedInstance = true;
 
         initialize();
     }
@@ -190,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                             GlobalSocket.mSocket.off("old_version");
                             JSONObject data = (JSONObject) args[0];
                             String message = getString(R.string.alert_old_version_message_front) + getString(R.string.app_version) + getString(R.string.alert_old_version_message_back);
-                            if(data.optBoolean("success")) {
+                            if (data.optBoolean("success")) {
                                 message += getString(R.string.alert_old_version_message_server_version) + data.optString("msg");
                             }
                             new AlertDialog.Builder(MainActivity.this)
@@ -491,6 +497,11 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == ACTIVITY_SETTINGS) {
             if(settingsMenuItem != null) settingsMenuItem.setChecked(false);
             if(previousMenuItem != null) previousMenuItem.setChecked(true);
+            if(data != null && data.getBooleanExtra("isLanguageChange", false)) {
+                BaseApplication.isPassingSavedInstance = false;
+                finish();
+                startActivity(getIntent());
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -499,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //outState.put(tag, data);
-//        super.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -522,8 +533,6 @@ public class MainActivity extends AppCompatActivity {
             if(ProfileFragment.mProfileFragment.adapter.isInEditMode){
                 ProfileFragment.mProfileFragment.cancelEditMode();
                 return;
-            } else {
-                super.onBackPressed();
             }
         }
         super.onBackPressed();
@@ -534,10 +543,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        getSupportFragmentManager().popBackStack();
-        actionBarDrawerToggle.syncState();
-        return true;
+//        getSupportFragmentManager().popBackStack();
+//        actionBarDrawerToggle.syncState();
+//        return true;
+        return super.onSupportNavigateUp();
     }
+
 
     //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
