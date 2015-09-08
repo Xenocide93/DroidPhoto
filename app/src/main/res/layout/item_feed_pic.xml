@@ -29,7 +29,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/curve_primary_normal"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <com.droidsans.photo.droidphoto.util.view.FontTextView
                 android:id="@+id/device_name"

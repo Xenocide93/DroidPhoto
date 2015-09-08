@@ -645,6 +645,11 @@ public class FeedFragment extends Fragment {
                                 picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
                                 picturePack.setSubmitDate(jsonPack.optString("submit_date"));
                                 picturePack.setAvatarURL(jsonPack.optString("avatar_url"));
+                                picturePack.setIsLike(jsonPack.optBoolean("is_like"));
+                                picturePack.setLikeCount(jsonPack.optInt("like_count"));
+
+                                Log.d("droidphoto", "pic" + i + (jsonPack.optBoolean("is_like")? "like: true":"like: false"));
+
 //                                Log.d("droidphoto", jsonPack.optString("submit_date"));
 
                                 skipDate = jsonPack.optString("submit_date");

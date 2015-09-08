@@ -108,6 +108,8 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                 imageViewerIntent.putExtra("submitDate", pack.submitDate);
                                 imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
                                 imageViewerIntent.putExtra("is_enhanced", pack.isEnhanced);
+                                imageViewerIntent.putExtra("is_like", pack.isLike);
+                                imageViewerIntent.putExtra("like_count", pack.likeCount);
 
                                 context.startActivity(imageViewerIntent);
                             }
