@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -44,7 +45,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     //private SurfaceView surfaceCamera;
-    private Button startCalibrate, doneCalibrate;
+    private Button startCalibrate, doneCalibrate, skipCalibrate;
     private ImageView topIcon;
     private ProgressBar working;
     private FontTextView title, description;
@@ -95,6 +96,8 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         description.setText(getString(R.string.calibrate_text_desc_welcome));
 
         removeTemp();
+
+        skipCalibrate.setVisibility(View.VISIBLE);
     }
 
     private void showAddMore() {
@@ -105,6 +108,8 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
 //        for(String app : applist) {
 //            description.append("\r\n- " + app);
 //        }
+
+        skipCalibrate.setVisibility(View.GONE);
     }
 
     private void showRetry() {
@@ -121,6 +126,9 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         description.setText(getString(R.string.calibrate_text_desc_error));
 
         removeTemp();
+
+        if(isInitial) skipCalibrate.setVisibility(View.VISIBLE);
+        else skipCalibrate.setVisibility(View.GONE);
     }
 
     private void showHasData() {
@@ -152,6 +160,13 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         description.setText(R.string.calibrate_text_desc_added);
 
         removeTemp();
+    }
+
+    private void showSkipped() {
+        showSuccess();
+        startCalibrate.setVisibility(View.GONE);
+        doneCalibrate.setVisibility(View.VISIBLE);
+        description.setText("you can add camera info later from settings.");
     }
 
     private void showInitSuccess() {
@@ -247,6 +262,19 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
+            }
+        });
+
+        skipCalibrate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSharedPreferences(getString(R.string.device_data), MODE_PRIVATE).edit()
+//                                .putString(getString(R.string.camera_app_name), prefAppName)
+                        .putString(getString(R.string.camera_make), Build.MANUFACTURER)
+                        .putString(getString(R.string.camera_model), Build.MODEL)
+                        .apply();
+
+                showSkipped();
             }
         });
 
@@ -560,6 +588,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
 //        surfaceCamera = (SurfaceView) findViewById(R.id.surface_camera);
         startCalibrate = (Button) findViewById(R.id.button_camera_launch);
         doneCalibrate = (Button) findViewById(R.id.button_done);
+        skipCalibrate = (Button) findViewById(R.id.button_skip);
         topIcon = (ImageView) findViewById(R.id.calibrate_icon);
         working = (ProgressBar) findViewById(R.id.calibrate_working);
         title = (FontTextView) findViewById(R.id.calibrate_title);

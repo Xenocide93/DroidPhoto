@@ -9,88 +9,107 @@
         android:id="@+id/toolbar"
         layout="@layout/item_toolbar" />
 
-    <LinearLayout
-        android:id="@+id/calibration_layout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginBottom="@dimen/about_paragraph_spacing">
-
-            <!--<SurfaceView-->
-                <!--android:id="@+id/surface_camera"-->
-                <!--android:layout_width="20dp"-->
-                <!--android:layout_height="20dp"-->
-                <!--android:layout_centerInParent="true" />-->
-
-            <ImageView
-                android:id="@+id/calibrate_icon"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/ic_camera_alt_black_48dp" />
-        </RelativeLayout>
-
-        <ProgressBar
-            android:id="@+id/calibrate_working"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginBottom="@dimen/about_paragraph_spacing"
-            android:indeterminate="true"
-            android:visibility="gone" />
-
-        <com.droidsans.photo.droidphoto.util.view.FontTextView
-            android:id="@+id/calibrate_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/about_paragraph_spacing"
-            android:gravity="center"
-            android:text="@string/calibrate_text_title_welcome"
-            android:textSize="20sp" />
-
-        <com.droidsans.photo.droidphoto.util.view.FontTextView
-            android:id="@+id/calibrate_description"
-            android:layout_width="wrap_content"
-            android:layout_height="180dp"
-            android:gravity="center"
-            android:paddingLeft="@dimen/about_paragraph_spacing"
-            android:paddingRight="@dimen/about_paragraph_spacing"
-            android:text="@string/test_140_char" />
+        android:layout_below="@id/toolbar">
 
         <LinearLayout
+            android:id="@+id/calibration_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/about_paragraph_spacing"
-            android:gravity="center_horizontal">
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button_camera_launch"
-                android:layout_width="120dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="@dimen/about_paragraph_spacing"
-                android:layout_marginRight="@dimen/about_paragraph_spacing"
-                android:background="@drawable/button_selector"
-                android:text="@string/calibrate_button_start"
-                android:visibility="visible" />
+            <RelativeLayout
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="@dimen/about_paragraph_spacing">
 
-            <Button
-                android:id="@+id/button_done"
-                android:layout_width="120dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="@dimen/about_paragraph_spacing"
-                android:layout_marginRight="@dimen/about_paragraph_spacing"
-                android:background="@drawable/button_selector"
-                android:text="@string/calibrate_button_done"
+                <!--<SurfaceView-->
+                    <!--android:id="@+id/surface_camera"-->
+                    <!--android:layout_width="20dp"-->
+                    <!--android:layout_height="20dp"-->
+                    <!--android:layout_centerInParent="true" />-->
+
+                <ImageView
+                    android:id="@+id/calibrate_icon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_camera_alt_black_48dp" />
+            </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/calibrate_working"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginBottom="@dimen/about_paragraph_spacing"
+                android:indeterminate="true"
                 android:visibility="gone" />
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:id="@+id/calibrate_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/about_paragraph_spacing"
+                android:gravity="center"
+                android:text="@string/calibrate_text_title_welcome"
+                android:textSize="20sp" />
+
+            <com.droidsans.photo.droidphoto.util.view.FontTextView
+                android:id="@+id/calibrate_description"
+                android:layout_width="wrap_content"
+                android:layout_height="180dp"
+                android:gravity="center"
+                android:paddingLeft="@dimen/about_paragraph_spacing"
+                android:paddingRight="@dimen/about_paragraph_spacing"
+                android:text="@string/test_140_char" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/about_paragraph_spacing"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:id="@+id/button_camera_launch"
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="@dimen/about_paragraph_spacing"
+                    android:layout_marginRight="@dimen/about_paragraph_spacing"
+                    android:background="@drawable/button_selector"
+                    android:text="@string/calibrate_button_start"
+                    android:visibility="visible" />
+
+                <Button
+                    android:id="@+id/button_done"
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="@dimen/about_paragraph_spacing"
+                    android:layout_marginRight="@dimen/about_paragraph_spacing"
+                    android:background="@drawable/button_selector"
+                    android:text="@string/calibrate_button_done"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/button_skip"
+                    android:layout_width="120dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="@dimen/about_paragraph_spacing"
+                    android:layout_marginRight="@dimen/about_paragraph_spacing"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/button_selector"
+                    android:text="Skip"
+                    android:visibility="visible" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
     <View
         android:id="@+id/toolbar_shadow"
