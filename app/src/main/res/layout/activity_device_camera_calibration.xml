@@ -102,7 +102,7 @@
                     android:layout_marginRight="@dimen/about_paragraph_spacing"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/button_selector"
-                    android:text="Skip"
+                    android:text="@string/calibrate_button_skip"
                     android:visibility="visible" />
 
             </LinearLayout>

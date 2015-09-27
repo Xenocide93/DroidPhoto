@@ -233,11 +233,13 @@
     <string name="calibrate_text_desc_done">We have successfully calibrated our application to match your device camera configuration.\nThe taken photo is also removed just now.\nPlease enjoy !\n\nin case you want to get back here,\njust head to setttings.</string>
     <string name="calibrate_text_desc_add">If you have more than one camera application other than the default one coming with your device,\nWe recommend you to add them here by taking the same step you had done before.</string>
     <string name="calibrate_text_desc_added">We have successfully configured our app to support more camera.\nYou can now safely go back by hitting back button at the top-left.\n\nIf you want to add more now, you can start by selecting button below.</string>
+    <string name="calibrate_text_desc_skip">you can add camera info later from settings.</string>
     <string name="calibrate_button_start">Start</string>
     <string name="calibrate_button_done">Done</string>
     <string name="calibrate_button_add">Add</string>
     <string name="calibrate_button_retry">Retry</string>
     <string name="calibrate_button_addmore">Add More</string>
+    <string name="calibrate_button_skip">Skip</string>
 
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
     <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww DO NOT TRANSLATE STRINGS BELOW wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->

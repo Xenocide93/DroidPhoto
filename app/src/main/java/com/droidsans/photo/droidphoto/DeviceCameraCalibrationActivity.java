@@ -170,7 +170,7 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         showSuccess();
         startCalibrate.setVisibility(View.GONE);
         doneCalibrate.setVisibility(View.VISIBLE);
-        description.setText("you can add camera info later from settings.");
+        description.setText(R.string.calibrate_text_desc_skip);
 
 //        skipCalibrate.setVisibility(View.GONE);
     }

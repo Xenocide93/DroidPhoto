@@ -232,10 +232,12 @@
     <string name="calibrate_text_desc_done">เราได้ตั้งค่าแอปพลิเคชันเป็นที่เรียบร้อยแล้ว\nรูปที่ถ่ายเมื่อสักครู่ก็ถูกลบแล้วเช่นกัน\n\nคุณสามารถกลับมายังหน้านี้ได้อีกครั้ง ผ่านหน้าตั้งค่า</string>
     <string name="calibrate_text_desc_add">หากเครื่องของคุณมีแอปกล้องมากกว่าหนึ่งตัว\nเราขอแนะนำให้คุณเพิ่มมันโดยการกดปุ่มด้านล่างนี้</string>
     <string name="calibrate_text_desc_added">เราได้ตั้งค่าแอปเพื่อให้ทำงานกับรูปถ่าย\nจากกล้องที่คุณเลือกแล้ว\nคุณสามารถกลับไปยังหน้าก่อนหน้าได้\nด้วยการกดปุ่มทางซ้ายบน\n\nหากคุณต้องการเพิ่มแอปอื่นๆ\nสามารถกดปุ่มเพิ่มได้ด้านล่างเช่นกัน</string>
+    <string name="calibrate_text_desc_skip">คุณสามารถกลับเข้าหน้านี้ใหม่ได้ผ่านเมนูตั้งค่า</string>
     <string name="calibrate_button_start">เริ่ม</string>
     <string name="calibrate_button_done">เข้าสู่แอป</string>
     <string name="calibrate_button_add">เพิ่ม</string>
     <string name="calibrate_button_retry">ลองอีกครั้ง</string>
     <string name="calibrate_button_addmore">เพิ่ม</string>
+    <string name="calibrate_button_skip">ข้าม</string>
 
 </resources>
