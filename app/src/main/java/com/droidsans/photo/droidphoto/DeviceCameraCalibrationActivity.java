@@ -131,10 +131,10 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         else skipCalibrate.setVisibility(View.GONE);
     }
 
-    private void showHasData() {
-        showSuccess();
-        description.setText("already has data");
-    }
+//    private void showHasData() {
+//        showSuccess();
+//        description.setText("already has data");
+//    }
 
     private void showWorking() {
         doneCalibrate.setVisibility(View.GONE);
@@ -145,6 +145,8 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         working.setVisibility(View.VISIBLE);
         title.setText(getString(R.string.calibrate_text_title_working));
         description.setText(getString(R.string.calibrate_text_desc_working));
+
+        skipCalibrate.setVisibility(View.GONE);
     }
 
     private void showSuccess() {
@@ -159,6 +161,8 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         title.setText(getString(R.string.calibrate_text_title_done));
         description.setText(R.string.calibrate_text_desc_added);
 
+        skipCalibrate.setVisibility(View.GONE);
+
         removeTemp();
     }
 
@@ -167,6 +171,8 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         startCalibrate.setVisibility(View.GONE);
         doneCalibrate.setVisibility(View.VISIBLE);
         description.setText("you can add camera info later from settings.");
+
+//        skipCalibrate.setVisibility(View.GONE);
     }
 
     private void showInitSuccess() {
@@ -174,6 +180,8 @@ public class DeviceCameraCalibrationActivity extends AppCompatActivity {
         startCalibrate.setVisibility(View.GONE);
         doneCalibrate.setVisibility(View.VISIBLE);
         description.setText(getString(R.string.calibrate_text_desc_done));
+
+        skipCalibrate.setVisibility(View.GONE);
     }
 
     private void setupListener() {
