@@ -11,6 +11,7 @@
     <color name="accent_color">#00a597</color>
     <color name="transparent">#00000000</color>
     <color name="holo_blue_dark">#0099cc</color>
+    <color name="orange">#ff9100</color>
     <color name="black_transparent_overlay">#9f000000</color>
     <color name="default_snackbar">#323232</color>
 
