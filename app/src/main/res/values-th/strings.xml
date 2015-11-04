@@ -7,6 +7,8 @@
     <string name="action_settings">ตั้งค่า</string>
     <string name="action_done">"  ยืนยัน  "</string>
     <string name="menu_filter">ตัวกรอง</string>
+    <string name="menu_sort_by_like">เรียงตามจำนวน Like</string>
+    <string name="menu_sort_by_time">เรียงตามรูปล่าสุด</string>
     <string name="action_cancel">"  ยกเลิก  "</string>
     <string name="action_print">พิมพ์</string>
 

@@ -17,6 +17,7 @@ import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -100,6 +101,7 @@ public class FeedFragment extends Fragment {
     private ArrayList<PicturePack> feedPicturePack;
     private FloatingActionMenu fam;
     private FloatingActionButton fabChoosePic, fabCamera;
+    private MenuItem sortTypeMenuItem;
 
     private FontTextView reloadText;
     private Button reloadButton;
@@ -1162,7 +1164,20 @@ public class FeedFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
+
         inflater.inflate(R.menu.menu_feed, menu);
+
+        sortTypeMenuItem = menu.getItem(0);
+        int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1);
+
+        if(feedType == MOST_POPULAR_TAG){
+            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_time_white_24px));
+            sortTypeMenuItem.setTitle(R.string.menu_sort_by_time);
+        } else if(feedType == MOST_RECENT_TAG){
+            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_like_white_24px));
+            sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
+        }
+
     }
 
     @Override
@@ -1185,6 +1200,14 @@ public class FeedFragment extends Fragment {
                     Snackbar.make(getView(), getString(R.string.feed_filter_too_many_tag), Snackbar.LENGTH_LONG).show();
                 } else {
                     launchAddFilterPopup();
+                }
+                return true;
+            case R.id.action_sort:
+                int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1);
+                if(feedType == MOST_RECENT_TAG){
+                    setFeedSortType(MOST_POPULAR_TAG);
+                } else if(feedType == MOST_POPULAR_TAG){
+                    setFeedSortType(MOST_RECENT_TAG);
                 }
                 return true;
         }
@@ -1887,13 +1910,10 @@ public class FeedFragment extends Fragment {
             public void onClick(View v) {
                 int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1);
                 if(feedType == MOST_RECENT_TAG){
-                   getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).edit().putInt("feedType", MOST_POPULAR_TAG).apply();
+                   setFeedSortType(MOST_POPULAR_TAG);
                 } else if(feedType == MOST_POPULAR_TAG){
-                    getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).edit().putInt("feedType", MOST_RECENT_TAG).apply();
+                    setFeedSortType(MOST_RECENT_TAG);
                 }
-                updateTagView();
-                refreshFeed();
-                initLoading();
             }
         });
         tagLayout.addView(feedTypeTag);
@@ -1985,5 +2005,24 @@ public class FeedFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void setFeedSortType(int sortType){
+        getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE)
+                .edit()
+                .putInt("feedType", sortType)
+                .apply();
+
+        if(sortType == MOST_POPULAR_TAG){
+            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_time_white_24px));
+            sortTypeMenuItem.setTitle(R.string.menu_sort_by_time);
+        } else if(sortType == MOST_RECENT_TAG){
+            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_like_white_24px));
+            sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
+        }
+
+        updateTagView();
+        refreshFeed();
+        initLoading();
     }
 }
