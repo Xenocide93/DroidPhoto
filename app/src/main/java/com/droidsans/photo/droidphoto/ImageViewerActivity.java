@@ -92,40 +92,55 @@ public class ImageViewerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupLikeButtonListener();
+        setupProfileViewer();
 
         if(setup()) {
+            loadImage();
+        } else {
+            Toast.makeText(getApplicationContext(), "cannot initialize imageviewer (bug ?)", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void setupProfileViewer() {
+        View.OnClickListener launchProfileViewer = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        };
+    }
+
+    private void loadImage(){
 //            Glide.with(getApplicationContext())
 //                    .load(GlobalSocket.serverURL + baseURL + photoURL)
 //                    .crossFade()
 //                    .into(picture);
-            String hash = photoURL.substring(0, photoURL.lastIndexOf("."));
-            try {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                md.update(hash.getBytes());
-                hash = bytesToHex(md.digest());
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
+        Log.d(getString(R.string.app_name), "photoURL: " + photoURL);
+        String hash = photoURL.substring(0, photoURL.lastIndexOf("."));
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(hash.getBytes());
+            hash = bytesToHex(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 //            File cachedFile = new File(getCacheDir(), photoURL.substring(0, photoURL.lastIndexOf(".")));
-            File cachedFile = new File(getCacheDir(), hash);
-            if(cachedFile.exists()) {
-                //load image from cache
-                Glide.with(getApplicationContext())
-                        .load(cachedFile)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        File cachedFile = new File(getCacheDir(), hash);
+        if(cachedFile.exists()) {
+            //load image from cache
+            Glide.with(getApplicationContext())
+                    .load(cachedFile)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
 //                        .crossFade()
-                        .into(picture);
+                    .into(picture);
 //                TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
-                setupPictureClickListener();
+            setupPictureClickListener();
 
-                postImageLoaded();
-            } else {
-                //download image
-                setupReloadButtonListener();
-                initImageLoader();
-            }
+            postImageLoaded();
         } else {
-            Toast.makeText(getApplicationContext(), "cannot initialize imageviewer (bug ?)", Toast.LENGTH_LONG).show();
+            //download image
+            setupReloadButtonListener();
+            initImageLoader();
         }
     }
 

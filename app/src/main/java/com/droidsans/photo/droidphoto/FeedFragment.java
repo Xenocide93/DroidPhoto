@@ -1163,20 +1163,28 @@ public class FeedFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
+        try {
+            menu.clear();
+            inflater.inflate(R.menu.menu_feed, menu);
 
-        inflater.inflate(R.menu.menu_feed, menu);
+            sortTypeMenuItem = menu.getItem(0);
 
-        sortTypeMenuItem = menu.getItem(0);
-        int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1);
+            if(getActivity() == null){
+                Log.d(getString(R.string.app_name), "1");
+            } else if(getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE) == null){
+                Log.d(getString(R.string.app_name), "2");
+            }
 
-        if(feedType == MOST_POPULAR_TAG){
-            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_time_white_24px));
-            sortTypeMenuItem.setTitle(R.string.menu_sort_by_time);
-        } else if(feedType == MOST_RECENT_TAG){
-            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_like_white_24px));
-            sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
-        }
+            int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", MOST_RECENT_TAG);
+
+            if(feedType == MOST_POPULAR_TAG){
+                sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_time_white_24px));
+                sortTypeMenuItem.setTitle(R.string.menu_sort_by_time);
+            } else if(feedType == MOST_RECENT_TAG){
+                sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_like_white_24px));
+                sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
+            }
+        } catch (IllegalStateException e){}
 
     }
 
@@ -1910,7 +1918,7 @@ public class FeedFragment extends Fragment {
             public void onClick(View v) {
                 int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1);
                 if(feedType == MOST_RECENT_TAG){
-                   setFeedSortType(MOST_POPULAR_TAG);
+                    setFeedSortType(MOST_POPULAR_TAG);
                 } else if(feedType == MOST_POPULAR_TAG){
                     setFeedSortType(MOST_RECENT_TAG);
                 }
