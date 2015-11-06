@@ -8,6 +8,13 @@
         <!--app:showAsAction="always"/>-->
 
     <item
+        android:id="@+id/action_sort"
+        android:orderInCategory="1"
+        android:title="@string/menu_sort_by_like"
+        android:icon="@drawable/ic_sort_by_like_white_24px"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/action_filter"
         android:orderInCategory="2"
         android:title="@string/menu_filter"

@@ -7,6 +7,8 @@
     <string name="action_settings">ตั้งค่า</string>
     <string name="action_done">"  ยืนยัน  "</string>
     <string name="menu_filter">ตัวกรอง</string>
+    <string name="menu_sort_by_like">เรียงตามจำนวน Like</string>
+    <string name="menu_sort_by_time">เรียงตามรูปล่าสุด</string>
     <string name="action_cancel">"  ยกเลิก  "</string>
     <string name="action_print">พิมพ์</string>
 
@@ -151,10 +153,12 @@
     <!--Tutorial-->
     <string name="tutorial_string_fam">กดเพื่อโพสรูปใหม่</string>
     <string name="tutorial_string_filter">เลือกรุ่นมือถือที่จะแสดง</string>
+    <string name="tutorial_string_feedtype">สลับระหว่าง\n ล่าสุด และ ยอดนิยม</string>
     <string name="tutorial_touch_to_dismiss">แตะเพื่อปิด</string>
 
     <!--Feed-->
     <string name="recent_tag">ล่าสุด</string>
+    <string name="popular_tag">ยอดนิยม</string>
     <string name="alert_not_your_photo_title">ไม่ใช่รูปจากมือถือเครื่องนี้</string>
     <string name="alert_not_your_photo_message">กรุณาเลือกรูปที่ถ่ายจากกล้องของมือถือเครื่องนี้</string>
     <string name="alert_not_from_camera_title">ไม่ใช่รูปถ่าย</string>
