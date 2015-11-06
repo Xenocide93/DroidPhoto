@@ -1185,7 +1185,6 @@ public class FeedFragment extends Fragment {
                 sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
             }
         } catch (IllegalStateException e){}
-
     }
 
     @Override

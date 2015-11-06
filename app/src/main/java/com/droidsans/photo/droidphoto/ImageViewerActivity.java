@@ -91,8 +91,7 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setupLikeButtonListener();
-        setupProfileViewer();
+        setupListener();
 
         if(setup()) {
             loadImage();
@@ -101,13 +100,18 @@ public class ImageViewerActivity extends AppCompatActivity {
         }
     }
 
-    private void setupProfileViewer() {
-        View.OnClickListener launchProfileViewer = new View.OnClickListener() {
+    private void setupListener() {
+        setupLikeButtonListener();
+
+        View.OnClickListener launchProfileViewerOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ProfileViewerActivity.launchProfileViewer(ImageViewerActivity.this, previousIntent.getStringExtra("username"));
             }
         };
+
+        user.setOnClickListener(launchProfileViewerOnClick);
+        avatar.setOnClickListener(launchProfileViewerOnClick);
     }
 
     private void loadImage(){
