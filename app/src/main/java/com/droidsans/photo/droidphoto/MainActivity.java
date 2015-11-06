@@ -316,6 +316,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.main_fragment, new ProfileFragment());
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 toolbar.setTitle(getUserdata().getString(getString(R.string.username), "???"));
                 drawerLayout.closeDrawers();
@@ -377,6 +378,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new EventFragment());
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                     toolbar.setTitle(getString(R.string.drawer_event));
                     previousMenuItem = eventMenuItem;
@@ -386,6 +388,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                     toolbar.setTitle(getString(R.string.drawer_help));
                     previousMenuItem = helpMenuItem;
@@ -394,6 +397,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new AboutFragment());
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                     toolbar.setTitle(getString(R.string.drawer_about));
                     previousMenuItem = aboutMenuItem;
@@ -538,6 +542,8 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
         if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
             actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+//            Log.d("droidphoto", "backstack 0");
+            toolbar.setTitle(getString(R.string.drawer_feed));
         }
     }
 
