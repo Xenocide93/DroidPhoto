@@ -811,7 +811,6 @@ public class FillPostActivity extends AppCompatActivity implements OnLocationUpd
                         final File tempFile = new File(getCacheDir(), "thumbnail_temp");
                         final File originalFile = new File(mCurrentPhotoPath);
                         FileOutputStream out = null;
-                        Bitmap bmp = null;
                         try {
                             InputStream in = new BufferedInputStream(new FileInputStream(originalFile));
                             BitmapFactory.Options options = new BitmapFactory.Options();
