@@ -51,6 +51,7 @@ import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
 import com.droidsans.photo.droidphoto.util.adapter.FeedRecycleViewAdapter;
+import com.droidsans.photo.droidphoto.util.adapter.FeedSortTypeSpinnerAdapter;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -95,8 +96,8 @@ public class FeedFragment extends Fragment {
     private static final int SELECT_PHOTO = 8;
     private static final String FIRST_TIME_FEED_FRAGMENT = "firstTimeFeedFragment";
     private static final int FEED_LIMIT_PER_REQUEST = 20;
-    private static final int MOST_RECENT_TAG = 1;
-    private static final int MOST_POPULAR_TAG = 2;
+    public static final int MOST_RECENT_TAG = 1;
+    public static final int MOST_POPULAR_TAG = 2;
 
     private View logoLayout, dimView;
     private RecyclerView feedRecycleView;
@@ -164,6 +165,9 @@ public class FeedFragment extends Fragment {
     public static boolean isCancelUpload = false;
     public static boolean isUploading = false;
     private RelativeLayout uploadProgressLayout;
+
+    private FeedSortTypeSpinnerAdapter sortTypeAdapter;
+    private Menu actionbarMenu;
 
     private static float normalFamPositionX, normalFamPositionY;
     private ImageView uploadImagePreview;
@@ -1168,17 +1172,13 @@ public class FeedFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         try {
+            actionbarMenu = menu;
             menu.clear();
             inflater.inflate(R.menu.menu_feed, menu);
 
-            MenuItem sortSpinnerItem = menu.findItem(R.id.action_sort);
-            if(sortSpinnerItem == null) Log.d(getString(R.string.app_name), "sortSpinnerItem null");
-            Spinner sortSpinner = (Spinner) sortSpinnerItem.getActionView();
-            if(sortSpinner == null) Log.d(getString(R.string.app_name), "sortSpinner null");
+            Log.d(getString(R.string.app_name), "onCreateOptionsMenu");
 
-            List<String> spinnerStringArray = new ArrayList<>();
-            spinnerStringArray.add("sort by recent");
-            spinnerStringArray.add("sort by like");
+            setupMenuSortTypeSpinner(this, actionbarMenu);
 
 //            Context themeContext = getActionBar().getThemedContext();
 //
@@ -1189,47 +1189,43 @@ public class FeedFragment extends Fragment {
 //            listAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 //            sortSpinner.setAdapter(listAdapter);
 
-            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, spinnerStringArray);
-            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            sortSpinner.setAdapter(spinnerAdapter);
+//            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_gallery_item, spinnerStringArray);
+//            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            sortSpinner.setAdapter(spinnerAdapter);
+//
+//            sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                    switch(position){
+//                        case 0:
+//                            setFeedSortType(MOST_RECENT_TAG);
+//                            break;
+//                        case 1:
+//                            setFeedSortType(MOST_POPULAR_TAG);
+//                            break;
+//                    }
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> parent) {
+//
+//                }
+//            });
 
-            sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    switch(position){
-                        case 0:
-                            setFeedSortType(MOST_RECENT_TAG);
-                            break;
-                        case 1:
-                            setFeedSortType(MOST_POPULAR_TAG);
-                            break;
-                    }
-                }
+//            sortTypeMenuItem = menu.getItem(0);
+//
+//            if(feedType == MOST_POPULAR_TAG){
+//                sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_time_white_24px));
+//                sortTypeMenuItem.setTitle(R.string.menu_sort_by_time);
+//            } else if(feedType == MOST_RECENT_TAG){
+//                sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_like_white_24px));
+//                sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
+//            }
+        } catch (IllegalStateException e){
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+        } catch (NullPointerException e){
 
-                }
-            });
-
-            sortTypeMenuItem = menu.getItem(0);
-
-            if(getActivity() == null){
-                Log.d(getString(R.string.app_name), "1");
-            } else if(getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE) == null){
-                Log.d(getString(R.string.app_name), "2");
-            }
-
-            int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", MOST_RECENT_TAG);
-
-            if(feedType == MOST_POPULAR_TAG){
-                sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_time_white_24px));
-                sortTypeMenuItem.setTitle(R.string.menu_sort_by_time);
-            } else if(feedType == MOST_RECENT_TAG){
-                sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_like_white_24px));
-                sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
-            }
-        } catch (IllegalStateException e){}
+        }
     }
 
     @Override
@@ -2059,22 +2055,76 @@ public class FeedFragment extends Fragment {
         }
     }
 
-    private void setFeedSortType(int sortType){
+    public void setFeedSortType(int sortType){
+        Log.d(getString(R.string.app_name), "setFeedSortType " + sortType);
+
         getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE)
                 .edit()
                 .putInt("feedType", sortType)
                 .apply();
 
-        if(sortType == MOST_POPULAR_TAG){
-            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_time_white_24px));
-            sortTypeMenuItem.setTitle(R.string.menu_sort_by_time);
-        } else if(sortType == MOST_RECENT_TAG){
-            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_like_white_24px));
-            sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
+//        if(sortType == MOST_POPULAR_TAG){
+//            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_time_white_24px));
+//            sortTypeMenuItem.setTitle(R.string.menu_sort_by_time);
+//
+//        } else if(sortType == MOST_RECENT_TAG){
+//            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_like_white_24px));
+//            sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
+//        }
+
+        if(sortTypeAdapter.getSortType() != sortType) {
+            sortTypeAdapter.setSortType(sortType);
+            sortTypeAdapter.notifyDataSetChanged();
         }
 
         updateTagView();
         refreshFeed();
         initLoading();
     }
+
+    private void setupMenuSortTypeSpinner(final FeedFragment feedFragment, Menu menu) {
+        Log.d(getString(R.string.app_name), "setupMenuSortTypeSpinner");
+        int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", MOST_RECENT_TAG);
+
+        MenuItem sortSpinnerItem = menu.findItem(R.id.action_sort);
+        Spinner sortSpinner = (Spinner) sortSpinnerItem.getActionView();
+
+        List<String> spinnerStringArray = new ArrayList<>();
+        spinnerStringArray.add(getString(R.string.menu_sort_by_time));
+        spinnerStringArray.add(getString(R.string.menu_sort_by_like));
+
+        sortTypeAdapter = new FeedSortTypeSpinnerAdapter(
+                getActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                spinnerStringArray,
+                feedType,
+                feedFragment);
+
+        sortSpinner.setAdapter(sortTypeAdapter);
+        sortSpinner.setSelection(feedType == MOST_RECENT_TAG ? 0:1);
+
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    switch (position) {
+                        case 0:
+                            FeedFragment.this.setFeedSortType(MOST_RECENT_TAG);
+                            break;
+                        case 1:
+                            FeedFragment.this.setFeedSortType(MOST_POPULAR_TAG);
+                            break;
+                    }
+                } catch (NullPointerException e) {
+                    Log.d(getString(R.string.app_name), "something is null in feed activity");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
 }

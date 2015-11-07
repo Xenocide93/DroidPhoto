@@ -3,6 +3,7 @@ package com.droidsans.photo.droidphoto.util.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,6 +126,8 @@ public class ProfileFeedRecycleViewAdapter extends RecyclerView.Adapter {
                         imageViewerIntent.putExtra("is_enhanced", pack.isEnhanced);
                         imageViewerIntent.putExtra("is_like", pack.isLike);
                         imageViewerIntent.putExtra("like_count", pack.likeCount);
+
+                        Log.d("droidshot", pack.isLike ? "like":"-");
 
                         imageViewerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(imageViewerIntent);

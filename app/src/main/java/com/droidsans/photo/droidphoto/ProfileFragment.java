@@ -249,6 +249,8 @@ public class ProfileFragment extends Fragment {
                                 pack.setIsFlash(jsonPhoto.optBoolean("is_flash"));
                                 pack.setSubmitDate(jsonPhoto.optString("submit_date"));
                                 pack.setAvatarURL(jsonPhoto.optString("avatar_url"));
+                                pack.setIsLike(jsonPhoto.optBoolean("is_like"));
+                                pack.setLikeCount(jsonPhoto.optInt("like_count"));
 
                                 packs.add(pack);
                             }
