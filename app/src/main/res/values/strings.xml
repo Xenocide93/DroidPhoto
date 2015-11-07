@@ -177,6 +177,7 @@
     <string name="load_feed_error">Error loading feed :(</string>
     <string name="reload_feed_button">RELOAD</string>
     <string name="feed_filter_too_many_tag">Too many tags, Please remove some tag</string>
+    <string name="snackbar_exit_confirmation">Press back again to exit</string>
 
     <string-array name="feed_sort_spinner">
         <item>sort by recent</item>

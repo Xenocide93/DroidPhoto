@@ -1,7 +1,9 @@
 package com.droidsans.photo.droidphoto.util.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.droidsans.photo.droidphoto.ImageViewerActivity;
+import com.droidsans.photo.droidphoto.ProfileFragment;
+import com.droidsans.photo.droidphoto.ProfileViewerActivity;
 import com.droidsans.photo.droidphoto.R;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
@@ -27,10 +31,12 @@ public class ProfileFeedRecycleViewAdapter extends RecyclerView.Adapter {
     public static boolean isClickOnce = false;
     public boolean isInEditMode = false;
     public boolean[] isMarkedAsRemove;
+    private Object activityObject;
 
-    public ProfileFeedRecycleViewAdapter(Context context, ArrayList<PicturePack> packs){
+    public ProfileFeedRecycleViewAdapter(Context context, Object activityObject, ArrayList<PicturePack> packs){
         this.packs = packs;
         this.context = context;
+        this.activityObject = activityObject;
         isMarkedAsRemove = new boolean[packs.size()];
         for (int i=0; i<isMarkedAsRemove.length; i++){
             isMarkedAsRemove[i] = false;
@@ -127,10 +133,12 @@ public class ProfileFeedRecycleViewAdapter extends RecyclerView.Adapter {
                         imageViewerIntent.putExtra("is_like", pack.isLike);
                         imageViewerIntent.putExtra("like_count", pack.likeCount);
 
-                        Log.d("droidshot", pack.isLike ? "like":"-");
-
                         imageViewerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(imageViewerIntent);
+                        if(activityObject instanceof ProfileFragment){
+                            ((ProfileFragment) activityObject).startActivityForResult(imageViewerIntent, ProfileFragment.UPDATE_LIKE_STATE);
+                        } else if(activityObject instanceof ProfileViewerActivity) {
+                            ((ProfileViewerActivity) activityObject).startActivityForResult(imageViewerIntent, ProfileFragment.UPDATE_LIKE_STATE);
+                        }
                     }
                 }
             }

@@ -178,6 +178,7 @@
     <string name="load_feed_error">เกิดข้อผิดพลาด ไม่สามารถโหลดฟีดได้ :(</string>
     <string name="reload_feed_button">โหลดใหม่</string>
     <string name="feed_filter_too_many_tag">คุณเพิ่มแท็กมากเกินไป กรุณาลบบางแท็กออกก่อน</string>
+    <string name="snackbar_exit_confirmation">กดปุ่ม ย้อนกลับ อีกครั้งเพื่อออกจากแอป</string>
 
     <!--profile-->
     <string name="action_delete_picture">ลบรูปภาพ</string>

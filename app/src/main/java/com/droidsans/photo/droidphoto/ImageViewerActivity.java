@@ -71,6 +71,7 @@ public class ImageViewerActivity extends AppCompatActivity {
     private Button reloadBtn;
     private Intent previousIntent;
     private Boolean isLike;
+    private Boolean isLikeStateChange = false;
     private int likeCountInt;
 
     private LinearLayout likeLayout;
@@ -154,6 +155,7 @@ public class ImageViewerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!isLike) {
                     isLike = true;
+                    isLikeStateChange = true;
                     likeCountInt++;
                     setLikeButtonUI(true, likeCountInt);
                     JSONObject data = new JSONObject();
@@ -176,6 +178,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                                         Toast.makeText(getApplicationContext(), "Like!", Toast.LENGTH_SHORT).show();
                                     } else {
                                         likeCountInt--;
+                                        isLikeStateChange = false;
                                         setLikeButtonUI(false, likeCountInt);
                                         Toast.makeText(getApplicationContext(), "Please try again later", Toast.LENGTH_SHORT).show();
                                     }
@@ -185,6 +188,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                     });
                 } else {
                     isLike = false;
+                    isLikeStateChange = true;
                     likeCountInt--;
                     setLikeButtonUI(false, likeCountInt);
                     JSONObject data = new JSONObject();
@@ -207,6 +211,7 @@ public class ImageViewerActivity extends AppCompatActivity {
                                         Toast.makeText(getApplicationContext(), "Unlike!", Toast.LENGTH_SHORT).show();
                                     } else {
                                         likeCountInt++;
+                                        isLikeStateChange = false;
                                         setLikeButtonUI(false, likeCountInt);
                                         Toast.makeText(getApplicationContext(), "Please try again later", Toast.LENGTH_SHORT).show();
                                     }
@@ -239,6 +244,14 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
+                if(isLikeStateChange){
+                    Intent returnData = new Intent();
+                    returnData.putExtra("isLike", isLike);
+                    returnData.putExtra("likeCount", likeCountInt);
+                    returnData.putExtra("photo_id", previousIntent.getStringExtra("photoId"));
+                    returnData.putExtra("position", previousIntent.getIntExtra("position", -1));
+                    setResult(RESULT_OK, returnData);
+                }
                 finish();
 //                Toast.makeText(getApplicationContext(),"back",Toast.LENGTH_SHORT).show();
                 return true;
@@ -296,6 +309,20 @@ public class ImageViewerActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(isLikeStateChange){
+            Intent returnData = new Intent();
+            returnData.putExtra("isLike", isLike);
+            returnData.putExtra("likeCount", likeCountInt);
+            returnData.putExtra("photo_id", previousIntent.getStringExtra("photoId"));
+            Log.d(getString(R.string.app_name), "photoId1: " + previousIntent.getStringExtra("photoId"));
+            returnData.putExtra("position", previousIntent.getIntExtra("position", -1));
+            setResult(RESULT_OK, returnData);
+        }
+        finish();
     }
 
     private void postImageLoaded() {
@@ -393,6 +420,8 @@ public class ImageViewerActivity extends AppCompatActivity {
         isLike = previousIntent.getBooleanExtra("is_like", true);
         likeCountInt = previousIntent.getIntExtra("like_count", -999);
         setLikeButtonUI(isLike, likeCountInt);
+
+        Log.d("DroidShot", "ImageViewerActivity: previousIntent: isLike: " + isLike);
 
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_eng_location), true)) {
             if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_local_location), true)) {

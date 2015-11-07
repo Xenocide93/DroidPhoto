@@ -1,6 +1,5 @@
 package com.droidsans.photo.droidphoto;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -21,7 +19,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -539,7 +536,23 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
+
+        if(FeedFragment.mFeedFragment != null) {
+            if(FeedFragment.mFeedFragment.filterCount > 0){
+                FeedFragment.mFeedFragment.removeTagBtn.callOnClick();
+                return;
+            } else {
+                if(!FeedFragment.mFeedFragment.isExitConfirmSnackbarShowing){
+                    FeedFragment.showExitSnackbar(
+                            FeedFragment.mFeedFragment.getActivity(),
+                            FeedFragment.mFeedFragment.getView());
+                    return;
+                }
+            }
+        }
+
         super.onBackPressed();
+
         if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
             actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
 //            Log.d("droidphoto", "backstack 0");

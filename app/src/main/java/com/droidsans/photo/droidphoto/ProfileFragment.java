@@ -47,6 +47,7 @@ import java.util.ArrayList;
  */
 public class ProfileFragment extends Fragment {
     public static final int EDIT_PROFILE = 1;
+    public static final int UPDATE_LIKE_STATE = 2;
     public static final String DISPLAY_NAME = "displayName";
     public static final String PROFILE_DESCRIPTION = "profileDesc";
     public static final String AVATAR_URL = "avatarURL";
@@ -78,7 +79,7 @@ public class ProfileFragment extends Fragment {
 
 //    private UserPictureGridAdapter adapter;
     public ProfileFeedRecycleViewAdapter adapter;
-    ArrayList<PicturePack> packs;
+    private ArrayList<PicturePack> packs;
 
     private MenuInflater menuInflater;
     private Menu menu;
@@ -248,16 +249,18 @@ public class ProfileFragment extends Fragment {
                                 pack.setIsEnhanced(jsonPhoto.optBoolean("is_enhanced"));
                                 pack.setIsFlash(jsonPhoto.optBoolean("is_flash"));
                                 pack.setSubmitDate(jsonPhoto.optString("submit_date"));
-                                pack.setAvatarURL(jsonPhoto.optString("avatar_url"));
+                                pack.setAvatarURL(avatarURL);
                                 pack.setIsLike(jsonPhoto.optBoolean("is_like"));
                                 pack.setLikeCount(jsonPhoto.optInt("like_count"));
+
+                                if(i==0) Log.d("DroidShot", "ProfileFragment: onGetUserFeedRespond: isLike: " + jsonPhoto.optBoolean("is_like"));
 
                                 packs.add(pack);
                             }
 
 
                             Log.d("droidphoto", "set adapter");
-                            adapter = new ProfileFeedRecycleViewAdapter(getActivity(), packs);
+                            adapter = new ProfileFeedRecycleViewAdapter(getActivity(), ProfileFragment.this, packs);
                             profileFeedPicRecyclerview.setAdapter(adapter);
 
                         } else {
@@ -376,6 +379,29 @@ public class ProfileFragment extends Fragment {
                     displayNameTv.setText(displayName);
                     profileDescTV.setText(profileDesc);
                     Snackbar.make(getView(), "Profile information has been updated", Snackbar.LENGTH_LONG).show();
+                    break;
+
+                case UPDATE_LIKE_STATE:
+                    boolean isLike = data.getBooleanExtra("isLike", false);
+                    int likeCount = data.getIntExtra("likeCount", -999);
+                    String photoId = data.getStringExtra("photo_id");
+
+                    int position = data.getIntExtra("position", -1);
+
+                    PicturePack pack = packs.get(position);
+
+                    if(!pack.photoId.trim().equals(photoId.trim())){
+                        for(int i = 0; i < packs.size(); i++){
+                            if(packs.get(i).photoId.trim().equals(photoId.trim())){
+                                pack = packs.get(i);
+                                break;
+                            }
+                        }
+                        if(!pack.photoId.trim().equals(photoId.trim())) requestUserPhoto();
+                    }
+                    pack.isLike = isLike;
+                    pack.likeCount = likeCount;
+
                     break;
             }
         } else {

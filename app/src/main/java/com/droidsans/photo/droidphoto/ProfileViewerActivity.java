@@ -26,9 +26,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
-import com.droidsans.photo.droidphoto.util.adapter.ProfileFeedRecycleViewAdapter;
 import com.droidsans.photo.droidphoto.util.transform.CircleTransform;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
+import com.droidsans.photo.droidphoto.util.adapter.ProfileFeedRecycleViewAdapter;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 
@@ -187,11 +187,13 @@ public class ProfileViewerActivity extends AppCompatActivity {
                                 pack.setIsLike(jsonPhoto.optBoolean("is_like"));
                                 pack.setLikeCount(jsonPhoto.optInt("like_count"));
 
+                                if(i==0) Log.d("DroidShot", "ProfileViewerActivity: onGetUserFeedRespond: isLike: " + jsonPhoto.optBoolean("is_like"));
+
                                 packs.add(pack);
                             }
 
                             Log.d("droidphoto", "set adapter");
-                            adapter = new ProfileFeedRecycleViewAdapter(getApplicationContext(), packs);
+                            adapter = new ProfileFeedRecycleViewAdapter(getApplicationContext(), ProfileViewerActivity.this , packs);
                             profileFeedPicRecyclerview.setAdapter(adapter);
                         } else {
                             Log.d("droidphoto", "User Feed error: " + data.optString("msg"));

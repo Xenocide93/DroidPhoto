@@ -20,13 +20,11 @@ public class FeedSortTypeSpinnerAdapter extends ArrayAdapter<String> {
     private LayoutInflater inflater;
     private ImageView actionbarIconView;
     private int sortType;
-    private FeedFragment feedFragment;
 
-    public FeedSortTypeSpinnerAdapter(Context context, int resource, List<String> objects, int sortType, FeedFragment feedFragment) {
+    public FeedSortTypeSpinnerAdapter(Context context, int resource, List<String> objects, int sortType) {
         super(context, resource, objects);
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.sortType = sortType;
-        this.feedFragment = feedFragment;
     }
 
     @Override
