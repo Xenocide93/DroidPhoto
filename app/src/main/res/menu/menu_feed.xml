@@ -12,6 +12,7 @@
         android:orderInCategory="1"
         android:title="@string/menu_sort_by_like"
         android:icon="@drawable/ic_sort_by_like_white_24px"
+        app:actionViewClass="android.widget.Spinner"
         app:showAsAction="always"/>
 
     <item

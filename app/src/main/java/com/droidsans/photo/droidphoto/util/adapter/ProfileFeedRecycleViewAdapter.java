@@ -123,7 +123,10 @@ public class ProfileFeedRecycleViewAdapter extends RecyclerView.Adapter {
                         imageViewerIntent.putExtra("submitDate", pack.submitDate);
                         imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
                         imageViewerIntent.putExtra("is_enhanced", pack.isEnhanced);
+                        imageViewerIntent.putExtra("is_like", pack.isLike);
+                        imageViewerIntent.putExtra("like_count", pack.likeCount);
 
+                        imageViewerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(imageViewerIntent);
                     }
                 }

@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,7 +56,10 @@ public class ProfileViewerActivity extends AppCompatActivity {
     private FontTextView reloadText;
     private Button reloadButton;
 
+    private Toolbar toolbar;
+
     public static final String baseURL = "/data/avatar/";
+    private String userId;
     private String username;
     private String avatarURL;
 
@@ -74,7 +78,7 @@ public class ProfileViewerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_profile);
+        setContentView(R.layout.activity_profile_viewer);
 
         initialize();
     }
@@ -82,11 +86,13 @@ public class ProfileViewerActivity extends AppCompatActivity {
     private void initialize() {
         findAllById();
 
-        username = getIntent().getStringExtra("username");
+        userId = getIntent().getStringExtra("user_id");
+        Log.d(getString(R.string.app_name), "init profile viewer userId: " + userId);
 
         setupProfileFeedRecyclerView();
         setupListener();
 
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         requestUserinfo();
@@ -108,7 +114,9 @@ public class ProfileViewerActivity extends AppCompatActivity {
                             JSONObject userObj = data.optJSONObject("userObj");
 
                             Log.d("droidphoto", userObj.optString("username") + " | " + userObj.optString("disp_name"));
-                            usernameTV.setText("@"+username);
+                            username = userObj.optString("username");
+                            toolbar.setTitle(username);
+                            usernameTV.setText("@" + username);
                             displayNameTv.setText(userObj.optString("disp_name"));
                             avatarURL = userObj.optString("avatar_url");
                             Glide.with(getApplicationContext())
@@ -175,16 +183,16 @@ public class ProfileViewerActivity extends AppCompatActivity {
                                 pack.setIsEnhanced(jsonPhoto.optBoolean("is_enhanced"));
                                 pack.setIsFlash(jsonPhoto.optBoolean("is_flash"));
                                 pack.setSubmitDate(jsonPhoto.optString("submit_date"));
-                                pack.setAvatarURL(jsonPhoto.optString("avatar_url"));
+                                pack.setAvatarURL(avatarURL);
+                                pack.setIsLike(jsonPhoto.optBoolean("is_like"));
+                                pack.setLikeCount(jsonPhoto.optInt("like_count"));
 
                                 packs.add(pack);
                             }
 
-
                             Log.d("droidphoto", "set adapter");
                             adapter = new ProfileFeedRecycleViewAdapter(getApplicationContext(), packs);
                             profileFeedPicRecyclerview.setAdapter(adapter);
-
                         } else {
                             Log.d("droidphoto", "User Feed error: " + data.optString("msg"));
                             initReload();
@@ -251,7 +259,7 @@ public class ProfileViewerActivity extends AppCompatActivity {
         JSONObject data = new JSONObject();
         try {
             data.put("_event", "get_profile");
-            data.put("user_id", username);
+            data.put("user_id", userId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -276,7 +284,7 @@ public class ProfileViewerActivity extends AppCompatActivity {
         try {
             data.put("skip", 0);
             data.put("limit", 21);
-            data.put("user_id", username);
+            data.put("user_id", userId);
             data.put("_event", "get_user_feed");
         } catch (JSONException e){e.printStackTrace();}
 
@@ -323,6 +331,11 @@ public class ProfileViewerActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menuInflater = getMenuInflater();
         this.menu = menu;
@@ -335,13 +348,17 @@ public class ProfileViewerActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-
+            case android.R.id.home:
+                finish();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     private void findAllById(){
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         loadingCircle = (ProgressBar) findViewById(R.id.loading_circle);
         reloadLayout = (LinearLayout) findViewById(R.id.reload_view);
         mainLayout = (RelativeLayout) findViewById(R.id.main_view);
@@ -357,9 +374,10 @@ public class ProfileViewerActivity extends AppCompatActivity {
         reloadButton = (Button) reloadLayout.findViewById(R.id.reload_button);
     }
 
-    public static void launchProfileViewer(Context context, String username){
+    public static void launchProfileViewer(Context context, String userId){
         Intent profileViewerIntent = new Intent(context, ProfileViewerActivity.class);
-        profileViewerIntent.putExtra("username", username);
+        profileViewerIntent.putExtra("user_id", userId);
+        profileViewerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(profileViewerIntent);
     }
 }

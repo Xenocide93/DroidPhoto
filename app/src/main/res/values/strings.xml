@@ -30,6 +30,7 @@
     <string name="title_activity_help_image_view">   </string>
     <string name="title_activity_device_camera_calibration">Camera Calibration</string>
     <string name="title_activity_model_viewer">   </string>
+    <string name="title_activity_profile_viewer">Profile Viewer</string>
 
     <string name="browser_vendor_title">Choose Smartphone Vendor</string>
     <string name="browse_model_title">Choose Smartphone Model</string>
@@ -176,6 +177,11 @@
     <string name="load_feed_error">Error loading feed :(</string>
     <string name="reload_feed_button">RELOAD</string>
     <string name="feed_filter_too_many_tag">Too many tags, Please remove some tag</string>
+
+    <string-array name="feed_sort_spinner">
+        <item>sort by recent</item>
+        <item>sort by like</item>
+    </string-array>
 
     <!--profile-->
     <string name="action_delete_picture">delete picture</string>

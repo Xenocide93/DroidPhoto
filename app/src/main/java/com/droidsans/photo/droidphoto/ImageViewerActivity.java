@@ -106,7 +106,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         View.OnClickListener launchProfileViewerOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProfileViewerActivity.launchProfileViewer(ImageViewerActivity.this, previousIntent.getStringExtra("username"));
+                ProfileViewerActivity.launchProfileViewer(getApplicationContext(), previousIntent.getStringExtra("userId"));
             }
         };
 

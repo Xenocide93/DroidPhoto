@@ -1,0 +1,29 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.droidsans.photo.droidphoto.ImageViewerActivity" >
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/item_toolbar" />
+
+    <RelativeLayout
+        android:id="@+id/fullpic_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+        <include
+            layout="@layout/fragment_profile" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_shadow_height"
+        android:background="@drawable/toolbar_dropshadow"
+        android:layout_below="@+id/toolbar"/>
+
+</RelativeLayout>

@@ -32,6 +32,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -39,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -73,6 +76,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1166,6 +1170,47 @@ public class FeedFragment extends Fragment {
         try {
             menu.clear();
             inflater.inflate(R.menu.menu_feed, menu);
+
+            MenuItem sortSpinnerItem = menu.findItem(R.id.action_sort);
+            if(sortSpinnerItem == null) Log.d(getString(R.string.app_name), "sortSpinnerItem null");
+            Spinner sortSpinner = (Spinner) sortSpinnerItem.getActionView();
+            if(sortSpinner == null) Log.d(getString(R.string.app_name), "sortSpinner null");
+
+            List<String> spinnerStringArray = new ArrayList<>();
+            spinnerStringArray.add("sort by recent");
+            spinnerStringArray.add("sort by like");
+
+//            Context themeContext = getActionBar().getThemedContext();
+//
+//            ArrayAdapter<CharSequence> listAdapter = ArrayAdapter.createFromResource(
+//                    themeContext,
+//                    R.array.feed_sort_spinner,
+//                    R.layout.support_simple_spinner_dropdown_item);
+//            listAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+//            sortSpinner.setAdapter(listAdapter);
+
+            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, spinnerStringArray);
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            sortSpinner.setAdapter(spinnerAdapter);
+
+            sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    switch(position){
+                        case 0:
+                            setFeedSortType(MOST_RECENT_TAG);
+                            break;
+                        case 1:
+                            setFeedSortType(MOST_POPULAR_TAG);
+                            break;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
 
             sortTypeMenuItem = menu.getItem(0);
 
