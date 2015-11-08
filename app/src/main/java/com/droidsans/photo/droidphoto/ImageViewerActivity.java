@@ -313,7 +313,9 @@ public class ImageViewerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d("DroidShot", "I was here 1");
         if(isLikeStateChange){
+            Log.d("DroidShot", "I was here 2");
             Intent returnData = new Intent();
             returnData.putExtra("isLike", isLike);
             returnData.putExtra("likeCount", likeCountInt);

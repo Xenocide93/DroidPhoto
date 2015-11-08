@@ -402,6 +402,8 @@ public class ProfileFragment extends Fragment {
                     pack.isLike = isLike;
                     pack.likeCount = likeCount;
 
+                    adapter.notifyDataSetChanged();
+
                     break;
             }
         } else {

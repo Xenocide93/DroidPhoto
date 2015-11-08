@@ -40,6 +40,7 @@ import java.util.ArrayList;
 
 
 public class ProfileViewerActivity extends AppCompatActivity {
+    public static final int UPDATE_LIKE_STATE = 1;
     public static final String DISPLAY_NAME = "displayName";
     public static final String PROFILE_DESCRIPTION = "profileDesc";
     public static final String AVATAR_URL = "avatarURL";
@@ -306,6 +307,44 @@ public class ProfileViewerActivity extends AppCompatActivity {
             //can emit: detect loss on the way
             GlobalSocket.mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("DroidShot", "I was here 3");
+        if(resultCode == RESULT_OK){
+            Log.d("DroidShot", "I was here 4");
+            switch (requestCode){
+                case UPDATE_LIKE_STATE:
+                    Log.d("DroidShot", "I was here 5");
+                    boolean isLike = data.getBooleanExtra("isLike", false);
+                    int likeCount = data.getIntExtra("likeCount", -999);
+                    String photoId = data.getStringExtra("photo_id");
+
+                    int position = data.getIntExtra("position", -1);
+
+                    PicturePack pack = packs.get(position);
+
+                    if(!pack.photoId.trim().equals(photoId.trim())){
+                        for(int i = 0; i < packs.size(); i++){
+                            if(packs.get(i).photoId.trim().equals(photoId.trim())){
+                                pack = packs.get(i);
+                                break;
+                            }
+                        }
+                        if(!pack.photoId.trim().equals(photoId.trim())) requestUserPhoto();
+                    }
+                    pack.isLike = isLike;
+                    pack.likeCount = likeCount;
+
+                    adapter.notifyDataSetChanged();
+
+                    break;
+            }
+        } else if(resultCode == RESULT_CANCELED){
+            Log.d(getString(R.string.app_name), "ProfileViewerActivity: result canceled");
+        }
+
     }
 
     @Override

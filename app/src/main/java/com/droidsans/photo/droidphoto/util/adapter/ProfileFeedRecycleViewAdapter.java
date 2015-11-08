@@ -1,11 +1,8 @@
 package com.droidsans.photo.droidphoto.util.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,7 +134,7 @@ public class ProfileFeedRecycleViewAdapter extends RecyclerView.Adapter {
                         if(activityObject instanceof ProfileFragment){
                             ((ProfileFragment) activityObject).startActivityForResult(imageViewerIntent, ProfileFragment.UPDATE_LIKE_STATE);
                         } else if(activityObject instanceof ProfileViewerActivity) {
-                            ((ProfileViewerActivity) activityObject).startActivityForResult(imageViewerIntent, ProfileFragment.UPDATE_LIKE_STATE);
+                            ((ProfileViewerActivity) activityObject).startActivityForResult(imageViewerIntent, ProfileViewerActivity.UPDATE_LIKE_STATE);
                         }
                     }
                 }
