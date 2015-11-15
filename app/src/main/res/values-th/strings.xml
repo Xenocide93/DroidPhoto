@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">DroidShot</string>
     <string name="app_desc">ถ่ายด้วย Android</string>
-    <string name="app_version">เวอร์ชัน 1.0.6</string>
+    <string name="app_version">เวอร์ชัน 1.1.0</string>
 
     <string name="action_search">ค้นหา</string>
     <string name="action_settings">ตั้งค่า</string>
     <string name="action_done">"  ยืนยัน  "</string>
     <string name="menu_filter">ตัวกรอง</string>
+    <string name="menu_sort_by_like">เรียงตามความนิยม</string>
+    <string name="menu_sort_by_time">เรียงตามรูปล่าสุด</string>
     <string name="action_cancel">"  ยกเลิก  "</string>
     <string name="action_print">พิมพ์</string>
 
@@ -28,6 +30,8 @@
     <string name="title_activity_help_image_view">   </string>
     <string name="title_activity_device_camera_calibration">ตั้งค่าฟังก์ชันกล้องของแอป</string>
     <string name="title_activity_update_device_retail_name">อัพเดทชื่อรุ่นมือถือ</string>
+    <string name="title_activity_model_viewer">   </string>
+    <string name="title_activity_profile_viewer">ดูโปรไฟล์</string>
 
     <string name="browser_vendor_title">เลือกยี่ห้อมือถือ</string>
     <string name="browse_model_title">เลือกรุ่นมือถือ</string>
@@ -151,10 +155,12 @@
     <!--Tutorial-->
     <string name="tutorial_string_fam">กดเพื่อโพสรูปใหม่</string>
     <string name="tutorial_string_filter">เลือกรุ่นมือถือที่จะแสดง</string>
+    <string name="tutorial_string_feedtype">สลับระหว่าง\n ล่าสุด และ ยอดนิยม</string>
     <string name="tutorial_touch_to_dismiss">แตะเพื่อปิด</string>
 
     <!--Feed-->
     <string name="recent_tag">ล่าสุด</string>
+    <string name="popular_tag">ยอดนิยม</string>
     <string name="alert_not_your_photo_title">ไม่ใช่รูปจากมือถือเครื่องนี้</string>
     <string name="alert_not_your_photo_message">กรุณาเลือกรูปที่ถ่ายจากกล้องของมือถือเครื่องนี้</string>
     <string name="alert_not_from_camera_title">ไม่ใช่รูปถ่าย</string>
@@ -173,6 +179,7 @@
     <string name="load_feed_error">เกิดข้อผิดพลาด ไม่สามารถโหลดฟีดได้ :(</string>
     <string name="reload_feed_button">โหลดใหม่</string>
     <string name="feed_filter_too_many_tag">คุณเพิ่มแท็กมากเกินไป กรุณาลบบางแท็กออกก่อน</string>
+    <string name="snackbar_exit_confirmation">กดปุ่ม ย้อนกลับ อีกครั้งเพื่อออกจากแอป</string>
 
     <!--profile-->
     <string name="action_delete_picture">ลบรูปภาพ</string>

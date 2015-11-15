@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:minHeight="?attr/listPreferredItemHeight"
+        android:gravity="center"
+        android:mode="twoLine">
+
+        <com.droidsans.photo.droidphoto.util.view.FontTextView
+            android:id="@+id/build_device_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/light_gray"
+            android:textAppearance="?attr/textAppearanceListItem" />
+
+        <com.droidsans.photo.droidphoto.util.view.FontTextView
+            android:id="@+id/build_model_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/light_gray"
+            android:textAppearance="?attr/textAppearanceListItemSmall"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/model_show_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_error_outline_black_24dp"
+        android:alpha="0.3"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>

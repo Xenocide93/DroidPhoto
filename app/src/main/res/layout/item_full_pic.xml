@@ -80,52 +80,98 @@
                 android:layout_margin="@dimen/activity_horizontal_margin"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/caption_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical|left"
-                    android:orientation="horizontal">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:layout_width="@dimen/image_viewer_icon_size"
-                        android:layout_height="@dimen/image_viewer_icon_size"
-                        android:alpha="0.7"
-                        android:src="@drawable/ic_comment_black_48dp" />
+                    <LinearLayout
+                        android:id="@+id/like_btn"
+                        android:layout_width="110dp"
+                        android:layout_height="36dp"
+                        android:orientation="horizontal"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:layout_marginRight="@dimen/small_padding"
+                        android:background="@drawable/curve_primary_border">
 
-                    <com.droidsans.photo.droidphoto.util.view.FontTextView
-                        android:id="@+id/caption"
+                        <ImageView
+                            android:id="@+id/like_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:scaleType="center"
+                            android:layout_marginRight="@dimen/small_padding"
+                            android:src="@drawable/ic_favorite_outline_primary_24dp"/>
+
+                        <TextView
+                            android:id="@+id/like_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_centerVertical="true"
+                            android:textColor="@color/primary_color"
+                            android:text="1,230"
+                            android:gravity="center"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/caption_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/small_padding"
-                        android:text="caption_test"
-                        android:textSize="@dimen/pic_viewer_font_size" />
+                        android:gravity="center_vertical|left"
+                        android:orientation="horizontal"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/like_btn">
 
-                </LinearLayout>
+                        <ImageView
+                            android:layout_width="@dimen/image_viewer_icon_size"
+                            android:layout_height="@dimen/image_viewer_icon_size"
+                            android:alpha="0.7"
+                            android:src="@drawable/ic_comment_black_48dp" />
 
-                <LinearLayout
-                    android:id="@+id/device_name_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/small_padding"
-                    android:gravity="center_vertical|left"
-                    android:orientation="horizontal">
+                        <com.droidsans.photo.droidphoto.util.view.FontTextView
+                            android:id="@+id/caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/small_padding"
+                            android:paddingRight="@dimen/small_padding"
+                            android:text="caption_test"
+                            android:textSize="@dimen/pic_viewer_font_size" />
 
-                    <ImageView
-                        android:layout_width="@dimen/image_viewer_icon_size"
-                        android:layout_height="@dimen/image_viewer_icon_size"
-                        android:alpha="0.7"
-                        android:src="@drawable/ic_smartphone_black_48dp" />
+                    </LinearLayout>
 
-                    <com.droidsans.photo.droidphoto.util.view.FontTextView
-                        android:id="@+id/device_name"
+                    <LinearLayout
+                        android:id="@+id/device_name_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/small_padding"
-                        android:text="\???"
-                        android:textSize="@dimen/pic_viewer_font_size" />
+                        android:layout_marginTop="@dimen/small_padding"
+                        android:gravity="center_vertical|left"
+                        android:orientation="horizontal"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toLeftOf="@id/like_btn"
+                        android:layout_below="@id/caption_layout">
 
-                </LinearLayout>
+                        <ImageView
+                            android:layout_width="@dimen/image_viewer_icon_size"
+                            android:layout_height="@dimen/image_viewer_icon_size"
+                            android:alpha="0.7"
+                            android:src="@drawable/ic_smartphone_black_48dp" />
+
+                        <com.droidsans.photo.droidphoto.util.view.FontTextView
+                            android:id="@+id/device_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/small_padding"
+                            android:text="Samsung Galaxy Note 5"
+                            android:textSize="@dimen/pic_viewer_font_size" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"

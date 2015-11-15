@@ -18,9 +18,9 @@ public class PicturePack {
             eventId, shutterSpeed, aperture, iso, username, submitDate,
             gpsLocation, photoId, userId, gpsLocalizedLocation, avatarURL,
             localPicturePath;
-    public int rank, width, height;
+    public int rank, width, height, likeCount;
     public double gpsLat, gpsLong;
-    public boolean isEnhanced, isFlash, isUploading;
+    public boolean isEnhanced, isFlash, isUploading, isLike;
     public int percentage = 0;
     public final String baseURL = "/data/photo/500px/";
 
@@ -43,6 +43,10 @@ public class PicturePack {
         this.isUploading = isUploading;
         this.localPicturePath = localPicturePath;
     }
+
+    public void setLikeCount(int likeCount){this.likeCount = likeCount; }
+
+    public void setIsLike(Boolean isLike){this.isLike = isLike; }
 
     public void setPhotoId(String photoId) {
         this.photoId = photoId;

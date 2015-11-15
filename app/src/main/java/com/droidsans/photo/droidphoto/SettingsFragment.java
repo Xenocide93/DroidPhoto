@@ -28,7 +28,19 @@ public class SettingsFragment extends AndroidPreferenceFragment {
         addPreferencesFromResource(R.xml.settings);
     }
 
-//    @Override
+    @Override
+    public void onStop() {
+        super.onStop();
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener((SettingsActivity)getActivity());
+    }
+
+    @Override
+    public void onStart() {
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener((SettingsActivity)getActivity());
+        super.onStart();
+    }
+
+    //    @Override
 //    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 //                             Bundle savedInstanceState) {
 //        // Inflate the layout for this fragment

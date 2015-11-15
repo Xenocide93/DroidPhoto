@@ -1,6 +1,5 @@
 package com.droidsans.photo.droidphoto;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -21,7 +19,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -62,9 +59,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+//        super.onCreate(null);
+        if(BaseApplication.isPassingSavedInstance) {
+            super.onCreate(savedInstanceState);
+        } else {
+            super.onCreate(null);
+        }
         setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
+        BaseApplication.isPassingSavedInstance = true;
 
         initialize();
     }
@@ -190,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                             GlobalSocket.mSocket.off("old_version");
                             JSONObject data = (JSONObject) args[0];
                             String message = getString(R.string.alert_old_version_message_front) + getString(R.string.app_version) + getString(R.string.alert_old_version_message_back);
-                            if(data.optBoolean("success")) {
+                            if (data.optBoolean("success")) {
                                 message += getString(R.string.alert_old_version_message_server_version) + data.optString("msg");
                             }
                             new AlertDialog.Builder(MainActivity.this)
@@ -310,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.main_fragment, new ProfileFragment());
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 toolbar.setTitle(getUserdata().getString(getString(R.string.username), "???"));
                 drawerLayout.closeDrawers();
@@ -371,6 +375,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new EventFragment());
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                     toolbar.setTitle(getString(R.string.drawer_event));
                     previousMenuItem = eventMenuItem;
@@ -380,6 +385,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new PlaceholderFragment());
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                     toolbar.setTitle(getString(R.string.drawer_help));
                     previousMenuItem = helpMenuItem;
@@ -388,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().popBackStack();
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_fragment, new AboutFragment());
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                     toolbar.setTitle(getString(R.string.drawer_about));
                     previousMenuItem = aboutMenuItem;
@@ -491,6 +498,11 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == ACTIVITY_SETTINGS) {
             if(settingsMenuItem != null) settingsMenuItem.setChecked(false);
             if(previousMenuItem != null) previousMenuItem.setChecked(true);
+            if(data != null && data.getBooleanExtra("isLanguageChange", false)) {
+                BaseApplication.isPassingSavedInstance = false;
+                finish();
+                startActivity(getIntent());
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -499,7 +511,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //outState.put(tag, data);
-//        super.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -522,22 +534,40 @@ public class MainActivity extends AppCompatActivity {
             if(ProfileFragment.mProfileFragment.adapter.isInEditMode){
                 ProfileFragment.mProfileFragment.cancelEditMode();
                 return;
-            } else {
-                super.onBackPressed();
             }
         }
+
+        if(FeedFragment.mFeedFragment != null) {
+            if(FeedFragment.mFeedFragment.filterCount > 0){
+                FeedFragment.mFeedFragment.removeTagBtn.callOnClick();
+                return;
+            } else {
+                if(!FeedFragment.mFeedFragment.isExitConfirmSnackbarShowing){
+                    FeedFragment.showExitSnackbar(
+                            FeedFragment.mFeedFragment.getActivity(),
+                            FeedFragment.mFeedFragment.getView());
+                    return;
+                }
+            }
+        }
+
         super.onBackPressed();
+
         if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
             actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+//            Log.d("droidphoto", "backstack 0");
+            toolbar.setTitle(getString(R.string.drawer_feed));
         }
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        getSupportFragmentManager().popBackStack();
-        actionBarDrawerToggle.syncState();
-        return true;
+//        getSupportFragmentManager().popBackStack();
+//        actionBarDrawerToggle.syncState();
+//        return true;
+        return super.onSupportNavigateUp();
     }
+
 
     //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {

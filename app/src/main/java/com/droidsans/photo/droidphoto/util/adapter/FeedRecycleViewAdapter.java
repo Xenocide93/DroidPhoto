@@ -3,6 +3,7 @@ package com.droidsans.photo.droidphoto.util.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,13 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private ArrayList<PicturePack> packs;
 //    private LayoutInflater inflater;
     private Context context;
+    private FeedFragment feedFragment;
     public static boolean isClickOnce = false;
 
-    public FeedRecycleViewAdapter(Context context, ArrayList<PicturePack> packs){
+    public FeedRecycleViewAdapter(Context context,FeedFragment feedFragment, ArrayList<PicturePack> packs){
         this.packs = packs;
         this.context = context;
+        this.feedFragment = feedFragment;
     }
 
     @Override
@@ -108,8 +111,14 @@ public class FeedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                 imageViewerIntent.putExtra("submitDate", pack.submitDate);
                                 imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
                                 imageViewerIntent.putExtra("is_enhanced", pack.isEnhanced);
+                                imageViewerIntent.putExtra("is_like", pack.isLike);
+                                imageViewerIntent.putExtra("like_count", pack.likeCount);
 
-                                context.startActivity(imageViewerIntent);
+                                imageViewerIntent.putExtra("position", position);
+
+                                if(position==0) Log.d("DroidShot", "FeedRecycleViewAdapter: OnClickListener: isLike: " + pack.isLike);
+
+                                feedFragment.startActivityForResult(imageViewerIntent, FeedFragment.UPDATE_LIKE_STATE);
                             }
                         }
                     });

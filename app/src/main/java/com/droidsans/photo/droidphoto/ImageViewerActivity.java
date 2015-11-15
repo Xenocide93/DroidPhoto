@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -69,6 +70,13 @@ public class ImageViewerActivity extends AppCompatActivity {
     private FontTextView reloadText;
     private Button reloadBtn;
     private Intent previousIntent;
+    private Boolean isLike;
+    private Boolean isLikeStateChange = false;
+    private int likeCountInt;
+
+    private LinearLayout likeLayout;
+    private ImageView likeIcon;
+    private TextView likeCount;
 
     private Toolbar toolbar;
     private int percentage = -1;
@@ -84,41 +92,137 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setupListener();
 
         if(setup()) {
+            loadImage();
+        } else {
+            Toast.makeText(getApplicationContext(), "cannot initialize imageviewer (bug ?)", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void setupListener() {
+        setupLikeButtonListener();
+
+        View.OnClickListener launchProfileViewerOnClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileViewerActivity.launchProfileViewer(getApplicationContext(), previousIntent.getStringExtra("userId"));
+            }
+        };
+
+        user.setOnClickListener(launchProfileViewerOnClick);
+        avatar.setOnClickListener(launchProfileViewerOnClick);
+    }
+
+    private void loadImage(){
 //            Glide.with(getApplicationContext())
 //                    .load(GlobalSocket.serverURL + baseURL + photoURL)
 //                    .crossFade()
 //                    .into(picture);
-            String hash = photoURL.substring(0, photoURL.lastIndexOf("."));
-            try {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                md.update(hash.getBytes());
-                hash = bytesToHex(md.digest());
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-//            File cachedFile = new File(getCacheDir(), photoURL.substring(0, photoURL.lastIndexOf(".")));
-            File cachedFile = new File(getCacheDir(), hash);
-            if(cachedFile.exists()) {
-                //load image from cache
-                Glide.with(getApplicationContext())
-                        .load(cachedFile)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                        .crossFade()
-                        .into(picture);
-//                TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
-                setupPictureClickListener();
-
-                postImageLoaded();
-            } else {
-                //download image
-                setupReloadButtonListener();
-                initImageLoader();
-            }
-        } else {
-            Toast.makeText(getApplicationContext(), "cannot initialize imageviewer (bug ?)", Toast.LENGTH_LONG).show();
+        Log.d(getString(R.string.app_name), "photoURL: " + photoURL);
+        String hash = photoURL.substring(0, photoURL.lastIndexOf("."));
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(hash.getBytes());
+            hash = bytesToHex(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
+//            File cachedFile = new File(getCacheDir(), photoURL.substring(0, photoURL.lastIndexOf(".")));
+        File cachedFile = new File(getCacheDir(), hash);
+        if(cachedFile.exists()) {
+            //load image from cache
+            Glide.with(getApplicationContext())
+                    .load(cachedFile)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                        .crossFade()
+                    .into(picture);
+//                TileBitmapDrawable.attachTileBitmapDrawable(picture, getCacheDir() + "/" + photoURL.split("\\.")[0], null, null);
+            setupPictureClickListener();
+
+            postImageLoaded();
+        } else {
+            //download image
+            setupReloadButtonListener();
+            initImageLoader();
+        }
+    }
+
+    private void setupLikeButtonListener() {
+        likeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isLike) {
+                    isLike = true;
+                    isLikeStateChange = true;
+                    likeCountInt++;
+                    setLikeButtonUI(true, likeCountInt);
+                    JSONObject data = new JSONObject();
+                    try {
+                        data.put("photo_id", previousIntent.getStringExtra("photoId"));
+                        data.put("_event", "onLikeRespond");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    GlobalSocket.globalEmit("photo.like", data);
+                    GlobalSocket.mSocket.on("onLikeRespond", new Emitter.Listener() {
+                        @Override
+                        public void call(final Object... args) {
+                            GlobalSocket.mSocket.off("onLikeRespond");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JSONObject returnData = (JSONObject) args[0];
+                                    if (returnData.optBoolean("success")) {
+                                        Toast.makeText(getApplicationContext(), "Like!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        likeCountInt--;
+                                        isLikeStateChange = false;
+                                        setLikeButtonUI(false, likeCountInt);
+                                        Toast.makeText(getApplicationContext(), "Please try again later", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    isLike = false;
+                    isLikeStateChange = true;
+                    likeCountInt--;
+                    setLikeButtonUI(false, likeCountInt);
+                    JSONObject data = new JSONObject();
+                    try {
+                        data.put("photo_id", previousIntent.getStringExtra("photoId"));
+                        data.put("_event", "onUnlikeRespond");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    GlobalSocket.globalEmit("photo.unlike", data);
+                    GlobalSocket.mSocket.on("onUnlikeRespond", new Emitter.Listener() {
+                        @Override
+                        public void call(final Object... args) {
+                            GlobalSocket.mSocket.off("onUnlikeRespond");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    JSONObject returnData = (JSONObject) args[0];
+                                    if (returnData.optBoolean("success")) {
+                                        Toast.makeText(getApplicationContext(), "Unlike!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        likeCountInt++;
+                                        isLikeStateChange = false;
+                                        setLikeButtonUI(false, likeCountInt);
+                                        Toast.makeText(getApplicationContext(), "Please try again later", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
+            }
+        });
     }
 
     @Override
@@ -140,6 +244,14 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
+                if(isLikeStateChange){
+                    Intent returnData = new Intent();
+                    returnData.putExtra("isLike", isLike);
+                    returnData.putExtra("likeCount", likeCountInt);
+                    returnData.putExtra("photo_id", previousIntent.getStringExtra("photoId"));
+                    returnData.putExtra("position", previousIntent.getIntExtra("position", -1));
+                    setResult(RESULT_OK, returnData);
+                }
                 finish();
 //                Toast.makeText(getApplicationContext(),"back",Toast.LENGTH_SHORT).show();
                 return true;
@@ -197,6 +309,22 @@ public class ImageViewerActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("DroidShot", "I was here 1");
+        if(isLikeStateChange){
+            Log.d("DroidShot", "I was here 2");
+            Intent returnData = new Intent();
+            returnData.putExtra("isLike", isLike);
+            returnData.putExtra("likeCount", likeCountInt);
+            returnData.putExtra("photo_id", previousIntent.getStringExtra("photoId"));
+            Log.d(getString(R.string.app_name), "photoId1: " + previousIntent.getStringExtra("photoId"));
+            returnData.putExtra("position", previousIntent.getIntExtra("position", -1));
+            setResult(RESULT_OK, returnData);
+        }
+        finish();
     }
 
     private void postImageLoaded() {
@@ -290,6 +418,12 @@ public class ImageViewerActivity extends AppCompatActivity {
         } else {
             enhanced.setVisibility(View.GONE);
         }
+
+        isLike = previousIntent.getBooleanExtra("is_like", true);
+        likeCountInt = previousIntent.getIntExtra("like_count", -999);
+        setLikeButtonUI(isLike, likeCountInt);
+
+        Log.d("DroidShot", "ImageViewerActivity: previousIntent: isLike: " + isLike);
 
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_eng_location), true)) {
             if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_local_location), true)) {
@@ -385,6 +519,8 @@ public class ImageViewerActivity extends AppCompatActivity {
     protected void onDestroy() {
         if(loader != null && loader.getStatus() != AsyncTask.Status.FINISHED) loader.cancel(true);
         GlobalSocket.mSocket.off("hide_photo");
+        GlobalSocket.mSocket.off("onLikeRespond");
+        GlobalSocket.mSocket.off("onUnlikeRespond");
         super.onDestroy();
     }
 
@@ -412,6 +548,19 @@ public class ImageViewerActivity extends AppCompatActivity {
         reloadBtn = (Button) findViewById(R.id.reload_button);
         enhanced = (LinearLayout) findViewById(R.id.enhanced);
         zoom = (ImageView) findViewById(R.id.zoom);
+
+        likeLayout = (LinearLayout) findViewById(R.id.like_btn);
+        likeIcon = (ImageView) findViewById(R.id.like_icon);
+        likeCount = (TextView) findViewById(R.id.like_count);
+    }
+
+    private void setLikeButtonUI(boolean isLike, int count){
+        if(isLike){
+            likeIcon.setImageResource(R.drawable.ic_favorite_primary_24dp);
+        } else {
+            likeIcon.setImageResource(R.drawable.ic_favorite_outline_primary_24dp);
+        }
+        likeCount.setText(count + "");
     }
 
     private String bytesToHex(byte[] in) {

@@ -2,19 +2,16 @@ package com.droidsans.photo.droidphoto;
 
 
 import android.animation.Animator;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
@@ -32,10 +29,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -43,16 +39,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.droidsans.photo.droidphoto.util.adapter.FeedRecycleViewAdapter;
 import com.droidsans.photo.droidphoto.util.FlowLayout;
-import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
+import com.droidsans.photo.droidphoto.util.adapter.FeedRecycleViewAdapter;
+import com.droidsans.photo.droidphoto.util.adapter.FeedSortTypeSpinnerAdapter;
+import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.nkzawa.emitter.Emitter;
@@ -66,7 +64,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -75,7 +72,10 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,18 +92,20 @@ public class FeedFragment extends Fragment {
     private static final int FILTER_FEED = 2;
     private static final int FILL_POST = 4;
     private static final int SELECT_PHOTO = 8;
+    public static final int UPDATE_LIKE_STATE = 16;
     private static final String FIRST_TIME_FEED_FRAGMENT = "firstTimeFeedFragment";
     private static final int FEED_LIMIT_PER_REQUEST = 20;
+    public static final int MOST_RECENT_TAG = 1;
+    public static final int MOST_POPULAR_TAG = 2;
 
     private View logoLayout, dimView;
-//    private GridView feedGridView;
     private RecyclerView feedRecycleView;
-//    private PictureGridAdapter adapter;
     private FeedRecycleViewAdapter recycleAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<PicturePack> feedPicturePack;
     private FloatingActionMenu fam;
     private FloatingActionButton fabChoosePic, fabCamera;
+    private MenuItem sortTypeMenuItem;
 
     private FontTextView reloadText;
     private Button reloadButton;
@@ -115,13 +117,13 @@ public class FeedFragment extends Fragment {
 
     private RelativeLayout tagField;
     private FlowLayout tagLayout;
-    private ImageButton removeTagBtn;
+    public ImageButton removeTagBtn;
     private boolean isRemoveTagActive = false;
 
     private static String staticPhotoPath = null;
     private static boolean hasImageInPhotoPath = false;
 
-    private int filterCount;
+    public int filterCount;
     private String skipDate;
     private boolean isUpdate = false;
     private boolean noData = true;
@@ -163,11 +165,16 @@ public class FeedFragment extends Fragment {
     public static boolean isUploading = false;
     private RelativeLayout uploadProgressLayout;
 
+    private FeedSortTypeSpinnerAdapter sortTypeAdapter;
+    private Menu actionbarMenu;
+
     private static float normalFamPositionX, normalFamPositionY;
     private ImageView uploadImagePreview;
     private ProgressBar uploadProgressbar;
     private Button cancelUpload;
     private final int LOOP_DELAY = 250;
+
+    public static boolean isExitConfirmSnackbarShowing = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -206,6 +213,24 @@ public class FeedFragment extends Fragment {
         setupEmitterListener();
     }
 
+    public static void showExitSnackbar(Context context, View view) {
+        Snackbar exitConfirmSnackbar = Snackbar.make(view, context.getString(R.string.snackbar_exit_confirmation), Snackbar.LENGTH_LONG);
+        exitConfirmSnackbar.setCallback(new Snackbar.Callback() {
+            @Override
+            public void onShown(Snackbar snackbar) {
+                FeedFragment.isExitConfirmSnackbarShowing = true;
+                super.onShown(snackbar);
+            }
+
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                FeedFragment.isExitConfirmSnackbarShowing = false;
+                super.onDismissed(snackbar, event);
+            }
+        });
+        exitConfirmSnackbar.show();
+    }
+
     private void setupUploadProgress() {
         if(isUploading){
             showUploadProgress(false);
@@ -230,10 +255,13 @@ public class FeedFragment extends Fragment {
             //set tooltip list
             tutorialViewList = new ArrayList<>();
             tutorialStringList = new ArrayList<>();
+
             tutorialViewList.add(fam.getMenuIconView());
             tutorialStringList.add(getResources().getString(R.string.tutorial_string_fam));
             tutorialViewList.add(getActivity().getWindow().getDecorView().findViewById(R.id.action_filter));
             tutorialStringList.add(getResources().getString(R.string.tutorial_string_filter));
+//            tutorialViewList.add(tagLayout.getChildAt(0));
+//            tutorialStringList.add(getResources().getString(R.string.tutorial_string_feedtype));
 
             //launch first tooltip (auto launch the rest)
             tutorialHandler = TourGuide.init(getActivity()).with(TourGuide.Technique.Click)
@@ -375,7 +403,14 @@ public class FeedFragment extends Fragment {
             filter.put("filter_count", filterCount);
             if(skipDate != null) filter.put("skip", skipDate);
             filter.put("limit", FEED_LIMIT_PER_REQUEST);
-            filter.put("sptag", null);
+            switch (getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1)){
+                case MOST_RECENT_TAG:
+                    filter.put("sptag", "recent");
+                    break;
+                case MOST_POPULAR_TAG:
+                    filter.put("sptag", "popular");
+                    break;
+            }
             if(isUpdate) filter.put("_event", "update_feed");
             else filter.put("_event", "get_feed");
         } catch (JSONException e) {
@@ -643,6 +678,11 @@ public class FeedFragment extends Fragment {
                                 picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
                                 picturePack.setSubmitDate(jsonPack.optString("submit_date"));
                                 picturePack.setAvatarURL(jsonPack.optString("avatar_url"));
+                                picturePack.setIsLike(jsonPack.optBoolean("is_like"));
+                                picturePack.setLikeCount(jsonPack.optInt("like_count"));
+
+                                if(i==0) Log.d(getString(R.string.app_name), "FeedFragment: onGetFeedResponse: isLike: " + jsonPack.optBoolean("is_like"));
+
 //                                Log.d("droidphoto", jsonPack.optString("submit_date"));
 
                                 skipDate = jsonPack.optString("submit_date");
@@ -664,7 +704,7 @@ public class FeedFragment extends Fragment {
                                 PicturePack footer = new PicturePack();
                                 feedPicturePack.add(footer);
                             }
-                            recycleAdapter = new FeedRecycleViewAdapter(getActivity(), feedPicturePack);
+                            recycleAdapter = new FeedRecycleViewAdapter(getActivity(), FeedFragment.this, feedPicturePack);
                             feedRecycleView.setAdapter(recycleAdapter);
 
                             if(feedRecycleView.getAlpha() < 1f) {
@@ -672,7 +712,6 @@ public class FeedFragment extends Fragment {
                                         .alpha(1f)
                                         .setDuration(300)
                                         .start();
-                                Log.d("droidphoto", "alpha:1");
                             }
 
                             swipeRefreshLayout.setRefreshing(false);
@@ -714,6 +753,13 @@ public class FeedFragment extends Fragment {
                                     BrowseModelActivity.modelName[i] = ((JSONArray) models.get(i)).join(",").replaceAll("\"", "").replaceAll("\\\\", "").split(",");
                                     BrowseModelActivity.buildDevice[i] = ((JSONArray) bDevices.get(i)).join(",").replaceAll("\"", "").split(",");
                                     BrowseModelActivity.buildModel[i] = ((JSONArray) bModels.get(i)).join(",").replaceAll("\"", "").split(",");
+
+                                    Arrays.sort(BrowseModelActivity.modelName[i], new Comparator<String>() {
+                                        @Override
+                                        public int compare(String s1, String s2) {
+                                            return s1.compareToIgnoreCase(s2);
+                                        }
+                                    });
                                 }
 
                                 if(models.length() > 0) {
@@ -827,6 +873,9 @@ public class FeedFragment extends Fragment {
                                         case "Nubia":
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_nubia_300;
                                             break;
+                                        case "Blind Test":
+                                            BrowseVendorActivity.vendorPicResource[i] = R.drawable.blind_test_300;
+                                            break;
                                         default:
                                             BrowseVendorActivity.vendorPicResource[i] = R.drawable.vendor_logo_default_300;
                                             break;
@@ -898,6 +947,8 @@ public class FeedFragment extends Fragment {
                                 picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
                                 picturePack.setSubmitDate(jsonPack.optString("submit_date"));
                                 picturePack.setAvatarURL(jsonPack.optString("avatar_url"));
+                                picturePack.setIsLike(jsonPack.optBoolean("is_like"));
+                                picturePack.setLikeCount(jsonPack.optInt("like_count"));
 
                                 skipDate = jsonPack.optString("submit_date");
                                 feedPicturePack.add(picturePack);
@@ -1143,8 +1194,16 @@ public class FeedFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_feed, menu);
+        try {
+            actionbarMenu = menu;
+            menu.clear();
+            inflater.inflate(R.menu.menu_feed, menu);
+            setupMenuSortTypeSpinner(this, actionbarMenu);
+        } catch (IllegalStateException e){
+
+        } catch (NullPointerException e){
+
+        }
     }
 
     @Override
@@ -1167,6 +1226,14 @@ public class FeedFragment extends Fragment {
                     Snackbar.make(getView(), getString(R.string.feed_filter_too_many_tag), Snackbar.LENGTH_LONG).show();
                 } else {
                     launchAddFilterPopup();
+                }
+                return true;
+            case R.id.action_sort:
+                int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1);
+                if(feedType == MOST_RECENT_TAG){
+                    setFeedSortType(MOST_POPULAR_TAG);
+                } else if(feedType == MOST_POPULAR_TAG){
+                    setFeedSortType(MOST_RECENT_TAG);
                 }
                 return true;
         }
@@ -1193,7 +1260,6 @@ public class FeedFragment extends Fragment {
                             if(vendorName.equals(view.vendorName) && modelName.equals(view.modelName)) return;
                         }
                         addTag(vendorName, modelName);
-                        updateTagView();
 
                         //prepare data for refresh feed
                         refreshFeed();
@@ -1344,6 +1410,28 @@ public class FeedFragment extends Fragment {
                     showUploadProgress(true);
 
                     break;
+                case UPDATE_LIKE_STATE:
+                    boolean isLike = data.getBooleanExtra("isLike", false);
+                    int likeCount = data.getIntExtra("likeCount", -999);
+                    String photoId = data.getStringExtra("photo_id");
+
+                    int position = data.getIntExtra("position", -1);
+
+                    PicturePack pack = feedPicturePack.get(position);
+
+                    if(!pack.photoId.trim().equals(photoId.trim())){
+                        for(int i = 0; i < feedPicturePack.size(); i++){
+                            if(feedPicturePack.get(i).photoId.trim().equals(photoId.trim())){
+                                pack = feedPicturePack.get(i);
+                                break;
+                            }
+                        }
+                        if(!pack.photoId.trim().equals(photoId.trim())) refreshFeed();
+                    }
+                    pack.isLike = isLike;
+                    pack.likeCount = likeCount;
+
+                    break;
             }
         else if(resultCode == FragmentActivity.RESULT_CANCELED) {
             if(data != null && data.hasExtra("return code")) {
@@ -1479,6 +1567,7 @@ public class FeedFragment extends Fragment {
     @Override
     public void onStop() {
 //        feedGridView.setClickable(false);
+        FeedFragment.mFeedFragment = null;
         super.onStop();
     }
 
@@ -1486,6 +1575,7 @@ public class FeedFragment extends Fragment {
     public void onStart() {
 //        feedGridView.setClickable(true);
         FeedRecycleViewAdapter.isClickOnce = false;
+        FeedFragment.mFeedFragment = this;
         super.onStart();
     }
 
@@ -1806,7 +1896,7 @@ public class FeedFragment extends Fragment {
         cancelUpload = (Button) uploadProgressLayout.findViewById(R.id.cancel_pic_fake_snackbar);
     }
 
-    public void refreshFeed(){
+    private void refreshFeed(){
         feedRecycleView.animate()
                 .alpha(0f)
                 .setDuration(300)
@@ -1818,8 +1908,6 @@ public class FeedFragment extends Fragment {
         JSONArray filterData = new JSONArray();
 
         try {
-            //create filter data
-//            filterCount = tagViewArray.size();
             for(TagView view : tagViewArray) {
                 JSONObject value = new JSONObject();
                 value.put("vendor", view.vendorName);
@@ -1839,8 +1927,6 @@ public class FeedFragment extends Fragment {
         isUpdate = true;
 
         try {
-            //create filter data
-//            filterCount = tagViewArray.size();
             for(TagView view : tagViewArray) {
                 JSONObject value = new JSONObject();
                 value.put("vendor", view.vendorName);
@@ -1861,12 +1947,31 @@ public class FeedFragment extends Fragment {
 
     private void updateTagView(){
         tagLayout.removeAllViews();
+
+        View feedTypeTag = null;
+        int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1);
+        if(feedType == MOST_RECENT_TAG){
+            feedTypeTag = LayoutInflater.from(getActivity()).inflate(R.layout.recent_tag, null, false);
+        } else {
+            feedTypeTag = LayoutInflater.from(getActivity()).inflate(R.layout.popular_tag, null, false);
+        }
+
+//        feedTypeTag.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1);
+//                if(feedType == MOST_RECENT_TAG){
+//                    setFeedSortType(MOST_POPULAR_TAG);
+//                } else if(feedType == MOST_POPULAR_TAG){
+//                    setFeedSortType(MOST_RECENT_TAG);
+//                }
+//            }
+//        });
+
+        tagLayout.addView(feedTypeTag);
+
         for(TagView view : tagViewArray) {
             tagLayout.addView(view.getTagView());
-        }
-        if(filterCount==0){
-            View recentTag = LayoutInflater.from(getActivity()).inflate(R.layout.recent_tag, null, false);
-            tagLayout.addView(recentTag);
         }
     }
 
@@ -1875,6 +1980,7 @@ public class FeedFragment extends Fragment {
         tagView.tagIndex = tagViewArray.size();
         tagViewArray.add(tagView);
         filterCount++;
+        updateTagView();
     }
 
     private boolean removeTag(){
@@ -1951,5 +2057,73 @@ public class FeedFragment extends Fragment {
                 }
             });
         }
+    }
+
+    public void setFeedSortType(int sortType){
+        getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE)
+                .edit()
+                .putInt("feedType", sortType)
+                .apply();
+
+//        if(sortType == MOST_POPULAR_TAG){
+//            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_time_white_24px));
+//            sortTypeMenuItem.setTitle(R.string.menu_sort_by_time);
+//
+//        } else if(sortType == MOST_RECENT_TAG){
+//            sortTypeMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_sort_by_like_white_24px));
+//            sortTypeMenuItem.setTitle(R.string.menu_sort_by_like);
+//        }
+
+        if(sortTypeAdapter.getSortType() != sortType) {
+            sortTypeAdapter.setSortType(sortType);
+            sortTypeAdapter.notifyDataSetChanged();
+        }
+
+        updateTagView();
+        refreshFeed();
+        initLoading();
+    }
+
+    private void setupMenuSortTypeSpinner(final FeedFragment feedFragment, Menu menu) {
+        int feedType = getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", MOST_RECENT_TAG);
+
+        MenuItem sortSpinnerItem = menu.findItem(R.id.action_sort);
+        Spinner sortSpinner = (Spinner) sortSpinnerItem.getActionView();
+
+        List<String> spinnerStringArray = new ArrayList<>();
+        spinnerStringArray.add(getString(R.string.menu_sort_by_time));
+        spinnerStringArray.add(getString(R.string.menu_sort_by_like));
+
+        sortTypeAdapter = new FeedSortTypeSpinnerAdapter(
+                getActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                spinnerStringArray,
+                feedType);
+
+        sortSpinner.setAdapter(sortTypeAdapter);
+        sortSpinner.setSelection(feedType == MOST_RECENT_TAG ? 0:1);
+
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    switch (position) {
+                        case 0:
+                            FeedFragment.this.setFeedSortType(MOST_RECENT_TAG);
+                            break;
+                        case 1:
+                            FeedFragment.this.setFeedSortType(MOST_POPULAR_TAG);
+                            break;
+                    }
+                } catch (NullPointerException e) {
+                    Log.d(getString(R.string.app_name), "something is null in feed activity");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 }

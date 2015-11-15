@@ -116,6 +116,19 @@
             android:name=".UpdateDeviceRetailNameActivity"
             android:label="@string/title_activity_update_device_retail_name" >
         </activity>
+        <activity
+            android:name=".ModelViewerActivity"
+            android:label="@string/title_activity_model_viewer"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:excludeFromRecents="true">
+        </activity>
+
+        <activity
+            android:name=".ProfileViewerActivity"
+            android:label="@string/title_activity_model_viewer"
+            android:excludeFromRecents="true"
+            android:parentActivityName=".ImageViewerActivity">
+        </activity>
     </application>
 
 </manifest>
