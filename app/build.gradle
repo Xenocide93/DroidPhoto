@@ -16,8 +16,8 @@ android {
         applicationId "com.droidsans.photo.droidphoto"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 7
-        versionName "1.1.0"
+        versionCode 9
+        versionName "1.1.1"
 //        signingConfig signingConfigs.config
     }
     buildTypes {
