@@ -1,6 +1,9 @@
 package com.droidsans.photo.droidphoto;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
+import com.droidsans.photo.droidphoto.util.ReportPack;
+import com.droidsans.photo.droidphoto.util.adapter.ReportAdapter;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.github.nkzawa.emitter.Emitter;
 
@@ -123,7 +128,7 @@ public class ModelViewerActivity extends AppCompatActivity {
 
                                 ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_build_info, bDevice){
                                     @Override
-                                    public View getView(int position, View convertView, ViewGroup parent) {
+                                    public View getView(final int position, View convertView, ViewGroup parent) {
                                         View row;
                                         if(convertView == null) {
                                             row = getLayoutInflater().inflate(R.layout.item_build_info, null);
@@ -141,6 +146,50 @@ public class ModelViewerActivity extends AppCompatActivity {
                                         ImageView report = (ImageView) row.findViewById(R.id.model_show_info);
                                         report.setVisibility(getSharedPreferences(getString(R.string.userdata), MODE_PRIVATE)
                                                 .getInt(getString(R.string.user_priviledge), 1) > 1? ImageView.VISIBLE: ImageView.GONE);
+
+                                        report.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+//                                                Toast.makeText(getApplicationContext(), "making report", Toast.LENGTH_LONG).show();
+
+                                                String message = "Vendor: " + BrowseVendorActivity.vendorName[vendorNum] + "\n";
+                                                message += "Model: " + BrowseModelActivity.modelName[vendorNum][modelNum] + "\n";
+                                                message += "DEVICE (OS): " + bDevice[position] + "\n";
+                                                message += "MODEL (OS): " + bModel[position] + "\n";
+
+                                                new AlertDialog.Builder(ModelViewerActivity.this)
+                                                        .setTitle("Report Incorrect Model ?")
+                                                        .setMessage(message)
+                                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                final JSONObject send = new JSONObject();
+                                                                try {
+                                                                    send.put("retail_vendor", BrowseVendorActivity.vendorName[vendorNum]);
+                                                                    send.put("retail_model", BrowseModelActivity.modelName[vendorNum][modelNum]);
+                                                                    send.put("build_device", bDevice[position]);
+                                                                    send.put("build_model", bModel[position]);
+                                                                    send.put("_event", "report_respond");
+                                                                } catch (JSONException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                                GlobalSocket.globalEmit("device.report", send);
+
+                                                                Snackbar.make(mainLayout,
+                                                                        "report: " + BrowseVendorActivity.vendorName[vendorNum] + " " +
+                                                                                BrowseModelActivity.modelName[vendorNum][modelNum] + " submitted", Snackbar.LENGTH_SHORT).show();
+//                                                                Snackbar.make(activity.findViewById(R.id.model_name), "currently disabled due to severe displacement bug.", Snackbar.LENGTH_SHORT).show();
+                                                            }
+                                                        })
+                                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                            }
+                                                        })
+                                                        .show();
+//                                                ReportPack reportPack = new ReportPack(bDevice[position], bModel[position], BrowseVendorActivity.vendorName[vendorNum], BrowseModelActivity.modelName[vendorNum][modelNum]);
+                                            }
+                                        });
 
                                         return row;
 //                                        return super.getView(position, convertView, parent);

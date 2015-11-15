@@ -407,7 +407,9 @@ public class ImageViewerActivity extends AppCompatActivity {
         } else {
             aperture.setText("---");
         }
-        if(!previousIntent.getStringExtra("iso").equals("0")) {
+        if(previousIntent.getStringExtra("iso").equals("")) {
+            iso.setText("---");
+        } else if(!previousIntent.getStringExtra("iso").equals("0")) {
             iso.setText(previousIntent.getStringExtra("iso"));
         } else {
             iso.setText("---");
