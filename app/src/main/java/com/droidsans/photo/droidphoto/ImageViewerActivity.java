@@ -634,8 +634,13 @@ public class ImageViewerActivity extends AppCompatActivity {
 //                    if(imageBitmap != null) imageBitmap.recycle();
 //                    imageBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, total);
                     imageByte = outputStream.toByteArray();
+                } else if(fileLength == -1) {
+                    fileLength = total;
+                    imageByte = outputStream.toByteArray();
                 } else {
+                    //shouldn't be here
                 }
+
 
             } catch (IOException e) {
                 e.printStackTrace();
