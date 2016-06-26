@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "631997746337",
+    "firebase_url": "https://droidshot-bd431.firebaseio.com",
+    "project_id": "droidshot-bd431",
+    "storage_bucket": "droidshot-bd431.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631997746337:android:39dcb3fa13c82067",
+        "android_client_info": {
+          "package_name": "com.droidsans.photo.droidphoto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "631997746337-4b6al6e48mgl0l1ll04u80kr5gfgeboa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.droidsans.photo.droidphoto",
+            "certificate_hash": "B653C4438257962C44AC1B107E3BAA84CFA4CDBD"
+          }
+        },
+        {
+          "client_id": "631997746337-chvp6s36pq1g0roajfbtffgcpiekkmvv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgfnClSpsIqt5QtRcmXhK0Do1ih6Cd6ik"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "631997746337-chvp6s36pq1g0roajfbtffgcpiekkmvv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

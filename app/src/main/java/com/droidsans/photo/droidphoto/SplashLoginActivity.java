@@ -18,6 +18,7 @@ import android.widget.EditText;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.github.nkzawa.emitter.Emitter;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,10 +30,11 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
 public class SplashLoginActivity extends AppCompatActivity {
     public static final String APP_LOG = "droidphoto";
     public static Context mContext;
+
+    private FirebaseAnalytics firebaseAnalytics;
 
     private View logoLayout, loginLayout;
     private FontTextView description;
@@ -43,6 +45,7 @@ public class SplashLoginActivity extends AppCompatActivity {
 
     private Handler delayAction = new Handler();
     private Runnable timeout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +61,17 @@ public class SplashLoginActivity extends AppCompatActivity {
     }
 
     private void initialize() {
+        initFirebase();
         findAllById();
         removeOldTemp();
         autoLogin();
         setupSocket();
         setupSplashAnimation();
         setupListener();
+    }
+
+    private void initFirebase() {
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     private void removeOldTemp() {

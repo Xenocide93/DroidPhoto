@@ -47,6 +47,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.droidsans.photo.droidphoto.util.FlowLayout;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
 import com.droidsans.photo.droidphoto.util.PicturePack;
+import com.droidsans.photo.droidphoto.util.RecyclerViewLoader;
 import com.droidsans.photo.droidphoto.util.SpacesItemDecoration;
 import com.droidsans.photo.droidphoto.util.adapter.FeedRecycleViewAdapter;
 import com.droidsans.photo.droidphoto.util.adapter.FeedSortTypeSpinnerAdapter;
@@ -87,7 +88,7 @@ import tourguide.tourguide.TourGuide;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FeedFragment extends Fragment {
+public class FeedFragment extends Fragment implements RecyclerViewLoader {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int FILTER_FEED = 2;
     private static final int FILL_POST = 4;
@@ -340,6 +341,7 @@ public class FeedFragment extends Fragment {
                 (int) getResources().getDimension(R.dimen.feed_recycleview_item_space),
                 false, false, false, false
         ));
+
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_feed_col_num));
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -353,10 +355,8 @@ public class FeedFragment extends Fragment {
                     default:
                         return 0;
                 }
-//                return 0;
             }
         });
-//        feedRecycleView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_feed_col_num)));
         feedRecycleView.setLayoutManager(layoutManager);
     }
 
@@ -402,6 +402,8 @@ public class FeedFragment extends Fragment {
         try {
             filter.put("filter_count", filterCount);
             if(skipDate != null) filter.put("skip", skipDate);
+            Log.d(getClass().getSimpleName(), "skipDate = " + skipDate);
+
             filter.put("limit", FEED_LIMIT_PER_REQUEST);
             switch (getActivity().getSharedPreferences("feedTypePreference", Context.MODE_PRIVATE).getInt("feedType", 1)){
                 case MOST_RECENT_TAG:
@@ -441,18 +443,6 @@ public class FeedFragment extends Fragment {
         removeTagBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                isRemoveTagActive = !isRemoveTagActive;
-//                if (isRemoveTagActive) {
-//                    removeTagBtn.setImageResource(R.drawable.remove_tag_pressed);
-//                    removeTagBtn.animate().scaleX(1.15f).scaleY(1.15f).setDuration(150).start();
-//                } else {
-//                    removeTagBtn.setImageResource(R.drawable.remove_tag_normal);
-//                    removeTagBtn.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start();
-//                    if (removeTag()) {
-//                        refreshFeed();
-//                        initLoading();
-//                    }
-//                }
                 for (int i = 0; i < tagViewArray.size(); i++) {
                     tagViewArray.get(i).selected = true;
                 }
@@ -651,59 +641,23 @@ public class FeedFragment extends Fragment {
                             feedPicturePack = new ArrayList<>();
                             JSONArray photoList = data.optJSONArray("photoList");
                             int len = photoList.length();
-                            for (int i = 0; i < len; i++) {
-//                                Log.d("droidphoto", "photoList(" + i + "):" + ((JSONObject) photoList.opt(i)));
-                                JSONObject jsonPack = photoList.optJSONObject(i);
-                                PicturePack picturePack = new PicturePack();
 
-                                picturePack.setPhotoId(jsonPack.optString("_id"));
-                                picturePack.setPhotoURL(jsonPack.optString("photo_url"));
-                                picturePack.setUserId(jsonPack.optString("user_id"));
-                                picturePack.setUsername(jsonPack.optString("username"));
-                                picturePack.setCaption(jsonPack.optString("caption", ""));
-                                picturePack.setVendor(jsonPack.optString("vendor"));
-                                picturePack.setModel(jsonPack.optString("model"));
-                                picturePack.setEventId(jsonPack.optString("event_id"));
-                                picturePack.setRank(jsonPack.optInt("ranking"));
-                                picturePack.setShutterSpeed(jsonPack.optString("exp_time"));
-                                picturePack.setAperture(jsonPack.optString("aperture"));
-                                picturePack.setIso(jsonPack.optString("iso"));
-                                picturePack.setWidth(jsonPack.optInt("width"));
-                                picturePack.setHeight(jsonPack.optInt("height"));
-//                                picturePack.setGpsLat(jsonPack.optDouble("gps_lat"));
-//                                picturePack.setGpsLong(jsonPack.optDouble("gps_long"));
-                                picturePack.setGpsLocation(jsonPack.optString("gps_location"));
-                                picturePack.setGpsLocalizedLocation(jsonPack.optString("gps_localized"));
-                                picturePack.setIsEnhanced(jsonPack.optBoolean("is_enhanced"));
-                                picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
-                                picturePack.setSubmitDate(jsonPack.optString("submit_date"));
-                                picturePack.setAvatarURL(jsonPack.optString("avatar_url"));
-                                picturePack.setIsLike(jsonPack.optBoolean("is_like"));
-                                picturePack.setLikeCount(jsonPack.optInt("like_count"));
+                            feedPicturePack = PicturePack.makePacksFromJSONArray(photoList);
 
-                                if(i==0) Log.d(getString(R.string.app_name), "FeedFragment: onGetFeedResponse: isLike: " + jsonPack.optBoolean("is_like"));
-
-//                                Log.d("droidphoto", jsonPack.optString("submit_date"));
-
-                                skipDate = jsonPack.optString("submit_date");
-
-                                feedPicturePack.add(picturePack);
-                            }
+                            //get the date of last picture to fetch next consecutive photo from server
+                            skipDate = feedPicturePack.get(feedPicturePack.size()-1).submitDate;
 
                             if (loadingCircle.getVisibility() == ProgressBar.VISIBLE) {
                                 loadingCircle.setVisibility(ProgressBar.GONE);
                                 frameLayout.setVisibility(FrameLayout.VISIBLE);
                             }
 
-                            //setup tranditional recycle view adapter
-//                            adapter = new PictureGridAdapter(getActivity(), R.layout.item_feed_pic, feedPicturePack);
-//                            feedGridView.setAdapter(adapter);
-
-                            //setup new recycle view adapter
-                            if(len == FEED_LIMIT_PER_REQUEST) {
+                            //add new footer if not the last photo
+                            if(photoList.length() == FEED_LIMIT_PER_REQUEST){
                                 PicturePack footer = new PicturePack();
                                 feedPicturePack.add(footer);
                             }
+
                             recycleAdapter = new FeedRecycleViewAdapter(getActivity(), FeedFragment.this, feedPicturePack);
                             feedRecycleView.setAdapter(recycleAdapter);
 
@@ -918,46 +872,19 @@ public class FeedFragment extends Fragment {
                         recycleAdapter.notifyDataSetChanged();
                         JSONObject data = (JSONObject) args[0];
                         if (data.optBoolean("success")) {
-//                            String[] photoList = data.optJSONArray("photoList").join(",").replaceAll("\"", "").split(",");
                             JSONArray photoList = data.optJSONArray("photoList");
-                            int len = photoList.length();
-                            for (int i = 0; i < len; i++) {
-                                JSONObject jsonPack = photoList.optJSONObject(i);
-                                PicturePack picturePack = new PicturePack();
 
-                                picturePack.setPhotoId(jsonPack.optString("_id"));
-                                picturePack.setPhotoURL(jsonPack.optString("photo_url"));
-                                picturePack.setUserId(jsonPack.optString("user_id"));
-                                picturePack.setUsername(jsonPack.optString("username"));
-                                picturePack.setCaption(jsonPack.optString("caption", ""));
-                                picturePack.setVendor(jsonPack.optString("vendor"));
-                                picturePack.setModel(jsonPack.optString("model"));
-                                picturePack.setEventId(jsonPack.optString("event_id"));
-                                picturePack.setRank(jsonPack.optInt("ranking"));
-                                picturePack.setShutterSpeed(jsonPack.optString("exp_time"));
-                                picturePack.setAperture(jsonPack.optString("aperture"));
-                                picturePack.setIso(jsonPack.optString("iso"));
-                                picturePack.setWidth(jsonPack.optInt("width"));
-                                picturePack.setHeight(jsonPack.optInt("height"));
-//                                picturePack.setGpsLat(jsonPack.optDouble("gps_lat"));
-//                                picturePack.setGpsLong(jsonPack.optDouble("gps_long"));
-                                picturePack.setGpsLocation(jsonPack.optString("gps_location"));
-                                picturePack.setGpsLocalizedLocation(jsonPack.optString("gps_localized"));
-                                picturePack.setIsEnhanced(jsonPack.optBoolean("is_enhanced"));
-                                picturePack.setIsFlash(jsonPack.optBoolean("is_flash"));
-                                picturePack.setSubmitDate(jsonPack.optString("submit_date"));
-                                picturePack.setAvatarURL(jsonPack.optString("avatar_url"));
-                                picturePack.setIsLike(jsonPack.optBoolean("is_like"));
-                                picturePack.setLikeCount(jsonPack.optInt("like_count"));
+                            feedPicturePack = PicturePack.addPacksFromJSONArray(photoList, feedPicturePack);
+                            skipDate = feedPicturePack.get(feedPicturePack.size() - 1).submitDate;
 
-                                skipDate = jsonPack.optString("submit_date");
-                                feedPicturePack.add(picturePack);
-                            }
-                            recycleAdapter.notifyDataSetChanged();
-                            if (len == FEED_LIMIT_PER_REQUEST) {
+                            //add new footer if not the last photo
+                            if(photoList.length() == FEED_LIMIT_PER_REQUEST){
                                 PicturePack footer = new PicturePack();
                                 feedPicturePack.add(footer);
                             }
+
+                            recycleAdapter.notifyDataSetChanged();
+
                         } else {
                             Snackbar.make(frameLayout, getString(R.string.snackbar_feed_cannot_refresh), Snackbar.LENGTH_LONG)
                                     .setAction(getString(R.string.snackbar_action_retry), new View.OnClickListener() {
@@ -1921,25 +1848,6 @@ public class FeedFragment extends Fragment {
         requestFeedPicture(filter);
     }
 
-    public void updateFeed(){
-        JSONObject filter = new JSONObject();
-        JSONArray filterData = new JSONArray();
-        isUpdate = true;
-
-        try {
-            for(TagView view : tagViewArray) {
-                JSONObject value = new JSONObject();
-                value.put("vendor", view.vendorName);
-                value.put("model", view.modelName);
-                filterData.put(value);
-            }
-            filter.put("data", filterData);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        requestFeedPicture(filter);
-    }
-
     public void launchAddFilterPopup(){
         Intent browseIntent = new Intent(getActivity(), BrowseVendorActivity.class);
         startActivityForResult(browseIntent, FILTER_FEED);
@@ -1995,6 +1903,28 @@ public class FeedFragment extends Fragment {
         if(someTagWasRemoved) updateTagView();
 
         return someTagWasRemoved;
+    }
+
+    @Override
+    public void onUpdateRecyclerViewRequest() {
+        GlobalSocket.mSocket.on("update_feed", onUpdateFeedRespond);
+
+        JSONObject filter = new JSONObject();
+        JSONArray filterData = new JSONArray();
+        isUpdate = true;
+
+        try {
+            for(TagView view : tagViewArray) {
+                JSONObject value = new JSONObject();
+                value.put("vendor", view.vendorName);
+                value.put("model", view.modelName);
+                filterData.put(value);
+            }
+            filter.put("data", filterData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        requestFeedPicture(filter);
     }
 
     public class TagView {
@@ -2125,5 +2055,28 @@ public class FeedFragment extends Fragment {
 
             }
         });
+    }
+
+    private class OnPictureClickListener implements View.OnClickListener {
+        private PicturePack pack;
+        private int position;
+
+        public void setPack(PicturePack pack) {
+            this.pack = pack;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent imageViewerIntent = new Intent(getContext(), ImageViewerActivity.class);
+
+            imageViewerIntent.putExtra("position", position);
+            imageViewerIntent.putExtra("pack", pack);
+
+            startActivityForResult(imageViewerIntent, FeedFragment.UPDATE_LIKE_STATE);
+        }
     }
 }

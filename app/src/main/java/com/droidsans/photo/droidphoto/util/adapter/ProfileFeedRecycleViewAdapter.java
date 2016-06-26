@@ -3,6 +3,7 @@ package com.droidsans.photo.droidphoto.util.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,141 +23,145 @@ import java.util.ArrayList;
  * Created by Ong on 14/7/2015.
  */
 public class ProfileFeedRecycleViewAdapter extends RecyclerView.Adapter {
-    private ArrayList<PicturePack> packs;
-    private LayoutInflater inflater;
-    private Context context;
-    public static boolean isClickOnce = false;
-    public boolean isInEditMode = false;
-    public boolean[] isMarkedAsRemove;
-    private Object activityObject;
+	public static final int TYPE_CONTENT = 64;
+	public static final int TYPE_FOOTER = 128;
+	public static final int TYPE_HEADER = 256;
 
-    public ProfileFeedRecycleViewAdapter(Context context, Object activityObject, ArrayList<PicturePack> packs){
-        this.packs = packs;
-        this.context = context;
-        this.activityObject = activityObject;
-        isMarkedAsRemove = new boolean[packs.size()];
-        for (int i=0; i<isMarkedAsRemove.length; i++){
-            isMarkedAsRemove[i] = false;
-        }
-    }
+	private ArrayList<PicturePack> packs;
+	private LayoutInflater inflater;
+	private Context context;
+	public static boolean isClickOnce = false;
+	public boolean isInEditMode = false;
+	public boolean[] isMarkedAsRemove;
+	private Object activityObject;
 
-    @Override
-    public ProfileFeedRecycleViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(inflater==null) inflater = LayoutInflater.from(parent.getContext());
-        View itemHolderView = inflater.inflate(R.layout.item_user_pic, null);
+	public ProfileFeedRecycleViewAdapter(Context context, Object activityObject, ArrayList<PicturePack> packs) {
+		this.packs = packs;
+		this.context = context;
+		this.activityObject = activityObject;
+		isMarkedAsRemove = new boolean[packs.size()];
+		for (int i = 0; i < isMarkedAsRemove.length; i++) {
+			isMarkedAsRemove[i] = false;
+		}
+	}
 
-        ViewHolder holder = new ViewHolder(itemHolderView);
-        return holder;
-    }
+	@Override
+	public ProfileFeedRecycleViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+		if (inflater == null)
+			inflater = LayoutInflater.from(parent.getContext());
+		View itemHolderView = inflater.inflate(R.layout.item_user_pic, null);
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        final PicturePack pack = packs.get(position);
-        final ViewHolder myHolder = (ViewHolder) holder;
+		ViewHolder holder = new ViewHolder(itemHolderView);
+		return holder;
+	}
 
-        Glide.with(context)
-                .load(GlobalSocket.serverURL + pack.baseURL + pack.photoURL)
-                .centerCrop()
-                .placeholder(R.drawable.picture_placeholder_500_center)
-                .crossFade()
-                .into(myHolder.picture);
+	@Override
+	public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+		switch (getItemViewType(position)) {
+		case TYPE_CONTENT:
+			Log.d(getClass().getSimpleName(), "TYPE_CONTENT " + position);
 
-        if(isInEditMode){
-            //set edit mode item visible
-            myHolder.checkBox.setVisibility(View.VISIBLE);
-            myHolder.checkBoxBg.setVisibility(View.VISIBLE);
-            myHolder.selectView.setVisibility(View.VISIBLE);
+			final PicturePack pack = packs.get(position);
+			final ViewHolder myHolder = (ViewHolder) holder;
 
-            //set select view the correct mark state (while scrolling)
-            if(isMarkedAsRemove[position]) {
-                myHolder.selectView.setAlpha(1f);
-                myHolder.checkBox.setAlpha(1f);
-            } else {
-                myHolder.selectView.setAlpha(0f);
-                myHolder.checkBox.setAlpha(0f);
-            }
-        } else {
-            //not in edit mode, all gone
-            myHolder.checkBox.setVisibility(View.GONE);
-            myHolder.checkBoxBg.setVisibility(View.GONE);
-            myHolder.selectView.setVisibility(View.GONE);
-        }
+			Glide.with(context).load(GlobalSocket.serverURL + pack.baseURL + pack.photoURL).centerCrop()
+					.placeholder(R.drawable.picture_placeholder_500_center).crossFade().into(myHolder.picture);
 
-        myHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isInEditMode){
-                    //toggle select state
-                    isMarkedAsRemove[position] = !isMarkedAsRemove[position];
-                    //toggle animation
-                    if(isMarkedAsRemove[position]){
-                        myHolder.selectView.animate()
-                                .alpha(1f)
-                                .setDuration(150)
-                                .start();
-                        myHolder.checkBox.animate()
-                                .alpha(1f)
-                                .setDuration(150)
-                                .start();
-                    } else {
-                        myHolder.selectView.animate()
-                                .alpha(0f)
-                                .setDuration(150)
-                                .start();
-                        myHolder.checkBox.animate()
-                                .alpha(0f)
-                                .setDuration(150)
-                                .start();
-                    }
-                } else { //not is edit mode, launch picture viewer normally
-                    if(!isClickOnce){
-                        ProfileFeedRecycleViewAdapter.isClickOnce = true;
-                        Intent imageViewerIntent = new Intent(context, ImageViewerActivity.class);
-                        imageViewerIntent.putExtra("photoId", pack.photoId);
-                        imageViewerIntent.putExtra("photoURL", pack.photoURL);
-                        imageViewerIntent.putExtra("caption", pack.caption);
-                        imageViewerIntent.putExtra("vendor", pack.vendor);
-                        imageViewerIntent.putExtra("model", pack.model);
-                        imageViewerIntent.putExtra("exposureTime", pack.shutterSpeed);
-                        imageViewerIntent.putExtra("aperture", pack.aperture);
-                        imageViewerIntent.putExtra("iso", pack.iso);
-                        imageViewerIntent.putExtra("userId", pack.userId);
-                        imageViewerIntent.putExtra("username", pack.username);
-                        imageViewerIntent.putExtra("gpsLocation", pack.gpsLocation);
-                        imageViewerIntent.putExtra("gpsLocalized", pack.gpsLocalizedLocation);
-                        imageViewerIntent.putExtra("submitDate", pack.submitDate);
-                        imageViewerIntent.putExtra("avatarURL", pack.avatarURL);
-                        imageViewerIntent.putExtra("is_enhanced", pack.isEnhanced);
-                        imageViewerIntent.putExtra("is_like", pack.isLike);
-                        imageViewerIntent.putExtra("like_count", pack.likeCount);
+			if (isInEditMode) {
+				//set edit mode item visible
+				myHolder.checkBox.setVisibility(View.VISIBLE);
+				myHolder.checkBoxBg.setVisibility(View.VISIBLE);
+				myHolder.selectView.setVisibility(View.VISIBLE);
 
-                        imageViewerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        if(activityObject instanceof ProfileFragment){
-                            ((ProfileFragment) activityObject).startActivityForResult(imageViewerIntent, ProfileFragment.UPDATE_LIKE_STATE);
-                        } else if(activityObject instanceof ProfileViewerActivity) {
-                            ((ProfileViewerActivity) activityObject).startActivityForResult(imageViewerIntent, ProfileViewerActivity.UPDATE_LIKE_STATE);
-                        }
-                    }
-                }
-            }
-        });
-    }
+				//set select view the correct mark state (while scrolling)
+				if (isMarkedAsRemove[position]) {
+					myHolder.selectView.setAlpha(1f);
+					myHolder.checkBox.setAlpha(1f);
+				} else {
+					myHolder.selectView.setAlpha(0f);
+					myHolder.checkBox.setAlpha(0f);
+				}
+			} else {
+				//not in edit mode, all gone
+				myHolder.checkBox.setVisibility(View.GONE);
+				myHolder.checkBoxBg.setVisibility(View.GONE);
+				myHolder.selectView.setVisibility(View.GONE);
+			}
 
-    @Override
-    public int getItemCount() {
-        return packs.size();
-    }
+			myHolder.itemView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (isInEditMode) {
+						//toggle select state
+						isMarkedAsRemove[position] = !isMarkedAsRemove[position];
+						//toggle animation
+						if (isMarkedAsRemove[position]) {
+							myHolder.selectView.animate().alpha(1f).setDuration(150).start();
+							myHolder.checkBox.animate().alpha(1f).setDuration(150).start();
+						} else {
+							myHolder.selectView.animate().alpha(0f).setDuration(150).start();
+							myHolder.checkBox.animate().alpha(0f).setDuration(150).start();
+						}
+					} else { //not is edit mode, launch picture viewer normally
+						if (!isClickOnce) {
+							ProfileFeedRecycleViewAdapter.isClickOnce = true;
+							Intent imageViewerIntent = new Intent(context, ImageViewerActivity.class);
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        SquareImageView picture;
-        View checkBox, checkBoxBg, selectView;
+							imageViewerIntent.putExtra("pack", pack);
+							imageViewerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            picture = (SquareImageView) itemView.findViewById(R.id.picture);
-            checkBoxBg = itemView.findViewById(R.id.checkbox_bg);
-            checkBox = itemView.findViewById(R.id.checkbox);
-            selectView = itemView.findViewById(R.id.select_view);
-        }
-    }
+							if (activityObject instanceof ProfileFragment) {
+								((ProfileFragment) activityObject).startActivityForResult(imageViewerIntent,
+										ProfileFragment.UPDATE_LIKE_STATE);
+							} else if (activityObject instanceof ProfileViewerActivity) {
+								((ProfileViewerActivity) activityObject).startActivityForResult(imageViewerIntent,
+										ProfileViewerActivity.UPDATE_LIKE_STATE);
+							}
+						}
+					}
+				}
+			});
+			break;
+		case TYPE_FOOTER:
+			Log.d(getClass().getSimpleName(), "TYPE_FOOTER");
+			if (activityObject instanceof ProfileFragment){
+				((ProfileFragment) activityObject).onUpdateRecyclerViewRequest();
+			}
+
+			break;
+		case TYPE_HEADER:
+			Log.d(getClass().getSimpleName(), "TYPE_HEADER");
+			break;
+		default:
+			Log.e(getClass().getSimpleName(), "onBindViewHolder fall into default case.");
+			break;
+		}
+	}
+
+	@Override
+	public int getItemCount() {
+		return packs.size();
+	}
+
+	public static class ViewHolder extends RecyclerView.ViewHolder {
+		SquareImageView picture;
+		View checkBox, checkBoxBg, selectView;
+
+		public ViewHolder(View itemView) {
+			super(itemView);
+			picture = (SquareImageView) itemView.findViewById(R.id.picture);
+			checkBoxBg = itemView.findViewById(R.id.checkbox_bg);
+			checkBox = itemView.findViewById(R.id.checkbox);
+			selectView = itemView.findViewById(R.id.select_view);
+		}
+	}
+
+	@Override
+	public int getItemViewType(int position) {
+		if (packs.get(position).vendor != null) {
+			return TYPE_CONTENT;
+		} else {
+			return TYPE_FOOTER;
+		}
+	}
 }

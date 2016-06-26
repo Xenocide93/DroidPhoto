@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.droidsans.photo.droidphoto.util.PicturePack;
 import com.droidsans.photo.droidphoto.util.transform.CircleTransform;
 import com.droidsans.photo.droidphoto.util.view.FontTextView;
 import com.droidsans.photo.droidphoto.util.GlobalSocket;
@@ -69,8 +70,8 @@ public class ImageViewerActivity extends AppCompatActivity {
     private FontTextView progressText;
     private FontTextView reloadText;
     private Button reloadBtn;
-    private Intent previousIntent;
-    private Boolean isLike;
+//    private Intent previousIntent;
+    private PicturePack pack;
     private Boolean isLikeStateChange = false;
     private int likeCountInt;
 
@@ -92,13 +93,14 @@ public class ImageViewerActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setupListener();
 
         if(setup()) {
             loadImage();
         } else {
             Toast.makeText(getApplicationContext(), "cannot initialize imageviewer (bug ?)", Toast.LENGTH_LONG).show();
         }
+
+        setupListener();
     }
 
     private void setupListener() {
@@ -107,7 +109,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         View.OnClickListener launchProfileViewerOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProfileViewerActivity.launchProfileViewer(getApplicationContext(), previousIntent.getStringExtra("userId"));
+                ProfileViewerActivity.launchProfileViewer(getApplicationContext(), pack.userId);
             }
         };
 
@@ -153,14 +155,14 @@ public class ImageViewerActivity extends AppCompatActivity {
         likeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isLike) {
-                    isLike = true;
+                if (!pack.isLike) {
+                    pack.isLike = true;
                     isLikeStateChange = true;
                     likeCountInt++;
                     setLikeButtonUI(true, likeCountInt);
                     JSONObject data = new JSONObject();
                     try {
-                        data.put("photo_id", previousIntent.getStringExtra("photoId"));
+                        data.put("photo_id", pack.photoId);
                         data.put("_event", "onLikeRespond");
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -187,13 +189,13 @@ public class ImageViewerActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    isLike = false;
+                    pack.isLike = false;
                     isLikeStateChange = true;
                     likeCountInt--;
                     setLikeButtonUI(false, likeCountInt);
                     JSONObject data = new JSONObject();
                     try {
-                        data.put("photo_id", previousIntent.getStringExtra("photoId"));
+                        data.put("photo_id", pack.photoId);
                         data.put("_event", "onUnlikeRespond");
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -246,10 +248,10 @@ public class ImageViewerActivity extends AppCompatActivity {
             case android.R.id.home:
                 if(isLikeStateChange){
                     Intent returnData = new Intent();
-                    returnData.putExtra("isLike", isLike);
+                    returnData.putExtra("isLike", pack.isLike);
                     returnData.putExtra("likeCount", likeCountInt);
-                    returnData.putExtra("photo_id", previousIntent.getStringExtra("photoId"));
-                    returnData.putExtra("position", previousIntent.getIntExtra("position", -1));
+                    returnData.putExtra("photo_id", pack.photoId);
+                    returnData.putExtra("position", getIntent().getIntExtra("position", -1));
                     setResult(RESULT_OK, returnData);
                 }
                 finish();
@@ -288,8 +290,8 @@ public class ImageViewerActivity extends AppCompatActivity {
                                 }
                                 JSONObject send = new JSONObject();
                                 try {
-                                    send.put("photo_id", previousIntent.getStringExtra("photoId"));
-                                    send.put("user_id", previousIntent.getStringExtra("userId"));
+                                    send.put("photo_id", pack.photoId);
+                                    send.put("user_id", pack.userId);
                                     send.put("_event", "hide_photo");
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -317,11 +319,11 @@ public class ImageViewerActivity extends AppCompatActivity {
         if(isLikeStateChange){
             Log.d("DroidShot", "I was here 2");
             Intent returnData = new Intent();
-            returnData.putExtra("isLike", isLike);
+            returnData.putExtra("isLike", pack.isLike);
             returnData.putExtra("likeCount", likeCountInt);
-            returnData.putExtra("photo_id", previousIntent.getStringExtra("photoId"));
-            Log.d(getString(R.string.app_name), "photoId1: " + previousIntent.getStringExtra("photoId"));
-            returnData.putExtra("position", previousIntent.getIntExtra("position", -1));
+            returnData.putExtra("photo_id", pack.photoId);
+            Log.d(getString(R.string.app_name), "photoId1: " + pack.photoId);
+            returnData.putExtra("position", getIntent().getIntExtra("position", -1));
             setResult(RESULT_OK, returnData);
         }
         finish();
@@ -329,7 +331,7 @@ public class ImageViewerActivity extends AppCompatActivity {
 
     private void postImageLoaded() {
         //photo view count
-        String photoId = previousIntent.getStringExtra("photoId");
+        String photoId = pack.photoId;
         JSONObject send = new JSONObject();
         try {
             send.put("photo_id", photoId);
@@ -374,84 +376,85 @@ public class ImageViewerActivity extends AppCompatActivity {
     }
 
     private boolean setup() {
-        previousIntent = getIntent();
-        photoURL = previousIntent.getStringExtra("photoURL");
-        caption.setText(previousIntent.getStringExtra("caption"));
+//        previousIntent = getIntent();
+        pack = (PicturePack) getIntent().getSerializableExtra("pack");
+        
+        photoURL = pack.photoURL;
+        caption.setText(pack.caption);
         if(caption.getText().equals("")) captionLayout.setVisibility(LinearLayout.GONE);
-        deviceName.setText(previousIntent.getStringExtra("vendor") + " " + previousIntent.getStringExtra("model"));
-        if(!previousIntent.getStringExtra("exposureTime").equals("")) {
-            Log.i("droidphoto", previousIntent.getStringExtra("exposureTime"));
-            if(previousIntent.getStringExtra("exposureTime").equals("0")) {
+        deviceName.setText(pack.getDeviceName());
+        if(!pack.shutterSpeed.equals("")) {
+            Log.i(getClass().getSimpleName(), "shutterSpeed: " + pack.shutterSpeed);
+            if(pack.shutterSpeed.equals("0")) {
                 exposureTime.setText("---");
-            } else if (!previousIntent.getStringExtra("exposureTime").contains("/") && !previousIntent.getStringExtra("exposureTime").substring(0,1).equals("0")) { // 4
-                exposureTime.setText(previousIntent.getStringExtra("exposureTime") + " s");
-            } else if (previousIntent.getStringExtra("exposureTime").substring(0, 2).contains("1/")) { // 1/3
-                exposureTime.setText(previousIntent.getStringExtra("exposureTime"));
-            } else if (previousIntent.getStringExtra("exposureTime").contains("/")) { //60001/100000
-                String expTime = previousIntent.getStringExtra("exposureTime");
+            } else if (!pack.shutterSpeed.contains("/") && !pack.shutterSpeed.substring(0,1).equals("0")) { // 4
+                exposureTime.setText(pack.shutterSpeed + " s");
+            } else if (pack.shutterSpeed.substring(0, 2).contains("1/")) { // 1/3
+                exposureTime.setText(pack.shutterSpeed);
+            } else if (pack.shutterSpeed.contains("/")) { //60001/100000
+                String expTime = pack.shutterSpeed;
                 exposureTime.setText("1/" + (int) (Double.parseDouble(expTime.substring(expTime.indexOf("/") + 1, expTime.length())) / Double.parseDouble(expTime.substring(0, expTime.indexOf("/")))));
             } else { // 0.2234235
-                exposureTime.setText("1/" + (int) (1.0 / Double.parseDouble(previousIntent.getStringExtra("exposureTime"))));
+                exposureTime.setText("1/" + (int) (1.0 / Double.parseDouble(pack.shutterSpeed)));
             }
         } else {
             exposureTime.setText("---");
         }
-        if(!previousIntent.getStringExtra("aperture").equals("")) {
-            if (previousIntent.getStringExtra("aperture").contains("f/")) {
-                aperture.setText(previousIntent.getStringExtra("aperture"));
-            } else if(previousIntent.getStringExtra("aperture").length() == 1) {
-                aperture.setText("f/" + previousIntent.getStringExtra("aperture") + ".0");
+        if(!pack.aperture.equals("")) {
+            if (pack.aperture.contains("f/")) {
+                aperture.setText(pack.aperture);
+            } else if(pack.aperture.length() == 1) {
+                aperture.setText("f/" + pack.aperture + ".0");
             } else {
-                aperture.setText("f/" + previousIntent.getStringExtra("aperture"));
+                aperture.setText("f/" + pack.aperture);
             }
         } else {
             aperture.setText("---");
         }
-        if(previousIntent.getStringExtra("iso").equals("")) {
+        if(pack.iso.equals("")) {
             iso.setText("---");
-        } else if(!previousIntent.getStringExtra("iso").equals("0")) {
-            iso.setText(previousIntent.getStringExtra("iso"));
+        } else if(!pack.iso.equals("0")) {
+            iso.setText(pack.iso);
         } else {
             iso.setText("---");
         }
 
-        if(previousIntent.getBooleanExtra("is_enhanced", false)){
+        if(pack.isEnhanced){
             enhanced.setVisibility(View.VISIBLE);
         } else {
             enhanced.setVisibility(View.GONE);
         }
+        
+        likeCountInt = pack.likeCount;
+        setLikeButtonUI(pack.isLike, likeCountInt);
 
-        isLike = previousIntent.getBooleanExtra("is_like", true);
-        likeCountInt = previousIntent.getIntExtra("like_count", -999);
-        setLikeButtonUI(isLike, likeCountInt);
-
-        Log.d("DroidShot", "ImageViewerActivity: previousIntent: isLike: " + isLike);
+        Log.d("DroidShot", "ImageViewerActivity: previousIntent: isLike: " + pack.isLike);
 
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_eng_location), true)) {
             if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.settings_local_location), true)) {
                 //eng + local
-                location.setText(previousIntent.getStringExtra("gpsLocation"));
-                if(!previousIntent.getStringExtra("gpsLocalized").equals("")) location.append(" (" + previousIntent.getStringExtra("gpsLocalized") + ")");
+                location.setText(pack.gpsLocation);
+                if(!pack.gpsLocalizedLocation.equals("")) location.append(" (" + pack.gpsLocalizedLocation + ")");
             } else {
                 //only eng
-                location.setText(previousIntent.getStringExtra("gpsLocation"));
+                location.setText(pack.gpsLocation);
             }
         } else {
             //only local
-            if(!previousIntent.getStringExtra("gpsLocalized").equals("")) {
+            if(!pack.gpsLocalizedLocation.equals("")) {
                 //if any
-                location.setText(previousIntent.getStringExtra("gpsLocalized"));
+                location.setText(pack.gpsLocalizedLocation);
             } else {
                 //if none
-                location.setText(previousIntent.getStringExtra("gpsLocation"));
+                location.setText(pack.gpsLocation);
             }
         }
         //if no location at all
         if(location.getText().equals("")) locationLayout.setVisibility(LinearLayout.GONE);
 
-        user.setText(previousIntent.getStringExtra("username"));
+        user.setText(pack.username);
         Glide.with(getApplicationContext())
-                .load(GlobalSocket.serverURL + ProfileFragment.baseURL + previousIntent.getStringExtra("avatarURL"))
+                .load(GlobalSocket.serverURL + ProfileFragment.baseURL + pack.avatarURL)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .fitCenter()
                 .transform(new CircleTransform(getApplicationContext()))
@@ -463,7 +466,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         try {
-            Date submitDate = format.parse(previousIntent.getStringExtra("submitDate"));
+            Date submitDate = format.parse(pack.submitDate);
             Date now = new Date();
             Log.d("droidphoto", "submit time : " + submitDate.toString());
             Log.d("droidphoto", "now : " + now.toString());
