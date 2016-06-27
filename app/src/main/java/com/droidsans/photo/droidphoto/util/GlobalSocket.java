@@ -35,7 +35,6 @@ public class GlobalSocket {
 //    public static final String USERNAME = "username";
 //    public static final String DISPLAY_NAME = "displayName";
 
-//    public static String serverURL = "https://209.208.65.102:12000";
 //    public static String serverURL = "http://vps.froztic.in.th:3000";               //test server
     public static String serverURL = "http://droidshot.droidsans.com:7520";       //release server
     public static Socket mSocket;
