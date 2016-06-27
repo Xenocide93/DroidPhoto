@@ -9,13 +9,13 @@ android {
 //            storePassword 'Tiq1pPDkEZfObIi+FPsuLVI/lxI4SG5TRuvIMSrDdhM'
 //        }
 //    }
-    compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    compileSdkVersion 24
+    buildToolsVersion '23.0.3'
     useLibrary  'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.droidsans.photo.droidphoto"
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 24
         versionCode 9
         versionName "1.1.1"
 //        signingConfig signingConfigs.config
@@ -32,10 +32,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:support-v4:23.0.1'
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:recyclerview-v7:23.0.1'
-    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:support-v4:24.0.0'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'com.android.support:design:24.0.0'
     compile 'com.github.nkzawa:socket.io-client:0.5.2'
     compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'com.github.clans:fab:1.5.4'
